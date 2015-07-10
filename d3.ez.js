@@ -732,7 +732,9 @@ d3.ez.punchCard = function module() {
 	var rowHeight = (maxRadius*2)+2;
 	var useGlobalScale = true;
  
-	object.render = function(){
+
+function exports(selection) {
+		selection.each(function(data) {
 		x = d3.scale.linear()
 			.range([0, width]);
  
@@ -831,53 +833,53 @@ d3.ez.punchCard = function module() {
     allValues = [];
 		data.forEach(function(d){
 			allValues = allValues.concat(d.values);
-		});
-    return object;
-  };
- 
-  object.minRadius = function(value){
+	});
+	}
+	
+	// Configuration Getters & Setters
+ exports.minRadius = function(value){
   	if (!arguments.length) return minRadius;
   	minRadius = value;
-  	return object;
+  	return exports;
   };
  
-  object.maxRadius = function(value){
+  exports.maxRadius = function(value){
   	if (!arguments.length) return maxRadius;
   	maxRadius = value;
   	rowHeight = (maxRadius*2)+2;
-  	return object;
+  	return exports;
   };
  
-  object.$el = function(value){
+  exports.$el = function(value){
     if (!arguments.length) return $el;
     $el = value;
-    return object;
+    return exports;
   };
  
-  object.width = function(value){
+  exports.width = function(value){
     if (!arguments.length) return width;
     width = value;
-    return object;
+    return exports;
   };
  
-  object.height = function(value){
+  exports.height = function(value){
     if (!arguments.length) return height;
     height = value;
-    return object;
+    return exports;
   };
  
-  object.color = function(value){
+  exports.color = function(value){
     if (!arguments.length) return color;
     color = value;
-    return object;
+    return exports;
   };
  
- 	object.useGlobalScale = function(value){
+ 	exports.useGlobalScale = function(value){
     if (!arguments.length) return useGlobalScale;
     useGlobalScale = value;
-    return object;
+    return exports;
   };
-  return object;
+  return exports;
 };
 
 /* REUSABLE COMPONENTS - Boxes, Legends, Nodes etc. */
