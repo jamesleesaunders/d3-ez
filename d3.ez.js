@@ -709,9 +709,12 @@ d3.ez.donutChart = function module() {
 // Punchcard
 // --------------------------
 // Use:
-// 	var myLabeledNode = d3.ez.punchCard()
-// 		.width(100)
-// 		.height(100);
+// 	var myChart = d3.ez.punchCard()
+// 		.width(400)
+// 		.height(300);
+// 	d3.select("#chartholder")
+// 		.datum(data)
+// 		.call(myChart);
 //
 // Credits:
 // 	Nattawat Nonsung https://gist.github.com/nnattawat/9720082
