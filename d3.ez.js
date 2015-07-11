@@ -670,7 +670,7 @@ d3.ez.donutChart = function module() {
 				this.update(data);
 			}
 		});
-	};
+	}; 
 	
 	// Configuration Getters & Setters
 	exports.margin = function(_) {
@@ -733,9 +733,10 @@ d3.ez.punchCard = function module() {
 	var useGlobalScale = true;
  
 
-function exports(selection) {
+	function exports(selection) {
 		selection.each(function(data) {
-		x = d3.scale.linear()
+		x = d3.scale
+			.linear()
 			.range([0, width]);
  
 		xAxis = d3.svg.axis()
@@ -743,7 +744,7 @@ function exports(selection) {
 			.orient("bottom");
  
 		xAxis.ticks(data[0].values.length)
-				.tickFormat(formatTick);
+			.tickFormat(formatTick);
  
 		svg = $el.append("svg")
 			.attr("width", width + margin.left + margin.right)
@@ -761,13 +762,13 @@ function exports(selection) {
 			.range([0, width]);
  
 		colorScale = d3.scale.linear()
-      .domain(d3.extent(allValues, function(d){return d['value'];}))
-      .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+			.domain(d3.extent(allValues, function(d){return d['value'];}))
+			.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
  
 		svg.append("g")
-		.attr("class", "x axis")
-		.attr("transform", "translate(0," + (height - margin.bottom) + ")")
-		.call(xAxis);
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + (height - margin.bottom) + ")")
+			.call(xAxis);
  
 		function mouseover(p) {
 			var g = d3.select(this).node().parentNode;
@@ -821,65 +822,64 @@ function exports(selection) {
 				.style("fill", function(d) { return color })
 				.on("mouseover", mouseover)
 				.on("mouseout", mouseout);
-		};
- 
-		return object;
+		});
 	};
- 
+		
 	// Getter and setter methods
-  object.data = function(value){
-    if (!arguments.length) return data;
-    data = value;
-    allValues = [];
-		data.forEach(function(d){
+	object.data = function(_) {
+		if (!arguments.length) return data;
+		data = _;
+		allValues = [];
+		data.forEach(function(d) {
 			allValues = allValues.concat(d.values);
-	});
+		});
 	}
 	
 	// Configuration Getters & Setters
- exports.minRadius = function(value){
-  	if (!arguments.length) return minRadius;
-  	minRadius = value;
-  	return exports;
-  };
+	exports.minRadius = function(_) {
+		if (!arguments.length) return minRadius;
+		minRadius = _;
+		return exports;
+	};
  
-  exports.maxRadius = function(value){
-  	if (!arguments.length) return maxRadius;
-  	maxRadius = value;
-  	rowHeight = (maxRadius*2)+2;
-  	return exports;
-  };
+ 	exports.maxRadius = function(_) {
+ 		if (!arguments.length) return maxRadius;
+ 		maxRadius = _;
+ 		rowHeight = (maxRadius*2)+2;
+ 		return exports;
+	};
  
-  exports.$el = function(value){
-    if (!arguments.length) return $el;
-    $el = value;
-    return exports;
-  };
+	exports.$el = function(_) {
+		if (!arguments.length) return $el;
+		$el = value;
+		return exports;
+	};
  
-  exports.width = function(value){
-    if (!arguments.length) return width;
-    width = value;
-    return exports;
-  };
+	exports.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return exports;
+	};
  
-  exports.height = function(value){
-    if (!arguments.length) return height;
-    height = value;
-    return exports;
-  };
+	exports.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return exports;
+	};
  
-  exports.color = function(value){
-    if (!arguments.length) return color;
-    color = value;
-    return exports;
-  };
+	exports.color = function(_) {
+		if (!arguments.length) return color;
+		color = _;
+		return exports;
+	};
  
- 	exports.useGlobalScale = function(value){
-    if (!arguments.length) return useGlobalScale;
-    useGlobalScale = value;
-    return exports;
-  };
-  return exports;
+ 	exports.useGlobalScale = function(_) {
+ 		if (!arguments.length) return useGlobalScale;
+ 		useGlobalScale = _;
+ 		return exports;
+	};
+	
+	return exports;
 };
 
 /* REUSABLE COMPONENTS - Boxes, Legends, Nodes etc. */
