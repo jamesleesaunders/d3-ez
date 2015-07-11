@@ -735,93 +735,95 @@ d3.ez.punchCard = function module() {
 
 	function exports(selection) {
 		selection.each(function(data) {
-		x = d3.scale
-			.linear()
-			.range([0, width]);
+			x = d3.scale
+				.linear()
+				.range([0, width]);
  
-		xAxis = d3.svg.axis()
-			.scale(x)
-			.orient("bottom");
+			xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom");
  
-		xAxis.ticks(data[0].values.length)
-			.tickFormat(formatTick);
+			xAxis.ticks(data[0].values.length)
+				.tickFormat(formatTick);
  
-		svg = $el.append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.bottom)
-			.style("margin-left", margin.left + "px")
-			.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			svg = $el.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.bottom)
+				.style("margin-left", margin.left + "px")
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
  
-		var domain = d3.extent(allValues, function(d){return d['key'];});
-		var valDomain = d3.extent(allValues, function(d){return d['value'];});
-		x.domain(domain);
+			var domain = d3.extent(allValues, function(d){return d['key'];});
+			var valDomain = d3.extent(allValues, function(d){return d['value'];});
+			x.domain(domain);
  
-		xScale = d3.scale.linear()
-			.domain(domain)
-			.range([0, width]);
+			xScale = d3.scale.linear()
+				.domain(domain)
+				.range([0, width]);
  
-		colorScale = d3.scale.linear()
-			.domain(d3.extent(allValues, function(d){return d['value'];}))
-			.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+			colorScale = d3.scale.linear()
+				.domain(d3.extent(allValues, function(d){return d['value'];}))
+				.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
  
-		svg.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + (height - margin.bottom) + ")")
-			.call(xAxis);
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + (height - margin.bottom) + ")")
+				.call(xAxis);
  
-		function mouseover(p) {
-			var g = d3.select(this).node().parentNode;
-			d3.select(g).selectAll("circle").style("display","none");
-			d3.select(g).selectAll("text.value").style("display","block");
-		}
+			function mouseover(p) {
+				var g = d3.select(this).node().parentNode;
+				d3.select(g).selectAll("circle").style("display","none");
+				d3.select(g).selectAll("text.value").style("display","block");
+			}
  
-		function mouseout(p) {
-			var g = d3.select(this).node().parentNode;
-			d3.select(g).selectAll("circle").style("display","block");
-			d3.select(g).selectAll("text.value").style("display","none");
-		}
+			function mouseout(p) {
+				var g = d3.select(this).node().parentNode;
+				d3.select(g).selectAll("circle").style("display","block");
+				d3.select(g).selectAll("text.value").style("display","none");
+			}
  
-		for (var j = 0; j < data.length; j++) {
-			var g = svg.append("g");
+			for (var j = 0; j < data.length; j++) {
+				var g = svg.append("g");
  
-			var circles = g.selectAll("circle")
-				.data(data[j]['values'])
-				.enter()
-				.append("circle");
+				var circles = g.selectAll("circle")
+					.data(data[j]['values'])
+					.enter()
+					.append("circle");
  
-			var text = g.selectAll("text")
-				.data(data[j]['values'])
-				.enter()
-				.append("text");
+				var text = g.selectAll("text")
+					.data(data[j]['values'])
+					.enter()
+					.append("text");
  
-			var rDomain = useGlobalScale? valDomain : [0, d3.max(data[j]['values'], function(d) { return d['value']; })];
-			var rScale = d3.scale.linear()
-				.domain(rDomain)
-				.range([minRadius, maxRadius]);
+				var rDomain = useGlobalScale? valDomain : [0, d3.max(data[j]['values'], function(d) { return d['value']; })];
+				var rScale = d3.scale.linear()
+					.domain(rDomain)
+					.range([minRadius, maxRadius]);
  
-			circles
-				.attr("cx", function(d, i) { return xScale(d['key']); })
-				.attr("cy", (height - margin.bottom - rowHeight*2) - (j*rowHeight)+rowHeight)
-				.attr("r", function(d) { return rScale(d['value']); })
-				.style("fill", function(d) { return colorScale(d['value']) });
+				circles
+					.attr("cx", function(d, i) { return xScale(d['key']); })
+					.attr("cy", (height - margin.bottom - rowHeight*2) - (j*rowHeight)+rowHeight)
+					.attr("r", function(d) { return rScale(d['value']); })
+					.style("fill", function(d) { return colorScale(d['value']) });
  
-			text
-				.attr("y",(height - margin.bottom - rowHeight*2) - (j*rowHeight)+(rowHeight+5))
-				.attr("x",function(d, i) { return xScale(d['key'])-5; })
-				.attr("class","value")
-				.text(function(d){ return d['value']; })
-				.style("fill", function(d) { return colorScale(d['value']) })
-				.style("display","none");
+				text
+					.attr("y",(height - margin.bottom - rowHeight*2) - (j*rowHeight)+(rowHeight+5))
+					.attr("x",function(d, i) { return xScale(d['key'])-5; })
+					.attr("class","value")
+					.text(function(d){ return d['value']; })
+					.style("fill", function(d) { return colorScale(d['value']) })
+					.style("display","none");
  
-			g.append("text")
-				.attr("y", (height - margin.bottom - rowHeight*2) - (j*rowHeight)+(rowHeight+5))
-				.attr("x",width+rowHeight)
-				.attr("class","label")
-				.text(data[j]['key'])
-				.style("fill", function(d) { return color })
-				.on("mouseover", mouseover)
-				.on("mouseout", mouseout);
+				g.append("text")
+					.attr("y", (height - margin.bottom - rowHeight*2) - (j*rowHeight)+(rowHeight+5))
+					.attr("x",width+rowHeight)
+					.attr("class","label")
+					.text(data[j]['key'])
+					.style("fill", function(d) { return color })
+					.on("mouseover", mouseover)
+					.on("mouseout", mouseout);
+			}
+		
 		});
 	};
 		
