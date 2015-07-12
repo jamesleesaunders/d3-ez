@@ -1,2 +1,3 @@
 # d3.ez
-D3 Easy - Reusable Charts and Graphs
+## D3 Easy Reusable Graphs, Charts and Components
+
