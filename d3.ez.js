@@ -1,13 +1,10 @@
 /*
-D3.EZ
-Copyright (C) 2015  James Saunders
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * D3.EZ
+ * Copyright (C) 2015  James Saunders
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 d3.ez = {};
 
@@ -30,6 +27,7 @@ d3.ez = {};
 // 	http://backstopmedia.booktype.pro/developing-a-d3js-edge/reusable-bar-chart/
 //
 d3.ez.columnChart = function module() {
+	// Default Settings (some configurable via Settersbelow)
 	var width  = 400;
 	var height = 300;
 	var margin = {top: 20, right: 20, bottom: 20, left: 40};
@@ -162,6 +160,7 @@ d3.ez.columnChart = function module() {
 // 	http://bost.ocks.org/mike/chart/
 //
 d3.ez.htmlTable = function module() {
+	// Default Settings (some configurable via Setters below)
 	var classed = "sortable";
 	var table;
 	
@@ -244,10 +243,11 @@ d3.ez.htmlTable = function module() {
 // 	http://bost.ocks.org/mike/chart/
 //
 d3.ez.timeSeriesChart = function module() {
-	var margin = {top: 20, right: 20, bottom: 20, left: 40};
-	var color  = '#0000ff';	
+	// Default Settings (some configurable via Setters below)
 	var width  = 400;
 	var height = 300;
+	var margin = {top: 20, right: 20, bottom: 20, left: 40};
+	var color  = '#0000ff';
 	var xValue = function(d) { return d[0]; };
 	var yValue = function(d) { return d[1]; };
 	var xScale = d3.time.scale();
@@ -400,9 +400,10 @@ d3.ez.timeSeriesChart = function module() {
 // 	https://github.com/jeffreypierce/d3-donut-chart/blob/master/d3-donut-chart.js
 //
 d3.ez.donutChart = function module() {
-	var margin            = {top: 30, right: 30, bottom: 30, left: 30};	
+	// Default Settings (some configurable via Setters below)	
 	var width             = 400;
 	var height            = 300;
+	var margin            = {top: 30, right: 30, bottom: 30, left: 30};
 	var radius            = d3.min([(width - margin.right - margin.left), (height - margin.top - margin.bottom)]) / 2;
 	var innerRadius       = 90;
 	var strokeColor       = "#FFF";
@@ -731,13 +732,13 @@ d3.ez.donutChart = function module() {
 // 	Nattawat Nonsung https://gist.github.com/nnattawat/9720082
 //
 d3.ez.punchCard = function module() {
-	// Default settings
+	// Default Settings (some configurable via Setters below)
+	var width = 300;
+	var height = 200;	
 	var $el = d3.select("body");
 	var maxRadius = 9;
 	var minRadius = 2;
 	var margin = {top: 40, right: 200, bottom: 40, left: 20};
-	var width = 300;
-	var height = 200;
 	var color = "steelblue";
 	var data = [];
 	var object = {};
