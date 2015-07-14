@@ -754,6 +754,7 @@ d3.ez.punchCard = function module() {
  
 	function exports(selection) {
 		selection.each(function(data) {
+			console.log(data);
 			x = d3.scale
 				.linear()
 				.range([0, width]);
