@@ -27,6 +27,8 @@ d3.ez = {};
 // 	http://backstopmedia.booktype.pro/developing-a-d3js-edge/reusable-bar-chart/
 //
 d3.ez.columnChart = function module() {
+	// SVG container (populated by exports function below) 
+	var svg;
 	// Default Settings (some configurable via Settersbelow)
 	var width  = 400;
 	var height = 300;
@@ -34,7 +36,6 @@ d3.ez.columnChart = function module() {
 	var color  = '#0000ff';
 	var gap    = 0;
 	var ease   = "bounce";
-	var svg;
 
 	var dispatch = d3.dispatch("customHover");
 	
@@ -160,9 +161,10 @@ d3.ez.columnChart = function module() {
 // 	http://bost.ocks.org/mike/chart/
 //
 d3.ez.htmlTable = function module() {
+	// Table container (populated by exports function below) 
+	var table;	
 	// Default Settings (some configurable via Setters below)
 	var classed = "sortable";
-	var table;
 	
 	function exports(selection) {	
 		selection.each(function(data) {
@@ -243,6 +245,8 @@ d3.ez.htmlTable = function module() {
 // 	http://bost.ocks.org/mike/chart/
 //
 d3.ez.timeSeriesChart = function module() {
+	// SVG container (populated by exports function below) 
+	var svg;	
 	// Default Settings (some configurable via Setters below)
 	var width  = 400;
 	var height = 300;
@@ -254,7 +258,6 @@ d3.ez.timeSeriesChart = function module() {
 	var yScale = d3.scale.linear();
 	var area   = d3.svg.area().x(X).y1(Y);
 	var line   = d3.svg.line().x(X).y(Y);
-	var svg;
 
 	function exports(selection) {
 		selection.each(function(data) {
@@ -333,12 +336,6 @@ d3.ez.timeSeriesChart = function module() {
 	}
 	
 	// Configuration Getters & Setters
-	exports.margin = function(_) {
-		if (!arguments.length) return margin;
-		margin = _;
-		return this;
-	};
-
 	exports.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
@@ -350,6 +347,12 @@ d3.ez.timeSeriesChart = function module() {
 		height = _;
 		return this;
 	};
+
+	exports.margin = function(_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};	
 
 	exports.x = function(_) {
 		if (!arguments.length) return xValue;
@@ -400,6 +403,8 @@ d3.ez.timeSeriesChart = function module() {
 // 	https://github.com/jeffreypierce/d3-donut-chart/blob/master/d3-donut-chart.js
 //
 d3.ez.donutChart = function module() {
+	// SVG container (populated by exports function below) 
+	var svg;	
 	// Default Settings (some configurable via Setters below)	
 	var width             = 400;
 	var height            = 300;
@@ -418,7 +423,7 @@ d3.ez.donutChart = function module() {
 	var easeFunction      = 'cubic';
 	var animationDuration = 250;
 	var labelValueOffset  = 16;
-	var svg;
+
 
 	function exports(selection) {
 		selection.each(function(data) {
@@ -685,12 +690,6 @@ d3.ez.donutChart = function module() {
 	}; 
 	
 	// Configuration Getters & Setters
-	exports.margin = function(_) {
-		if (!arguments.length) return margin;
-		margin = _;
-		return this;
-	};
-	
 	exports.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
@@ -702,6 +701,12 @@ d3.ez.donutChart = function module() {
 		height = _;
 		return this;
 	};
+	
+	exports.margin = function(_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};	
 
 	exports.radius = function(_) {
 		if (!arguments.length) return radius;
@@ -732,22 +737,22 @@ d3.ez.donutChart = function module() {
 // 	Nattawat Nonsung https://gist.github.com/nnattawat/9720082
 //
 d3.ez.punchCard = function module() {
+	// SVG container (populated by exports function below) 
+	var svg;	
 	// Default Settings (some configurable via Setters below)
 	var width = 300;
-	var height = 200;	
-	var $el = d3.select("body");
+	var height = 200;
+	var margin = {top: 40, right: 200, bottom: 40, left: 20};
 	var maxRadius = 9;
 	var minRadius = 2;
-	var margin = {top: 40, right: 200, bottom: 40, left: 20};
 	var color = "steelblue";
 	var data = [];
 	var object = {};
 	var formatTick = d3.format("0000");
-	var svg, x, xAxis, allValues, xScale, colorScale;
+	var x, xAxis, allValues, xScale, colorScale;
 	var rowHeight = (maxRadius*2)+2;
 	var useGlobalScale = true;
  
-
 	function exports(selection) {
 		selection.each(function(data) {
 			x = d3.scale
@@ -761,7 +766,7 @@ d3.ez.punchCard = function module() {
 			xAxis.ticks(data[0].values.length)
 				.tickFormat(formatTick);
  
-			svg = $el.append("svg")
+			svg = selection.append("svg")
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.bottom)
 				.style("margin-left", margin.left + "px")
@@ -853,6 +858,24 @@ d3.ez.punchCard = function module() {
 	}
 	
 	// Configuration Getters & Setters
+	exports.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return exports;
+	};
+ 
+	exports.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return exports;
+	};
+	
+	exports.margin = function(_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};
+	
 	exports.minRadius = function(_) {
 		if (!arguments.length) return minRadius;
 		minRadius = _;
@@ -864,24 +887,6 @@ d3.ez.punchCard = function module() {
  		maxRadius = _;
  		rowHeight = (maxRadius*2)+2;
  		return exports;
-	};
- 
-	exports.$el = function(_) {
-		if (!arguments.length) return $el;
-		$el = value;
-		return exports;
-	};
- 
-	exports.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return exports;
-	};
- 
-	exports.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return exports;
 	};
  
 	exports.color = function(_) {
