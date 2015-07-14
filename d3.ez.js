@@ -43,7 +43,7 @@ d3.ez.columnChart = function module() {
 	var width  = 400;
 	var height = 300;
 	var margin = {top: 20, right: 20, bottom: 20, left: 40};
-	var color  = '#0000ff';
+	var color  = 'steelblue';
 	var gap    = 0;
 	var ease   = "bounce";
 
@@ -261,7 +261,7 @@ d3.ez.timeSeriesChart = function module() {
 	var width  = 400;
 	var height = 300;
 	var margin = {top: 20, right: 20, bottom: 20, left: 40};
-	var color  = '#0000ff';
+	var color  = 'steelblue';
 	var xValue = function(d) { return d[0]; };
 	var yValue = function(d) { return d[1]; };
 	var xScale = d3.time.scale();
@@ -928,7 +928,7 @@ d3.ez.punchCard = function module() {
 //
 d3.ez.labeledNode = function module() {
 	// Configurable Variables
-	var color       = '#0000FF';
+	var color       = 'steelblue';
 	var opacity     = 1;
 	var strokeColor = '#000000';
 	var strokeWidth = 0;
