@@ -746,7 +746,6 @@ d3.ez.punchCard = function module() {
 	var maxRadius = 9;
 	var minRadius = 2;
 	var color = "steelblue";
-	var data = [];
 	var object = {};
 	var formatTick = d3.format("0000");
 	var x, xAxis, allValues, xScale, colorScale;
@@ -846,17 +845,7 @@ d3.ez.punchCard = function module() {
 		
 		});
 	};
-		
-	// Getter and setter methods
-	object.data = function(_) {
-		if (!arguments.length) return data;
-		data = _;
-		allValues = [];
-		data.forEach(function(d) {
-			allValues = allValues.concat(d.values);
-		});
-	}
-	
+
 	// Configuration Getters & Setters
 	exports.width = function(_) {
 		if (!arguments.length) return width;
