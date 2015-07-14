@@ -14,7 +14,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-d3.ez = {};
+d3.ez = {
+    version: "1.0.1"
+};
 
 /* 
  * REUSABLE CHARTS - Charts, Tables, Graphs etc. 
