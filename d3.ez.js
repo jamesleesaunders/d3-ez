@@ -740,21 +740,26 @@ d3.ez.punchCard = function module() {
 	// SVG container (populated by exports function below) 
 	var svg;	
 	// Default Settings (some configurable via Setters below)
-	var width = 300;
-	var height = 200;
+	var width = 400;
+	var height = 300;
 	var margin = {top: 40, right: 200, bottom: 40, left: 20};
 	var maxRadius = 9;
 	var minRadius = 2;
 	var color = "steelblue";
 	var object = {};
 	var formatTick = d3.format("0000");
-	var x, xAxis, allValues, xScale, colorScale;
+	var x, xAxis, xScale, colorScale;
 	var rowHeight = (maxRadius*2)+2;
 	var useGlobalScale = true;
  
 	function exports(selection) {
 		selection.each(function(data) {
-			console.log(data);
+			
+		    var allValues = [];
+			data.forEach(function(d){
+				allValues = allValues.concat(d.values);
+			});			
+			
 			x = d3.scale
 				.linear()
 				.range([0, width]);
@@ -773,8 +778,8 @@ d3.ez.punchCard = function module() {
 				.append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
  
-			var domain = d3.extent(allValues, function(d){return d['key'];});
-			var valDomain = d3.extent(allValues, function(d){return d['value'];});
+			var domain = d3.extent(allValues, function(d) { return d['key']; });
+			var valDomain = d3.extent(allValues, function(d) { return d['value']; });
 			x.domain(domain);
  
 			xScale = d3.scale.linear()
