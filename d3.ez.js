@@ -15,7 +15,7 @@
  */
 
 d3.ez = {
-    version: "1.0.1"
+    version: "1.0.2"
 };
 
 /* 
@@ -915,8 +915,8 @@ d3.ez.punchCard = function module() {
  * REUSABLE COMPONENTS - Boxes, Legends, Nodes etc. 
  */
 
-// Reusable Circle Node Label
-// --------------------------
+// Reusable Labeled Circle Node
+// ----------------------------
 // Use:
 // 	var myLabeledNode = d3.ez.labeledNode()
 // 		.color('#FF0000')
@@ -962,45 +962,45 @@ d3.ez.labeledNode = function module() {
 	}
 
 	// Configuration Getters & Setters
-	my.color = function(value) {
+	my.color = function(_) {
 		if (!arguments.length) return color;
-		color = value;
+		color = _;
 		return my;
 	};
 
-	my.opacity = function(value) {
+	my.opacity = function(_) {
 		if (!arguments.length) return opacity;
-		opacity = value;
+		opacity = _;
 		return my;
 	};
 
-	my.stroke = function(width, color) {
-		if (!arguments.length) return strokeWidth + ", " + strokeColor;
-		strokeWidth = width;
-		strokeColor = color;
-		return my;
-	};
-
-	my.radius = function(value) {
+	my.radius = function(_) {
 		if (!arguments.length) return radius;
-		radius = value;
+		radius = _;
 		return my;
 	};
 
-	my.label = function(value) {
+	my.label = function(_) {
 		if (!arguments.length) return label;
-		label = value;
+		label = _;
 		return my;
 	};
 
-	my.fontSize = function(value) {
+	my.fontSize = function(_) {
 		if (!arguments.length) return fontSize;
-		fontSize = value;
+		fontSize = _;
 		return my;
 	};
+	
+	my.stroke = function(_width, _color) {
+		if (!arguments.length) return strokeWidth + ", " + strokeColor;
+		strokeWidth = _width;
+		strokeColor = _color;
+		return my;
+	};	
 
-	function sizeAccessor(value) {
-		return (typeof radius === 'function' ? radius(value) : radius);
+	function sizeAccessor(_) {
+		return (typeof radius === 'function' ? radius(_) : radius);
 	};
 
 	return my;
