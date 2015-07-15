@@ -15,7 +15,7 @@
  */
 
 d3.ez = {
-    version: "1.0.2"
+    version: "1.1.0"
 };
 
 /* 
@@ -910,6 +910,160 @@ d3.ez.punchCard = function module() {
 	
 	return exports;
 };
+
+
+
+// Stacked Column Chart
+// --------------------
+// Use:
+// 	var myChart = d3.ez.columnChartStacked()
+// 		.width(400)
+// 		.height(300);
+// 	d3.select("#chartholder")
+// 		.datum(data)
+// 		.call(myChart);
+//
+d3.ez.columnChartStacked = function module() {
+	// SVG container (populated by exports function below) 
+	var svg;	
+	// Default Settings (some configurable via Setters below)
+	var width = 400;
+	var height = 300;
+	var margin = {top: 40, right: 200, bottom: 40, left: 20};
+	
+	function exports(selection) {
+		selection.each(function(data) {
+			var chartW = width - margin.left - margin.right;
+			var chartH = height - margin.top - margin.bottom;
+
+			// X & Y Scales
+			var xScale = d3.scale.ordinal()
+				.rangeRoundBands([0, chartW], .1);
+
+			var yScale = d3.scale.linear()
+				.rangeRound([chartH, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(xScale)
+				.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+				.scale(yScale)
+				.orient("left")
+				.tickFormat(d3.format(".2s"));
+			
+			var color = d3.scale.ordinal()
+				.range([
+				        "#98abc5", 
+				        "#8a89a6", 
+				        "#7b6888", 
+				        "#6b486b", 
+				        "#a05d56", 
+				        "#d0743c", 
+				        "#ff8c00"
+				        ]
+				);			
+			
+			if (!svg) {
+				svg = d3.select(this)
+					.append("svg")
+					.classed("chart", true);
+			}			
+			
+			svg
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			color.domain(d3.keys(data[0]).filter(function(key) { return key !== "State"; }));
+			
+			data.forEach(function(d) {
+				var y0 = 0;
+				d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
+				d.total = d.ages[d.ages.length - 1].y1;
+			});
+			
+			data.sort(function(a, b) { return b.total - a.total; });
+			
+			xScale.domain(data.map(function(d) { return d.State; }));
+			yScale.domain([0, d3.max(data, function(d) { return d.total; })]);
+			
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + chartH + ")")
+				.call(xAxis);
+			
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
+				.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 6)
+				.attr("dy", ".71em")
+				.style("text-anchor", "end")
+				.text("Population");
+			
+			var state = svg.selectAll(".state")
+				.data(data)
+				.enter().append("g")
+				.attr("class", "g")
+				.attr("transform", function(d) { return "translate(" + xScale(d.State) + ",0)"; });
+			
+			state.selectAll("rect")
+				.data(function(d) { return d.ages; })
+			  	.enter()
+			  	.append("rect")
+				.attr("width", xScale.rangeBand())
+				.attr("y", function(d) { return yScale(d.y1); })
+				.attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
+				.style("fill", function(d) { return color(d.name); });
+			
+			var legend = svg.selectAll(".legend")
+				.data(color.domain().slice().reverse())
+			  	.enter()
+			  	.append("g")
+				.attr("class", "legend")
+			  	.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+			
+			legend.append("rect")
+				.attr("x", chartW - 18)
+			  	.attr("width", 18)
+			  	.attr("height", 18)
+			  	.style("fill", color);
+			
+			legend.append("text")
+				.attr("x", chartW - 24)
+				.attr("y", 9)
+				.attr("dy", ".35em")
+				.style("text-anchor", "end")
+				.text(function(d) { return d; });
+			
+		});
+	}
+	
+	// Configuration Getters & Setters
+	exports.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
+	exports.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
+	
+	exports.margin = function(_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};
+	
+	return exports;	
+};
+
 
 /* 
  * REUSABLE COMPONENTS - Boxes, Legends, Nodes etc. 
