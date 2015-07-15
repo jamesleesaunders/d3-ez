@@ -15,7 +15,7 @@
  */
 
 d3.ez = {
-    version: "1.1.0"
+    version: "1.1.1"
 };
 
 /* 
@@ -85,10 +85,13 @@ d3.ez.columnChart = function module() {
 				container.append("g").classed("y-axis-group axis", true);
 			}
 
+			// Update the outer dimensions.
 			svg.transition().attr({width: width, height: height});
+			
+			// Update the inner dimensions.
 			svg.select(".container-group")
-				.attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
-
+				.attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
+			
 			svg.select(".x-axis-group.axis")
 				.attr({transform: "translate(0," + chartH + ")"})
 				.call(xAxis);
@@ -911,11 +914,14 @@ d3.ez.punchCard = function module() {
 	return exports;
 };
 
-
-
 // Stacked Column Chart
 // --------------------
 // Use:
+// 	var data = [
+// 		{'State':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
+// 		{'State':'Claire', 'Apples':'3', 'Oranges':'1', 'Pears':'2', 'Bananas':'2'},
+// 		{'State':'Beth', 'Apples':'1', 'Oranges':'4', 'Pears':'2', 'Bananas':'3'}
+// 	];
 // 	var myChart = d3.ez.columnChartStacked()
 // 		.width(400)
 // 		.height(300);
@@ -929,7 +935,10 @@ d3.ez.columnChartStacked = function module() {
 	// Default Settings (some configurable via Setters below)
 	var width = 400;
 	var height = 300;
-	var margin = {top: 40, right: 200, bottom: 40, left: 20};
+	var margin = {top: 20, right: 70, bottom: 20, left: 40};		
+	// var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+	var colors = d3.scale.category10().range();
+	var yAxisLabel = 'Y Axis Label';
 	
 	function exports(selection) {
 		selection.each(function(data) {
@@ -953,28 +962,25 @@ d3.ez.columnChartStacked = function module() {
 				.tickFormat(d3.format(".2s"));
 			
 			var color = d3.scale.ordinal()
-				.range([
-				        "#98abc5", 
-				        "#8a89a6", 
-				        "#7b6888", 
-				        "#6b486b", 
-				        "#a05d56", 
-				        "#d0743c", 
-				        "#ff8c00"
-				        ]
-				);			
+				.range(colors);			
 			
 			if (!svg) {
 				svg = d3.select(this)
 					.append("svg")
 					.classed("chart", true);
-			}			
+				
+				var container = svg.append("g").classed("container-group", true);				
+				container.append("g").classed("chart-group", true);
+				container.append("g").classed("x-axis-group axis", true);
+				container.append("g").classed("y-axis-group axis", true);				
+			}
 			
-			svg
-				.attr("width", chartW)
-				.attr("height", chartH)
-				.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			// Update the outer dimensions.
+			svg.transition().attr({width: width, height: height});
+			
+			// Update the inner dimensions.
+			svg.select(".container-group")
+				.attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
 			
 			color.domain(d3.keys(data[0]).filter(function(key) { return key !== "State"; }));
 			
@@ -989,28 +995,28 @@ d3.ez.columnChartStacked = function module() {
 			xScale.domain(data.map(function(d) { return d.State; }));
 			yScale.domain([0, d3.max(data, function(d) { return d.total; })]);
 			
-			svg.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + chartH + ")")
+			svg.select(".x-axis-group.axis")
+				.attr({transform: "translate(15," + chartH + ")"})
 				.call(xAxis);
-			
-			svg.append("g")
-				.attr("class", "y axis")
+
+			svg.select(".y-axis-group.axis")	
 				.call(yAxis)
 				.append("text")
 				.attr("transform", "rotate(-90)")
 				.attr("y", 6)
 				.attr("dy", ".71em")
 				.style("text-anchor", "end")
-				.text("Population");
+				.text(yAxisLabel);
 			
-			var state = svg.selectAll(".state")
+			var bars = svg.select(".chart-group")
+				.selectAll(".state")
 				.data(data)
-				.enter().append("g")
+				.enter()
+				.append("g")
 				.attr("class", "g")
-				.attr("transform", function(d) { return "translate(" + xScale(d.State) + ",0)"; });
+				.attr("transform", function(d) { return "translate(" + (xScale(d.State) + 10) + ", 0)"; });
 			
-			state.selectAll("rect")
+			bars.selectAll("rect")
 				.data(function(d) { return d.ages; })
 			  	.enter()
 			  	.append("rect")
@@ -1027,13 +1033,13 @@ d3.ez.columnChartStacked = function module() {
 			  	.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 			
 			legend.append("rect")
-				.attr("x", chartW - 18)
+				.attr("x", width - 18)
 			  	.attr("width", 18)
 			  	.attr("height", 18)
 			  	.style("fill", color);
 			
 			legend.append("text")
-				.attr("x", chartW - 24)
+				.attr("x", width - 24)
 				.attr("y", 9)
 				.attr("dy", ".35em")
 				.style("text-anchor", "end")
@@ -1058,6 +1064,18 @@ d3.ez.columnChartStacked = function module() {
 	exports.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
+		return this;
+	};
+
+	exports.yAxisLabel = function(_) {
+		if (!arguments.length) return margin;
+		yAxisLabel = _;
+		return this;
+	};
+
+	exports.colors = function(_) {
+		if (!arguments.length) return margin;
+		colors = _;
 		return this;
 	};
 	
