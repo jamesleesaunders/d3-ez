@@ -15,7 +15,7 @@
  */
 
 d3.ez = {
-    version: "1.0.1"
+    version: "1.0.2"
 };
 
 /* 
@@ -915,8 +915,8 @@ d3.ez.punchCard = function module() {
  * REUSABLE COMPONENTS - Boxes, Legends, Nodes etc. 
  */
 
-// Reusable Circle Node Label
-// --------------------------
+// Reusable Labeled Circle Node
+// ----------------------------
 // Use:
 // 	var myLabeledNode = d3.ez.labeledNode()
 // 		.color('#FF0000')
