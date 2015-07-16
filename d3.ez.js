@@ -15,7 +15,7 @@
  */
 
 d3.ez = {
-    version: "1.1.1"
+    version: "1.1.2"
 };
 
 /* 
@@ -990,7 +990,8 @@ d3.ez.columnChartStacked = function module() {
 				d.total = d.ages[d.ages.length - 1].y1;
 			});
 			
-			data.sort(function(a, b) { return b.total - a.total; });
+			// Arrange bars largest to smallest
+			// data.sort(function(a, b) { return b.total - a.total; });
 			
 			xScale.domain(data.map(function(d) { return d.State; }));
 			yScale.domain([0, d3.max(data, function(d) { return d.total; })]);
@@ -1009,7 +1010,7 @@ d3.ez.columnChartStacked = function module() {
 				.text(yAxisLabel);
 			
 			var bars = svg.select(".chart-group")
-				.selectAll(".state")
+				.selectAll(".bar")
 				.data(data)
 				.enter()
 				.append("g")
