@@ -25,12 +25,12 @@ d3.ez = {
 // Reusable Column Chart
 // --------------------- 
 // Use:
-//	var data = [34, 5, 12, 32, 43, 18, 2];
+// 	var data = [34, 5, 12, 32, 43, 18, 2];
 // 	var myChart = d3.ez.columnChart()
 // 		.width(400)
 // 		.height(300)
 // 		.color('#ff0000');
-//	d3.select("#chartholder")
+// 	d3.select("#chartholder")
 // 		.datum(data)
 // 		.call(myChart);
 //
@@ -738,8 +738,8 @@ d3.ez.donutChart = function module() {
 	return exports;
 };
 
-// Punchcard
-// --------------------------
+// Reusable Punchcard
+// ------------------
 // Use:
 // 	var myChart = d3.ez.punchCard()
 // 		.width(400)
@@ -914,8 +914,8 @@ d3.ez.punchCard = function module() {
 	return exports;
 };
 
-// Stacked Column Chart
-// --------------------
+// Reusable Stacked Column Chart
+// -----------------------------
 // Use:
 // 	var data = [
 // 		{'State':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
