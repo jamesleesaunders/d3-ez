@@ -496,7 +496,6 @@ d3.ez.punchCard = function module() {
 				var container = svg.append("g").classed("container", true);
 				container.append("g").classed("chart", true);
 				container.append("g").classed("x-axis axis", true);
-				container.append("g").classed("jim", true);
 			}
 
 			// Update the outer dimensions.
