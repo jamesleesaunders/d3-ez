@@ -144,6 +144,7 @@ d3.ez.columnChart = function module() {
 				.domain([0, d3.max(data, function(d, i) { return d;})])
 				.range([chartH, 0]);
 
+			// X & Y Axis
 			var xAxis = d3.svg.axis()
 				.scale(xScale)
 				.orient("bottom");
@@ -164,7 +165,7 @@ d3.ez.columnChart = function module() {
 				container.append("g").classed("y-axis axis", true);
 			}
 
-			// Update the outer dimensions.
+			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});
 			
 			// Update the inner dimensions.
@@ -202,7 +203,7 @@ d3.ez.columnChart = function module() {
 				.ease(ease)
 				.attr({
 					width: barW,
-					x: function(d, i) { return xScale(i) + gapSize / 2; },
+					x: function(d, i) { return xScale(i) + gapSize / 2; },					
 					y: function(d, i) { return yScale(d); },
 					height: function(d, i) { return chartH - yScale(d); }
 				});
@@ -254,7 +255,7 @@ d3.ez.columnChart = function module() {
 //
 d3.ez.columnChartStacked = function module() {
 	// SVG container (populated by my function below) 
-	var svg;	
+	var svg;
 	// Default Settings (some configurable via Setters below)
 	var width = 400;
 	var height = 300;
@@ -278,7 +279,8 @@ d3.ez.columnChartStacked = function module() {
 
 			var yScale = d3.scale.linear()
 				.rangeRound([chartH, 0]);
-
+			
+			// X & Y Axis
 			var xAxis = d3.svg.axis()
 				.scale(xScale)
 				.orient("bottom");
@@ -319,23 +321,23 @@ d3.ez.columnChartStacked = function module() {
 				container.append("g").classed("y-axis axis", true);			
 			}
 			
-			// Update the outer dimensions.
+			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});
 			
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			svg.select(".container")
 				.attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
 			
 			// Add X & Y axis to the chart
 			svg.select(".x-axis")
-				.attr({transform: "translate(15," + chartH + ")"})
+				.attr({transform: "translate(0," + chartH + ")"})
 				.call(xAxis);
 
 			svg.select(".y-axis")	
 				.call(yAxis)
 				.append("text")
 				.attr("transform", "rotate(-90)")
-				.attr("y", 6)
+				.attr("y",-35)
 				.attr("dy", ".71em")
 				.style("text-anchor", "end")
 				.text(yAxisLabel);
@@ -350,7 +352,7 @@ d3.ez.columnChartStacked = function module() {
 				.enter()
 				.append("g")
 				.attr("class", "g")
-				.attr("transform", function(d) { return "translate(" + (xScale(d.Name) + 10) + ", 0)"; });
+				.attr("transform", function(d) { return "translate(" + xScale(d.Name) + ", 0)"; });
 			
 			var bars = stack.selectAll("rect")
 				.data(function(d) { return d.fruit; });
@@ -362,13 +364,14 @@ d3.ez.columnChartStacked = function module() {
 					width: barW,
 					y: chartH,				
 					height: 0
-                            )
+				})
 				.attr("fill", function(d) { return color(d.name); })			
 				.on("mouseover", dispatch.customHover);
 
 			bars.transition()
 				.ease(ease)
-                            .attr({
+				.attr({
+					width: barW,					
 					y: function(d) { return yScale(d.y1); },				
 					height: function(d) { return yScale(d.y0) - yScale(d.y1); }
 				})
@@ -476,7 +479,7 @@ d3.ez.punchCard = function module() {
 				allValues = allValues.concat(d.values);
 			});
 			
-			// X & Y Scales
+			// X & Y Scales and Axis
 			var x = d3.scale
 				.linear()
 				.range([0, chartW]);
@@ -498,7 +501,6 @@ d3.ez.punchCard = function module() {
 			var colorScale = d3.scale.linear()
 				.domain(d3.extent(allValues, function(d){return d['value'];}))
 				.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
-
 			
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
@@ -511,10 +513,10 @@ d3.ez.punchCard = function module() {
 				container.append("g").classed("x-axis axis", true);
 			}
 
-			// Update the outer dimensions.
+			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});			
 			
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			svg.select(".container")
 				.attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
 			
@@ -656,16 +658,12 @@ d3.ez.timeSeriesChart = function module() {
 	var color  = 'steelblue';
 	var xValue = function(d) { return d[0]; };
 	var yValue = function(d) { return d[1]; };
-	var xScale = d3.time.scale();
-	var yScale = d3.scale.linear();
-	var area   = d3.svg.area().x(X).y1(Y);
-	var line   = d3.svg.line().x(X).y(Y);
 
 	function my(selection) {
 		selection.each(function(data) {
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
-			
+
 			// Convert data to standard representation greedily;
 			// this is needed for nondeterministic accessors.
 			data = data.map(function(d, i) {
@@ -673,11 +671,11 @@ d3.ez.timeSeriesChart = function module() {
 			});
 
 			// X & Y Scales
-			xScale
+			var xScale = d3.time.scale()	
 				.domain(d3.extent(data, function(d) { return d[0]; }))
 				.range([0, chartW]);
 			
-			yScale
+			var yScale = d3.scale.linear()
 				.domain([0, d3.max(data, function(d) { return d[1]; })])
 				.range([chartH, 0]);
 
@@ -690,9 +688,18 @@ d3.ez.timeSeriesChart = function module() {
 			var yAxis = d3.svg.axis()
 				.scale(yScale)
 				.orient("left")
-				.tickSize(6, 6);			
+				.tickSize(6, 6);
 			
-			// Trick to just append the svg skeleton once
+			// Setup the Line and Area
+			var area = d3.svg.area()
+				.x(function(d) { return xScale(d[0]); })
+				.y1(function(d) { return yScale(d[1]); });
+			
+			var line = d3.svg.line()
+				.x(function(d) { return xScale(d[0]); })
+				.y(function(d) { return yScale(d[1]); });	
+			
+			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
 					.append("svg")
@@ -705,35 +712,33 @@ d3.ez.timeSeriesChart = function module() {
 				container.append("g").classed("y-axis-group axis", true);
 			}
 
-			// Update the outer dimensions.
+			// Update the outer dimensions
 			svg.attr("width", width)
 				.attr("height", height);
 
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			var g = svg.select("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			// Update the area path.
+			// Add X & Y axis to the chart
+			g.select(".x-axis-group.axis")
+				.attr("transform", "translate(0," + yScale.range()[0] + ")")
+				.call(xAxis);
+
+			g.select(".y-axis-group.axis")
+				.call(yAxis);			
+			
+			// Update the area path
 			g.select(".chart-area-path")
 				.data([data])
 				.attr("d", area.y0(yScale.range()[0]))
 				.attr("fill", color);
 
-			// Update the line path.
+			// Update the line path
 			g.select(".chart-line-path")
 				.data([data])
 				.attr("d", line)
-				.attr("fill", "none");				
-
-			// Update the x-axis.
-			g.select(".x-axis-group.axis")
-				.attr("transform", "translate(0," + yScale.range()[0] + ")")
-				.call(xAxis);
-
-			// Update the x-axis.
-			g.select(".y-axis-group.axis")
-				.call(yAxis);			
-			
+				.attr("fill", "none");
 		});
 	}
 	
@@ -774,15 +779,8 @@ d3.ez.timeSeriesChart = function module() {
 		return this;
 	};	
 	
-	// The X-accessor for the path generator; xScale ∘ xValue.
-	function X(d) {
-		return xScale(d[0]);
-	}
 
-	// The Y-accessor for the path generator; yScale ∘ yValue.
-	function Y(d) {
-		return yScale(d[1]);
-	}	
+
 
 	return my;
 };
