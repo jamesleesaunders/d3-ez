@@ -351,8 +351,9 @@ d3.ez.columnChartStacked = function module() {
 				.data(data)
 				.enter()
 				.append("g")
-				.attr("class", "g")
-				.attr("transform", function(d) { return "translate(" + xScale(d.Name) + ", 0)"; });
+				.classed("stack", true)
+				.attr("transform", function(d) { return "translate(" + xScale(d.Name) + ", 0)"; })
+				.on("mouseover", dispatch.customHover);
 			
 			var bars = stack.selectAll("rect")
 				.data(function(d) { return d.fruit; });
@@ -365,8 +366,7 @@ d3.ez.columnChartStacked = function module() {
 					y: chartH,				
 					height: 0
 				})
-				.attr("fill", function(d) { return color(d.name); })			
-				.on("mouseover", dispatch.customHover);
+				.attr("fill", function(d) { return color(d.name); });
 
 			bars.transition()
 				.ease(ease)
@@ -779,9 +779,6 @@ d3.ez.timeSeriesChart = function module() {
 		return this;
 	};	
 	
-
-
-
 	return my;
 };
 
