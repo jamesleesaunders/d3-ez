@@ -360,11 +360,24 @@ d3.ez.columnChartStacked = function module() {
 				.classed("bar", true)
 				.attr({
 					width: barW,
+					y: chartH,				
+					height: 0
+                            )
+				.attr("fill", function(d) { return color(d.name); })			
+				.on("mouseover", dispatch.customHover);
+
+			bars.transition()
+				.ease(ease)
+                            .attr({
 					y: function(d) { return yScale(d.y1); },				
 					height: function(d) { return yScale(d.y0) - yScale(d.y1); }
 				})
-				.attr("fill", function(d) { return color(d.name); })			
-				.on("mouseover", dispatch.customHover);				
+				.attr("fill", function(d) { return color(d.name); });
+
+			bars.exit()
+				.transition()
+				.style({opacity: 0})
+				.remove();
 
 			// Add legend to chart
 			var legend = svg.selectAll(".legend")
