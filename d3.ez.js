@@ -15,7 +15,7 @@
  */
 
 d3.ez = {
-    version: "1.1.3"
+    version: "1.1.4"
 };
 
 /* 
@@ -192,9 +192,9 @@ d3.ez.columnChart = function module() {
 				.attr("fill", color)
 				.attr({
 					width: barW,
-					x: chartW,
-					y: function(d, i) { return yScale(d); },
-					height: function(d, i) { return chartH - yScale(d); }
+					x: function(d, i) { return xScale(i) + gapSize / 2; },
+					y: chartH,
+					height: 0
 				})
 				.on("mouseover", dispatch.customHover);
 						
