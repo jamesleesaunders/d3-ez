@@ -1,17 +1,9 @@
 /**
  * D3.EZ
- * Copyright (C) 2015  James Saunders
- * 
- * This program is free software: you can redistribute it and/or modify it under the 
- * terms of the GNU General Public License as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program.  
- * If not, see <http://www.gnu.org/licenses/>.
+ * @version 1.1.5
+ * @author James Saunders [james@saunders-family.net]
+ * @copyright Copyright (C) 2015  James Saunders
+ * @license GPLv3
  */
 
 d3.ez = {
@@ -19,27 +11,18 @@ d3.ez = {
 };
 
 /** 
- * REUSABLE CHARTS - Charts, Tables, Graphs etc. 
- */
-
-/** 
  * Simple Reusable HTML Table
- * --------------------------
- * Use:
- * 	var data = [
- * 		['Jim', 34, 12, 'Male', 'Eastbourne'], 
- * 		['Claire', 32, 15, 'Female', 'Portsmouth']
- * 		['Philip', 65, 11, 'Male', 'Macclesfield']
- * 	];
- * 	var myTable = d3.ez.htmlTable()
- * 		.classed('sortable');
- * 	d3.select("#tableholder")
- * 		.datum(data)
- * 		.call(myTable);
- *
- * Credits:
- * 	Inspiration from Mike Bostock
- * 	http://bost.ocks.org/mike/chart/
+ * @example
+ * var data = [
+ * 	['Jim', 34, 12, 'Male', 'Eastbourne'], 
+ * 	['Claire', 32, 15, 'Female', 'Portsmouth']
+ * 	['Philip', 65, 11, 'Male', 'Macclesfield']
+ * ];
+ * var myTable = d3.ez.htmlTable()
+ * 	.classed('sortable');
+ * d3.select("#tableholder")
+ * 	.datum(data)
+ * 	.call(myTable);
  */
 d3.ez.htmlTable = function module() {
 	// Table container (populated by my function below) 
@@ -104,20 +87,15 @@ d3.ez.htmlTable = function module() {
 
 /**
  * Reusable Column Chart
- * --------------------- 
- * Use:
- * 	var data = [34, 5, 12, 32, 43, 18, 2];
- * 	var myChart = d3.ez.columnChart()
- * 		.width(400)
- * 		.height(300)
- * 		.color('#ff0000');
- * 	d3.select("#chartholder")
- * 		.datum(data)
- * 		.call(myChart);
- *
- * Credits:
- * 	Chris Viau, Andrew Thornton, Ger Hobbelt, and Roland Dunn
- * 	http://backstopmedia.booktype.pro/developing-a-d3js-edge/reusable-bar-chart/
+ * @example
+ * var data = [34, 5, 12, 32, 43, 18, 2];
+ * var myChart = d3.ez.columnChart()
+ * 	.width(400)
+ * 	.height(300)
+ * 	.color('#ff0000');
+ * d3.select("#chartholder")
+ * 	.datum(data)
+ * 	.call(myChart);
  */
 d3.ez.columnChart = function module() {
 	// SVG container (populated by my function below) 
@@ -242,19 +220,18 @@ d3.ez.columnChart = function module() {
 
 /**
  * Reusable Stacked Column Chart
- * -----------------------------
- * Use:
- * 	var data = [
- * 		{'Name':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
- * 		{'Name':'Claire', 'Apples':'3', 'Oranges':'1', 'Pears':'2', 'Bananas':'2'},
- * 		{'Name':'Beth', 'Apples':'1', 'Oranges':'4', 'Pears':'2', 'Bananas':'3'}
- * 	];
- * 	var myChart = d3.ez.columnChartStacked()
- * 		.width(400)
- * 		.height(300);
- * 	d3.select("#chartholder")
- * 		.datum(data)
- * 		.call(myChart);
+ * @example
+ * var data = [
+ * 	{'Name':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
+ * 	{'Name':'Claire', 'Apples':'3', 'Oranges':'1', 'Pears':'2', 'Bananas':'2'},
+ * 	{'Name':'Beth', 'Apples':'1', 'Oranges':'4', 'Pears':'2', 'Bananas':'3'}
+ * ];
+ * var myChart = d3.ez.columnChartStacked()
+ * 	.width(400)
+ * 	.height(300);
+ * d3.select("#chartholder")
+ * 	.datum(data)
+ * 	.call(myChart);
  */
 d3.ez.columnChartStacked = function module() {
 	// SVG container (populated by my function below) 
@@ -446,17 +423,13 @@ d3.ez.columnChartStacked = function module() {
 
 /**
  * Reusable Punchcard
- * ------------------
- * Use:
- * 	var myChart = d3.ez.punchCard()
- * 		.width(400)
- * 		.height(300);
- * 	d3.select("#chartholder")
- * 		.datum(data)
- * 		.call(myChart);
- *
- * Credits:
- * 	Nattawat Nonsung https://gist.github.com/nnattawat/9720082
+ * @example
+ * var myChart = d3.ez.punchCard()
+ * 	.width(400)
+ * 	.height(300);
+ * d3.select("#chartholder")
+ * 	.datum(data)
+ * 	.call(myChart);
  */
 d3.ez.punchCard = function module() {
 	// SVG container (populated by my function below) 
@@ -631,27 +604,22 @@ d3.ez.punchCard = function module() {
 
 /** 
  * Reusable Time Series Chart
- * --------------------------
- * Use:
- * 	var data = [
- * 		{date: "Nov 2000", price: 1394.46},
- * 		{date: "Dec 2000", price: 1140.45},
- * 		{date: "Jan 2001", price: 1500.22},
- * 		{date: "Feb 2001", price: 1054.75}
- * 	];
- * 	var formatDate = d3.time.format("%b %Y");
- * 	var myChart = d3.ez.timeSeriesChart()
- * 		.x(function(d) { return formatDate.parse(d.date); })
- * 		.y(function(d) { return +d.price; })
- * 		.width(600)
- * 		.height(350);
- * 	d3.select("#chartholder")
- * 		.datum(data)
- * 		.call(myChart);
- *
- * Credits:
- * 	Mike Bostock
- * 	http://bost.ocks.org/mike/chart/
+ * @example
+ * var data = [
+ * 	{date: "Nov 2000", price: 1394.46},
+ * 	{date: "Dec 2000", price: 1140.45},
+ * 	{date: "Jan 2001", price: 1500.22},
+ * 	{date: "Feb 2001", price: 1054.75}
+ * ];
+ * var formatDate = d3.time.format("%b %Y");
+ * var myChart = d3.ez.timeSeriesChart()
+ * 	.x(function(d) { return formatDate.parse(d.date); })
+ * 	.y(function(d) { return +d.price; })
+ * 	.width(600)
+ * 	.height(350);
+ * d3.select("#chartholder")
+ * 	.datum(data)
+ * 	.call(myChart);
  */
 d3.ez.timeSeriesChart = function module() {
 	// SVG container (populated by my function below) 
@@ -789,21 +757,16 @@ d3.ez.timeSeriesChart = function module() {
 
 /** 
  * Reusable Donut Chart
- * --------------------
- * Use:
- * 	var data = [['Apples', 12], ['Pears', 20], ['Bananas', 32], ['Tangerines', 18]];
- * 	var myChart = d3.ez.donutChart()
- * 		.width(400)
- * 		.height(300)
- * 		.radius(200)
- * 		.innerRadius(50);
- * 	d3.select("#chartholder")
- * 		.datum(data)
- * 		.call(myChart);
- *
- * Credits:
- * 	Jeffrey Pierce
- * 	https://github.com/jeffreypierce/d3-donut-chart/blob/master/d3-donut-chart.js
+ * @example
+ * var data = [['Apples', 12], ['Pears', 20], ['Bananas', 32], ['Tangerines', 18]];
+ * var myChart = d3.ez.donutChart()
+ * 	.width(400)
+ * 	.height(300)
+ * 	.radius(200)
+ * 	.innerRadius(50);
+ * d3.select("#chartholder")
+ * 	.datum(data)
+ * 	.call(myChart);
  */
 d3.ez.donutChart = function module() {
 	// SVG container (populated by my function below) 
@@ -1127,22 +1090,14 @@ d3.ez.donutChart = function module() {
 
 
 /** 
- * REUSABLE COMPONENTS - Boxes, Legends, Nodes etc. 
- */
-
-/** 
  * Reusable Labeled Circle Node
- * ----------------------------
- * Use:
- * 	var myLabeledNode = d3.ez.labeledNode()
- * 		.color('#FF0000')
- * 		.opacity(0.5)
- * 		.stroke(1)
- * 		.label('Node Label')
- * 		.radius(5);
- *
- * Credits:
- * 	Peter Cook http://animateddata.co.uk/
+ * @example
+ * var myLabeledNode = d3.ez.labeledNode()
+ * 	.color('#FF0000')
+ * 	.opacity(0.5)
+ * 	.stroke(1)
+ * 	.label('Node Label')
+ * 	.radius(5);
  */
 d3.ez.labeledNode = function module() {
 	// Configurable Variables
