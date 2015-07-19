@@ -25,6 +25,9 @@ d3.ez = {
  * d3.select("#tableholder")
  * 	.datum(data)
  * 	.call(myTable);
+ * 
+ * Credits:
+ * 	Inspiration from Mike Bostock (http://bost.ocks.org/mike/chart/)
  */
 d3.ez.htmlTable = function module() {
 	// Table container (populated by 'my' function below) 
@@ -100,6 +103,10 @@ d3.ez.htmlTable = function module() {
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
+ * 
+ * Credits:
+ * 	Chris Viau, Andrew Thornton, Ger Hobbelt, and Roland Dunn
+ * 	http://backstopmedia.booktype.pro/developing-a-d3js-edge/reusable-bar-chart/
  */
 d3.ez.columnChart = function module() {
 	// SVG container (populated by 'my' function below) 
@@ -640,6 +647,9 @@ d3.ez.columnChartGrouped = function module() {
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
+ * 
+ * Credits:
+ * 	Nattawat Nonsung (https://gist.github.com/nnattawat/9720082)
  */
 d3.ez.punchCard = function module() {
 	// SVG container (populated by 'my' function below) 
@@ -832,6 +842,9 @@ d3.ez.punchCard = function module() {
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
+ * 
+ * Credits:
+ * 	Mike Bostock (http://bost.ocks.org/mike/chart/)
  */
 d3.ez.timeSeriesChart = function module() {
 	// SVG container (populated by 'my' function below) 
@@ -981,6 +994,10 @@ d3.ez.timeSeriesChart = function module() {
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
+ * 
+ * Credits:
+ * 	Jeffrey Pierce
+ * 	https://github.com/jeffreypierce/d3-donut-chart/blob/master/d3-donut-chart.js
  */
 d3.ez.donutChart = function module() {
 	// SVG container (populated by 'my' function below) 
