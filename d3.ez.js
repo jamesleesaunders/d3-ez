@@ -1,5 +1,6 @@
 /**
  * D3.EZ
+ * 
  * @version 1.1.5
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
@@ -11,7 +12,8 @@ d3.ez = {
 };
 
 /** 
- * Simple Reusable HTML Table
+ * Simple HTML Table
+ * 
  * @example
  * var data = [
  * 	['Jim', 34, 12, 'Male', 'Eastbourne'], 
@@ -86,7 +88,8 @@ d3.ez.htmlTable = function module() {
 };
 
 /**
- * Reusable Column Chart
+ * Column Chart
+ * 
  * @example
  * var data = [34, 5, 12, 32, 43, 18, 2];
  * var myChart = d3.ez.columnChart()
@@ -219,7 +222,8 @@ d3.ez.columnChart = function module() {
 };
 
 /**
- * Reusable Stacked Column Chart
+ * Stacked Column Chart
+ * 
  * @example
  * var data = [
  * 	{'Name':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
@@ -422,7 +426,8 @@ d3.ez.columnChartStacked = function module() {
 };
 
 /**
- * Reusable Punchcard
+ * Punchcard
+ * 
  * @example
  * var myChart = d3.ez.punchCard()
  * 	.width(400)
@@ -603,7 +608,8 @@ d3.ez.punchCard = function module() {
 };
 
 /** 
- * Reusable Time Series Chart
+ * Time Series Chart
+ * 
  * @example
  * var data = [
  * 	{date: "Nov 2000", price: 1394.46},
@@ -756,7 +762,8 @@ d3.ez.timeSeriesChart = function module() {
 };
 
 /** 
- * Reusable Donut Chart
+ * Donut Chart
+ * 
  * @example
  * var data = [['Apples', 12], ['Pears', 20], ['Bananas', 32], ['Tangerines', 18]];
  * var myChart = d3.ez.donutChart()
@@ -1090,9 +1097,10 @@ d3.ez.donutChart = function module() {
 
 
 /** 
- * Reusable Labeled Circle Node
+ * Labeled Node
+ * 
  * @example
- * var myLabeledNode = d3.ez.labeledNode()
+ * var myNode = d3.ez.labeledNode()
  * 	.color('#FF0000')
  * 	.opacity(0.5)
  * 	.stroke(1)
