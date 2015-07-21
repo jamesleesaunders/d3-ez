@@ -8,7 +8,7 @@
  */
 
 d3.ez = {
-    version: "1.2.0"
+    version: "1.2.1"
 };
 
 /** 
@@ -89,7 +89,7 @@ d3.ez.htmlTable = function module() {
 };
 
 /**
- * Column Chart
+ * Column Chart (Discrete Bar Chart)
  * 
  * @example
  * var data = [34, 5, 12, 32, 43, 18, 2];
@@ -225,7 +225,7 @@ d3.ez.columnChart = function module() {
 };
 
 /**
- * Stacked Column Chart
+ * Stacked Column Chart (Stacked Bar Chart)
  * 
  * @example
  * var data = [
@@ -430,7 +430,7 @@ d3.ez.columnChartStacked = function module() {
 };
 
 /**
- * Grouped Column Chart
+ * Grouped Column Chart (Clustered Bar Chart)
  * 
  * @example
  * var data = [
