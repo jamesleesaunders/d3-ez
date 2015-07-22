@@ -416,7 +416,7 @@ d3.ez.barChartGrouped = function module() {
 					.append("rect")
 					.classed("bar", true)
 					.attr({
-						width: barW,
+						width: x1.rangeBand(),
 						x: function(d) { return x1(d.name); },
 						y: chartH,	
 						height: 0
