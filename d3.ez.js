@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.2.0
+ * @version 1.3.0
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.2.1"
+    version: "1.3.0"
 };
 
 /** 
@@ -89,11 +89,11 @@ d3.ez.htmlTable = function module() {
 };
 
 /**
- * Column Chart (Discrete Bar Chart)
+ * Discrete Bar Chart
  * 
  * @example
  * var data = [34, 5, 12, 32, 43, 18, 2];
- * var myChart = d3.ez.columnChart()
+ * var myChart = d3.ez.barChartDiscrete()
  * 	.width(400)
  * 	.height(300)
  * 	.color('#ff0000');
@@ -101,7 +101,7 @@ d3.ez.htmlTable = function module() {
  * 	.datum(data)
  * 	.call(myChart);
  */
-d3.ez.columnChart = function module() {
+d3.ez.barChartDiscrete = function module() {
 	// SVG container (populated by 'my' function below) 
 	var svg;
 	
@@ -141,8 +141,7 @@ d3.ez.columnChart = function module() {
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg")
-					.classed("chart", true);
+					.append("svg");
 
 				var container = svg.append("g").classed("container", true);
 				container.append("g").classed("chart", true);
@@ -225,7 +224,7 @@ d3.ez.columnChart = function module() {
 };
 
 /**
- * Stacked Column Chart (Stacked Bar Chart)
+ * Grouped Bar Chart
  * 
  * @example
  * var data = [
@@ -233,14 +232,15 @@ d3.ez.columnChart = function module() {
  * 	{'Name':'Claire', 'Apples':'3', 'Oranges':'1', 'Pears':'2', 'Bananas':'2'},
  * 	{'Name':'Beth', 'Apples':'1', 'Oranges':'4', 'Pears':'2', 'Bananas':'3'}
  * ];
- * var myChart = d3.ez.columnChartStacked()
+ * var myChart = d3.ez.barChartGrouped()
  * 	.width(400)
- * 	.height(300);
+ * 	.height(300)
+ * 	.groupType('clustered');
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
  */
-d3.ez.columnChartStacked = function module() {
+d3.ez.barChartGrouped = function module() {
 	// SVG container (populated by 'my' function below) 
 	var svg;
 	
@@ -252,6 +252,7 @@ d3.ez.columnChartStacked = function module() {
 	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
 	var gap               = 0;
 	var yAxisLabel        = null;
+	var groupType         = 'clustered';
 	
 	var dispatch   = d3.dispatch("customHover");	
 	
@@ -260,237 +261,54 @@ d3.ez.columnChartStacked = function module() {
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
 			
-			// Still to work out?
+			// Cut the data in different ways....
+			
+			// Group and Category Names
 			var groupNames = d3.keys(data[0]).filter(function(key) { return key !== "Name"; });
+			var categoryNames = data.map(function(d) { return d["Name"]; });
 			
+			// Group and Category Totals and Maximums
+			var categoryTotals = [];
+			var maxValue = 0;
 			data.forEach(function(d) {
-				var y0 = 0;
-				d.fruit = groupNames.map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-				d.total = d.fruit[d.fruit.length - 1].y1;
-			});			
+				groupNames.forEach(function(n) {
+					categoryTotals[n] = (typeof(categoryTotals[n]) === 'undefined' ? 0 : categoryTotals[n]); 
+					categoryTotals[n] = categoryTotals[n] + parseFloat(d[n]);
+					maxValue = (+d[n] > maxValue ? +d[n] : maxValue);
+				});
+			});
+			var groupTotals = [];
+			categoryNames.forEach(function(m, i) {
+				data.forEach(function(d) {
+					groupTotals[m] = d3.sum(groupNames.map(function(n) { 
+						return data[i][n]; 
+					}));
+				});
+			});
+			var maxGroupTotal = d3.max(d3.values(groupTotals));
 			
-			// X & Y Axis Scales
+			// Construct a new Dataset for use in building the graph
+			var data2 = [];
+			data.forEach(function(d, i) {
+				var y0 = 0;
+				data2[i] = groupNames.map(function(name) { return {name: name, value: +d[name], y0: y0, y1: y0 += +d[name]}; });
+			});
+			
+			// X & Y Scales and Axis
 			var xScale = d3.scale.ordinal()
 				.rangeRoundBands([0, chartW], .1)
-				.domain(data.map(function(d) { return d.Name; }));
-
+				.domain(categoryNames);
+						
 			var yScale = d3.scale.linear()
-				.rangeRound([chartH, 0])
-				.domain([0, d3.max(data, function(d) { return d.total; })]);
+	    		.range([chartH, 0])
+	    		.domain([0, (groupType == 'stacked' ? maxGroupTotal : maxValue)]);
 			
-			// X & Y Axis
 			var xAxis = d3.svg.axis()
 				.scale(xScale)
 				.orient("bottom");
-
+			
 			var yAxis = d3.svg.axis()
 				.scale(yScale)
-				.orient("left")
-				.tickFormat(d3.format(".2s"));
-			
-			// Colour Scale
-			var colorScale = d3.scale.ordinal()
-				.range(colors)
-				.domain(groupNames);
-			
-			// Arrange bars largest to smallest
-			// data.sort(function(a, b) { return b.total - a.total; });
-
-			// Create SVG element (if it does not exist already)			
-			if (!svg) {
-				svg = d3.select(this)
-					.append("svg")
-					.classed("chart", true);
-				
-				var container = svg.append("g").classed("container", true);
-				container.append("g").classed("chart", true);
-				container.append("g").classed("x-axis axis", true);
-				container.append("g").classed("y-axis axis", true);			
-			}
-			
-			// Update the outer dimensions
-			svg.transition().attr({width: width, height: height});
-			
-			// Update the inner dimensions
-			svg.select(".container")
-				.attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
-			
-			// Add X & Y axis to the chart
-			svg.select(".x-axis")
-				.attr({transform: "translate(0," + chartH + ")"})
-				.call(xAxis);
-
-			svg.select(".y-axis")	
-				.call(yAxis)
-				.append("text")
-				.attr("transform", "rotate(-90)")
-				.attr("y",-35)
-				.attr("dy", ".71em")
-				.style("text-anchor", "end")
-				.text(yAxisLabel);
-
-			var gapSize = xScale.rangeBand() / 100 * gap;
-			var barW = xScale.rangeBand() - gapSize;	
-			
-			// Add bars to Stack
-			var stack = svg.select(".chart")
-				.selectAll(".bar")
-				.data(data)
-				.enter()
-				.append("g")
-				.classed("stack", true)
-				.attr("transform", function(d) { return "translate(" + xScale(d.Name) + ", 0)"; })
-				.on("mouseover", dispatch.customHover);
-			
-			var bars = stack.selectAll("rect")
-				.data(function(d) { return d.fruit; });
-			
-			bars.enter()
-				.append("rect")
-				.classed("bar", true)
-				.attr({
-					width: barW,
-					y: chartH,				
-					height: 0
-				})
-				.attr("fill", function(d) { return colorScale(d.name); });
-
-			bars.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)				
-				.attr({
-					width: barW,					
-					y: function(d) { return yScale(d.y1); },				
-					height: function(d) { return yScale(d.y0) - yScale(d.y1); }
-				})
-				.attr("fill", function(d) { return colorScale(d.name); });
-
-			bars.exit()
-				.transition()
-				.style({opacity: 0})
-				.remove();
-
-			// Add legend to chart
-			var legend = svg.selectAll(".legend")
-				.data(groupNames.slice().reverse())
-			  	.enter()
-			  	.append("g")
-				.attr("class", "legend")
-			  	.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-			
-			legend.append("rect")
-				.attr("x", width - 18)
-			  	.attr("width", 18)
-			  	.attr("height", 18)
-			  	.style("fill", colorScale);
-			
-			legend.append("text")
-				.attr("x", width - 24)
-				.attr("y", 9)
-				.attr("dy", ".35em")
-				.style("text-anchor", "end")
-				.text(function(d) { return d; });
-			
-		});
-	}
-	
-	// Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
-
-	my.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return this;
-	};
-	
-	my.margin = function(_) {
-		if (!arguments.length) return margin;
-		margin = _;
-		return this;
-	};
-
-	my.yAxisLabel = function(_) {
-		if (!arguments.length) return margin;
-		yAxisLabel = _;
-		return this;
-	};
-
-	my.colors = function(_) {
-		if (!arguments.length) return margin;
-		colors = _;
-		return this;
-	};
-	
-	d3.rebind(my, dispatch, "on");	
-	return my;	
-};
-
-/**
- * Grouped Column Chart (Clustered Bar Chart)
- * 
- * @example
- * var data = [
- * 	{'Name':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
- * 	{'Name':'Claire', 'Apples':'3', 'Oranges':'1', 'Pears':'2', 'Bananas':'2'},
- * 	{'Name':'Beth', 'Apples':'1', 'Oranges':'4', 'Pears':'2', 'Bananas':'3'}
- * ];
- * var myChart = d3.ez.columnChartGrouped()
- * 	.width(400)
- * 	.height(300);
- * d3.select("#chartholder")
- * 	.datum(data)
- * 	.call(myChart);
- */
-d3.ez.columnChartGrouped = function module() {
-	// SVG container (populated by 'my' function below) 
-	var svg;
-	
-	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 70, bottom: 20, left: 40};
-	var transition        = {ease: "elastic", duration: 500};	
-	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
-	var yAxisLabel        = null;
-	
-	var dispatch   = d3.dispatch("customHover");	
-	
-	function my(selection) {
-		selection.each(function(data) {
-			var chartW = width - margin.left - margin.right;
-			var chartH = height - margin.top - margin.bottom;
-			
-			// Still to work out?
-			var groupNames = d3.keys(data[0]).filter(function(key) { return key !== "Name"; });
-			
-			data.forEach(function(d) {
-				d.ages = groupNames.map(function(name) { return {name: name, value: +d[name]}; });
-			});			
-			
-			// X & Y Scales
-			var x0 = d3.scale.ordinal()
-		    	.rangeRoundBands([0, chartW], .1)
-		    	.domain(data.map(function(d) { return d.Name; }));
-
-			var x1 = d3.scale.ordinal()
-				.rangeRoundBands([0, x0.rangeBand()])
-				.domain(groupNames);
-
-			var y = d3.scale.linear()
-		    	.range([chartH, 0])
-				.domain([0, d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);
-			
-			// X & Y Axis
-			var xAxis = d3.svg.axis()
-				.scale(x0)
-				.orient("bottom");
-
-			var yAxis = d3.svg.axis()
-				.scale(y)
 				.orient("left");
 			
 			// Colour Scale
@@ -501,13 +319,25 @@ d3.ez.columnChartGrouped = function module() {
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg")
+					.append("svg");
+				
+				var container = svg.append("g")
+					.classed("container", true);
+				
+				container.append("g")
 					.classed("chart", true);
 				
-				var container = svg.append("g").classed("container", true);
-				container.append("g").classed("chart", true);
-				container.append("g").classed("x-axis axis", true);
-				container.append("g").classed("y-axis axis", true);			
+				container.append("g")
+					.classed("x-axis axis", true);
+				
+				container.append("g")
+					.classed("y-axis axis", true)
+					.append("text")
+					.attr("transform", "rotate(-90)")
+					.attr("y", -35)
+					.attr("dy", ".71em")
+					.style("text-anchor", "end")
+					.text(yAxisLabel);
 			}			
 
 			// Update the outer dimensions
@@ -523,53 +353,89 @@ d3.ez.columnChartGrouped = function module() {
 				.call(xAxis);
 
 			svg.select(".y-axis")	
-				.call(yAxis)
-				.append("text")
-				.attr("transform", "rotate(-90)")
-				.attr("y", -35)
-				.attr("dy", ".71em")
-				.style("text-anchor", "end")
-				.text(yAxisLabel);
+				.call(yAxis);
 			
-			// Add bars to Group		
-			var group = svg.select(".chart")			
-				.selectAll(".group")
-				.data(data)
-				.enter()
+			// Create Bar Group	
+			var barGroup = svg.select(".chart")		
+				.selectAll(".barGroup")
+				.data(data2);
+			
+			barGroup.enter()
 				.append("g")
-				.attr("class", "group")
-				.attr("transform", function(d) { return "translate(" + x0(d.Name) + ",0)"; })
+				.attr("class", "barGroup")
+				.attr("transform", function(d, i) { return "translate(" + xScale(categoryNames[i]) + ", 0)"; })
 				.on("mouseover", dispatch.customHover);
 
-			var bars = group.selectAll("rect")
-				.data(function(d) { return d.ages; });
+			// Add Bars to Group
+			var bars = barGroup.selectAll(".bar")
+				.data(function(d) { return d });
 			
-			bars.enter()
-				.append("rect")
-				.classed("bar", true)
-				.attr({
-					width: x1.rangeBand(),
-					x: function(d) { return x1(d.name); },
-					y: chartH,	
-					height: 0
-				})				
-				.attr("fill", function(d) { return colorScale(d.name); });
+			if(groupType == 'stacked') {
+				
+				var gapSize = xScale.rangeBand() / 100 * gap;
+				var barW = xScale.rangeBand() - gapSize;
+				
+				bars.enter()
+					.append("rect")
+					.classed("bar", true)
+					.attr({
+						width: barW,
+						x: 0,
+						y: chartH,		
+						height: 0
+					})
+					.attr("fill", function(d) { return colorScale(d.name); });
 
-			bars.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)				
-				.attr({
-					width: x1.rangeBand(),
-					x: function(d) { return x1(d.name); },
-					y: function(d) { return y(d.value); },	
-					height: function(d) { return chartH - y(d.value); }
-				})
-				.attr("fill", function(d) { return colorScale(d.name); });
+				bars.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)				
+					.attr({
+						width: barW,
+						x: 0,
+						y: function(d) { return yScale(d.y1); },				
+						height: function(d) { return yScale(d.y0) - yScale(d.y1); }
+					})
+					.attr("fill", function(d) { return colorScale(d.name); });
 
-			bars.exit()
-				.transition()
-				.style({opacity: 0})
-				.remove();
+				bars.exit()
+					.transition()
+					.style({opacity: 0})
+					.remove();
+				
+			} else if(groupType == 'clustered') {
+				
+				var x1 = d3.scale.ordinal()
+					.rangeRoundBands([0, xScale.rangeBand()])
+					.domain(groupNames);
+				
+				bars.enter()
+					.append("rect")
+					.classed("bar", true)
+					.attr({
+						width: barW,
+						x: function(d) { return x1(d.name); },
+						y: chartH,	
+						height: 0
+					})				
+					.attr("fill", function(d) {
+					return colorScale(d.name); });
+
+				bars.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)				
+					.attr({
+						width: x1.rangeBand(),
+						x: function(d) { return x1(d.name); },
+						y: function(d) { return yScale(d.value); },	
+						height: function(d) { return chartH - yScale(d.value); }
+					})
+					.attr("fill", function(d) { return colorScale(d.name); });
+
+				bars.exit()
+					.transition()
+					.style({opacity: 0})
+					.remove();
+			}
 			
 			// Add legend to chart
 			var legend = svg.selectAll(".legend")
@@ -615,13 +481,19 @@ d3.ez.columnChartGrouped = function module() {
 	};
 
 	my.yAxisLabel = function(_) {
-		if (!arguments.length) return margin;
+		if (!arguments.length) return yAxisLabel;
 		yAxisLabel = _;
 		return this;
 	};
+	
+	my.groupType = function(_) {
+		if (!arguments.length) return groupType;
+		groupType = _;
+		return this;
+	};	
 
 	my.colors = function(_) {
-		if (!arguments.length) return margin;
+		if (!arguments.length) return colors;
 		colors = _;
 		return this;
 	};
@@ -693,8 +565,7 @@ d3.ez.punchCard = function module() {
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg")
-					.classed("chart", true);
+					.append("svg");
 
 				var container = svg.append("g").classed("container", true);
 				container.append("g").classed("chart", true);
@@ -888,8 +759,7 @@ d3.ez.timeSeriesChart = function module() {
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg")
-					.classed("chart", true);
+					.append("svg");
 
 				var container = svg.append("g").classed("container-group", true);				
 				container.append("path").classed("chart-area-path", true);
