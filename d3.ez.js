@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.0
+ * @version 1.3.1
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.0"
+    version: "1.3.1"
 };
 
 /** 
@@ -222,6 +222,12 @@ d3.ez.barChartDiscrete = function module() {
 		color = _;
 		return this;
 	};
+	
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};		
 			
 	d3.rebind(my, dispatch, "on");
 	return my;
@@ -494,7 +500,13 @@ d3.ez.barChartGrouped = function module() {
 		if (!arguments.length) return groupType;
 		groupType = _;
 		return this;
-	};	
+	};
+	
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};		
 
 	my.colors = function(_) {
 		if (!arguments.length) return colors;
