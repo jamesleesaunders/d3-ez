@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.0
+ * @version 1.3.1
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.0"
+    version: "1.3.1"
 };
 
 /** 
@@ -94,10 +94,11 @@ d3.ez.htmlTable = function module() {
  * Discrete Bar Chart
  * 
  * @example
- * var data = [34, 5, 12, 32, 43, 18, 2];
- * var myChart = d3.ez.barChartDiscrete()
+ * var data = {Vauxhall: 34, Volkswagen: 54, Pergeuot: 12, Ford: 39, Skoda: 43};
+ * var myChart = d3.ez.discreteBarChart()
  * 	.width(400)
  * 	.height(300)
+ * 	.transition({ease: "bounce", duration: 1500})
  * 	.color('#ff0000');
  * d3.select("#chartholder")
  * 	.datum(data)
@@ -105,7 +106,7 @@ d3.ez.htmlTable = function module() {
  * 
  * @author Credit: Chris Viau http://backstopmedia.booktype.pro/developing-a-d3js-edge/
  */
-d3.ez.barChartDiscrete = function module() {
+d3.ez.discreteBarChart = function module() {
 	// SVG container (populated by 'my' function below) 
 	var svg;
 	
@@ -123,14 +124,17 @@ d3.ez.barChartDiscrete = function module() {
 		selection.each(function(data) {
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
+			
+			var values = d3.values(data);
+			var groupNames = d3.keys(data);
 
 			// X & Y Scales
 			var xScale = d3.scale.ordinal()
-				.domain(data.map(function(d, i) { return i;}))
+				.domain(groupNames)
 				.rangeRoundBands([0, chartW], 0.1);
 
 			var yScale = d3.scale.linear()
-				.domain([0, d3.max(data, function(d, i) { return d;})])
+				.domain([0, d3.max(values, function(d, i) { return d;})])
 				.range([chartH, 0]);
 
 			// X & Y Axis
@@ -174,7 +178,7 @@ d3.ez.barChartDiscrete = function module() {
 
 			var bars = svg.select(".chart")
 				.selectAll(".bar")
-				.data(data);
+				.data(values);
 						
 			bars.enter().append("rect")
 				.classed("bar", true)
@@ -192,7 +196,7 @@ d3.ez.barChartDiscrete = function module() {
 				.duration(transition.duration)				
 				.attr({
 					width: barW,
-					x: function(d, i) { return xScale(i) + gapSize / 2; },					
+					x: function(d, i) { return xScale(groupNames[i]) + gapSize / 2; },				
 					y: function(d, i) { return yScale(d); },
 					height: function(d, i) { return chartH - yScale(d); }
 				});
@@ -222,6 +226,12 @@ d3.ez.barChartDiscrete = function module() {
 		color = _;
 		return this;
 	};
+	
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};		
 			
 	d3.rebind(my, dispatch, "on");
 	return my;
@@ -231,12 +241,13 @@ d3.ez.barChartDiscrete = function module() {
  * Grouped Bar Chart
  * 
  * @example
- * var data = [
- * 	{'Name':'Jim', 'Apples':'4', 'Oranges':'3', 'Pears':'1', 'Bananas':'0'},
- * 	{'Name':'Claire', 'Apples':'3', 'Oranges':'1', 'Pears':'2', 'Bananas':'2'},
- * 	{'Name':'Beth', 'Apples':'1', 'Oranges':'4', 'Pears':'2', 'Bananas':'3'}
- * ];
- * var myChart = d3.ez.barChartGrouped()
+ * var data = {
+ * 	"Jim": {"Apples": 4, "Oranges": 3, "Pears": 1, "Bananas": 0},
+ *	"Claire": {"Apples": 3, "Oranges": 1, "Pears": 2, "Bananas": 2},
+ *	"Beth": {"Apples": 5, "Oranges": 2, "Pears": 4, "Bananas": 1},
+ *	"Grace": {"Apples": 1, "Oranges": 4, "Pears": 2, "Bananas": 3}
+ * };
+ * var myChart = d3.ez.groupedBarChart()
  * 	.width(400)
  * 	.height(300)
  * 	.groupType('clustered');
@@ -244,7 +255,7 @@ d3.ez.barChartDiscrete = function module() {
  * 	.datum(data)
  * 	.call(myChart);
  */
-d3.ez.barChartGrouped = function module() {
+d3.ez.groupedBarChart = function module() {
 	// SVG container (populated by 'my' function below) 
 	var svg;
 	
@@ -266,42 +277,32 @@ d3.ez.barChartGrouped = function module() {
 			var chartH = height - margin.top - margin.bottom;
 			
 			// Cut the data in different ways....
-			
 			// Group and Category Names
-			var groupNames = d3.keys(data[0]).filter(function(key) { return key !== "Name"; });
-			var categoryNames = data.map(function(d) { return d["Name"]; });
+			var groupNames = d3.keys(data);
+			var categoryNames = d3.keys(data[groupNames[0]]);
 			
 			// Group and Category Totals and Maximums
 			var categoryTotals = [];
 			var maxValue = 0;
-			data.forEach(function(d) {
-				groupNames.forEach(function(n) {
-					categoryTotals[n] = (typeof(categoryTotals[n]) === 'undefined' ? 0 : categoryTotals[n]); 
-					categoryTotals[n] = categoryTotals[n] + parseFloat(d[n]);
-					maxValue = (+d[n] > maxValue ? +d[n] : maxValue);
+			d3.map(data).values().forEach(function(d, i) {
+				d3.map(d).values().forEach(function(d, i) {
+					categoryTotals[categoryNames[i]] = (typeof(categoryTotals[categoryNames[i]]) === 'undefined' ? 0 : categoryTotals[categoryNames[i]]);
+					categoryTotals[categoryNames[i]] += d;
+					maxValue = (d > maxValue ? d : maxValue);
 				});
 			});
+			
+			// Group Totals
 			var groupTotals = [];
-			categoryNames.forEach(function(m, i) {
-				data.forEach(function(d) {
-					groupTotals[m] = d3.sum(groupNames.map(function(n) { 
-						return data[i][n]; 
-					}));
-				});
+			d3.map(data).values().forEach(function(d, i) {
+				groupTotals[groupNames[i]] = d3.sum(d3.values(d));
 			});
 			var maxGroupTotal = d3.max(d3.values(groupTotals));
-			
-			// Construct a new Dataset for use in building the graph
-			var data2 = [];
-			data.forEach(function(d, i) {
-				var y0 = 0;
-				data2[i] = groupNames.map(function(name) { return {name: name, value: +d[name], y0: y0, y1: y0 += +d[name]}; });
-			});
-			
+	
 			// X & Y Scales and Axis
 			var xScale = d3.scale.ordinal()
 				.rangeRoundBands([0, chartW], .1)
-				.domain(categoryNames);
+				.domain(groupNames);
 						
 			var yScale = d3.scale.linear()
 	    		.range([chartH, 0])
@@ -318,7 +319,7 @@ d3.ez.barChartGrouped = function module() {
 			// Colour Scale
 			var colorScale = d3.scale.ordinal()
 				.range(colors)
-				.domain(groupNames);
+				.domain(categoryNames);
 			
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
@@ -362,17 +363,25 @@ d3.ez.barChartGrouped = function module() {
 			// Create Bar Group	
 			var barGroup = svg.select(".chart")		
 				.selectAll(".barGroup")
-				.data(data2);
+				.data(d3.map(data).values());
 			
 			barGroup.enter()
 				.append("g")
 				.attr("class", "barGroup")
-				.attr("transform", function(d, i) { return "translate(" + xScale(categoryNames[i]) + ", 0)"; })
+				.attr("transform", function(d, i) { return "translate(" + xScale(groupNames[i]) + ", 0)"; })
 				.on("mouseover", dispatch.customHover);
 
 			// Add Bars to Group
 			var bars = barGroup.selectAll(".bar")
-				.data(function(d) { return d });
+				.data(function(d) { 
+					series = [];
+					var y0 = 0;
+					d3.map(d).values().forEach(function(d, i) { 
+						series[i] = {name: categoryNames[i], value: d, y0: y0, y1: y0 + d};
+						y0 += d;
+					});
+					return series;
+				});
 			
 			if(groupType == 'stacked') {
 				
@@ -396,7 +405,7 @@ d3.ez.barChartGrouped = function module() {
 					.attr({
 						width: barW,
 						x: 0,
-						y: function(d) { return yScale(d.y1); },				
+						y: function(d) {  return yScale(d.y1); },				
 						height: function(d) { return yScale(d.y0) - yScale(d.y1); }
 					})
 					.attr("fill", function(d) { return colorScale(d.name); });
@@ -410,7 +419,7 @@ d3.ez.barChartGrouped = function module() {
 				
 				var x1 = d3.scale.ordinal()
 					.rangeRoundBands([0, xScale.rangeBand()])
-					.domain(groupNames);
+					.domain(categoryNames);
 				
 				bars.enter()
 					.append("rect")
@@ -443,7 +452,7 @@ d3.ez.barChartGrouped = function module() {
 			
 			// Add legend to chart
 			var legend = svg.selectAll(".legend")
-				.data(groupNames.slice().reverse())
+				.data(categoryNames.slice().reverse())
 				.enter()
 				.append("g")
 				.attr("class", "legend")
@@ -494,7 +503,13 @@ d3.ez.barChartGrouped = function module() {
 		if (!arguments.length) return groupType;
 		groupType = _;
 		return this;
-	};	
+	};
+	
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};		
 
 	my.colors = function(_) {
 		if (!arguments.length) return colors;
