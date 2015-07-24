@@ -94,7 +94,7 @@ d3.ez.htmlTable = function module() {
  * Discrete Bar Chart
  * 
  * @example
- * var data = {Vauxhall: 34, Volkswagen: 54, Pergeuot: 12, Ford: 39, Skoda: 43};
+ * var data = {"Vauxhall": 34, "Volkswagen": 54, "Pergeuot": 12, "Ford": 39, "Skoda": 43};
  * var myChart = d3.ez.discreteBarChart()
  * 	.width(400)
  * 	.height(300)
