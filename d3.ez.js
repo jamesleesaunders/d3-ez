@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.1
+ * @version 1.3.2
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.1"
+    version: "1.3.2"
 };
 
 /** 
