@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.1
+ * @version 1.3.2
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.1"
+    version: "1.3.2"
 };
 
 /** 
@@ -94,7 +94,7 @@ d3.ez.htmlTable = function module() {
  * Discrete Bar Chart
  * 
  * @example
- * var data = {Vauxhall: 34, Volkswagen: 54, Pergeuot: 12, Ford: 39, Skoda: 43};
+ * var data = {"Vauxhall": 34, "Volkswagen": 54, "Pergeuot": 12, "Ford": 39, "Skoda": 43};
  * var myChart = d3.ez.discreteBarChart()
  * 	.width(400)
  * 	.height(300)
@@ -126,11 +126,11 @@ d3.ez.discreteBarChart = function module() {
 			var chartH = height - margin.top - margin.bottom;
 			
 			var values = d3.values(data);
-			var groupNames = d3.keys(data);
+			var valueNames = d3.keys(data);
 
 			// X & Y Scales
 			var xScale = d3.scale.ordinal()
-				.domain(groupNames)
+				.domain(valueNames)
 				.rangeRoundBands([0, chartW], 0.1);
 
 			var yScale = d3.scale.linear()
@@ -178,10 +178,16 @@ d3.ez.discreteBarChart = function module() {
 
 			var bars = svg.select(".chart")
 				.selectAll(".bar")
-				.data(values);
+				.data(function(data) { 
+					series = [];
+					d3.map(data).values().forEach(function(d, i) { 
+						series[i] = {name: valueNames[i], value: d};
+					});
+					return series;
+				});
 						
 			bars.enter().append("rect")
-				.classed("bar", true)
+				.attr("class", function(d) { return d.name + ' bar'; })
 				.attr("fill", color)
 				.attr({
 					width: barW,
@@ -196,9 +202,9 @@ d3.ez.discreteBarChart = function module() {
 				.duration(transition.duration)				
 				.attr({
 					width: barW,
-					x: function(d, i) { return xScale(groupNames[i]) + gapSize / 2; },				
-					y: function(d, i) { return yScale(d); },
-					height: function(d, i) { return chartH - yScale(d); }
+					x: function(d, i) { return xScale(d.name) + gapSize / 2; },				
+					y: function(d, i) { return yScale(d.value); },
+					height: function(d, i) { return chartH - yScale(d.value); }
 				});
 
 			bars.exit()
@@ -390,7 +396,8 @@ d3.ez.groupedBarChart = function module() {
 				
 				bars.enter()
 					.append("rect")
-					.classed("bar", true)
+					//.classed("bar", true)
+					.attr("class", function(d) { return d.name + ' bar'; })
 					.attr({
 						width: barW,
 						x: 0,
