@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.2
+ * @version 1.3.3
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.2"
+    version: "1.3.3"
 };
 
 /** 
@@ -114,7 +114,7 @@ d3.ez.discreteBarChart = function module() {
 	var width             = 400;
 	var height            = 300;
 	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
-	var transition        = {ease: "elastic", duration: 500};	
+	var transition        = {ease: "bounce", duration: 500};	
 	var color             = 'steelblue';
 	var gap               = 0;
 	
@@ -180,7 +180,7 @@ d3.ez.discreteBarChart = function module() {
 				.selectAll(".bar")
 				.data(function(data) { 
 					series = [];
-					d3.map(data).values().forEach(function(d, i) { 
+					values.forEach(function(d, i) {
 						series[i] = {name: valueNames[i], value: d};
 					});
 					return series;
@@ -191,7 +191,7 @@ d3.ez.discreteBarChart = function module() {
 				.attr("fill", color)
 				.attr({
 					width: barW,
-					x: function(d, i) { return xScale(i) + gapSize / 2; },
+					x: function(d, i) { return xScale(d.name) + gapSize / 2; },
 					y: chartH,
 					height: 0
 				})
@@ -269,7 +269,7 @@ d3.ez.groupedBarChart = function module() {
 	var width             = 400;
 	var height            = 300;
 	var margin            = {top: 20, right: 70, bottom: 20, left: 40};
-	var transition        = {ease: "elastic", duration: 500};	
+	var transition        = {ease: "bounce", duration: 500};	
 	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
 	var gap               = 0;
 	var yAxisLabel        = null;
