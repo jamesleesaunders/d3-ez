@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.3
+ * @version 1.3.4
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.3"
+    version: "1.3.4"
 };
 
 /** 
@@ -114,8 +114,8 @@ d3.ez.discreteBarChart = function module() {
 	var width             = 400;
 	var height            = 300;
 	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
-	var transition        = {ease: "bounce", duration: 500};	
-	var color             = 'steelblue';
+	var transition        = {ease: "bounce", duration: 500};
+	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];	
 	var gap               = 0;
 	
 	var dispatch   = d3.dispatch("customHover");
@@ -145,6 +145,11 @@ d3.ez.discreteBarChart = function module() {
 			var yAxis = d3.svg.axis()
 				.scale(yScale)
 				.orient("left");
+			
+			// Colour Scale
+			var colorScale = d3.scale.ordinal()
+				.range(colors)
+				.domain(valueNames);			
 
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
@@ -188,7 +193,7 @@ d3.ez.discreteBarChart = function module() {
 						
 			bars.enter().append("rect")
 				.attr("class", function(d) { return d.name + ' bar'; })
-				.attr("fill", color)
+				.attr("fill", function(d) { return colorScale(d.name); })
 				.attr({
 					width: barW,
 					x: function(d, i) { return xScale(d.name) + gapSize / 2; },
@@ -227,9 +232,9 @@ d3.ez.discreteBarChart = function module() {
 		return this;
 	};
 	
-	my.color = function(_) {
-		if (!arguments.length) return color;
-		color = _;
+	my.colors = function(_) {
+		if (!arguments.length) return colors;
+		colors = _;
 		return this;
 	};
 	
