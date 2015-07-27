@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.4
+ * @version 1.3.5
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.4"
+    version: "1.3.5"
 };
 
 /** 
@@ -21,7 +21,8 @@ d3.ez = {
  * 	['Philip', 65, 11, 'Male', 'Macclesfield']
  * ];
  * var myTable = d3.ez.htmlTable()
- * 	.classed('sortable');
+ * 	.classed('sortable')
+ * 	.width('600');
  * d3.select("#tableholder")
  * 	.datum(data)
  * 	.call(myTable);
@@ -34,59 +35,87 @@ d3.ez.htmlTable = function module() {
 	
 	// Default settings (some configurable via Setters below)
 	var classed           = "sortable";
+	var width             = 800;
+	
+	var dispatch   = d3.dispatch("customHover");
 	
 	function my(selection) {	
 		selection.each(function(data) {
-			// If data is only a single dimention array then
-			// convert it to a multi-dimentional array.
-			if(data[0].constructor != Array) {
-				data = [data];
-			}
+			
+			var rowNames = d3.keys(data);
+			var columnNames = d3.keys(data[rowNames[0]]);
+			var s = d3.entries(data);
+			// console.log(s);
+			
+			var rowData = [];
+			s.forEach(function(d, i){
+				rowData[i] = d3.values(d)[1];
+			});
+			
+			console.log(rowData);
+			
 			// If the table does not exist create it,
-			// else empty it ready for new data.
+			// otherwise empty it ready for new data.
 			if(!table) {
 				table = d3.select(this)
 					.append("table")
-					.classed(classed, true);
+					.classed(classed, true)
+					.attr("width", width);
 			} else {
-				table.selectAll("*").remove();
+				table.selectAll("*")
+					.remove();
 			}
 			var head = table.append("thead");
 			var foot = table.append("tfoot");
 			var body = table.append("tbody");
-
-			// Add table headings
-			var tr = head.append("tr");
-			// Get the keys for the first row, This is not really relevant while only 
-			// passing plain data array but if/when keyed data object then may use?
-			var firstRow = data[Object.keys(data)[0]];
-			var row = Object.keys(firstRow);
-			//var row = data[0];
-			var td = tr.selectAll("th")
-				.data(row);
-			td.enter()
+			
+			// Add table heading
+			hdr = head.append("tr")
+			
+			hdr.selectAll("th")
+				.data(function() {
+					// Tack on a blank cell at the beginning,
+					// this is for the top of the first column.
+					return [''].concat(columnNames);
+				})
+				.enter()
 				.append("th")
-				.html(function(d) { return "Row " + d; });
-
-			// Add table body data
-			data.forEach(function(row) {
-				var tr = body.append("tr");
-				var td = tr.selectAll("td")
-					.data(row);
-				td.enter()
-					.append("td")
-					.html(function(d) { return d; });
-			});
+				.html(function(d) { return d; });
+			
+			// Add table body 
+			rows = body.selectAll("tr")
+				.data(rowData)
+				.enter()
+				.append("tr")
+				.attr("class", function(d, i) { return rowNames[i]; })
+				.on("mouseover", dispatch.customHover);
+			
+			// The first column of headings (categories)
+			rows.append("th")
+				.html(function(d, i) { return rowNames[i]; });
+			// The data values
+			rows.selectAll("td")
+				.data(function(d) { return d3.values(d); })
+				.enter()
+				.append("td")
+				.html(function(d) { return d; });
 		});
 	}
 	
 	// Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+	
 	my.classed = function(_) {
 		if (!arguments.length) return classed;
 		classed = _;
 		return this;
 	};
 	
+	d3.rebind(my, dispatch, "on");
 	return my;
 };
 
