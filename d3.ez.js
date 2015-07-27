@@ -21,7 +21,8 @@ d3.ez = {
  * 	['Philip', 65, 11, 'Male', 'Macclesfield']
  * ];
  * var myTable = d3.ez.htmlTable()
- * 	.classed('sortable');
+ * 	.classed('sortable')
+ * 	.width('600');
  * d3.select("#tableholder")
  * 	.datum(data)
  * 	.call(myTable);
@@ -36,18 +37,22 @@ d3.ez.htmlTable = function module() {
 	var classed           = "sortable";
 	var width             = 800;
 	
+	var dispatch   = d3.dispatch("customHover");
+	
 	function my(selection) {	
 		selection.each(function(data) {
 			
 			var rowNames = d3.keys(data);
 			var columnNames = d3.keys(data[rowNames[0]]);
 			var s = d3.entries(data);
-			console.log(s);
+			// console.log(s);
 			
 			var rowData = [];
 			s.forEach(function(d, i){
-				rowData[i] = d3.values(d);
+				rowData[i] = d3.values(d)[1];
 			});
+			
+			console.log(rowData);
 			
 			// If the table does not exist create it,
 			// otherwise empty it ready for new data.
@@ -57,30 +62,40 @@ d3.ez.htmlTable = function module() {
 					.classed(classed, true)
 					.attr("width", width);
 			} else {
-				table.selectAll("*").remove();
+				table.selectAll("*")
+					.remove();
 			}
 			var head = table.append("thead");
 			var foot = table.append("tfoot");
 			var body = table.append("tbody");
 			
-			// Add table headings
-			head.selectAll("th")
-				.append("tr")
-				.data(columnNames)
+			// Add table heading
+			hdr = head.append("tr")
+			
+			hdr.selectAll("th")
+				.data(function() {
+					// Tack on a blank cell at the beginning,
+					// this is for the top of the first column.
+					return [''].concat(columnNames);
+				})
 				.enter()
 				.append("th")
 				.html(function(d) { return d; });
 			
-			// Add data rows
+			// Add table body 
 			rows = body.selectAll("tr")
 				.data(rowData)
 				.enter()
 				.append("tr")
-				.attr("class", function(d) { return d[0]; });		
+				.attr("class", function(d, i) { return rowNames[i]; })
+				.on("mouseover", dispatch.customHover);
 			
-			body.selectAll("tr")
-				.selectAll("td")
-				.data(function(d) {return d3.values(d[1]); })
+			// The first column of headings (categories)
+			rows.append("th")
+				.html(function(d, i) { return rowNames[i]; });
+			// The data values
+			rows.selectAll("td")
+				.data(function(d) { return d3.values(d); })
 				.enter()
 				.append("td")
 				.html(function(d) { return d; });
@@ -100,6 +115,7 @@ d3.ez.htmlTable = function module() {
 		return this;
 	};
 	
+	d3.rebind(my, dispatch, "on");
 	return my;
 };
 
