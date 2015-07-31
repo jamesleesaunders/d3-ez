@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.5
+ * @version 1.3.6
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.5"
+    version: "1.3.6"
 };
 
 /** 
@@ -41,18 +41,15 @@ d3.ez.htmlTable = function module() {
 	
 	function my(selection) {	
 		selection.each(function(data) {
+
+			var rowNames = data.map(function(d) { return d.key; });
+			//console.log(rowNames);
 			
-			var rowNames = d3.keys(data);
-			var columnNames = d3.keys(data[rowNames[0]]);
-			var s = d3.entries(data);
-			// console.log(s);
-			
-			var rowData = [];
-			s.forEach(function(d, i){
-				rowData[i] = d3.values(d)[1];
-			});
-			
-			console.log(rowData);
+			var columnNames = [];
+			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+				columnNames[i] = d.key;
+			});			
+			//console.log(columnNames);
 			
 			// If the table does not exist create it,
 			// otherwise empty it ready for new data.
@@ -84,21 +81,23 @@ d3.ez.htmlTable = function module() {
 			
 			// Add table body 
 			rows = body.selectAll("tr")
-				.data(rowData)
+				.data(data)
 				.enter()
 				.append("tr")
-				.attr("class", function(d, i) { return rowNames[i]; })
+				.attr("class", function(d) { return d.key; })
 				.on("mouseover", dispatch.customHover);
 			
 			// The first column of headings (categories)
 			rows.append("th")
-				.html(function(d, i) { return rowNames[i]; });
+				.html(function(d) { return d.key; });
+			
 			// The data values
 			rows.selectAll("td")
-				.data(function(d) { return d3.values(d); })
+				.data(function(d) { return d.values; })
 				.enter()
 				.append("td")
-				.html(function(d) { return d; });
+				.attr("class", function(d) { return d.key; })
+				.html(function(d) { return d.value; });
 		});
 	}
 	
@@ -154,16 +153,18 @@ d3.ez.discreteBarChart = function module() {
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
 			
-			var values = d3.values(data);
-			var valueNames = d3.keys(data);
+			// Cut data ub different ways...
+			var yAxisLabel = d3.values(data)[0];
+			var maxValue = d3.max(data.values, function(d) { return d.value;} );
+			var categories = d3.values(data)[1].map(function(d) { return d.key; });
 
 			// X & Y Scales
 			var xScale = d3.scale.ordinal()
-				.domain(valueNames)
+				.domain(categories)
 				.rangeRoundBands([0, chartW], 0.1);
 
 			var yScale = d3.scale.linear()
-				.domain([0, d3.max(values, function(d, i) { return d;})])
+				.domain([0, maxValue])
 				.range([chartH, 0]);
 
 			// X & Y Axis
@@ -177,8 +178,8 @@ d3.ez.discreteBarChart = function module() {
 			
 			// Colour Scale
 			var colorScale = d3.scale.ordinal()
-				.range(colors)
-				.domain(valueNames);			
+				.domain(categories)
+				.range(colors);
 
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
@@ -189,6 +190,15 @@ d3.ez.discreteBarChart = function module() {
 				container.append("g").classed("chart", true);
 				container.append("g").classed("x-axis axis", true);
 				container.append("g").classed("y-axis axis", true);
+				
+				container.append("g")
+					.classed("y-axis axis", true)
+					.append("text")
+					.attr("transform", "rotate(-90)")
+					.attr("y", -35)
+					.attr("dy", ".71em")
+					.style("text-anchor", "end")
+					.text(data.key);
 			}
 
 			// Update the outer dimensions
@@ -212,20 +222,14 @@ d3.ez.discreteBarChart = function module() {
 
 			var bars = svg.select(".chart")
 				.selectAll(".bar")
-				.data(function(data) { 
-					series = [];
-					values.forEach(function(d, i) {
-						series[i] = {name: valueNames[i], value: d};
-					});
-					return series;
-				});
+				.data(data.values);
 						
 			bars.enter().append("rect")
-				.attr("class", function(d) { return d.name + ' bar'; })
-				.attr("fill", function(d) { return colorScale(d.name); })
+				.attr("class", function(d) { return d.key + ' bar'; })
+				.attr("fill", function(d) { return colorScale(d.key); })
 				.attr({
 					width: barW,
-					x: function(d, i) { return xScale(d.name) + gapSize / 2; },
+					x: function(d, i) { return xScale(d.key) + gapSize / 2; },
 					y: chartH,
 					height: 0
 				})
@@ -236,7 +240,7 @@ d3.ez.discreteBarChart = function module() {
 				.duration(transition.duration)				
 				.attr({
 					width: barW,
-					x: function(d, i) { return xScale(d.name) + gapSize / 2; },				
+					x: function(d, i) { return xScale(d.key) + gapSize / 2; },				
 					y: function(d, i) { return yScale(d.value); },
 					height: function(d, i) { return chartH - yScale(d.value); }
 				});
@@ -244,7 +248,8 @@ d3.ez.discreteBarChart = function module() {
 			bars.exit()
 				.transition()
 				.style({opacity: 0})
-				.remove();
+				.remove();	
+			
 		});
 	}
 	
@@ -318,27 +323,40 @@ d3.ez.groupedBarChart = function module() {
 			
 			// Cut the data in different ways....
 			// Group and Category Names
-			var groupNames = d3.keys(data);
-			var categoryNames = d3.keys(data[groupNames[0]]);
+			var groupNames = data.map(function(d) { return d.key; });
+			
+			var categoryNames = [];
+			var categoryTotals = [];
+			var maxValue = 0;
+			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+				categoryNames[i] = d.key;
+			});			
+		
 			
 			// Group and Category Totals and Maximums
 			var categoryTotals = [];
+			var groupTotals = [];
 			var maxValue = 0;
-			d3.map(data).values().forEach(function(d, i) {
-				d3.map(d).values().forEach(function(d, i) {
-					categoryTotals[categoryNames[i]] = (typeof(categoryTotals[categoryNames[i]]) === 'undefined' ? 0 : categoryTotals[categoryNames[i]]);
-					categoryTotals[categoryNames[i]] += d;
-					maxValue = (d > maxValue ? d : maxValue);
+			d3.map(data).values().forEach(function(d) {
+				grp = d.key;
+				d.values.forEach(function(d) {
+					categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === 'undefined' ? 0 : categoryTotals[d.key]);
+					categoryTotals[d.key] += d.value;		
+					groupTotals[grp] = (typeof(groupTotals[grp]) === 'undefined' ? 0 : groupTotals[grp]);
+					groupTotals[grp] += d.value;
+					maxValue = (d.value > maxValue ? d.value : maxValue);
 				});
 			});
 			
-			// Group Totals
-			var groupTotals = [];
-			d3.map(data).values().forEach(function(d, i) {
-				groupTotals[groupNames[i]] = d3.sum(d3.values(d));
-			});
 			var maxGroupTotal = d3.max(d3.values(groupTotals));
-	
+			
+			//console.log(groupNames);
+			//console.log(categoryNames);	
+			//console.log(categoryTotals);
+			//console.log(maxValue);
+			//console.log(maxGroupTotal);
+			//console.log(groupTotals);
+			
 			// X & Y Scales and Axis
 			var xScale = d3.scale.ordinal()
 				.rangeRoundBands([0, chartW], .1)
@@ -403,12 +421,12 @@ d3.ez.groupedBarChart = function module() {
 			// Create Bar Group	
 			var barGroup = svg.select(".chart")		
 				.selectAll(".barGroup")
-				.data(d3.map(data).values());
+				.data(data);
 			
 			barGroup.enter()
 				.append("g")
 				.attr("class", "barGroup")
-				.attr("transform", function(d, i) { return "translate(" + xScale(groupNames[i]) + ", 0)"; })
+				.attr("transform", function(d, i) { console.log(d); return "translate(" + xScale(d.key) + ", 0)"; })
 				.on("mouseover", dispatch.customHover);
 
 			// Add Bars to Group
@@ -416,9 +434,9 @@ d3.ez.groupedBarChart = function module() {
 				.data(function(d) { 
 					series = [];
 					var y0 = 0;
-					d3.map(d).values().forEach(function(d, i) { 
-						series[i] = {name: categoryNames[i], value: d, y0: y0, y1: y0 + d};
-						y0 += d;
+					d3.map(d.values).values().forEach(function(d, i) { 
+						series[i] = {name: d.key, value: d.value, y0: y0, y1: y0 + d.value};
+						y0 += d.value;
 					});
 					return series;
 				});
