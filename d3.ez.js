@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.6
+ * @version 1.3.7
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.6"
+    version: "1.3.7"
 };
 
 /** 
@@ -296,7 +296,7 @@ d3.ez.groupedBarChart = function module() {
 	var width             = 400;
 	var height            = 300;
 	var margin            = {top: 20, right: 70, bottom: 20, left: 40};
-	var transition        = {ease: "bounce", duration: 500};	
+	var transition        = {ease: "bounce", duration: 500};
 	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
 	var gap               = 0;
 	var yAxisLabel        = null;
@@ -902,7 +902,6 @@ d3.ez.timeSeriesChart = function module() {
  * Donut Chart
  * 
  * @example
- * var data = [['Apples', 12], ['Pears', 20], ['Bananas', 32], ['Tangerines', 18]];
  * var myChart = d3.ez.donutChart()
  * 	.width(400)
  * 	.height(300)
@@ -912,7 +911,7 @@ d3.ez.timeSeriesChart = function module() {
  * 	.datum(data)
  * 	.call(myChart);
  * 
- * @author Credit: Jeffrey Pierce (https://github.com/jeffreypierce/d3-donut-chart/blob/master/d3-donut-chart.js)
+ * http://bl.ocks.org/dbuezas/9306799
  */
 d3.ez.donutChart = function module() {
 	// SVG container (populated by 'my' function below) 
@@ -922,9 +921,12 @@ d3.ez.donutChart = function module() {
 	var width             = 400;
 	var height            = 300;
 	var margin            = {top: 30, right: 30, bottom: 30, left: 30};
-	var transition        = {ease: 'cubic', duration: 300}	
+	var transition        = {ease: "cubic", duration: 300};
 	var radius            = d3.min([(width - margin.right - margin.left), (height - margin.top - margin.bottom)]) / 2;
-	var innerRadius       = 90;
+	var innerRadius       = 70;
+	var colors            = d3.scale.category20();
+	
+	// To sort...
 	var strokeColor       = "#FFF";
 	var strokeWidth       = 4;
 	var enableLabels      = true;
@@ -936,271 +938,139 @@ d3.ez.donutChart = function module() {
 	var tickOffset        = [0, 0, 2, 8]; // [x1, x2, y1, y2]
 	var labelValueOffset  = 16;
 
+	var dispatch = d3.dispatch("customHover");
+
 	function my(selection) {
 		selection.each(function(data) {
-			var _donutChart = this;
-			this.currentData = [];
-			this.oldData = [];
 			
-			// Settings
-			var colors = d3.scale.category20();
+			var values = d3.values(data)[1].map(function(d) { return d.value; });
+
+			var pie = d3.layout.pie()
+				.sort(null);
 			
-			var labelValueText = function(arc) {
-				return Math.floor((arc.value / _donutChart.totals) * 100) + "%";
-			};
-			var labelNameText = function(arc) {
-				return arc.name + " (" + arc.value + ")";
-			};						
-
-			// ** Animation Functions ** //
-			var calculateAngles = function(start, end) {
-				var _this = this;
-				var interpolate = d3.interpolate(
-					{ startAngle : start, endAngle : end },
-					{ startAngle : _this.startAngle, endAngle : _this.endAngle }
-				);
-
-				return function(t) {
-					var b = interpolate(t);
-					return arc(b);
-				};
-			};
-
-			// Not sure yet?
-			var chartTween = function(d, i) {
-				var start   = 0;
-				var end     = 0; 
-				var oldData = _donutChart.oldData;
-				
-				if (oldData[i]) {
-					start = oldData[i].startAngle;
-					end = oldData[i].endAngle;
-				} else if (!(oldData[i]) && oldData[i - 1]) {
-					start = oldData[i - 1].endAngle;
-					end = oldData[i - 1].endAngle;
-				} else if (!(oldData[i - 1])
-						&& oldData.length > 0) {
-					start = oldData[oldData.length - 1].endAngle;
-					end = oldData[oldData.length - 1].endAngle;
-				}
-				return calculateAngles.call(d, start, end);
-			};
-			
-			// Not sure yet?
-			var removeChartTween = function(d) {
-				var start = 2 * Math.PI, end = 2 * Math.PI;
-				return calculateAngles.call(d, start, end);
-			};
-			
-			// Not sure yet?
-			var textTween = function(d, i) {
-				var a = 0
-				var b; 
-				var fn; 
-				var oldData = _donutChart.oldData;
-
-				if (oldData[i]) {
-					a = (oldData[i].startAngle
-						+ oldData[i].endAngle - Math.PI) / 2;
-				} else if (!(oldData[i]) && oldData[i - 1]) {
-					a = (oldData[i - 1].startAngle
-						+ oldData[i - 1].endAngle - Math.PI) / 2;
-				} else if (!(oldData[i - 1]) && oldData.length > 0) {
-					a = (oldData[oldData.length - 1].startAngle
-						+ oldData[oldData.length - 1].endAngle - Math.PI) / 2;
-				}
-
-				b = (d.startAngle + d.endAngle - Math.PI) / 2;
-
-				fn = d3.interpolateNumber(a, b);
-
-				return function(t) {
-					var val = fn(t);
-					return "translate(" + Math.cos(val)
-							* (radius + labelGroupOffset) + ","
-							+ Math.sin(val)
-							* (radius + labelGroupOffset) + ")";
-				};
-			};
-
-			var positionLabels = function(offset) {
-				var _position = function() {
-					this.attr("dy", function(d) { return offset; })
-						.attr("text-anchor", function(d) {
-							if ((d.startAngle + d.endAngle) / 2 < Math.PI) {
-								return "beginning";
-							} else {
-								return "end";
-							}
-						});
-				};
-				_position.call(this);
-
-				this.enter()
-					.append("text")
-					.attr("fill", labelColor)
-					.attr("transform", function(d) {
-						return "translate("
-							+ Math.cos(((d.startAngle
-							+ d.endAngle - Math.PI) / 2))
-							* (radius + labelGroupOffset)
-							+ ","
-							+ Math.sin((d.startAngle
-							+ d.endAngle - Math.PI) / 2)
-							* (radius + labelGroupOffset)
-							+ ")";
-						}
-					);
-				_position.call(this);
-
-				this.transition()
-					.ease(transition.ease)
-					.duration(transition.duration)
-					.attrTween("transform", textTween);
-
-				this.exit()
-					.remove();
-				
-				return this;
-			};
-
-			// Wrap D3 natives with the data paramaters
-			var donut = d3.layout.pie()
-				.value(function(data) { return data[1]; });
-
 			var arc = d3.svg.arc()
-				.startAngle(function(d) { return d.startAngle; })
-				.endAngle(function(d) { return d.endAngle; })
 				.innerRadius(innerRadius)
 				.outerRadius(radius);
-
-			// ** Display Functions ** //
-			// Chart Container
-			var chart = d3.select(this).append("svg")
-				.attr("class", "chart")
-				.attr("width", width)
-				.attr("height", height);
-
-			// Paths
-			var path_group = chart.append("g")
-				.attr("class", "path-group")
-				.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
-
-			// Labels
-			var label_group = chart.append("g")
-				.attr("class", "label-group")
-				.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
-
-			// Public Update Method
-			this.update = function(newData) {
-				_donutChart.totals = 0;
-				var paths, lines, valueLabels, nameLabels,
-
-				filterData = function(element, index, array) {
-					element.name = newData[index][0];
-					element.value = newData[index][1];
-					_donutChart.totals += element.value;
-					return element.value > 0;
+			
+			var outerArc = d3.svg.arc()
+				.innerRadius(radius * 0.9)
+				.outerRadius(radius * 0.9);
+			
+			function arcTween(d) {
+				var i = d3.interpolate(this._current, d);
+				this._current = i(0);
+				return function(t) {
+					return arc(i(t));
 				};
-
-				this.oldData = this.currentData;
-				this.currentData = donut(newData).filter(filterData);
-
-				if (this.currentData.length > 0) {
-					var currentData = this.currentData;
-					// draw arcs
-					paths = path_group.selectAll("path").data(
-							currentData);
-
-					paths.enter()
-						.append("path")
-						.attr("stroke", strokeColor)
-						.attr("stroke-width", strokeWidth)
-						.attr("fill", function(d, i) {
-							return colors(i);
-						})
-						.transition()
-						.ease(transition.ease)
-						.duration(transition.duration)
-						.attrTween("d", chartTween);
-
-					paths.transition()
-						.ease(transition.ease)
-						.duration(transition.duration)
-						.attrTween("d", chartTween);
-
-					paths.exit()
-						.transition()
-						.ease(transition.ease)
-						.duration(transition.duration)
-						.attrTween("d", removeChartTween)
-						.remove();
-
-					if (enableLabels) {
-						// draw tick marks 
-						lines = label_group.selectAll("line")
-							.data(currentData);
-
-						lines.enter()
-							.append("svg:line")
-							.attr("x1", tickOffset[0])
-							.attr("x2", tickOffset[1])
-							.attr("y1", 0 - radius - tickOffset[2])
-							.attr("y2", 0 - radius - tickOffset[3])
-							.attr("stroke", tickColor)
-							.attr("stroke-width", tickWidth)
-							.attr("transform", function(d) {
-								return "rotate("
-									+ (d.startAngle + d.endAngle)
-									/ 2
-									* (180 / Math.PI)
-									+ ")";
-								}
-							);
-
-						lines.transition()
-							.ease(transition.ease)
-							.duration(transition.duration)
-							.attr("transform", function(d) {
-								return "rotate("
-									+ (d.startAngle + d.endAngle)
-									/ 2
-									* (180 / Math.PI)
-									+ ")";
-								}
-							);
-
-						lines.exit().remove();
-
-						// draw labels names
-						nameLabels = label_group.selectAll("text.name")
-							.data(currentData);
-
-						positionLabels.call(nameLabels, labelNameOffset)
-							.attr("class", "name")
-							.text(labelNameText);
-
-						// draw label values
-						valueLabels = label_group.selectAll("text.value")
-							.data(currentData);
-
-						positionLabels.call(valueLabels, labelValueOffset)
-							.attr("class", "value").text(labelValueText);
-					}
-					return this;
-				} else {
-					throw 'No usable data';
-				}
-			};
-
-			if (data) {
-				// Although right at the end this is where it all begins..
-				// If we have some data then update the (or generate a new) chart.						
-				this.update(data);
 			}
+			
+			function midAngle(d) {
+				return d.startAngle + (d.endAngle - d.startAngle) / 2;
+			}
+			
+			var key = function(d, i) { return data.values[i].key; };
+				
+			// Create SVG element (if it does not exist already)
+			svg = d3.select(this).select("svg > g");
+			if (svg.empty()) {
+				var svg = d3.select(this).append("svg");
+				svg.attr("width", width).attr("height", height)
+				svg.append("g")
+					.attr("class", "slices")
+					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				svg.append("g")
+					.attr("class", "labels")
+					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				svg.append("g")
+					.attr("class", "lines")
+					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");					
+			}
+			
+			// Slices
+			var slices = d3.select(".slices")
+				.selectAll("path.slice")
+				.data(pie(values));
+			
+			slices.enter()
+				.append("path")
+				.attr("class", "slice")
+				.attr("fill", function(d, i) { return colors(i); })
+				.attr("d", arc)
+				.each(function(d) { this._current = d; } );
+			
+			slices.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attrTween("d", arcTween);
+           
+			slices.exit()
+				.remove();
+			
+			// Labels
+			var labels = d3.select(".labels")
+				.selectAll("text.label")
+				.data(pie(values), key);
+
+			labels.enter()
+				.append("text")
+				.attr("class", "label")
+				.attr("dy", ".35em");
+
+			labels.transition()
+				.duration(transition.duration)
+				.text(function(d, i) { return data.values[i].key; })
+				.attrTween("transform", function(d) {
+					this._current = this._current || d;
+					var interpolate = d3.interpolate(this._current, d);
+					this._current = interpolate(0);
+					return function(t) {
+						var d2 = interpolate(t);
+						var pos = outerArc.centroid(d2);
+						pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
+						return "translate("+ pos +")";
+					};
+				})
+				.styleTween("text-anchor", function(d) {
+					this._current = this._current || d;
+					var interpolate = d3.interpolate(this._current, d);
+					this._current = interpolate(0);
+					return function(t) {
+						var d2 = interpolate(t);
+						return midAngle(d2) < Math.PI ? "start":"end";
+					};
+				});
+
+			labels.exit()
+				.remove();	
+			
+			// Slice to Label Lines
+			var lines = d3.select(".lines")
+				.selectAll("polyline.line")
+				.data(pie(values));
+		
+			lines.enter()
+				.append("polyline")
+				.attr("class", "line");
+
+			lines.transition().duration(transition.duration)
+				.attrTween("points", function(d) {
+					this._current = this._current || d;
+					var interpolate = d3.interpolate(this._current, d);
+					this._current = interpolate(0);
+					return function(t) {
+						var d2 = interpolate(t);
+						var pos = outerArc.centroid(d2);
+						pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
+						return [arc.centroid(d2), outerArc.centroid(d2), pos];
+					};			
+				});
+		
+			lines.exit()
+				.remove();
+
 		});
-	}; 
-	
+	}
+   
 	// Configuration Getters & Setters
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -1231,7 +1101,20 @@ d3.ez.donutChart = function module() {
 		innerRadius = _;
 		return this;
 	};
-		
+	
+	my.colors = function(_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	}; 
+	
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};	
+   
+	d3.rebind(my, dispatch, "on");
 	return my;
 };
 
