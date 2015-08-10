@@ -577,7 +577,7 @@ d3.ez.punchCard = function module() {
 	// Default settings (some configurable via Setters below)
 	var width             = 400;
 	var height            = 300;
-	var margin            = {top: 20, right: 200, bottom: 20, left: 20};
+	var margin            = {top: 20, right: 90, bottom: 20, left: 20};
 	var maxRadius         = 9;
 	var minRadius         = 2;
 	var color             = "steelblue";
