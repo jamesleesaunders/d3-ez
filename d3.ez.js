@@ -923,8 +923,7 @@ d3.ez.donutChart = function module() {
 	var margin            = {top: 20, right: 90, bottom: 20, left: 90};
 	var transition        = {ease: "cubic", duration: 300};
 	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
-	console.log(radius);
-	var innerRadius       = 170;
+	var innerRadius       = 70;
 	var colors            = d3.scale.category20();
 	
 	// To sort...
