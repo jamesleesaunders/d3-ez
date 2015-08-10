@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.7
+ * @version 1.3.8
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.7"
+    version: "1.3.8"
 };
 
 /** 
@@ -920,9 +920,9 @@ d3.ez.donutChart = function module() {
 	// Default settings (some configurable via Setters below)	
 	var width             = 400;
 	var height            = 300;
-	var margin            = {top: 30, right: 30, bottom: 30, left: 30};
+	var margin            = {top: 20, right: 90, bottom: 20, left: 90};
 	var transition        = {ease: "cubic", duration: 300};
-	var radius            = d3.min([(width - margin.right - margin.left), (height - margin.top - margin.bottom)]) / 2;
+	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var innerRadius       = 70;
 	var colors            = d3.scale.category20();
 	
@@ -1075,12 +1075,14 @@ d3.ez.donutChart = function module() {
 	my.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 		return this;
 	};
 
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 		return this;
 	};
 	
