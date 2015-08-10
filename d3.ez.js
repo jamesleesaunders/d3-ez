@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.8
+ * @version 1.3.9
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015  James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.8"
+    version: "1.3.9"
 };
 
 /** 
@@ -577,12 +577,11 @@ d3.ez.punchCard = function module() {
 	// Default settings (some configurable via Setters below)
 	var width             = 400;
 	var height            = 300;
-	var margin            = {top: 20, right: 90, bottom: 20, left: 20};
+	var margin            = {top: 20, right: 80, bottom: 20, left: 20};
 	var maxRadius         = 9;
 	var minRadius         = 2;
 	var color             = "steelblue";
 	var formatTick        = d3.format("0000");
-	var rowHeight         = (maxRadius * 2) + 2;
 	var useGlobalScale    = true;
 	
 	var dispatch   = d3.dispatch("customHover");
@@ -607,19 +606,23 @@ d3.ez.punchCard = function module() {
 			
 			// Cut the data in different ways....
 		    var allValues = [];
-			data.forEach(function(d){
+		    var rowCount = 0;
+			data.forEach(function(d) {
 				allValues = allValues.concat(d.values);
+				rowCount++;
 			});
 
 			//var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
-			//var categoryNames = ['Apples', 'Oranges', 'Pears', 'Bananas'];
 			var categoryNames = [];
 			var categoryTotals = [];
 			var maxValue = 0;
+			
 			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
 				categoryNames[i] = d.key;
 			});	
 			
+			var rowHeight = chartH / rowCount;
+			// var rowHeight = (maxRadius * 2) + 2;
 			var valDomain = d3.extent(allValues, function(d) { return d['value']; });			
 			
 			// X (& Y) Scales
@@ -636,7 +639,7 @@ d3.ez.punchCard = function module() {
 			
 			// Colour Scale
 			var colorScale = d3.scale.linear()
-				.domain(d3.extent(allValues, function(d){return d['value'];}))
+				.domain(d3.extent(allValues, function(d) {return d['value'];}))
 				.range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 			
 			// Create SVG element (if it does not exist already)
@@ -695,6 +698,7 @@ d3.ez.punchCard = function module() {
 					.attr("class", "label")
 					.text(data[j]['key'])
 					.style("fill", function(d) { return color })
+					.style("text-anchor", "end")
 					.on("mouseover", mouseover)
 					.on("mouseout", mouseout);
 			}
@@ -906,12 +910,11 @@ d3.ez.timeSeriesChart = function module() {
  * 	.width(400)
  * 	.height(300)
  * 	.radius(200)
- * 	.innerRadius(50);
+ * 	.innerRadius(50)
+ * 	.useGlobalScale(true);
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
- * 
- * http://bl.ocks.org/dbuezas/9306799
  */
 d3.ez.donutChart = function module() {
 	// SVG container (populated by 'my' function below) 
