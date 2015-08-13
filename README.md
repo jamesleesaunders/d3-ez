@@ -4,7 +4,7 @@
 There are already a few other reusable D3 chart libraries such as:
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
-*[C3](http://c3js.org)
+* [C3](http://c3js.org)
 
 The aim of D3.EZ is interaction.
 
