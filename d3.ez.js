@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.10
+ * @version 1.3.11
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.10"
+    version: "1.3.11"
 };
 
 /** 
@@ -926,7 +926,7 @@ d3.ez.donutChart = function module() {
 	var transition        = {ease: "cubic", duration: 300};
 	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var innerRadius       = 70;
-	var colors            = d3.scale.category20();
+	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
 	
 	// To sort...
 	var strokeColor       = "#FFF";
@@ -946,7 +946,13 @@ d3.ez.donutChart = function module() {
 		selection.each(function(data) {
 			
 			var values = d3.values(data)[1].map(function(d) { return d.value; });
-
+			var categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
+			
+			// Colour Scale
+			var colorScale = d3.scale.ordinal()
+				.range(colors)
+				.domain(categoryNames);
+			
 			var pie = d3.layout.pie()
 				.sort(null);
 			
@@ -996,7 +1002,7 @@ d3.ez.donutChart = function module() {
 			slices.enter()
 				.append("path")
 				.attr("class", "slice")
-				.attr("fill", function(d, i) { return colors(i); })
+				.attr("fill", function(d, i) { console.log(d); return colorScale(data.values[i].key); })
 				.attr("d", arc)
 				.each(function(d) { this._current = d; } );
 			
