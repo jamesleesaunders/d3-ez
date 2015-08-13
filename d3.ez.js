@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.9
+ * @version 1.3.10
  * @author James Saunders [james@saunders-family.net]
- * @copyright Copyright (C) 2015  James Saunders
+ * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.9"
+    version: "1.3.10"
 };
 
 /** 
@@ -27,7 +27,7 @@ d3.ez.htmlTable = function module() {
 	var table;
 	
 	// Default settings (some configurable via Setters below)
-	var classed           = "sortable";
+	var classed           = "d3ez";
 	var width             = 800;
 	
 	var dispatch   = d3.dispatch("customHover");
@@ -312,13 +312,13 @@ d3.ez.groupedBarChart = function module() {
 			// Cut the data in different ways....
 			// Group and Category Names
 			var groupNames = data.map(function(d) { return d.key; });
+			
 			var categoryNames = [];
-			var maxValue = 0;
 			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
 				categoryNames[i] = d.key;
 			});			
 		
-			// Group and Category Totals and Maximums
+			// Group and Category Totals
 			var categoryTotals = [];
 			var groupTotals = [];
 			var maxValue = 0;
@@ -332,7 +332,6 @@ d3.ez.groupedBarChart = function module() {
 					maxValue = (d.value > maxValue ? d.value : maxValue);
 				});
 			});
-			
 			var maxGroupTotal = d3.max(d3.values(groupTotals));
 			
 			// X & Y Scales
