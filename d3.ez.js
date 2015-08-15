@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.12
+ * @version 1.3.13
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.12"
+    version: "1.3.13"
 };
 
 /** 
@@ -16,7 +16,7 @@ d3.ez = {
  * 
  * @example
  * var myTable = d3.ez.htmlTable()
- * 	.classed('sortable')
+ * 	.classed('myClass')
  * 	.width('600');
  * d3.select("#tableholder")
  * 	.datum(data)
@@ -119,7 +119,7 @@ d3.ez.htmlTable = function module() {
  * 	.width(400)
  * 	.height(300)
  * 	.transition({ease: "bounce", duration: 1500})
- * 	.color('#ff0000');
+ * 	.colors(d3.scale.category10().range());
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
@@ -287,7 +287,8 @@ d3.ez.discreteBarChart = function module() {
  * var myChart = d3.ez.groupedBarChart()
  * 	.width(400)
  * 	.height(300)
- * 	.groupType('clustered');
+ * 	.transition({ease: "bounce", duration: 1500})
+ * 	.groupType('stacked');
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
@@ -570,8 +571,12 @@ d3.ez.groupedBarChart = function module() {
  * 
  * @example
  * var myChart = d3.ez.punchCard()
- * 	.width(400)
- * 	.height(300);
+ * 	.width(600)
+ * 	.height(350)
+ * 	.color("green")
+ * 	.minRadius(5)
+ * 	.maxRadius(19)
+ * 	.useGlobalScale(true);
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
@@ -922,8 +927,7 @@ d3.ez.timeSeriesChart = function module() {
  * 	.width(400)
  * 	.height(300)
  * 	.radius(200)
- * 	.innerRadius(50)
- * 	.useGlobalScale(true);
+ * 	.innerRadius(50);
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
