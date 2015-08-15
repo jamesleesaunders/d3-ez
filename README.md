@@ -17,3 +17,4 @@ For reference there are a few other reusable D3 chart libraries similar to D3.JS
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
 * [C3](http://c3js.org)
+
