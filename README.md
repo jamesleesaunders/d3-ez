@@ -1,9 +1,7 @@
 ## D3 Easy Reusable Graphs, Charts and Components
-**D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifing the process of creating graphs and charts making D3. D3.EZ makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualisations with mimimal code.
+**D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifing the process of creating graphs and charts making D3. **D3.EZ** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualisations with mimimal code.
 
-D3.EZ also aims to make it easier to create interactive visulisations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase below for examples.
-
-bl.ocks Gist Examples:
+Gist (bl.ocks) Examples:
 * [Reusable Discrete Bar Chart](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
 * [Reusable Stacked Bar Chart](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
 * [Reusable Clustered Bar Chart](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
@@ -13,7 +11,9 @@ bl.ocks Gist Examples:
 * [Reuable HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [D3.EZ Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
-There are a few other reusable D3 chart libraries similar to D3.JS indluding:
+**D3.EZ** also aims to make it easier to create interactive visulisations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase below for examples.
+
+For reference there are a few other reusable D3 chart libraries similar to D3.JS indluding:
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
 * [C3](http://c3js.org)
