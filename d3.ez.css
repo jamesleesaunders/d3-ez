@@ -5,83 +5,78 @@
 - License:   GPLv3
 */ 
  
- 
 /* === Global Styles === */
-body {
+.d3ez {
 	font: 10px sans-serif;
 }
-svg {
-	font: 10px sans-serif;
-}
-
 
 /* === Axis Styles === */
-.axis path, .axis line {
+.d3ez .axis path, .axis line {
 	fill: none;
 	stroke: #B6B6B6;
 	shape-rendering: crispEdges;
 }
-.tick text  {
+.d3ez .tick text  {
 	fill: #000000;
 }
-text.label {
-	font-weight: bold;
-}
-text.value {
-	font-weight: bold;
-}
 
-/* === Bar Chart Styles === */
-rect.bar {
+/* === Bar Chart Styles (Discrete and Grouped) === */
+.discreteBarChart rect.bar, .groupedBarChart rect.bar {
 	stroke: #B6B6B6;
 	stroke-width: 1px;			
 }
-rect.bar:hover {
+.discreteBarChart rect.bar:hover {
 	opacity: 0.7;
 }
-g.barGroup:hover {
+.groupedBarChart g.barGroup:hover {
 	opacity: 0.7;
 }
-
 
 /* === Donut Chart Styles === */
-polyline.line {
+.donutChart polyline.line {
 	opacity: .3;
 	stroke: black;
 	stroke-width: 2px;
 	fill: none;
 }
-path.slice {
+.donutChart path.slice {
 	stroke: #B6B6B6;
 	stroke-width: 1px;			
 }
-path.slice:hover {
+.donutChart path.slice:hover {
 	opacity: 0.7;
 }
 
-
 /* === Table Styles === */
-table.d3ez {
+table.htmlTable {
 	border-collapse: collapse;
 }
-table.d3ez td, table.d3ez th {
+.htmlTable td, .htmlTable th {
 	border: 1px solid #cccccc;
 }
-table.d3ez thead th {
+.htmlTable thead th {
 	font-weight: bold;
 	color: #ffffff;
 	background-color: #3380be;
 	border: 1px solid #ffffff;
 }
-table.d3ez tbody th {
+.htmlTable tbody th {
 	font-weight: bold;
 	color: #000000;	
 	background-color: #cccccc;
 	border: 1px solid #ffffff;
 }
-table.d3ez tbody tr:hover {
+.htmlTable tbody tr:hover {
 	background-color: #eeeeee;
 }
 
 /* === Punchcard Styles === */
-
+.punchCard text.label {
+	font-size: 1.2em;
+	font-weight: bold;
+	cursor: pointer;
+}
+.punchCard text.value {
+	font-size: 1.4em;
+	font-weight: bold;
+}

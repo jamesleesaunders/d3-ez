@@ -1,14 +1,14 @@
 /**
  * D3.EZ
  * 
- * @version 1.3.11
+ * @version 1.3.12
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.3.11"
+    version: "1.3.12"
 };
 
 /** 
@@ -27,7 +27,7 @@ d3.ez.htmlTable = function module() {
 	var table;
 	
 	// Default settings (some configurable via Setters below)
-	var classed           = "d3ez";
+	var classed           = "htmlTable";
 	var width             = 800;
 	
 	var dispatch   = d3.dispatch("customHover");
@@ -48,7 +48,8 @@ d3.ez.htmlTable = function module() {
 			if(!table) {
 				table = d3.select(this)
 					.append("table")
-					.classed(classed, true)
+					.classed("d3ez", true)
+					.classed(classed, true)					
 					.attr("width", width);
 			} else {
 				table.selectAll("*")
@@ -134,6 +135,7 @@ d3.ez.discreteBarChart = function module() {
 	var transition        = {ease: "bounce", duration: 500};
 	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];	
 	var gap               = 0;
+	var classed           = "discreteBarChart";
 	
 	var dispatch   = d3.dispatch("customHover");
 	
@@ -173,7 +175,9 @@ d3.ez.discreteBarChart = function module() {
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg");
+					.append("svg")
+					.classed("d3ez", true)
+					.classed(classed, true);
 
 				var container = svg.append("g").classed("container", true);
 				container.append("g").classed("chart", true);
@@ -300,7 +304,8 @@ d3.ez.groupedBarChart = function module() {
 	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
 	var gap               = 0;
 	var yAxisLabel        = null;
-	var groupType         = 'clustered';
+	var groupType         = "clustered";
+	var classed           = "groupedBarChart";	
 	
 	var dispatch   = d3.dispatch("customHover");	
 	
@@ -360,7 +365,9 @@ d3.ez.groupedBarChart = function module() {
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg");
+					.append("svg")
+					.classed("d3ez", true)
+					.classed(classed, true);					
 				
 				var container = svg.append("g")
 					.classed("container", true);
@@ -419,14 +426,14 @@ d3.ez.groupedBarChart = function module() {
 					return series;
 				});
 			
-			if(groupType == 'stacked') {
+			if (groupType == 'stacked') {
 				
 				var gapSize = xScale.rangeBand() / 100 * gap;
 				var barW = xScale.rangeBand() - gapSize;
 				
 				bars.enter()
 					.append("rect")
-					//.classed("bar", true)
+					.classed("bar", true)
 					.attr("class", function(d) { return d.name + ' bar'; })
 					.attr({
 						width: barW,
@@ -452,7 +459,7 @@ d3.ez.groupedBarChart = function module() {
 					.style({opacity: 0})
 					.remove();
 				
-			} else if(groupType == 'clustered') {
+			} else if (groupType == 'clustered') {
 				
 				var x1 = d3.scale.ordinal()
 					.rangeRoundBands([0, xScale.rangeBand()])
@@ -582,6 +589,7 @@ d3.ez.punchCard = function module() {
 	var color             = "steelblue";
 	var formatTick        = d3.format("0000");
 	var useGlobalScale    = true;
+	var classed           = "punchCard";	
 	
 	var dispatch   = d3.dispatch("customHover");
 
@@ -644,7 +652,9 @@ d3.ez.punchCard = function module() {
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg");
+					.append("svg")
+					.classed("d3ez", true)
+					.classed(classed, true);	
 
 				var container = svg.append("g").classed("container", true);
 				container.append("g").classed("chart", true);
@@ -778,6 +788,7 @@ d3.ez.timeSeriesChart = function module() {
 	var color             = 'steelblue';
 	var xValue            = function(d) { return d[0]; };
 	var yValue            = function(d) { return d[1]; };
+	var classed           = "timeSeriesChart";
 
 	function my(selection) {
 		selection.each(function(data) {
@@ -822,7 +833,9 @@ d3.ez.timeSeriesChart = function module() {
 			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
-					.append("svg");
+					.append("svg")
+					.classed("d3ez", true)
+					.classed(classed, true);
 
 				var container = svg.append("g").classed("container-group", true);				
 				container.append("path").classed("chart-area-path", true);
@@ -927,6 +940,7 @@ d3.ez.donutChart = function module() {
 	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var innerRadius       = 70;
 	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+	var classed           = "donutChart";
 	
 	// To sort...
 	var strokeColor       = "#FFF";
@@ -981,7 +995,10 @@ d3.ez.donutChart = function module() {
 			// Create SVG element (if it does not exist already)
 			svg = d3.select(this).select("svg > g");
 			if (svg.empty()) {
-				var svg = d3.select(this).append("svg");
+				var svg = d3.select(this)
+					.append("svg")
+					.classed("d3ez", true)
+					.classed(classed, true);
 				svg.attr("width", width).attr("height", height)
 				svg.append("g")
 					.attr("class", "slices")
@@ -1002,9 +1019,10 @@ d3.ez.donutChart = function module() {
 			slices.enter()
 				.append("path")
 				.attr("class", "slice")
-				.attr("fill", function(d, i) { console.log(d); return colorScale(data.values[i].key); })
+				.attr("fill", function(d, i) { return colorScale(data.values[i].key); })
 				.attr("d", arc)
-				.each(function(d) { this._current = d; } );
+				.each(function(d) { this._current = d; } )
+				.on("mouseover", dispatch.customHover);
 			
 			slices.transition()
 				.ease(transition.ease)
