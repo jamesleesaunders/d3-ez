@@ -1,8 +1,8 @@
 /*
 - D3.EZ
-- Author:    James Saunders
-- Copyright: Copyright (C) 2015 James Saunders
-- License:   GPLv3
+- Author:     James Saunders
+- Copyright:  Copyright (C) 2015 James Saunders
+- License:    GPLv3
 */ 
  
 /* === Global Styles === */
@@ -20,7 +20,7 @@
 	fill: #000000;
 }
 
-/* === Bar Chart Styles (Discrete and Grouped) === */
+/* === Bar Chart (Discrete and Grouped) Styles === */
 .discreteBarChart rect.bar, .groupedBarChart rect.bar {
 	stroke: #B6B6B6;
 	stroke-width: 1px;			
