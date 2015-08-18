@@ -1,14 +1,33 @@
 /**
  * D3.EZ
  * 
- * @version 1.4.1
+ * @version 1.4.2
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 
 d3.ez = {
-    version: "1.4.1"
+    version: "1.4.2"
+};
+
+/**
+ * Colour Palettes
+ * 
+ */
+d3.ez.colors = {
+	// Categorical:
+	// Stephen Few’s Book, Show Me the Numbers
+	cat1: ['#5DA5DA', '#FAA43A', '#60BD68', '#F17CB0', '#B2912F', '#B276B2', '#DECF3F', '#F15854', '#4D4D4D'],
+	// www.google.com/design/spec/style/color.html#color-color-palette
+	cat2: ['#F44336', '#9C27B0', '#3F51B5', '#03A9F4', '#009688', '#8BC34A', '#FFEB3B', '#FF9800', '#795548'],
+	// brand.linkedin.com/visual-identity/color-palettes
+	cat3: ['#00A0DC', '#8C68CB', '#EC4339', '#F47B16', '#00AEB3', '#EFB920', '#ED4795', '#7CB82F', '#86898C']
+
+	// Sequential:
+
+	// Diverging:
+
 };
 
 /**
@@ -33,7 +52,7 @@ d3.ez.discreteBarChart = function module() {
 	var height            = 300;
 	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
 	var transition        = {ease: "bounce", duration: 500};
-	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];	
+	var colors            = d3.ez.colors.cat3;
 	var gap               = 0;
 	var classed           = "discreteBarChart";
 	
@@ -202,7 +221,7 @@ d3.ez.groupedBarChart = function module() {
 	var height            = 300;
 	var margin            = {top: 20, right: 70, bottom: 20, left: 40};
 	var transition        = {ease: "bounce", duration: 500};
-	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+	var colors            = d3.ez.colors.cat3;
 	var gap               = 0;
 	var yAxisLabel        = null;
 	var groupType         = "clustered";
@@ -843,7 +862,7 @@ d3.ez.donutChart = function module() {
 	var transition        = {ease: "cubic", duration: 300};
 	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var innerRadius       = 70;
-	var colors            = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+	var colors            = d3.ez.colors.cat3;
 	var classed           = "donutChart";
 	
 	// To sort...
