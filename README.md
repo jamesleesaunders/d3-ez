@@ -19,4 +19,4 @@ For reference there are a few other reusable D3 chart libraries similar to D3.JS
 * [C3](http://c3js.org)
 
 Credits:
-Peter Cook http://animateddata.co.uk/ for giving permission to use his Radial Bar and Radial Heat Map Charts in D£.EZ.
+Peter Cook http://animateddata.co.uk/ for giving permission to use his Radial Bar and Radial Heat Map Charts in D3.EZ.
