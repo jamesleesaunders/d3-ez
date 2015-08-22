@@ -7,7 +7,8 @@
  
 /* === Global Styles === */
 .d3ez {
-	font: 10px sans-serif;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+	font-size: 10px;
 }
 
 /* === Axis Styles === */
@@ -32,6 +33,37 @@
 	opacity: 0.7;
 }
 
+/* === Radial Bar Chart === */
+.radialBarChart path {
+	fill: none;
+}
+.radialBarChart .layer-0 path {
+	fill: steelblue;
+}
+.radialBarChart .layer-1 path {
+	fill: white !important;
+	opacity: 0.3;
+	stroke-width: 2px;
+	stroke: #999;
+}
+.radialBarChart circle.outer {
+	stroke: #aaa;
+	stroke-dasharray: 4, 4;  
+}
+.radialBarChart .tick-circles circle {
+	stroke: #ddd;
+	stroke-dasharray: 2, 2;  
+}
+.radialBarChart .spokes line {
+	stroke: #666;
+	stroke-width: 0.2;
+}
+.radialBarChart .labels text {
+	fill: #333;
+	font-size: 10px;
+	font-weight: 500;
+}
+
 /* === Donut Chart Styles === */
 .donutChart polyline.line {
 	opacity: .3;
@@ -45,6 +77,17 @@
 }
 .donutChart path.slice:hover {
 	opacity: 0.7;
+}
+
+/* === Punchcard Styles === */
+.punchCard text.label {
+	font-size: 1.2em;
+	font-weight: bold;
+	cursor: pointer;
+}
+.punchCard text.value {
+	font-size: 1.4em;
+	font-weight: bold;
 }
 
 /* === Table Styles === */
@@ -68,15 +111,4 @@ table.htmlTable {
 }
 .htmlTable tbody tr:hover {
 	background-color: #eeeeee;
-}
-
-/* === Punchcard Styles === */
-.punchCard text.label {
-	font-size: 1.2em;
-	font-weight: bold;
-	cursor: pointer;
-}
-.punchCard text.value {
-	font-size: 1.4em;
-	font-weight: bold;
 }

@@ -1,14 +1,13 @@
 /**
  * D3.EZ
  * 
- * @version 1.5.0
+ * @version 1.5.1
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
-
 d3.ez = {
-    version: "1.5.0"
+    version: "1.5.1"
 };
 
 /** 
@@ -23,22 +22,26 @@ d3.ez = {
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.radialBarChart = function module() {
-	// Configurable variables
-	var margin = {top: 20, right: 20, bottom: 20, left: 20};
-	var barHeight = 100;
-	var reverseLayerOrder = false;
-	var barColors = undefined;
-	var capitalizeLabels = false;
-	var domain = [0, 100];
-	var tickValues = undefined;
-	var colorLabels = false;
-	var tickCircleValues = [];
+	// SVG container (populated by 'my' function below) 
+	var svg;
+	
+	// Default settings (some configurable via Setters below)
+	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
+	var barHeight          = 100;
+	var reverseLayerOrder  = false;
+	var colors             = d3.ez.colors.categorical(1);		
+	var capitalizeLabels   = false;
+	var domain             = [0, 100];
+	var tickValues         = undefined;
+	var colorLabels        = false;
+	var tickCircleValues   = [];
 	var transitionDuration = 1000;
+	var classed            = 'radialBarChart';
 	
 	// Scales & other useful things
-	var numBars = null;
-	var barScale = null;
-	var keys = null;
+	var numBars     = null;
+	var barScale    = null;
+	var keys        = null;
 	var labelRadius = 0;
 
 	function init(d) {
@@ -51,23 +54,18 @@ d3.ez.radialBarChart = function module() {
 		labelRadius = barHeight * 1.025;   
 	}
 
-	function svgRotate(a) {
-		return 'rotate('+ +a +')';
-	}
-
-	function svgTranslate(x, y) {
-		return 'translate('+ +x +','+ +y +')';
-	}
-
 	function initChart(container) {
-		var g = d3.select(container)
+		svg = d3.select(container)
 			.append('svg')
 			.style('width', 2 * barHeight + margin.left + margin.right + 'px')
 			.style('height', 2 * barHeight + margin.top + margin.bottom + 'px')
-			.append('g')
-			.classed('radial-barchart', true)
-			.attr('transform', svgTranslate(margin.left + barHeight, margin.top + barHeight));
+			.classed("d3ez", true)
+			.classed(classed, true);
 
+		g = svg.append('g')
+			.attr('transform', 'translate(' + (margin.left + barHeight) + ',' + (margin.top + barHeight) +')')
+			.classed('chart1', true);
+		
 		// Concentric circles at specified tick values
 		g.append('g')
 			.classed('tick-circles', true)
@@ -80,7 +78,7 @@ d3.ez.radialBarChart = function module() {
 	}
 
 	function renderOverlays(container) {
-		var g = d3.select(container).select('svg g.radial-barchart');
+		var g = d3.select(container).select('svg g.chart1');
 
 		// Spokes
 		g.append('g')
@@ -90,8 +88,8 @@ d3.ez.radialBarChart = function module() {
 			.enter()
 			.append('line')
 			.attr('y2', -barHeight)
-			.attr('transform', function(d, i) {return svgRotate(i * 360 / numBars);});
-
+			.attr('transform', function(d, i) {return 'rotate('+ (i * 360 / numBars) +')';});
+		
 		// Axis
 		var axisScale = d3.scale.linear().domain(domain).range([0, -barHeight]);
 		var axis = d3.svg.axis().scale(axisScale).orient('right');
@@ -128,7 +126,7 @@ d3.ez.radialBarChart = function module() {
 			.text(function(d) {return capitalizeLabels ? d.toUpperCase() : d;});
 	}
 
-	function chart(selection) {
+	function my(selection) {
 		selection.each(function(d) {
 
 			init(d);
@@ -136,7 +134,7 @@ d3.ez.radialBarChart = function module() {
 			if(reverseLayerOrder)
 				d.reverse();
 
-			var g = d3.select(this).select('svg g.radial-barchart');
+			var g = d3.select(this).select('svg g.chart1');
 
 			// Check whether chart has already been created
 			var update = g[0][0] !== null; // true if data is being updated
@@ -144,7 +142,7 @@ d3.ez.radialBarChart = function module() {
 			if(!update)
 				initChart(this);
 
-			g = d3.select(this).select('svg g.radial-barchart');
+			g = d3.select(this).select('svg g.chart1');
 
 			// Layer enter/exit/update
 			var layers = g.selectAll('g.layer')
@@ -171,8 +169,8 @@ d3.ez.radialBarChart = function module() {
 			segments.enter()
 				.append('path')
 				.style('fill', function(d, i) {
-					if(!barColors) return;
-					return barColors[i % barColors.length];
+					if(!colors) return;
+					return colors[i % colors.length];
 				});
 
 			segments.exit()
@@ -198,68 +196,68 @@ d3.ez.radialBarChart = function module() {
 		return ((i + 1) * 2 * Math.PI) / numBars;
 	}
 
-	/* Configuration getters/setters */
-	chart.margin = function(_) {
+	// Configuration Getters & Setters
+	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
-		return chart;
+		return my;
 	};
 
-	chart.barHeight = function(_) {
+	my.barHeight = function(_) {
 		if (!arguments.length) return barHeight;
 		barHeight = _;
-		return chart;
+		return my;
 	};
 
-	chart.reverseLayerOrder = function(_) {
+	my.reverseLayerOrder = function(_) {
 		if (!arguments.length) return reverseLayerOrder;
 		reverseLayerOrder = _;
-		return chart;
+		return my;
 	};
 
-	chart.barColors = function(_) {
-		if (!arguments.length) return barColors;
-		barColors = _;
-		return chart;
+	my.colors = function(_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
 	};
 
-	chart.capitalizeLabels = function(_) {
+	my.capitalizeLabels = function(_) {
 		if (!arguments.length) return capitalizeLabels;
 		capitalizeLabels = _;
-		return chart;
+		return my;
 	};
 
-	chart.domain = function(_) {
+	my.domain = function(_) {
 		if (!arguments.length) return domain;
 		domain = _;
-		return chart;
+		return my;
 	};
 
-	chart.tickValues = function(_) {
+	my.tickValues = function(_) {
 		if (!arguments.length) return tickValues;
 		tickValues = _;
-		return chart;
+		return my;
 	};
 
-	chart.colorLabels = function(_) {
+	my.colorLabels = function(_) {
 		if (!arguments.length) return colorLabels;
 		colorLabels = _;
-		return chart;
+		return my;
 	};
 
-	chart.tickCircleValues = function(_) {
+	my.tickCircleValues = function(_) {
 		if (!arguments.length) return tickCircleValues;
 		tickCircleValues = _;
-		return chart;
+		return my;
 	};
 
-	chart.transitionDuration = function(_) {
+	my.transitionDuration = function(_) {
 		if (!arguments.length) return transitionDuration;
 		transitionDuration = _;
-		return chart;   
+		return my;   
 	};
 
-	return chart;
+	return my;
 };
 
 /**
@@ -274,22 +272,28 @@ d3.ez.radialBarChart = function module() {
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.circularHeatChart = function module() {
-	var margin = {top: 20, right: 20, bottom: 20, left: 20},
-	innerRadius = 50,
-	numSegments = 24,
-	segmentHeight = 20,
-	domain = null,
-	range = ["white", "red"],
-	accessor = function(d) {return d;},
-	radialLabels = segmentLabels = [];
+	// SVG container (populated by 'my' function below) 
+	var svg;
+	
+	// Default settings (some configurable via Setters below)	
+	var margin            = {top: 20, right: 20, bottom: 20, left: 20};
+	var innerRadius       = 50
+	var numSegments       = 24;
+	var segmentHeight     = 20;
+	var domain            = null;
+	var range             = ["white", "red"];
+	var accessor          = function(d) {return d;};
+	var radialLabels      = segmentLabels = [];
+	var classed           = "circular-heat";
 
-	function chart(selection) {
+	function my(selection) {
 		selection.each(function(data) {
-			var svg = d3.select(this);
+			svg = d3.select(this);
 
 			var offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
 			g = svg.append("g")
-				.classed("circular-heat", true)
+				.classed("d3ez", true)
+				.classed(classed, true)
 				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
 			var autoDomain = false;
@@ -335,7 +339,7 @@ d3.ez.circularHeatChart = function module() {
 				.style("font-size", 0.6 * segmentHeight + 'px')
 				.text(function(d) {return d;});
 
-			// Segment labels
+			// Segment Labels
 			var segmentLabelOffset = 2;
 			var r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
 			labels = svg.append("g")
@@ -372,64 +376,64 @@ d3.ez.circularHeatChart = function module() {
 		return ((i + 1) * 2 * Math.PI) / numSegments;
 	}
 
-	/* Configuration getters/setters */
-	chart.margin = function(_) {
+	// Configuration Getters & Setters
+	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
-		return chart;
+		return my;
 	};
 
-	chart.innerRadius = function(_) {
+	my.innerRadius = function(_) {
 		if (!arguments.length) return innerRadius;
 		innerRadius = _;
-		return chart;
+		return my;
 	};
 
-	chart.numSegments = function(_) {
+	my.numSegments = function(_) {
 		if (!arguments.length) return numSegments;
 		numSegments = _;
-		return chart;
+		return my;
 	};
 
-	chart.segmentHeight = function(_) {
+	my.segmentHeight = function(_) {
 		if (!arguments.length) return segmentHeight;
 		segmentHeight = _;
-		return chart;
+		return my;
 	};
 
-	chart.domain = function(_) {
+	my.domain = function(_) {
 		if (!arguments.length) return domain;
 		domain = _;
-		return chart;
+		return my;
 	};
 
-    chart.range = function(_) {
+    my.range = function(_) {
         if (!arguments.length) return range;
         range = _;
-        return chart;
+        return my;
     };
 
-    chart.radialLabels = function(_) {
+    my.radialLabels = function(_) {
     	if (!arguments.length) return radialLabels;
     	if (_ == null) _ = [];
     	radialLabels = _;
-    	return chart;
+    	return my;
     };
 
-    chart.segmentLabels = function(_) {
+    my.segmentLabels = function(_) {
     	if (!arguments.length) return segmentLabels;
     	if (_ == null) _ = [];
     	segmentLabels = _;
-    	return chart;
+    	return my;
     };
 
-    chart.accessor = function(_) {
+    my.accessor = function(_) {
     	if (!arguments.length) return accessor;
     	accessor = _;
-    	return chart;
+    	return my;
     };
 
-    return chart;
+    return my;
 };
 
 /**
