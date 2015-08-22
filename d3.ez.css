@@ -39,18 +39,20 @@
 }
 .radialBarChart .layer-0 path {
 	fill: steelblue;
+	stroke-width: 1px;
+	stroke: #000000;	
 }
 .radialBarChart .layer-1 path {
 	fill: white !important;
 	opacity: 0.3;
-	stroke-width: 2px;
-	stroke: #999;
+	stroke-width: 1px;
+	stroke: #555;
 }
-.radialBarChart circle.outer {
+.radialBarChart circle.outerCircle {
 	stroke: #aaa;
 	stroke-dasharray: 4, 4;  
 }
-.radialBarChart .tick-circles circle {
+.radialBarChart .tickCircles circle {
 	stroke: #ddd;
 	stroke-dasharray: 2, 2;  
 }
