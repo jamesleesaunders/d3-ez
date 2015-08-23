@@ -1,13 +1,13 @@
 /**
  * D3.EZ
  * 
- * @version 1.5.1
+ * @version 1.5.2
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.5.1"
+    version: "1.5.2"
 };
 
 /** 
@@ -31,7 +31,7 @@ d3.ez.radialBarChart = function module() {
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
 	var barHeight          = 100;
 	var reverseLayerOrder  = false;
-	var colors             = d3.ez.colors.categorical(1);		
+	var colors             = d3.ez.colors.categorical(4);		
 	var capitalizeLabels   = false;
 	var domain             = [0, 100];
 	var tickValues         = undefined;
@@ -65,8 +65,6 @@ d3.ez.radialBarChart = function module() {
 			
 			init(data);
 			if(reverseLayerOrder) data.reverse();
-
-			var g = d3.select(this).select('svg g.container');
 			
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
@@ -256,39 +254,61 @@ d3.ez.radialBarChart = function module() {
 };
 
 /**
- * Circular Heat Chart
+ * Radial Heat Map
  * 
  * @example
- * var myChart = d3.ez.circularHeatChart();
+ * var myChart = d3.ez.radialHeatMap();
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
  * 
  * Credit: Peter Cook http://animateddata.co.uk/
  */
-d3.ez.circularHeatChart = function module() {
+d3.ez.radialHeatMap = function module() {
 	// SVG container (populated by 'my' function below) 
 	var svg;
 	
 	// Default settings (some configurable via Setters below)	
-	var margin            = {top: 20, right: 20, bottom: 20, left: 20};
-	var innerRadius       = 50
-	var numSegments       = 24;
-	var segmentHeight     = 20;
-	var domain            = null;
-	var range             = ["white", "red"];
-	var accessor          = function(d) {return d;};
-	var radialLabels      = segmentLabels = [];
-	var classed           = "circular-heat";
-
+	var width              = 800;
+	var height             = 800;
+	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
+	var innerRadius        = 50
+	var numSegments        = 24;
+	var segmentHeight      = 20;
+	var domain             = null;
+	var range              = ["white", "red"];
+	var accessor           = function(d) {return d;};
+	var radialLabels       = segmentLabels = [];
+	var classed            = "radialHeatMap";	
+	
 	function my(selection) {
 		selection.each(function(data) {
-			svg = d3.select(this);
+			//width = 2 * barHeight + 50;
+			//height = 2 * barHeight + 50;
+			//var chartW = width - margin.left - margin.right;
+			//var chartH = height - margin.top - margin.bottom;			
 
 			var offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
-			g = svg.append("g")
-				.classed("d3ez", true)
-				.classed(classed, true)
+
+			// Create SVG element (if it does not exist already)	
+
+			if (!svg) {
+				svg = d3.select(this)
+					.append("svg")
+					.classed("d3ez", true)
+					.classed(classed, true)
+				
+				var container = svg.append("g").classed("container", true);
+					container.append("g").classed("segments", true);
+					container.append("g").classed("radialLabels", true)
+					container.append("g").classed("segmentLabels", true);
+			}	
+
+			// Update the outer dimensions
+			svg.transition().attr({width: width, height: height});
+			
+			// Update the inner dimensions.
+			svg.select(".container")
 				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
 			var autoDomain = false;
@@ -296,26 +316,31 @@ d3.ez.circularHeatChart = function module() {
 				domain = d3.extent(data, accessor);
 				autoDomain = true;
 			}
-			var color = d3.scale.linear().domain(domain).range(range);
+
+			var color = d3.scale.linear()
+				.domain(domain)
+				.range(range);
+
 			if(autoDomain)
 				domain = null;
 
-			g.selectAll("path").data(data)
-				.enter().append("path")
+			// Segments
+			d3.select(".segments").selectAll("path")
+				.data(data)
+				.enter()
+				.append("path")
 				.attr("d", d3.svg.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
 				.attr("fill", function(d) {return color(accessor(d));});
 
 			// Unique id so that the text path defs are unique - is there a better way to do this?
 			var id = d3.selectAll(".circular-heat")[0].length;
 
-			// Radial labels
-			var lsa = 0.01; //Label start angle
-			var labels = svg.append("g")
-				.classed("labels", true)
-				.classed("radial", true)
-				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
+			// Radial Labels
+			var lsa = 0.01; // Label start angle
+			var radLabels = d3.select(".radialLabels")
+				.classed("labels", true);
 
-			labels.selectAll("def")
+			radLabels.selectAll("def")
 				.data(radialLabels).enter()
 				.append("def")
 				.append("path")
@@ -326,29 +351,29 @@ d3.ez.circularHeatChart = function module() {
 						" a" + r + " " + r + " 0 1 1 -1 0";
 				});
 
-			labels.selectAll("text")
-				.data(radialLabels).enter()
+			radLabels.selectAll("text")
+				.data(radialLabels)
+				.enter()
 				.append("text")
 				.append("textPath")
 				.attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
-				.style("font-size", 0.6 * segmentHeight + 'px')
+				//.style("font-size", 0.6 * segmentHeight + 'px')
 				.text(function(d) {return d;});
 
 			// Segment Labels
 			var segmentLabelOffset = 2;
 			var r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
-			labels = svg.append("g")
-				.classed("labels", true)
-				.classed("segment", true)
-				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
+			var segLabels = d3.select(".segmentLabels")
+				.classed("labels", true);
 
-			labels.append("def")
+			segLabels.append("def")
 				.append("path")
 				.attr("id", "segment-label-path-"+id)
 				.attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
-			labels.selectAll("text")
-				.data(segmentLabels).enter()
+			segLabels.selectAll("text")
+				.data(segmentLabels)
+				.enter()
 				.append("text")
 				.append("textPath")
 				.attr("xlink:href", "#segment-label-path-"+id)
@@ -453,7 +478,7 @@ d3.ez.discreteBarChart = function module() {
 	var height            = 300;
 	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
 	var transition        = {ease: "bounce", duration: 500};
-	var colors            = d3.ez.colors.categorical(1);	
+	var colors            = d3.ez.colors.categorical(4);	
 	var gap               = 0;
 	var classed           = "discreteBarChart";
 	
@@ -622,7 +647,7 @@ d3.ez.groupedBarChart = function module() {
 	var height            = 300;
 	var margin            = {top: 20, right: 70, bottom: 20, left: 40};
 	var transition        = {ease: "bounce", duration: 500};
-	var colors            = d3.ez.colors.categorical(1);
+	var colors            = d3.ez.colors.categorical(4);
 	var gap               = 0;
 	var yAxisLabel        = null;
 	var groupType         = "clustered";
@@ -1263,7 +1288,7 @@ d3.ez.donutChart = function module() {
 	var transition        = {ease: "cubic", duration: 300};
 	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var innerRadius       = 70;
-	var colors            = d3.ez.colors.categorical(1);
+	var colors            = d3.ez.colors.categorical(4);
 	var classed           = "donutChart";
 	
 	// To sort...
@@ -1741,13 +1766,18 @@ d3.ez.colors = {
 		switch(scheme) {
 			case 1:
 				// Stephen Few - Show Me the Numbers Book
-				return ['#5da5da', '#faa43a', '#60bd68', '#f17cb0', '#b2912f', '#b276b2', '#decf3f', '#f15854', '#4d4d4d'];
+				    //    Blue        Orange    Green      Pink        L Brown    Purple   Dir Yello   Red         Black
+				return [ '#5da5da', '#faa43a', '#60bd68', '#f17cb0', '#b2912f', '#b276b2', '#decf3f', '#f15854', '#4d4d4d'];
 			case 2:
 				// Color Brewer - http://colorbrewer2.com/
+				//        Red       L.Blue     Green      Purple     Orange      Yellow    Brown      Pink         Grey
 				return ['#fbb4ae', '#b3cde3', '#ccebc5', '#decbe4', '#fed9a6', '#ffffcc', '#e5d8bd', '#fddaec', '#f2f2f2'];
 			case 3:
 				// Google Design - http://www.google.com/design/spec/style/color.html
-				return ['#f44336', '#9c27b0', '#3f51b5', '#03a9f4', '#009688', '#8bc34a', '#ffeb3b', '#ff9800', '#795548'];
+				//       D. Blue    Orange     L.Green     Purple     Yello       L.Blue       Red     D.Green     Brown     
+				return ['#3f51b5', '#ff9800', '#8bc34a', '#9c27b0', '#ffeb3b',  '#03a9f4', '#f44336', '#009688', '#795548'];
+			case 4:
+				return(d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
 		}
 	},
 	
