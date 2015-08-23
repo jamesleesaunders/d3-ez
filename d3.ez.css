@@ -34,18 +34,18 @@
 }
 
 /* === Radial Heat Map === */
-.radialHeatMap .segments path {
+.circularHeatChart .segments path {
 	stroke: #B6B6B6;
 	stroke-width: 0.5px;
 }
-.radialHeatMap .labels {
+.circularHeatChart .labels {
 	fill: #000000;
 	letter-spacing: -1px;
 	}
-.radialHeatMap .segmentLabels text {
+.circularHeatChart .segmentLabels text {
 	font-size: 1.0em;
 }
-.radialHeatMap .radialLabels text {
+.circularHeatChart .radialLabels text {
 	font-size: 1.1em;
 	font-weight: bold;
 }

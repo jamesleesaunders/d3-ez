@@ -254,17 +254,17 @@ d3.ez.radialBarChart = function module() {
 };
 
 /**
- * Radial Heat Map
+ * Circular Heat Chart
  * 
  * @example
- * var myChart = d3.ez.radialHeatMap();
+ * var myChart = d3.ez.circularHeatChart();
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
  * 
  * Credit: Peter Cook http://animateddata.co.uk/
  */
-d3.ez.radialHeatMap = function module() {
+d3.ez.circularHeatChart = function module() {
 	// SVG container (populated by 'my' function below) 
 	var svg;
 	
@@ -279,7 +279,7 @@ d3.ez.radialHeatMap = function module() {
 	var range              = ["white", "red"];
 	var accessor           = function(d) {return d;};
 	var radialLabels       = segmentLabels = [];
-	var classed            = "radialHeatMap";	
+	var classed            = "circularHeatChart";	
 	
 	function my(selection) {
 		selection.each(function(data) {
