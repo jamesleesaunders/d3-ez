@@ -1,13 +1,13 @@
 /**
  * D3.EZ
  * 
- * @version 1.5.2
+ * @version 1.5.3
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.5.2"
+    version: "1.5.3"
 };
 
 /** 
@@ -1610,20 +1610,14 @@ d3.ez.htmlList = function module() {
 	var list;
 	
 	// Default settings (some configurable via Setters below)
-	var classed           = "htmlList";
+	var classed            = "htmlList";
 	
 	var dispatch   = d3.dispatch("customHover");
 	
 	function my(selection) {	
 		selection.each(function(data) {
-
-			// Cut the data in different ways....
-			var rowNames = data.map(function(d) { return d.key; });
-			
-			var columnNames = [];
-			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-				columnNames[i] = d.key;
-			});
+			// If it is a single object, wrap it in an array
+			if (data.constructor !== Array) data = [data];
 			
 			// If the ul list does not exist then create it,
 			// otherwise empty it ready for new data.
@@ -1637,14 +1631,45 @@ d3.ez.htmlList = function module() {
 					.remove();
 			}
 			
-			// Add table body 
-			items = list.selectAll("li")
+			list.selectAll("li")
 				.data(data)
 				.enter()
 				.append("li")
-				.html(function(d) { return d.values; })
-				.attr("class", function(d) { return d.key; })
-				.on("mouseover", dispatch.customHover);
+				.text(function(d) { return d.key; })
+				.on("click", expand);
+
+			function expand(d) {
+				dispatch.customHover(d);
+				
+				if (typeof d.values === 'undefined') {
+					return 0;
+				} 
+				
+				var ul = d3.select(this)
+					.on("click", null)
+					.append("ul");
+					
+				var li = ul.selectAll("li")
+					.data(d.values)
+					.enter()
+					.append("li")
+					.text(function(d) {
+						if (typeof d.value !== 'undefined') {
+							return d.key + " : " + d.value;
+						} else {
+							return d.key;
+						}
+					})
+					.on("click", expand);
+			}
+			
+			function collapse(d) {
+				d3.select(this)
+					.on("click", expand)
+					.selectAll("*")
+					.remove();
+			}
+			
 		});
 	}
 	
