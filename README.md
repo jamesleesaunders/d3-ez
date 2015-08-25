@@ -8,7 +8,8 @@ Gist (bl.ocks) Examples:
 * [Reusable Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
 * [Reusable Time Series Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
 * [Reusable Punchcard](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
-* [Reuable HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
+* [Reusable HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
+* [Reusable HTML Expanding List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [D3.EZ Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
 **D3.EZ** also aims to make it easier to create interactive visulisations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase below for examples.
@@ -18,3 +19,5 @@ For reference there are a few other reusable D3 chart libraries similar to D3.JS
 * [D4](http://visible.io/index.html)
 * [C3](http://c3js.org)
 
+Credits:
+Peter Cook http://animateddata.co.uk/ for giving permission to use his Radial Bar and Radial Heat Map Charts in D3.EZ.
