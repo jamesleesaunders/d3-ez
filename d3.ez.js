@@ -1,13 +1,13 @@
 /**
  * D3.EZ
  * 
- * @version 1.5.3
+ * @version 1.5.4
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.5.3"
+    version: "1.5.4"
 };
 
 /** 
@@ -1639,6 +1639,7 @@ d3.ez.htmlList = function module() {
 				.on("click", expand);
 
 			function expand(d) {
+				d3.event.stopPropagation();
 				dispatch.customHover(d);
 				
 				if (typeof d.values === 'undefined') {
@@ -1646,7 +1647,7 @@ d3.ez.htmlList = function module() {
 				} 
 				
 				var ul = d3.select(this)
-					.on("click", null)
+					.on("click", collapse)
 					.append("ul");
 					
 				var li = ul.selectAll("li")
@@ -1664,6 +1665,7 @@ d3.ez.htmlList = function module() {
 			}
 			
 			function collapse(d) {
+				d3.event.stopPropagation();
 				d3.select(this)
 					.on("click", expand)
 					.selectAll("*")
