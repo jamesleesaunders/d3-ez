@@ -1,0 +1,32 @@
+/* === Radial Bar Chart === */
+.radialBarChart path {
+	fill: none;
+}
+.radialBarChart .layer-0 path {
+	fill: steelblue;
+	stroke-width: 1px;
+	stroke: #333333;	
+}
+.radialBarChart .layer-1 path {
+	fill: white !important;
+	opacity: 0.3;
+	stroke-width: 1px;
+	stroke: #333333;
+}
+.radialBarChart circle.outerCircle {
+	stroke: #aaa;
+	stroke-dasharray: 4, 4;  
+}
+.radialBarChart .tickCircles circle {
+	stroke: #ddd;
+	stroke-dasharray: 2, 2;  
+}
+.radialBarChart .spokes line {
+	stroke: #666;
+	stroke-width: 0.2;
+}
+.radialBarChart .labels text {
+	fill: #333;
+	font-size: 10px;
+	font-weight: 500;
+}

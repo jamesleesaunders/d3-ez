@@ -1,20 +1,36 @@
-# Example Makefile for compiling CSS and Javascript in watched folder
+# Makefile for compiling CSS and Javascript
 
-PHONY: optimize
+JS_FILES := 	js/header.js \
+				js/radialBarChart.js \
+				js/circularHeatChart.js \
+				js/discreteBarChart.js \
+				js/groupedBarChart.js \
+				js/punchCard.js \
+				js/timeSeriesChart.js \
+				js/donutChart.js \
+				js/htmlTable.js \
+				js/htmlList.js \
+				js/reusableComponents.js
+	
+CSS_FILES := 	css/global.css \
+				css/radialBarChart.css \
+				css/circularHeatChart.css \
+				css/groupedBarChart.css \
+				css/donutChart.css \
+				css/htmlList.css \
+				css/htmlTable.css
 
-css:
-	@cat src/css/file1.css src/css/file2.css > d3.ez.css
+all: js css min
+.PHONY: js css min
+
+js: $(JS_FILES)
+	@for file in $^; do cat "$$file"; echo "\n"; done > d3.ez.js
+	@echo Built d3.ez.js
+
+css: $(CSS_FILES)
+	@for file in $^; do cat "$$file"; echo "\n"; done > d3.ez.css
 	@echo Built d3.ez.css
-
-js:
-	@cat src/js/file1.js src/js/file2.js > d3.ez.js
-	@echo Built all.js
-
-watch:
-	@echo Watching for changes...
-	@fswatch src/css:src/js "echo changed && make css js" 
-
-optimize: css js
-	@yuicompressor d3.ez.css -o d3.ez.min.css
+	
+min:
 	@yuicompressor d3.ez.js -o d3.ez.min.js
-	@echo Optimized d3.ez.js
+	@echo Built d3.ez.min.js
