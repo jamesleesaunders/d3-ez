@@ -1,4 +1,4 @@
-# Makefile for compiling CSS and Javascript
+# D3.EZ Makefile
 
 JS_FILES := 	js/header.js \
 				js/radialBarChart.js \
