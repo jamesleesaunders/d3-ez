@@ -20,7 +20,13 @@ CSS_FILES := 	css/global.css \
 				css/htmlList.css \
 				css/htmlTable.css
 
-all: js css min
+GENERATED_FILES := d3.ez.js \
+d3.ez.min.js \
+d3.ez.css \
+README.md \
+LICENSE
+
+all: js css min zip
 .PHONY: js css min
 
 js: $(JS_FILES)
@@ -30,7 +36,10 @@ js: $(JS_FILES)
 css: $(CSS_FILES)
 	@for file in $^; do cat "$$file"; echo "\n"; done > d3.ez.css
 	@echo Built d3.ez.css
-	
+
 min:
 	@yuicompressor d3.ez.js -o d3.ez.min.js
 	@echo Built d3.ez.min.js
+
+zip: $(GENERATED_FILES)
+	@zip $@ $^
