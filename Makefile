@@ -24,7 +24,7 @@ GENERATED_FILES := d3.ez.js \
                    d3.ez.min.js \
                    d3.ez.css \
                    README.md \
-                   LICENSE
+                   LICENSE.md
 
 all: js css min zip
 .PHONY: js css min zip
