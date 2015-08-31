@@ -12,7 +12,7 @@ JS_FILES :=        js/header.js \
                    js/htmlList.js \
                    js/reusableComponents.js
 	
-CSS_FILES := 	css/global.css \
+CSS_FILES :=       css/global.css \
                    css/radialBarChart.css \
                    css/circularHeatChart.css \
                    css/groupedBarChart.css \
