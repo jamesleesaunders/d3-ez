@@ -52,7 +52,7 @@ d3.ez.circularHeatChart = function module() {
 			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});
 			
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			svg.select(".container")
 				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
@@ -68,13 +68,20 @@ d3.ez.circularHeatChart = function module() {
 
 			if(autoDomain)
 				domain = null;
-
+			
+			// Arc Generator
+			var arc = d3.svg.arc()
+				.innerRadius(function(d, i) { return innerRadius + Math.floor(i/numSegments) * segmentHeight; })
+				.outerRadius(function(d, i) { return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight; })
+				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numSegments; })
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });
+			
 			// Segments
 			d3.select(".segments").selectAll("path")
 				.data(data)
 				.enter()
 				.append("path")
-				.attr("d", d3.svg.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
+				.attr("d", arc)
 				.attr("fill", function(d) {return color(accessor(d));});
 
 			// Unique id so that the text path defs are unique - is there a better way to do this?
@@ -86,7 +93,8 @@ d3.ez.circularHeatChart = function module() {
 				.classed("labels", true);
 
 			radLabels.selectAll("def")
-				.data(radialLabels).enter()
+				.data(radialLabels)
+				.enter()
 				.append("def")
 				.append("path")
 				.attr("id", function(d, i) {return "radial-label-path-"+id+"-"+i;})
@@ -102,7 +110,6 @@ d3.ez.circularHeatChart = function module() {
 				.append("text")
 				.append("textPath")
 				.attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
-				//.style("font-size", 0.6 * segmentHeight + 'px')
 				.text(function(d) {return d;});
 
 			// Segment Labels
@@ -125,20 +132,6 @@ d3.ez.circularHeatChart = function module() {
 				.attr("startOffset", function(d, i) {return i * 100 / numSegments + "%";})
 				.text(function(d) {return d;});
 		});
-	}
-
-	/* Arc functions */
-	ir = function(d, i) {
-		return innerRadius + Math.floor(i/numSegments) * segmentHeight;
-	}
-	or = function(d, i) {
-		return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight;
-	}
-	sa = function(d, i) {
-		return (i * 2 * Math.PI) / numSegments;
-	}
-	ea = function(d, i) {
-		return ((i + 1) * 2 * Math.PI) / numSegments;
 	}
 
 	// Configuration Getters & Setters

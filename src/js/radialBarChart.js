@@ -35,9 +35,13 @@ d3.ez.radialBarChart = function module() {
 	var labelRadius = 0;
 
 	function init(d) {
-		barScale = d3.scale.linear().domain(domain).range([0, barHeight]);
+		barScale = d3.scale.linear()
+			.domain(domain)
+			.range([0, barHeight]);
 
-		keys = d3.map(d[0].data).keys();
+		// keys = d3.map(d[0].data).keys();
+		keys = d3.values(d[0])[1].map(function(d) { return d.key; });
+		
 		numBars = keys.length;
 
 		// Radius of the key labels
@@ -51,6 +55,7 @@ d3.ez.radialBarChart = function module() {
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
 			
+			// Cut the data in different ways....
 			init(data);
 			if(reverseLayerOrder) data.reverse();
 			
@@ -73,7 +78,7 @@ d3.ez.radialBarChart = function module() {
 			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});
 			
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			svg.select(".container")
 				.attr('transform', 'translate(' + (margin.left + barHeight) + ',' + (margin.top + barHeight) +')');
 
@@ -105,8 +110,7 @@ d3.ez.radialBarChart = function module() {
 			var segments = layers
 				.selectAll('path')
 				.data(function(d) {
-					var m = d3.map(d.data);
-					return m.values(); 
+					return d3.values(d)[1].map(function(d) { return d.value; });
 				});
 
 			segments.enter()
@@ -119,10 +123,17 @@ d3.ez.radialBarChart = function module() {
 			segments.exit()
 				.remove();
 
+			// Arc Generator
+			var arc = d3.svg.arc()
+				.innerRadius(0)
+				.outerRadius(function(d, i) { return barScale(d); })
+				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });
+			
 			segments.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr('d', d3.svg.arc().innerRadius(0).outerRadius(or).startAngle(sa).endAngle(ea));
+				.attr('d', arc);
 
 			// Spokes
 			spokes = d3.select('.spokes')
@@ -164,17 +175,6 @@ d3.ez.radialBarChart = function module() {
 				.attr('startOffset', function(d, i) {return i * 100 / numBars + 50 / numBars + '%';})
 				.text(function(d) {return capitalizeLabels ? d.toUpperCase() : d;});
 		});
-	}
-
-	/* Arc functions */
-	or = function(d, i) {
-		return barScale(d);
-	}
-	sa = function(d, i) {
-		return (i * 2 * Math.PI) / numBars;
-	}
-	ea = function(d, i) {
-		return ((i + 1) * 2 * Math.PI) / numBars;
 	}
 
 	// Configuration Getters & Setters
