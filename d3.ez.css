@@ -71,7 +71,7 @@
 	font-weight: bold;
 }
 
-/* === Bar Chart (Discrete and Grouped) Styles === */
+/* === Bar Chart (Discrete & Grouped) Styles === */
 .discreteBarChart rect.bar, .groupedBarChart rect.bar {
 	stroke: #333333;
 	stroke-width: 1px;			
