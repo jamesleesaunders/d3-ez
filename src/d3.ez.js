@@ -10,8 +10,8 @@ include('js/htmlTable.js');
 include('js/htmlList.js');
 include('js/reusableComponents.js');
 
+// Method 1 - Using document.write
 function include(file) {
-	// Method 1 - Using document.write
 	var loc = document.currentScript.src
 	var path = loc.substring(0, loc.lastIndexOf("/") + 1);
 	var src = path + file;
@@ -20,8 +20,8 @@ function include(file) {
     document.write('<' + 'script src="' + src + '"' + ' type="' + type + '"><' + '/script>');
 }
 
+// Method 2 - Using document.createElement
 function include2(file) {
-	// Method 2 - Using document.createElement
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
 
@@ -35,8 +35,8 @@ function include2(file) {
     head.appendChild(script);
 }
 
+// Method 3 - Using D3
 function include3(file) {
-	// Method 3 - Using D3
 	var loc = document.currentScript.src
 	var path = loc.substring(0, loc.lastIndexOf("/") + 1);
 	var src = path + file;
