@@ -1,14 +1,14 @@
-include('header.js');
-include('radialBarChart.js');
-include('circularHeatChart.js');
-include('discreteBarChart.js');
-include('groupedBarChart.js');
-include('punchCard.js');
-include('timeSeriesChart.js');
-include('donutChart.js');
-include('htmlTable.js');
-include('htmlList.js');
-include('reusableComponents.js');
+include('js/header.js');
+include('js/radialBarChart.js');
+include('js/circularHeatChart.js');
+include('js/discreteBarChart.js');
+include('js/groupedBarChart.js');
+include('js/punchCard.js');
+include('js/timeSeriesChart.js');
+include('js/donutChart.js');
+include('js/htmlTable.js');
+include('js/htmlList.js');
+include('js/reusableComponents.js');
 
 function include(file) {
 	// Method 1 - Using document.write
