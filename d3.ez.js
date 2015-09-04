@@ -1,13 +1,16 @@
 /**
  * D3.EZ
  * 
- * @version 1.5.4
+ * @version 1.5.5
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2015 James Saunders
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.5.4"
+    version: "1.5.6",
+    author: "James Saunders",
+    copyright: "Copyright (C) 2015 James Saunders",
+    license: "GPLv3"
 };
 
 /** 
@@ -47,9 +50,13 @@ d3.ez.radialBarChart = function module() {
 	var labelRadius = 0;
 
 	function init(d) {
-		barScale = d3.scale.linear().domain(domain).range([0, barHeight]);
+		barScale = d3.scale.linear()
+			.domain(domain)
+			.range([0, barHeight]);
 
-		keys = d3.map(d[0].data).keys();
+		// keys = d3.map(d[0].data).keys();
+		keys = d3.values(d[0])[1].map(function(d) { return d.key; });
+		
 		numBars = keys.length;
 
 		// Radius of the key labels
@@ -63,6 +70,7 @@ d3.ez.radialBarChart = function module() {
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
 			
+			// Cut the data in different ways....
 			init(data);
 			if(reverseLayerOrder) data.reverse();
 			
@@ -85,7 +93,7 @@ d3.ez.radialBarChart = function module() {
 			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});
 			
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			svg.select(".container")
 				.attr('transform', 'translate(' + (margin.left + barHeight) + ',' + (margin.top + barHeight) +')');
 
@@ -117,8 +125,7 @@ d3.ez.radialBarChart = function module() {
 			var segments = layers
 				.selectAll('path')
 				.data(function(d) {
-					var m = d3.map(d.data);
-					return m.values(); 
+					return d3.values(d)[1].map(function(d) { return d.value; });
 				});
 
 			segments.enter()
@@ -131,10 +138,17 @@ d3.ez.radialBarChart = function module() {
 			segments.exit()
 				.remove();
 
+			// Arc Generator
+			var arc = d3.svg.arc()
+				.innerRadius(0)
+				.outerRadius(function(d, i) { return barScale(d); })
+				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });
+			
 			segments.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr('d', d3.svg.arc().innerRadius(0).outerRadius(or).startAngle(sa).endAngle(ea));
+				.attr('d', arc);
 
 			// Spokes
 			spokes = d3.select('.spokes')
@@ -176,17 +190,6 @@ d3.ez.radialBarChart = function module() {
 				.attr('startOffset', function(d, i) {return i * 100 / numBars + 50 / numBars + '%';})
 				.text(function(d) {return capitalizeLabels ? d.toUpperCase() : d;});
 		});
-	}
-
-	/* Arc functions */
-	or = function(d, i) {
-		return barScale(d);
-	}
-	sa = function(d, i) {
-		return (i * 2 * Math.PI) / numBars;
-	}
-	ea = function(d, i) {
-		return ((i + 1) * 2 * Math.PI) / numBars;
 	}
 
 	// Configuration Getters & Setters
@@ -307,7 +310,7 @@ d3.ez.circularHeatChart = function module() {
 			// Update the outer dimensions
 			svg.transition().attr({width: width, height: height});
 			
-			// Update the inner dimensions.
+			// Update the inner dimensions
 			svg.select(".container")
 				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
@@ -323,13 +326,20 @@ d3.ez.circularHeatChart = function module() {
 
 			if(autoDomain)
 				domain = null;
-
+			
+			// Arc Generator
+			var arc = d3.svg.arc()
+				.innerRadius(function(d, i) { return innerRadius + Math.floor(i/numSegments) * segmentHeight; })
+				.outerRadius(function(d, i) { return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight; })
+				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numSegments; })
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });
+			
 			// Segments
 			d3.select(".segments").selectAll("path")
 				.data(data)
 				.enter()
 				.append("path")
-				.attr("d", d3.svg.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
+				.attr("d", arc)
 				.attr("fill", function(d) {return color(accessor(d));});
 
 			// Unique id so that the text path defs are unique - is there a better way to do this?
@@ -341,7 +351,8 @@ d3.ez.circularHeatChart = function module() {
 				.classed("labels", true);
 
 			radLabels.selectAll("def")
-				.data(radialLabels).enter()
+				.data(radialLabels)
+				.enter()
 				.append("def")
 				.append("path")
 				.attr("id", function(d, i) {return "radial-label-path-"+id+"-"+i;})
@@ -357,7 +368,6 @@ d3.ez.circularHeatChart = function module() {
 				.append("text")
 				.append("textPath")
 				.attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
-				//.style("font-size", 0.6 * segmentHeight + 'px')
 				.text(function(d) {return d;});
 
 			// Segment Labels
@@ -380,20 +390,6 @@ d3.ez.circularHeatChart = function module() {
 				.attr("startOffset", function(d, i) {return i * 100 / numSegments + "%";})
 				.text(function(d) {return d;});
 		});
-	}
-
-	/* Arc functions */
-	ir = function(d, i) {
-		return innerRadius + Math.floor(i/numSegments) * segmentHeight;
-	}
-	or = function(d, i) {
-		return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight;
-	}
-	sa = function(d, i) {
-		return (i * 2 * Math.PI) / numSegments;
-	}
-	ea = function(d, i) {
-		return ((i + 1) * 2 * Math.PI) / numSegments;
 	}
 
 	// Configuration Getters & Setters
@@ -1686,7 +1682,6 @@ d3.ez.htmlList = function module() {
 	return my;
 };
 
-
 /** 
  * Labeled Node
  * 
@@ -1879,3 +1874,4 @@ d3.ez.colors = {
 		return result;
 	}
 };
+

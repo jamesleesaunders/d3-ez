@@ -21,35 +21,6 @@
 	fill: #000000;
 }
 
-/* === Bar Chart (Discrete and Grouped) Styles === */
-.discreteBarChart rect.bar, .groupedBarChart rect.bar {
-	stroke: #333333;
-	stroke-width: 1px;			
-}
-.discreteBarChart rect.bar:hover {
-	opacity: 0.7;
-}
-.groupedBarChart g.barGroup:hover {
-	opacity: 0.7;
-}
-
-/* === Radial Heat Map === */
-.circularHeatChart .segments path {
-	stroke: #B6B6B6;
-	stroke-width: 0.5px;
-}
-.circularHeatChart .labels {
-	fill: #000000;
-	letter-spacing: -1px;
-	}
-.circularHeatChart .segmentLabels text {
-	font-size: 1.0em;
-}
-.circularHeatChart .radialLabels text {
-	font-size: 1.1em;
-	font-weight: bold;
-}
-
 /* === Radial Bar Chart === */
 .radialBarChart path {
 	fill: none;
@@ -83,6 +54,35 @@
 	font-weight: 500;
 }
 
+/* === Circular Heat Chart === */
+.circularHeatChart .segments path {
+	stroke: #B6B6B6;
+	stroke-width: 0.5px;
+}
+.circularHeatChart .labels {
+	fill: #000000;
+	letter-spacing: -1px;
+	}
+.circularHeatChart .segmentLabels text {
+	font-size: 1.0em;
+}
+.circularHeatChart .radialLabels text {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+/* === Bar Chart (Discrete & Grouped) Styles === */
+.discreteBarChart rect.bar, .groupedBarChart rect.bar {
+	stroke: #333333;
+	stroke-width: 1px;			
+}
+.discreteBarChart rect.bar:hover {
+	opacity: 0.7;
+}
+.groupedBarChart g.barGroup:hover {
+	opacity: 0.7;
+}
+
 /* === Donut Chart Styles === */
 .donutChart polyline.line {
 	opacity: .3;
@@ -96,40 +96,6 @@
 }
 .donutChart path.slice:hover {
 	opacity: 0.7;
-}
-
-/* === Punchcard Styles === */
-.punchCard text.label {
-	font-size: 1.2em;
-	font-weight: bold;
-	cursor: pointer;
-}
-.punchCard text.value {
-	font-size: 1.4em;
-	font-weight: bold;
-}
-
-/* === HTML Table Styles === */
-table.htmlTable {
-	border-collapse: collapse;
-}
-.htmlTable td, .htmlTable th {
-	border: 1px solid #333333;
-}
-.htmlTable thead th {
-	font-weight: bold;
-	color: #ffffff;
-	background-color: #3380be;
-	border: 1px solid #ffffff;
-}
-.htmlTable tbody th {
-	font-weight: bold;
-	color: #000000;	
-	background-color: #cccccc;
-	border: 1px solid #ffffff;
-}
-.htmlTable tbody tr:hover {
-	background-color: #eeeeee;
 }
 
 /* === HTML List Styles === */
@@ -179,3 +145,27 @@ table.htmlTable {
 	top: 1em;            /* line-height / 2 */
 	bottom: 0;
 }
+
+/* === HTML Table Styles === */
+table.htmlTable {
+	border-collapse: collapse;
+}
+.htmlTable td, .htmlTable th {
+	border: 1px solid #333333;
+}
+.htmlTable thead th {
+	font-weight: bold;
+	color: #ffffff;
+	background-color: #3380be;
+	border: 1px solid #ffffff;
+}
+.htmlTable tbody th {
+	font-weight: bold;
+	color: #000000;	
+	background-color: #cccccc;
+	border: 1px solid #ffffff;
+}
+.htmlTable tbody tr:hover {
+	background-color: #eeeeee;
+}
+

@@ -1,4 +1,5 @@
 ## D3 Easy Reusable Graphs, Charts and Components
+
 **D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifing the process of creating graphs and charts making D3. **D3.EZ** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualisations with mimimal code.
 
 Gist (bl.ocks) Examples:
@@ -18,6 +19,7 @@ For reference there are a few other reusable D3 chart libraries similar to D3.JS
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
 * [C3](http://c3js.org)
+* [D3 Plus](http://d3plus.org)
 
 Credits:
 Peter Cook http://animateddata.co.uk/ for giving permission to use his Radial Bar and Radial Heat Map Charts in D3.EZ.

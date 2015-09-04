@@ -1,0 +1,47 @@
+/* === HTML List Styles === */
+.htmlList, .htmlList ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.htmlList ul {
+	margin-left: 1em;    /* Indentation */
+	position: relative;
+}
+.htmlList ul ul {
+	margin-left: .5em;   /* Indentation / 2 */
+}
+.htmlList ul:before {
+	content: "";
+	display: block;
+	width: 0;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	border-left: 1px solid;
+}
+.htmlList li {
+	margin: 0;
+	padding: 0 1.5em;    /* Indentation + .5em */
+	line-height: 2em;    /* Default list item's line-height */
+	font-weight: bold;
+	position: relative;
+}
+.htmlList ul li:before {
+	content: "";
+	display: block;
+	width: 10px;         /* Same with Indentation */
+	height: 0;
+	border-top: 1px solid;
+	margin-top: -1px;    /* Border top width */
+	position: absolute;
+	top: 1em;            /* line-height / 2 */
+	left: 0;
+}
+.htmlList ul li:last-child:before {
+	background: #ffffff;
+	height: auto;
+	top: 1em;            /* line-height / 2 */
+	bottom: 0;
+}
