@@ -21,12 +21,14 @@ d3.ez.radialBarChart = function module() {
 	var reverseLayerOrder  = false;
 	var colors             = d3.ez.colors.categorical(4);		
 	var capitalizeLabels   = false;
-	var domain             = [0, 100];
-	var tickValues         = undefined;
 	var colorLabels        = false;
-	var tickCircleValues   = [];
 	var transition         = {ease: "bounce", duration: 500};
 	var classed            = 'radialBarChart';
+	
+	// To sort!
+	var tickValues         = [];	
+	var tickCircleValues   = [];	
+	var domain             = [];
 	
 	// Scales & other useful things
 	var numBars     = null;
@@ -34,18 +36,48 @@ d3.ez.radialBarChart = function module() {
 	var keys        = null;
 	var labelRadius = 0;
 
-	function init(d) {
-		barScale = d3.scale.linear()
-			.domain(domain)
-			.range([0, barHeight]);
-
-		// keys = d3.map(d[0].data).keys();
-		keys = d3.values(d[0])[1].map(function(d) { return d.key; });
-		
+	function init(data) {
+		// bars
+		keys = d3.values(data[0])[1].map(function(d) { return d.key; });
 		numBars = keys.length;
 
 		// Radius of the key labels
-		labelRadius = barHeight * 1.025;   
+		labelRadius = barHeight * 1.025;
+	
+		// Totals MAx, etc
+		var categoryTotals = [];
+		var groupTotals = [];
+		var maxValue = 0;
+		d3.map(data).values().forEach(function(d) {
+			grp = d.key;
+			d.values.forEach(function(d) {
+				categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === 'undefined' ? 0 : categoryTotals[d.key]);
+				categoryTotals[d.key] += d.value;		
+				groupTotals[grp] = (typeof(groupTotals[grp]) === 'undefined' ? 0 : groupTotals[grp]);
+				groupTotals[grp] += d.value;
+				maxValue = (d.value > maxValue ? d.value : maxValue);
+			});
+		});
+		var maxGroupTotal = d3.max(d3.values(groupTotals));	
+		
+		// tickCircleValues
+		tickCircleValues   = [];
+		for (var i=0; i<=maxValue; i++) {
+			tickCircleValues.push(i);
+		}
+
+		// tickCircleValues (dont know the difference really?)
+		tickValues         = [];	
+		tickValues = tickCircleValues;
+		tickValues.push(maxValue + 1)		
+		
+		// Domain
+		domain = [0, maxValue+1];
+		
+		// Scale
+		barScale = d3.scale.linear()
+			.domain(domain)
+			.range([0, barHeight]);
 	}
 
 	function my(selection) {
@@ -86,10 +118,20 @@ d3.ez.radialBarChart = function module() {
 			tickCircles = d3.select('.tickCircles')
 				.selectAll('circle')
 				.data(tickCircleValues)
-				.enter()
+				
+			tickCircles.enter()
 				.append('circle')
-				.attr('r', function(d) {return barScale(d);})
 				.style('fill', 'none');
+			
+			tickCircles.transition()
+				.attr('r', function(d) {return barScale(d);})
+				.ease(transition.ease)
+				.duration(transition.duration);
+			
+			tickCircles.exit()
+				.remove();
+			
+			
 			
 			// Layer enter/exit/update
 			var layers = d3.select('.layers')
