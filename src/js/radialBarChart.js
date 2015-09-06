@@ -40,27 +40,16 @@ d3.ez.radialBarChart = function module() {
 
 	function init(data) {
 		// bars
-		keys = d3.values(data[0])[1].map(function(d) { return d.key; });
+		keys = d3.values(data)[1].map(function(d) { return d.key; });
 		numBars = keys.length;
 
 		// Radius of the key labels
 		labelRadius = barHeight * 1.025;
 	
-		// Totals MAx, etc
+		// Totals Max, etc
 		var categoryTotals = [];
 		var groupTotals = [];
-		var maxValue = 0;
-		d3.map(data).values().forEach(function(d) {
-			grp = d.key;
-			d.values.forEach(function(d) {
-				categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === 'undefined' ? 0 : categoryTotals[d.key]);
-				categoryTotals[d.key] += d.value;		
-				groupTotals[grp] = (typeof(groupTotals[grp]) === 'undefined' ? 0 : groupTotals[grp]);
-				groupTotals[grp] += d.value;
-				maxValue = (d.value > maxValue ? d.value : maxValue);
-			});
-		});
-		var maxGroupTotal = d3.max(d3.values(groupTotals));	
+		var maxValue = d3.max(data.values, function(d) { return d.value;} );	
 		
 		// tickCircleValues
 		tickCircleValues   = [];
@@ -91,8 +80,6 @@ d3.ez.radialBarChart = function module() {
 			
 			// Cut the data in different ways....
 			init(data);
-			
-			if(reverseLayerOrder) data.reverse();
 			
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
@@ -133,48 +120,30 @@ d3.ez.radialBarChart = function module() {
 			
 			tickCircles.exit()
 				.remove();
-			
-			
-			
-			// Layer enter/exit/update
-			var layers = d3.select('.layers')
-				.selectAll('g.layer')
-				.data(data);
 
-			layers.enter()
-				.append('g')
-				.attr('class', function(d, i) {
-					return 'layer-' + i;
-				})
-				.classed('layer', true)
-				.on("mouseover", dispatch.customHover);
-
-			layers.exit()
-				.remove();
-
+			// Arc Generator
+			var arc = d3.svg.arc()
+				.innerRadius(0)
+				.outerRadius(function(d, i) { return barScale(d.value); })
+				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });			
+			
 			// Segment enter/exit/update
-			var segments = layers
+			var segments = d3.select('.layers')
 				.selectAll('path')
-				.data(function(d) {
-					return d3.values(d)[1].map(function(d) { return d.value; });
-				});
+				.data(data.values);
 
 			segments.enter()
 				.append('path')
 				.style('fill', function(d, i) {
 					if(!colors) return;
 					return colors[i % colors.length];
-				});
+				})
+				.classed('layer', true)
+				.on("mouseover", dispatch.customHover);
 
 			segments.exit()
 				.remove();
-
-			// Arc Generator
-			var arc = d3.svg.arc()
-				.innerRadius(0)
-				.outerRadius(function(d, i) { return barScale(d); })
-				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
-				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });
 			
 			segments.transition()
 				.ease(transition.ease)

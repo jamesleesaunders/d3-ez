@@ -25,16 +25,10 @@
 .radialBarChart path {
 	fill: none;
 }
-.radialBarChart .layer-0 path {
+.radialBarChart path.layer {
 	fill: steelblue;
 	stroke-width: 1px;
 	stroke: #333333;	
-}
-.radialBarChart .layer-1 path {
-	fill: white !important;
-	opacity: 0.3;
-	stroke-width: 1px;
-	stroke: #333333;
 }
 .radialBarChart circle.outerCircle {
 	stroke: #aaa;

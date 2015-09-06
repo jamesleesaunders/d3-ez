@@ -36,31 +36,54 @@ d3.ez.radialBarChart = function module() {
 	var reverseLayerOrder  = false;
 	var colors             = d3.ez.colors.categorical(4);		
 	var capitalizeLabels   = false;
-	var domain             = [0, 100];
-	var tickValues         = undefined;
 	var colorLabels        = false;
-	var tickCircleValues   = [];
 	var transition         = {ease: "bounce", duration: 500};
 	var classed            = 'radialBarChart';
+	
+	// To sort!
+	var tickValues         = [];	
+	var tickCircleValues   = [];	
+	var domain             = [];
 	
 	// Scales & other useful things
 	var numBars     = null;
 	var barScale    = null;
 	var keys        = null;
 	var labelRadius = 0;
+	
+	var dispatch   = d3.dispatch("customHover");
 
-	function init(d) {
-		barScale = d3.scale.linear()
-			.domain(domain)
-			.range([0, barHeight]);
-
-		// keys = d3.map(d[0].data).keys();
-		keys = d3.values(d[0])[1].map(function(d) { return d.key; });
-		
+	function init(data) {
+		// bars
+		keys = d3.values(data)[1].map(function(d) { return d.key; });
 		numBars = keys.length;
 
 		// Radius of the key labels
-		labelRadius = barHeight * 1.025;   
+		labelRadius = barHeight * 1.025;
+	
+		// Totals Max, etc
+		var categoryTotals = [];
+		var groupTotals = [];
+		var maxValue = d3.max(data.values, function(d) { return d.value;} );	
+		
+		// tickCircleValues
+		tickCircleValues   = [];
+		for (var i=0; i<=maxValue; i++) {
+			tickCircleValues.push(i);
+		}
+
+		// tickCircleValues (dont know the difference really?)
+		tickValues         = [];	
+		tickValues = tickCircleValues;
+		tickValues.push(maxValue + 1)		
+		
+		// Domain
+		domain = [0, maxValue+1];
+		
+		// Scale
+		barScale = d3.scale.linear()
+			.domain(domain)
+			.range([0, barHeight]);
 	}
 
 	function my(selection) {
@@ -72,7 +95,6 @@ d3.ez.radialBarChart = function module() {
 			
 			// Cut the data in different ways....
 			init(data);
-			if(reverseLayerOrder) data.reverse();
 			
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
@@ -101,49 +123,42 @@ d3.ez.radialBarChart = function module() {
 			tickCircles = d3.select('.tickCircles')
 				.selectAll('circle')
 				.data(tickCircleValues)
-				.enter()
+				
+			tickCircles.enter()
 				.append('circle')
-				.attr('r', function(d) {return barScale(d);})
 				.style('fill', 'none');
 			
-			// Layer enter/exit/update
-			var layers = d3.select('.layers')
-				.selectAll('g.layer')
-				.data(data);
-
-			layers.enter()
-				.append('g')
-				.attr('class', function(d, i) {
-					return 'layer-' + i;
-				})
-				.classed('layer', true);
-
-			layers.exit()
+			tickCircles.transition()
+				.attr('r', function(d) {return barScale(d);})
+				.ease(transition.ease)
+				.duration(transition.duration);
+			
+			tickCircles.exit()
 				.remove();
 
+			// Arc Generator
+			var arc = d3.svg.arc()
+				.innerRadius(0)
+				.outerRadius(function(d, i) { return barScale(d.value); })
+				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });			
+			
 			// Segment enter/exit/update
-			var segments = layers
+			var segments = d3.select('.layers')
 				.selectAll('path')
-				.data(function(d) {
-					return d3.values(d)[1].map(function(d) { return d.value; });
-				});
+				.data(data.values);
 
 			segments.enter()
 				.append('path')
 				.style('fill', function(d, i) {
 					if(!colors) return;
 					return colors[i % colors.length];
-				});
+				})
+				.classed('layer', true)
+				.on("mouseover", dispatch.customHover);
 
 			segments.exit()
 				.remove();
-
-			// Arc Generator
-			var arc = d3.svg.arc()
-				.innerRadius(0)
-				.outerRadius(function(d, i) { return barScale(d); })
-				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
-				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });
 			
 			segments.transition()
 				.ease(transition.ease)
@@ -253,6 +268,8 @@ d3.ez.radialBarChart = function module() {
 		return my;   
 	};
 
+	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };
 
@@ -276,22 +293,46 @@ d3.ez.circularHeatChart = function module() {
 	var height             = 800;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
 	var innerRadius        = 50
-	var numSegments        = 24;
-	var segmentHeight      = 20;
-	var domain             = null;
-	var range              = ["white", "red"];
-	var accessor           = function(d) {return d;};
-	var radialLabels       = segmentLabels = [];
+	var segmentHeight      = 30;
 	var classed            = "circularHeatChart";	
+	var colors              = ["white", "blue"];
+	
+	var domain             = null;
+	var radialLabels       = [];
+	var numRadials         = 24;
+	var segmentLabels      = [];
+	var numSegments        = 24;
+
+	var accessor           = function(d) {return d;};
+	
+	var dispatch   = d3.dispatch("customHover");
+
+	function init(data) {
+		radialLabels = data.map(function(d) {return d.key; });
+		
+		numRadials = radialLabels.length;
+		
+		segmentLabels = d3.values(data[0].values).map(function(d) { return d.key; });
+		
+		numSegments = segmentLabels.length;
+		
+		maxValue = 10;
+		
+		// Domain
+		domain = [0, maxValue];
+		
+	}	
+	
 	
 	function my(selection) {
 		selection.each(function(data) {
 			//width = 2 * barHeight + 50;
 			//height = 2 * barHeight + 50;
 			//var chartW = width - margin.left - margin.right;
-			//var chartH = height - margin.top - margin.bottom;			
+			//var chartH = height - margin.top - margin.bottom;	
+			init(data);
 
-			var offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
+			var offset = innerRadius + (numRadials * segmentHeight);
 
 			// Create SVG element (if it does not exist already)	
 
@@ -302,7 +343,7 @@ d3.ez.circularHeatChart = function module() {
 					.classed(classed, true)
 				
 				var container = svg.append("g").classed("container", true);
-					container.append("g").classed("segments", true);
+					container.append("g").classed("rings", true);
 					container.append("g").classed("radialLabels", true)
 					container.append("g").classed("segmentLabels", true);
 			}	
@@ -314,36 +355,41 @@ d3.ez.circularHeatChart = function module() {
 			svg.select(".container")
 				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
-			var autoDomain = false;
-			if (domain === null) {
-				domain = d3.extent(data, accessor);
-				autoDomain = true;
-			}
-
 			var color = d3.scale.linear()
 				.domain(domain)
-				.range(range);
-
-			if(autoDomain)
-				domain = null;
+				.range(colors);
 			
 			// Arc Generator
 			var arc = d3.svg.arc()
-				.innerRadius(function(d, i) { return innerRadius + Math.floor(i/numSegments) * segmentHeight; })
-				.outerRadius(function(d, i) { return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight; })
+				.innerRadius(function(d, i) { return innerRadius + d.ring * segmentHeight; })
+				.outerRadius(function(d, i) { return innerRadius + segmentHeight + d.ring * segmentHeight; })
 				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numSegments; })
-				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });			
 			
-			// Segments
-			d3.select(".segments").selectAll("path")
+			// Rings
+			d3.select(".rings").selectAll("g")
 				.data(data)
+				.enter()
+				.append("g")
+				.classed("ring", true)
+				.on("mouseover", dispatch.customHover);
+			
+			// Ring Segments
+			d3.selectAll(".ring").selectAll("path")
+				.data(function(d, i) {
+					// Add index (used to calculate ring number)
+					for(j = 0; j < numSegments; j++) {
+						d.values[j].ring = i;
+					}
+					return d.values; 
+				} )
 				.enter()
 				.append("path")
 				.attr("d", arc)
-				.attr("fill", function(d) {return color(accessor(d));});
+				.attr("fill", function(d) { return color(accessor(d.value)); });
 
 			// Unique id so that the text path defs are unique - is there a better way to do this?
-			var id = d3.selectAll(".circular-heat")[0].length;
+			var id = d3.selectAll(".circularHeat")[0].length;
 
 			// Radial Labels
 			var lsa = 0.01; // Label start angle
@@ -355,7 +401,7 @@ d3.ez.circularHeatChart = function module() {
 				.enter()
 				.append("def")
 				.append("path")
-				.attr("id", function(d, i) {return "radial-label-path-"+id+"-"+i;})
+				.attr("id", function(d, i) {return "radialLabelPath" + id + "-" + i;})
 				.attr("d", function(d, i) {
 					var r = innerRadius + ((i + 0.2) * segmentHeight);
 					return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + 
@@ -367,18 +413,18 @@ d3.ez.circularHeatChart = function module() {
 				.enter()
 				.append("text")
 				.append("textPath")
-				.attr("xlink:href", function(d, i) {return "#radial-label-path-"+id+"-"+i;})
+				.attr("xlink:href", function(d, i) {return "#radialLabelPath" + id + "-" + i;})
 				.text(function(d) {return d;});
 
 			// Segment Labels
 			var segmentLabelOffset = 2;
-			var r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
+			var r = innerRadius + (numRadials * segmentHeight) + segmentLabelOffset;
 			var segLabels = d3.select(".segmentLabels")
 				.classed("labels", true);
 
 			segLabels.append("def")
 				.append("path")
-				.attr("id", "segment-label-path-"+id)
+				.attr("id", "segmentLabelPath" + id)
 				.attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
 			segLabels.selectAll("text")
@@ -386,7 +432,7 @@ d3.ez.circularHeatChart = function module() {
 				.enter()
 				.append("text")
 				.append("textPath")
-				.attr("xlink:href", "#segment-label-path-"+id)
+				.attr("xlink:href", "#segmentLabelPath" + id)
 				.attr("startOffset", function(d, i) {return i * 100 / numSegments + "%";})
 				.text(function(d) {return d;});
 		});
@@ -404,50 +450,32 @@ d3.ez.circularHeatChart = function module() {
 		innerRadius = _;
 		return my;
 	};
-
-	my.numSegments = function(_) {
-		if (!arguments.length) return numSegments;
-		numSegments = _;
-		return my;
-	};
-
+	
 	my.segmentHeight = function(_) {
 		if (!arguments.length) return segmentHeight;
 		segmentHeight = _;
 		return my;
 	};
 
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return my;
+    };
+
 	my.domain = function(_) {
 		if (!arguments.length) return domain;
 		domain = _;
 		return my;
-	};
-
-    my.range = function(_) {
-        if (!arguments.length) return range;
-        range = _;
-        return my;
-    };
-
-    my.radialLabels = function(_) {
-    	if (!arguments.length) return radialLabels;
-    	if (_ == null) _ = [];
-    	radialLabels = _;
-    	return my;
-    };
-
-    my.segmentLabels = function(_) {
-    	if (!arguments.length) return segmentLabels;
-    	if (_ == null) _ = [];
-    	segmentLabels = _;
-    	return my;
-    };
-
+	};    
+    
     my.accessor = function(_) {
     	if (!arguments.length) return accessor;
     	accessor = _;
     	return my;
     };
+    
+	d3.rebind(my, dispatch, "on");
 
     return my;
 };
@@ -903,7 +931,8 @@ d3.ez.groupedBarChart = function module() {
 		return this;
 	};
 	
-	d3.rebind(my, dispatch, "on");	
+	d3.rebind(my, dispatch, "on");
+	
 	return my;	
 };
 
