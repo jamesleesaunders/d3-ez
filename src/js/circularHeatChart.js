@@ -32,16 +32,12 @@ d3.ez.circularHeatChart = function module() {
 
 	function init(data) {
 		radialLabels = data.map(function(d) {return d.key; });
-		console.log(radialLabels);
 		
 		numRadials = radialLabels.length;
-		console.log(numRadials);
 		
 		segmentLabels = d3.values(data[0].values).map(function(d) { return d.key; });
-		console.log(segmentLabels);
 		
 		numSegments = segmentLabels.length;
-		console.log(numSegments);
 		
 		maxValue = 10;
 		
@@ -59,7 +55,7 @@ d3.ez.circularHeatChart = function module() {
 			//var chartH = height - margin.top - margin.bottom;	
 			init(data);
 
-			var offset = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight;
+			var offset = innerRadius + (numRadials * segmentHeight);
 
 			// Create SVG element (if it does not exist already)	
 
@@ -70,7 +66,7 @@ d3.ez.circularHeatChart = function module() {
 					.classed(classed, true)
 				
 				var container = svg.append("g").classed("container", true);
-					container.append("g").classed("segments", true);
+					container.append("g").classed("rings", true);
 					container.append("g").classed("radialLabels", true)
 					container.append("g").classed("segmentLabels", true);
 			}	
@@ -82,41 +78,37 @@ d3.ez.circularHeatChart = function module() {
 			svg.select(".container")
 				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
 
-			var autoDomain = false;
-			if (domain === null) {
-				domain = d3.extent(data, accessor);
-				autoDomain = true;
-			}
-
 			var color = d3.scale.linear()
 				.domain(domain)
 				.range(colors);
-
-			if(autoDomain)
-				domain = null;
 			
 			// Arc Generator
 			var arc = d3.svg.arc()
-				.innerRadius(function(d, i) { return innerRadius + Math.floor(i/numSegments) * segmentHeight; })
-				.outerRadius(function(d, i) { return innerRadius + segmentHeight + Math.floor(i/numSegments) * segmentHeight; })
+				.innerRadius(function(d, i) { return innerRadius + d.index * segmentHeight; })
+				.outerRadius(function(d, i) { return innerRadius + segmentHeight + d.index * segmentHeight; })
 				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numSegments; })
-				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });
+				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });			
 			
-			// Segments
-			d3.select(".segments").selectAll("path")
-				.data(function(data) {
-					values = [];
-					for(i=0; i<7; i++) {
-						//values += data[i].values;
-						values = values.concat(data[i].values);
+			// Rings
+			d3.select(".rings").selectAll("g")
+				.data(data)
+				.enter()
+				.append("g")
+				.classed("ring", true);
+			
+			// Ring Segments
+			d3.selectAll(".ring").selectAll("path")
+				.data(function(d, i) {
+					// Add index (used to calculate ring number)
+					for(j = 0; j < numSegments; j++) {
+						d.values[j].index = i;
 					}
-					console.log(values);
-					return values; 
-				})
+					return d.values; 
+				} )
 				.enter()
 				.append("path")
 				.attr("d", arc)
-				.attr("fill", function(d) {return color(accessor(d.value));});
+				.attr("fill", function(d) { return color(accessor(d.value)); });
 
 			// Unique id so that the text path defs are unique - is there a better way to do this?
 			var id = d3.selectAll(".circularHeat")[0].length;
@@ -148,7 +140,7 @@ d3.ez.circularHeatChart = function module() {
 
 			// Segment Labels
 			var segmentLabelOffset = 2;
-			var r = innerRadius + Math.ceil(data.length / numSegments) * segmentHeight + segmentLabelOffset;
+			var r = innerRadius + (numRadials * segmentHeight) + segmentLabelOffset;
 			var segLabels = d3.select(".segmentLabels")
 				.classed("labels", true);
 
