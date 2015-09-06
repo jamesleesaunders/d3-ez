@@ -35,6 +35,8 @@ d3.ez.radialBarChart = function module() {
 	var barScale    = null;
 	var keys        = null;
 	var labelRadius = 0;
+	
+	var dispatch   = d3.dispatch("customHover");
 
 	function init(data) {
 		// bars
@@ -89,6 +91,7 @@ d3.ez.radialBarChart = function module() {
 			
 			// Cut the data in different ways....
 			init(data);
+			
 			if(reverseLayerOrder) data.reverse();
 			
 			// Create SVG element (if it does not exist already)			
@@ -143,7 +146,8 @@ d3.ez.radialBarChart = function module() {
 				.attr('class', function(d, i) {
 					return 'layer-' + i;
 				})
-				.classed('layer', true);
+				.classed('layer', true)
+				.on("mouseover", dispatch.customHover);
 
 			layers.exit()
 				.remove();
@@ -280,5 +284,7 @@ d3.ez.radialBarChart = function module() {
 		return my;   
 	};
 
+	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

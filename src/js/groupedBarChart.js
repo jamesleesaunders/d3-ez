@@ -280,6 +280,7 @@ d3.ez.groupedBarChart = function module() {
 		return this;
 	};
 	
-	d3.rebind(my, dispatch, "on");	
+	d3.rebind(my, dispatch, "on");
+	
 	return my;	
 };

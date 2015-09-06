@@ -28,7 +28,9 @@ d3.ez.circularHeatChart = function module() {
 	var segmentLabels      = [];
 	var numSegments        = 24;
 
-	var accessor           = function(d) {return d;};	
+	var accessor           = function(d) {return d;};
+	
+	var dispatch   = d3.dispatch("customHover");
 
 	function init(data) {
 		radialLabels = data.map(function(d) {return d.key; });
@@ -84,8 +86,8 @@ d3.ez.circularHeatChart = function module() {
 			
 			// Arc Generator
 			var arc = d3.svg.arc()
-				.innerRadius(function(d, i) { return innerRadius + d.index * segmentHeight; })
-				.outerRadius(function(d, i) { return innerRadius + segmentHeight + d.index * segmentHeight; })
+				.innerRadius(function(d, i) { return innerRadius + d.ring * segmentHeight; })
+				.outerRadius(function(d, i) { return innerRadius + segmentHeight + d.ring * segmentHeight; })
 				.startAngle(function(d, i) { return (i * 2 * Math.PI) / numSegments; })
 				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });			
 			
@@ -94,14 +96,15 @@ d3.ez.circularHeatChart = function module() {
 				.data(data)
 				.enter()
 				.append("g")
-				.classed("ring", true);
+				.classed("ring", true)
+				.on("mouseover", dispatch.customHover);
 			
 			// Ring Segments
 			d3.selectAll(".ring").selectAll("path")
 				.data(function(d, i) {
 					// Add index (used to calculate ring number)
 					for(j = 0; j < numSegments; j++) {
-						d.values[j].index = i;
+						d.values[j].ring = i;
 					}
 					return d.values; 
 				} )
@@ -196,6 +199,8 @@ d3.ez.circularHeatChart = function module() {
     	accessor = _;
     	return my;
     };
+    
+	d3.rebind(my, dispatch, "on");
 
     return my;
 };
