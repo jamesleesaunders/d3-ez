@@ -85,5 +85,6 @@ d3.ez.htmlList = function module() {
 	};
 	
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

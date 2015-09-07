@@ -197,6 +197,7 @@ d3.ez.punchCard = function module() {
 		return my;
 	};
 	
-	d3.rebind(my, dispatch, "on");	
+	d3.rebind(my, dispatch, "on");
+
 	return my;
 };

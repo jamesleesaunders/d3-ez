@@ -149,5 +149,7 @@ d3.ez.timeSeriesChart = function module() {
 		return this;
 	};	
 	
+	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

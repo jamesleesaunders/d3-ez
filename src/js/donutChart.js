@@ -226,5 +226,6 @@ d3.ez.donutChart = function module() {
 	};	
    
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

@@ -95,5 +95,6 @@ d3.ez.htmlTable = function module() {
 	};
 	
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

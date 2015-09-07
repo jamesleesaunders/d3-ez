@@ -164,5 +164,6 @@ d3.ez.discreteBarChart = function module() {
 	};		
 			
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };
