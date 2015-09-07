@@ -16,28 +16,28 @@ d3.ez.donutChart = function module() {
 	var svg;
 	
 	// Default settings (some configurable via Setters below)	
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 90, bottom: 20, left: 90};
-	var transition        = {ease: "cubic", duration: 300};
-	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
-	var innerRadius       = 70;
-	var colors            = d3.ez.colors.categorical(4);
-	var classed           = "donutChart";
-	
-	// To sort...
-	var strokeColor       = "#FFF";
-	var strokeWidth       = 4;
-	var enableLabels      = true;
-	var labelGroupOffset  = 20;
-	var labelColor        = "#333";
-	var labelNameOffset   = 0;
-	var tickColor         = "#333";
-	var tickWidth         = 1;
-	var tickOffset        = [0, 0, 2, 8]; // [x1, x2, y1, y2]
-	var labelValueOffset  = 16;
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 90, bottom: 20, left: 90};
+	var transition         = {ease: "cubic", duration: 300};
+	var classed            = "donutChart";
+	var colors             = d3.ez.colors.categorical(4);	
+	var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
+	var innerRadius        = 70;
 
-	var dispatch = d3.dispatch("customHover");
+	// To sort...
+	var strokeColor        = "#FFF";
+	var strokeWidth        = 4;
+	var enableLabels       = true;
+	var labelGroupOffset   = 20;
+	var labelColor         = "#333";
+	var labelNameOffset    = 0;
+	var tickColor          = "#333";
+	var tickWidth          = 1;
+	var tickOffset         = [0, 0, 2, 8]; // [x1, x2, y1, y2]
+	var labelValueOffset   = 16;
+
+	var dispatch           = d3.dispatch("customHover");
 
 	function my(selection) {
 		selection.each(function(data) {

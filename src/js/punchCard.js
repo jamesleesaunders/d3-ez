@@ -18,17 +18,18 @@ d3.ez.punchCard = function module() {
 	var svg;
 	
 	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 80, bottom: 20, left: 20};
-	var maxRadius         = 9;
-	var minRadius         = 2;
-	var color             = "steelblue";
-	var formatTick        = d3.format("0000");
-	var useGlobalScale    = true;
-	var classed           = "punchCard";	
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 80, bottom: 20, left: 20};
+	var transition         = {ease: "bounce", duration: 500};
+	var classed            = "punchCard";
+	var color              = "steelblue";	
+	var maxRadius          = 9;
+	var minRadius          = 2;
+	var formatTick         = d3.format("0000");
+	var useGlobalScale     = true;
 	
-	var dispatch   = d3.dispatch("customHover");
+	var dispatch           = d3.dispatch("customHover");
 
 	function my(selection) {
 		selection.each(function(data) {

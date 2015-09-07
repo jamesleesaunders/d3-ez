@@ -16,17 +16,18 @@ d3.ez.groupedBarChart = function module() {
 	var svg;
 	
 	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 70, bottom: 20, left: 40};
-	var transition        = {ease: "bounce", duration: 500};
-	var colors            = d3.ez.colors.categorical(4);
-	var gap               = 0;
-	var yAxisLabel        = null;
-	var groupType         = "clustered";
-	var classed           = "groupedBarChart";	
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 70, bottom: 20, left: 40};
+	var transition         = {ease: "bounce", duration: 500};
+	var classed            = "groupedBarChart";	
+	var colors             = d3.ez.colors.categorical(4);
+	var gap                = 0;
+	var yAxisLabel         = null;
+	var groupType          = "clustered";
+
 	
-	var dispatch   = d3.dispatch("customHover");	
+	var dispatch           = d3.dispatch("customHover");	
 	
 	function my(selection) {
 		selection.each(function(data) {

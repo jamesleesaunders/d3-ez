@@ -17,14 +17,17 @@ d3.ez.timeSeriesChart = function module() {
 	var svg;	
 	
 	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
-	var color             = 'steelblue';
-	var xValue            = function(d) { return d[0]; };
-	var yValue            = function(d) { return d[1]; };
-	var classed           = "timeSeriesChart";
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 20, bottom: 20, left: 40};
+	var transition         = {ease: "bounce", duration: 500};
+	var classed            = "timeSeriesChart";	
+	var color              = "steelblue";
+	var xValue             = function(d) { return d[0]; };
+	var yValue             = function(d) { return d[1]; };
 
+	var dispatch           = d3.dispatch("customHover");
+	
 	function my(selection) {
 		selection.each(function(data) {
 			var chartW = width - margin.left - margin.right;

@@ -17,26 +17,24 @@ d3.ez.radialBarChart = function module() {
 	var width              = 400;
 	var height             = 300;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
-	var barHeight          = 100;
-	var reverseLayerOrder  = false;
-	var colors             = d3.ez.colors.categorical(4);		
-	var capitalizeLabels   = false;
-	var colorLabels        = false;
 	var transition         = {ease: "bounce", duration: 500};
 	var classed            = 'radialBarChart';
-	
-	// To sort!
+	var colors             = d3.ez.colors.categorical(4);	
+	var barHeight          = 100;
+	var reverseLayerOrder  = false;
+	var capitalizeLabels   = false;
+	var colorLabels        = false;
+
+	// Configured via init()
 	var tickValues         = [];	
 	var tickCircleValues   = [];	
 	var domain             = [];
+	var numBars            = null;
+	var barScale           = null;
+	var keys               = null;
+	var labelRadius        = 0;
 	
-	// Scales & other useful things
-	var numBars     = null;
-	var barScale    = null;
-	var keys        = null;
-	var labelRadius = 0;
-	
-	var dispatch   = d3.dispatch("customHover");
+	var dispatch           = d3.dispatch("customHover");
 
 	function init(data) {
 		// bars

@@ -14,10 +14,10 @@ d3.ez.htmlTable = function module() {
 	var table;
 	
 	// Default settings (some configurable via Setters below)
-	var classed           = "htmlTable";
-	var width             = 800;
+	var classed            = "htmlTable";
+	var width              = 800;
 	
-	var dispatch   = d3.dispatch("customHover");
+	var dispatch           = d3.dispatch("customHover");
 	
 	function my(selection) {	
 		selection.each(function(data) {

@@ -17,20 +17,22 @@ d3.ez.circularHeatChart = function module() {
 	var width              = 800;
 	var height             = 800;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
+	var transition         = {ease: "bounce", duration: 500};	
+	var classed            = "circularHeatChart";
+	var colors             = ["white", "blue"];
 	var innerRadius        = 50
 	var segmentHeight      = 30;
-	var classed            = "circularHeatChart";	
-	var colors              = ["white", "blue"];
-	
+
+	// Configured via init()
 	var domain             = null;
 	var radialLabels       = [];
 	var numRadials         = 24;
 	var segmentLabels      = [];
 	var numSegments        = 24;
-
-	var accessor           = function(d) {return d;};
 	
-	var dispatch   = d3.dispatch("customHover");
+	var dispatch           = d3.dispatch("customHover");
+	
+	var accessor           = function(d) {return d;};
 
 	function init(data) {
 		radialLabels = data.map(function(d) {return d.key; });

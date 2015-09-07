@@ -13,9 +13,8 @@ d3.ez.htmlList = function module() {
 	var list;
 	
 	// Default settings (some configurable via Setters below)
-	var classed            = "htmlList";
-	
-	var dispatch   = d3.dispatch("customHover");
+	var classed             = "htmlList";
+	var dispatch            = d3.dispatch("customHover");
 	
 	function my(selection) {	
 		selection.each(function(data) {

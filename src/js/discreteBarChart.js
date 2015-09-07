@@ -16,15 +16,15 @@ d3.ez.discreteBarChart = function module() {
 	var svg;
 	
 	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
-	var transition        = {ease: "bounce", duration: 500};
-	var colors            = d3.ez.colors.categorical(4);	
-	var gap               = 0;
-	var classed           = "discreteBarChart";
-	
-	var dispatch   = d3.dispatch("customHover");
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 20, bottom: 20, left: 40};
+	var transition         = {ease: "bounce", duration: 500};
+	var classed            = "discreteBarChart";	
+	var colors             = d3.ez.colors.categorical(4);	
+	var gap                = 0;
+
+	var dispatch           = d3.dispatch("customHover");
 	
 	function my(selection) {
 		selection.each(function(data) {
