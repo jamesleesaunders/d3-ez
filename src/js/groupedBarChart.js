@@ -12,10 +12,10 @@
  * 	.call(myChart);
  */
 d3.ez.groupedBarChart = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function) 
 	var svg;
 	
-	// Default settings (some configurable via Setters below)
+	// Default Options (Configurable via setters)
 	var width              = 400;
 	var height             = 300;
 	var margin             = {top: 20, right: 70, bottom: 20, left: 40};
@@ -26,62 +26,81 @@ d3.ez.groupedBarChart = function module() {
 	var yAxisLabel         = null;
 	var groupType          = "clustered";
 
+	// Data Options (Populated by 'init' function)	
+	var chartW = 0;
+	var chartH = 0;
+	var groupNames = null;
+	var categoryNames = [];
+	var categoryTotals = [];
+	var groupTotals = [];
+	var maxValue = 0;
+	var maxGroupTotal = null;
+	var xScale = null;
+	var yScale = null;
+	var xAxis = null;
+	var yAxis = null;
+	var colorScale = null;
 	
+	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");	
+	
+	function init(data) {
+		chartW = width - margin.left - margin.right;
+		chartH = height - margin.top - margin.bottom;
+		
+		// Group and Category Names
+		groupNames = data.map(function(d) { return d.key; });
+		
+		categoryNames = [];
+		data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+			categoryNames[i] = d.key;
+		});			
+	
+		// Group and Category Totals
+		categoryTotals = [];
+		groupTotals = [];
+		maxValue = 0;
+		d3.map(data).values().forEach(function(d) {
+			grp = d.key;
+			d.values.forEach(function(d) {
+				categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === 'undefined' ? 0 : categoryTotals[d.key]);
+				categoryTotals[d.key] += d.value;		
+				groupTotals[grp] = (typeof(groupTotals[grp]) === 'undefined' ? 0 : groupTotals[grp]);
+				groupTotals[grp] += d.value;
+				maxValue = (d.value > maxValue ? d.value : maxValue);
+			});
+		});
+		maxGroupTotal = d3.max(d3.values(groupTotals));
+		
+		// X & Y Scales
+		xScale = d3.scale.ordinal()
+			.rangeRoundBands([0, chartW], .1)
+			.domain(groupNames);
+					
+		yScale = d3.scale.linear()
+    		.range([chartH, 0])
+    		.domain([0, (groupType == 'stacked' ? maxGroupTotal : maxValue)]);
+		
+		// X & Y Axis
+		xAxis = d3.svg.axis()
+			.scale(xScale)
+			.orient("bottom");
+		
+		yAxis = d3.svg.axis()
+			.scale(yScale)
+			.orient("left");
+		
+		// Colour Scale
+		colorScale = d3.scale.ordinal()
+			.range(colors)
+			.domain(categoryNames);
+	}	
 	
 	function my(selection) {
 		selection.each(function(data) {
-			var chartW = width - margin.left - margin.right;
-			var chartH = height - margin.top - margin.bottom;
-			
-			// Cut the data in different ways....
-			// Group and Category Names
-			var groupNames = data.map(function(d) { return d.key; });
-			
-			var categoryNames = [];
-			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-				categoryNames[i] = d.key;
-			});			
-		
-			// Group and Category Totals
-			var categoryTotals = [];
-			var groupTotals = [];
-			var maxValue = 0;
-			d3.map(data).values().forEach(function(d) {
-				grp = d.key;
-				d.values.forEach(function(d) {
-					categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === 'undefined' ? 0 : categoryTotals[d.key]);
-					categoryTotals[d.key] += d.value;		
-					groupTotals[grp] = (typeof(groupTotals[grp]) === 'undefined' ? 0 : groupTotals[grp]);
-					groupTotals[grp] += d.value;
-					maxValue = (d.value > maxValue ? d.value : maxValue);
-				});
-			});
-			var maxGroupTotal = d3.max(d3.values(groupTotals));
-			
-			// X & Y Scales
-			var xScale = d3.scale.ordinal()
-				.rangeRoundBands([0, chartW], .1)
-				.domain(groupNames);
-						
-			var yScale = d3.scale.linear()
-	    		.range([chartH, 0])
-	    		.domain([0, (groupType == 'stacked' ? maxGroupTotal : maxValue)]);
-			
-			// X & Y Axis
-			var xAxis = d3.svg.axis()
-				.scale(xScale)
-				.orient("bottom");
-			
-			var yAxis = d3.svg.axis()
-				.scale(yScale)
-				.orient("left");
-			
-			// Colour Scale
-			var colorScale = d3.scale.ordinal()
-				.range(colors)
-				.domain(categoryNames);
-			
+			// Initialise Data
+			init(data);
+
 			// Create SVG element (if it does not exist already)			
 			if (!svg) {
 				svg = d3.select(this)

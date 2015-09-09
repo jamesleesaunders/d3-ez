@@ -9,20 +9,18 @@
  * 	.call(myList);
  */
 d3.ez.htmlList = function module() {
-	// Table container (populated by 'my' function below) 
+	// HTML container (Populated by 'my' function)
 	var list;
 	
-	// Default settings (some configurable via Setters below)
+	// Default Options (Configurable via setters)
 	var classed             = "htmlList";
+	
+	// Dispatch (Custom events)
 	var dispatch            = d3.dispatch("customHover");
 	
 	function my(selection) {	
 		selection.each(function(data) {
-			// If it is a single object, wrap it in an array
-			if (data.constructor !== Array) data = [data];
-			
-			// If the ul list does not exist then create it,
-			// otherwise empty it ready for new data.
+			// Create HTML UL List element (if it does not exist already)
 			if(!list) {
 				list = d3.select(this)
 					.append("ul")

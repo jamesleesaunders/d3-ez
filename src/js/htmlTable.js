@@ -10,28 +10,36 @@
  * 	.call(myTable);
  */
 d3.ez.htmlTable = function module() {
-	// Table container (populated by 'my' function below) 
+	// HTML container (Populated by 'my' function)
 	var table;
 	
-	// Default settings (some configurable via Setters below)
+	// Default Options (Configurable via setters)
 	var classed            = "htmlTable";
 	var width              = 800;
 	
+	// Data Options (Populated by 'init' function)
+	var rowNames = null;
+	var columnNames = [];
+	
+	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");
+	
+	function init(data) {
+		// Cut the data in different ways....
+		rowNames = data.map(function(d) { return d.key; });
+		
+		columnNames = [];
+		data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+			columnNames[i] = d.key;
+		});		
+	}	
 	
 	function my(selection) {	
 		selection.each(function(data) {
-
-			// Cut the data in different ways....
-			var rowNames = data.map(function(d) { return d.key; });
+			// Initialise Data
+			init(data);
 			
-			var columnNames = [];
-			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-				columnNames[i] = d.key;
-			});
-			
-			// If the table does not exist then create it,
-			// otherwise empty it ready for new data.
+			// Create HTML Table element (if it does not exist already)
 			if(!table) {
 				table = d3.select(this)
 					.append("table")

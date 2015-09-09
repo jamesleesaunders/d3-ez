@@ -10,10 +10,10 @@
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.radialBarChart = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function) 
 	var svg;
 
-	// Default settings (some configurable via Setters below)
+	// Default Options (Configurable via setters)
 	var width              = 400;
 	var height             = 300;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
@@ -25,7 +25,7 @@ d3.ez.radialBarChart = function module() {
 	var capitalizeLabels   = false;
 	var colorLabels        = false;
 
-	// Configured via init()
+	// Data Options (Populated by 'init' function)	
 	var tickValues         = [];	
 	var tickCircleValues   = [];	
 	var domain             = [];
@@ -34,6 +34,7 @@ d3.ez.radialBarChart = function module() {
 	var keys               = null;
 	var labelRadius        = 0;
 	
+	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");
 
 	function init(data) {

@@ -10,10 +10,10 @@
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.circularHeatChart = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function) 
 	var svg;
 	
-	// Default settings (some configurable via Setters below)	
+	// Default Options (Configurable via setters)
 	var width              = 800;
 	var height             = 800;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
@@ -23,18 +23,23 @@ d3.ez.circularHeatChart = function module() {
 	var innerRadius        = 50
 	var segmentHeight      = 30;
 
-	// Configured via init()
+	// Data Options (Populated by 'init' function)
 	var domain             = null;
 	var radialLabels       = [];
 	var numRadials         = 24;
 	var segmentLabels      = [];
 	var numSegments        = 24;
+	var offset             = 0;
 	
+	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");
-	
-	var accessor           = function(d) {return d;};
 
 	function init(data) {
+		//width = 2 * barHeight + 50;
+		//height = 2 * barHeight + 50;
+		//var chartW = width - margin.left - margin.right;
+		//var chartH = height - margin.top - margin.bottom;			
+		
 		radialLabels = data.map(function(d) {return d.key; });
 		
 		numRadials = radialLabels.length;
@@ -45,24 +50,18 @@ d3.ez.circularHeatChart = function module() {
 		
 		maxValue = 10;
 		
-		// Domain
 		domain = [0, maxValue];
 		
+		offset = innerRadius + (numRadials * segmentHeight);
 	}	
 	
 	
 	function my(selection) {
 		selection.each(function(data) {
-			//width = 2 * barHeight + 50;
-			//height = 2 * barHeight + 50;
-			//var chartW = width - margin.left - margin.right;
-			//var chartH = height - margin.top - margin.bottom;	
+			// Initialise Data
 			init(data);
 
-			var offset = innerRadius + (numRadials * segmentHeight);
-
-			// Create SVG element (if it does not exist already)	
-
+			// Create SVG element (if it does not exist already)
 			if (!svg) {
 				svg = d3.select(this)
 					.append("svg")
@@ -165,6 +164,8 @@ d3.ez.circularHeatChart = function module() {
 		});
 	}
 
+	var accessor = function(d) {return d;};
+	
 	// Configuration Getters & Setters
 	my.margin = function(_) {
 		if (!arguments.length) return margin;

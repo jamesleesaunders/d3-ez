@@ -12,10 +12,10 @@
  * 	.call(myChart);
  */
 d3.ez.donutChart = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function) 
 	var svg;
 	
-	// Default settings (some configurable via Setters below)	
+	// Default Options (Configurable via setters)
 	var width              = 400;
 	var height             = 300;
 	var margin             = {top: 20, right: 90, bottom: 20, left: 90};
@@ -37,44 +37,60 @@ d3.ez.donutChart = function module() {
 	var tickOffset         = [0, 0, 2, 8]; // [x1, x2, y1, y2]
 	var labelValueOffset   = 16;
 
+	// Data Options (Populated by 'init' function)	
+	var values = null;
+	var categoryNames = null;
+	var colorScale = null;
+	var pie = null;
+	var arc = null;
+	var outerArc = null;
+	var key = null;
+	
+	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");
 
+	function init(data) {
+		values = d3.values(data)[1].map(function(d) { return d.value; });
+		categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
+		
+		// Colour Scale
+		colorScale = d3.scale.ordinal()
+			.range(colors)
+			.domain(categoryNames);
+		
+		pie = d3.layout.pie()
+			.sort(null);
+		
+		arc = d3.svg.arc()
+			.innerRadius(innerRadius)
+			.outerRadius(radius);
+		
+		outerArc = d3.svg.arc()
+			.innerRadius(radius * 0.9)
+			.outerRadius(radius * 0.9);
+	}	
+
+	function key(d, i) { 
+		return data.values[i].key; 
+	};
+	
+	function arcTween(d) {
+		var i = d3.interpolate(this._current, d);
+		this._current = i(0);
+		return function(t) {
+			return arc(i(t));
+		};
+	}
+	
+	function midAngle(d) {
+		return d.startAngle + (d.endAngle - d.startAngle) / 2;
+	}	
+	
 	function my(selection) {
-		selection.each(function(data) {
-			
-			var values = d3.values(data)[1].map(function(d) { return d.value; });
-			var categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
-			
-			// Colour Scale
-			var colorScale = d3.scale.ordinal()
-				.range(colors)
-				.domain(categoryNames);
-			
-			var pie = d3.layout.pie()
-				.sort(null);
-			
-			var arc = d3.svg.arc()
-				.innerRadius(innerRadius)
-				.outerRadius(radius);
-			
-			var outerArc = d3.svg.arc()
-				.innerRadius(radius * 0.9)
-				.outerRadius(radius * 0.9);
-			
-			function arcTween(d) {
-				var i = d3.interpolate(this._current, d);
-				this._current = i(0);
-				return function(t) {
-					return arc(i(t));
-				};
-			}
-			
-			function midAngle(d) {
-				return d.startAngle + (d.endAngle - d.startAngle) / 2;
-			}
-			
-			var key = function(d, i) { return data.values[i].key; };
-				
+		selection.each(function(data) {	
+			// Initialise Data
+			init(data);
+
 			// Create SVG element (if it does not exist already)
 			svg = d3.select(this).select("svg > g");
 			if (svg.empty()) {

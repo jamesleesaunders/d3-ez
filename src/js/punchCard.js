@@ -14,10 +14,10 @@
  * 	.call(myChart);
  */
 d3.ez.punchCard = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function)
 	var svg;
 	
-	// Default settings (some configurable via Setters below)
+	// Default Options (Configurable via setters)
 	var width              = 400;
 	var height             = 300;
 	var margin             = {top: 20, right: 80, bottom: 20, left: 20};
@@ -29,25 +29,38 @@ d3.ez.punchCard = function module() {
 	var formatTick         = d3.format("0000");
 	var useGlobalScale     = true;
 	
+	// Data Options (Populated by 'init' function)
+	var chartW = 0;
+	var chartH = 0;
+	
+	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");
 
+	function init(data) {
+		chartW = width - margin.left - margin.right;
+		chartH = height - margin.top - margin.bottom;		
+	}	
+	
+	function mouseover(d) {
+		var g = d3.select(this).node().parentNode;
+		d3.select(g).selectAll("circle").style("display", "none");
+		d3.select(g).selectAll("text.value").style("display", "block");
+		dispatch.customHover(d);
+	}
+
+	function mouseout(d) {
+		var g = d3.select(this).node().parentNode;
+		d3.select(g).selectAll("circle").style("display","block");
+		d3.select(g).selectAll("text.value").style("display","none");
+	}	
+	
 	function my(selection) {
 		selection.each(function(data) {
-			var chartW = width - margin.left - margin.right;
-			var chartH = height - margin.top - margin.bottom;
+			// If it is a single object, wrap it in an array
+			if (data.constructor !== Array) data = [data];	
 			
-			function mouseover(d) {
-				var g = d3.select(this).node().parentNode;
-				d3.select(g).selectAll("circle").style("display", "none");
-				d3.select(g).selectAll("text.value").style("display", "block");
-				dispatch.customHover(d);
-			}
-
-			function mouseout(d) {
-				var g = d3.select(this).node().parentNode;
-				d3.select(g).selectAll("circle").style("display","block");
-				d3.select(g).selectAll("text.value").style("display","none");
-			}			
+			// Initialise Data
+			init(data);			
 			
 			// Cut the data in different ways....
 		    var allValues = [];
