@@ -98,7 +98,7 @@ d3.ez.donutChart = function module() {
 					.append("svg")
 					.classed("d3ez", true)
 					.classed(classed, true);
-				svg.attr("width", width).attr("height", height)
+				svg.attr("width", width).attr("height", height);
 				svg.append("g")
 					.attr("class", "slices")
 					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");

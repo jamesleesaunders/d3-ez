@@ -20,8 +20,7 @@ d3.ez.radialBarChart = function module() {
 	var transition         = {ease: "bounce", duration: 500};
 	var classed            = 'radialBarChart';
 	var colors             = d3.ez.colors.categorical(4);	
-	var barHeight          = 100;
-	var reverseLayerOrder  = false;
+	var radius             = 150;
 	var capitalizeLabels   = false;
 	var colorLabels        = false;
 
@@ -43,7 +42,7 @@ d3.ez.radialBarChart = function module() {
 		numBars = keys.length;
 
 		// Radius of the key labels
-		labelRadius = barHeight * 1.025;
+		labelRadius = radius * 1.025;
 	
 		// Totals Max, etc
 		var categoryTotals = [];
@@ -67,13 +66,13 @@ d3.ez.radialBarChart = function module() {
 		// Scale
 		barScale = d3.scale.linear()
 			.domain(domain)
-			.range([0, barHeight]);
+			.range([0, radius]);
 	}
 
 	function my(selection) {
 		selection.each(function(data) {	
-			width = 2 * barHeight + 50;
-			height = 2 * barHeight + 50;
+			width = 2 * radius + 50;
+			height = 2 * radius + 50;
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
 			
@@ -85,7 +84,8 @@ d3.ez.radialBarChart = function module() {
 				svg = d3.select(this)
 					.append("svg")
 					.classed("d3ez", true)
-					.classed(classed, true)
+					.classed(classed, true);
+				svg.attr("width", width).attr("height", height);
 				
 				var container = svg.append("g").classed("container", true);
 					container.append("g").classed("tickCircles", true);
@@ -101,7 +101,7 @@ d3.ez.radialBarChart = function module() {
 			
 			// Update the inner dimensions
 			svg.select(".container")
-				.attr('transform', 'translate(' + (margin.left + barHeight) + ',' + (margin.top + barHeight) +')');
+				.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
 			// Concentric tick circles
 			tickCircles = d3.select('.tickCircles')
@@ -113,7 +113,7 @@ d3.ez.radialBarChart = function module() {
 				.style('fill', 'none');
 			
 			tickCircles.transition()
-				.attr('r', function(d) {return barScale(d);})
+				.attr('r', function(d) { return barScale(d);} )
 				.ease(transition.ease)
 				.duration(transition.duration);
 			
@@ -155,11 +155,11 @@ d3.ez.radialBarChart = function module() {
 				.data(keys)
 				.enter()
 				.append('line')
-				.attr('y2', -barHeight)
+				.attr('y2', -radius)
 				.attr('transform', function(d, i) {return 'rotate('+ (i * 360 / numBars) +')';});
 			
 			// Axis
-			var axisScale = d3.scale.linear().domain(domain).range([0, -barHeight]);
+			var axisScale = d3.scale.linear().domain(domain).range([0, -radius]);
 			var axis = d3.svg.axis().scale(axisScale).orient('right');
 			
 			if(tickValues) axis.tickValues(tickValues);
@@ -168,7 +168,7 @@ d3.ez.radialBarChart = function module() {
 
 			// Outer Circle
 			outerCircle = d3.select('.outerCircle')
-				.attr('r', barHeight)
+				.attr('r', radius)
 				.style('fill', 'none');
 
 			// Labels
@@ -192,21 +192,29 @@ d3.ez.radialBarChart = function module() {
 	}
 
 	// Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
+		return this;
+	};
+
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
+		return this;
+	};	
+	
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
 		return my;
 	};
 
-	my.barHeight = function(_) {
-		if (!arguments.length) return barHeight;
-		barHeight = _;
-		return my;
-	};
-
-	my.reverseLayerOrder = function(_) {
-		if (!arguments.length) return reverseLayerOrder;
-		reverseLayerOrder = _;
+	my.radius = function(_) {
+		if (!arguments.length) return radius;
+		radius = _;
 		return my;
 	};
 

@@ -14,8 +14,8 @@ d3.ez.circularHeatChart = function module() {
 	var svg;
 	
 	// Default Options (Configurable via setters)
-	var width              = 800;
-	var height             = 800;
+	var width              = 400;
+	var height             = 300;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
 	var transition         = {ease: "bounce", duration: 500};	
 	var classed            = "circularHeatChart";

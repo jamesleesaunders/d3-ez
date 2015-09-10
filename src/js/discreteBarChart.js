@@ -73,9 +73,6 @@ d3.ez.discreteBarChart = function module() {
 	
 	function my(selection) {
 		selection.each(function(data) {
-			// If it is a single object, wrap it in an array
-			if (data.constructor !== Array) data = [data];
-			
 			// Initialise Data
 			init(data);
 
