@@ -21,8 +21,7 @@ d3.ez.circularHeatChart = function module() {
 	var classed            = "circularHeatChart";
 	var colors             = ["white", "blue"];
 	var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
-	var innerRadius        = 50
-	var segmentHeight      = 30;
+	var innerRadius        = 50;
 
 	// Data Options (Populated by 'init' function)
 	var domain             = null;
@@ -30,17 +29,13 @@ d3.ez.circularHeatChart = function module() {
 	var numRadials         = 24;
 	var segmentLabels      = [];
 	var numSegments        = 24;
-	var offset             = 0;
+	var segmentHeight      = 0;
+	var maxValue           = 0
 	
 	// Dispatch (Custom events)
 	var dispatch           = d3.dispatch("customHover");
 
 	function init(data) {
-		//width = 2 * barHeight + 50;
-		//height = 2 * barHeight + 50;
-		//var chartW = width - margin.left - margin.right;
-		//var chartH = height - margin.top - margin.bottom;			
-		
 		radialLabels = data.map(function(d) {return d.key; });
 		
 		numRadials = radialLabels.length;
@@ -49,11 +44,15 @@ d3.ez.circularHeatChart = function module() {
 		
 		numSegments = segmentLabels.length;
 		
-		maxValue = 10;
+		segmentHeight      = ((radius - innerRadius) / numRadials);
+
+		d3.map(data).values().forEach(function(d) {
+			d.values.forEach(function(d) {
+				maxValue = (d.value > maxValue ? d.value : maxValue);
+			});
+		});
 		
 		domain = [0, maxValue];
-		
-		offset = innerRadius + (numRadials * segmentHeight);
 	}	
 	
 	
@@ -67,7 +66,7 @@ d3.ez.circularHeatChart = function module() {
 				svg = d3.select(this)
 					.append("svg")
 					.classed("d3ez", true)
-					.classed(classed, true)
+					.classed(classed, true);
 				
 				var container = svg.append("g").classed("container", true);
 					container.append("g").classed("rings", true);
@@ -80,8 +79,8 @@ d3.ez.circularHeatChart = function module() {
 			
 			// Update the inner dimensions
 			svg.select(".container")
-				.attr("transform", "translate(" + parseInt(margin.left + offset) + "," + parseInt(margin.top + offset) + ")");
-
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				
 			var color = d3.scale.linear()
 				.domain(domain)
 				.range(colors);
@@ -185,6 +184,7 @@ d3.ez.circularHeatChart = function module() {
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 		return this;
 	};	
 
@@ -197,12 +197,6 @@ d3.ez.circularHeatChart = function module() {
 	my.innerRadius = function(_) {
 		if (!arguments.length) return innerRadius;
 		innerRadius = _;
-		return this;
-	};
-	
-	my.segmentHeight = function(_) {
-		if (!arguments.length) return segmentHeight;
-		segmentHeight = _;
 		return this;
 	};
 

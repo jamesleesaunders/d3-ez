@@ -70,11 +70,7 @@ d3.ez.radialBarChart = function module() {
 	}
 
 	function my(selection) {
-		selection.each(function(data) {	
-			var chartW = width - margin.left - margin.right;
-			var chartH = height - margin.top - margin.bottom;
-			
-			// Cut the data in different ways....
+		selection.each(function(data) {
 			init(data);
 			
 			// Create SVG element (if it does not exist already)			
@@ -83,7 +79,6 @@ d3.ez.radialBarChart = function module() {
 					.append("svg")
 					.classed("d3ez", true)
 					.classed(classed, true);
-				svg.attr("width", width).attr("height", height);
 				
 				var container = svg.append("g").classed("container", true);
 					container.append("g").classed("tickCircles", true);
@@ -207,6 +202,7 @@ d3.ez.radialBarChart = function module() {
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 		return this;
 	};
 

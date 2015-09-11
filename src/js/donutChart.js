@@ -98,7 +98,7 @@ d3.ez.donutChart = function module() {
 					.append("svg")
 					.classed("d3ez", true)
 					.classed(classed, true);
-				svg.attr("width", width).attr("height", height);
+				
 				svg.append("g")
 					.attr("class", "slices")
 					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -109,6 +109,9 @@ d3.ez.donutChart = function module() {
 					.attr("class", "lines")
 					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");					
 			}
+			
+			// Update the outer dimensions
+			svg.transition().attr({width: width, height: height});
 			
 			// Slices
 			var slices = d3.select(".slices")
@@ -214,6 +217,7 @@ d3.ez.donutChart = function module() {
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 		return this;
 	};	
 
