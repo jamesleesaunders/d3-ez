@@ -7,4 +7,4 @@ node_js:
   - "0.6"
   - "iojs"
   - "iojs-v1.0.4"
-script: d3.ez.js d3.ez.min.js
+script: make
