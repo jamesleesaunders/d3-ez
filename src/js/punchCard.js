@@ -170,13 +170,13 @@ d3.ez.punchCard = function module() {
 	my.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
-		return my;
+		return this;
 	};
 
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
-		return my;
+		return this;
 	};
 	
 	my.margin = function(_) {
@@ -188,26 +188,26 @@ d3.ez.punchCard = function module() {
 	my.minRadius = function(_) {
 		if (!arguments.length) return minRadius;
 		minRadius = _;
-		return my;
+		return this;
 	};
 
 	my.maxRadius = function(_) {
 		if (!arguments.length) return maxRadius;
 		maxRadius = _;
 		rowHeight = (maxRadius*2)+2;
-		return my;
+		return this;
 	};
 
 	my.color = function(_) {
 		if (!arguments.length) return color;
 		color = _;
-		return my;
+		return this;
 	};
 
 	my.useGlobalScale = function(_) {
 		if (!arguments.length) return useGlobalScale;
 		useGlobalScale = _;
-		return my;
+		return this;
 	};
 	
 	d3.rebind(my, dispatch, "on");

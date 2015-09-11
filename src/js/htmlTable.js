@@ -3,8 +3,8 @@
  * 
  * @example
  * var myTable = d3.ez.htmlTable()
- * 	.classed('myClass')
- * 	.width('600');
+ * 	.classed("myClass")
+ * 	.width("600");
  * d3.select("#tableholder")
  * 	.datum(data)
  * 	.call(myTable);
@@ -61,7 +61,7 @@ d3.ez.htmlTable = function module() {
 				.data(function() {
 					// Tack on a blank cell at the beginning,
 					// this is for the top of the first column.
-					return [''].concat(columnNames);
+					return [""].concat(columnNames);
 				})
 				.enter()
 				.append("th")

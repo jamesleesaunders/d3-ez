@@ -6,7 +6,7 @@
  * 	.width(400)
  * 	.height(300)
  * 	.transition({ease: "bounce", duration: 1500})
- * 	.groupType('stacked');
+ * 	.groupType("stacked");
  * d3.select("#chartholder")
  * 	.datum(data)
  * 	.call(myChart);
@@ -63,9 +63,9 @@ d3.ez.groupedBarChart = function module() {
 		d3.map(data).values().forEach(function(d) {
 			grp = d.key;
 			d.values.forEach(function(d) {
-				categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === 'undefined' ? 0 : categoryTotals[d.key]);
+				categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === "undefined" ? 0 : categoryTotals[d.key]);
 				categoryTotals[d.key] += d.value;		
-				groupTotals[grp] = (typeof(groupTotals[grp]) === 'undefined' ? 0 : groupTotals[grp]);
+				groupTotals[grp] = (typeof(groupTotals[grp]) === "undefined" ? 0 : groupTotals[grp]);
 				groupTotals[grp] += d.value;
 				maxValue = (d.value > maxValue ? d.value : maxValue);
 			});
@@ -79,7 +79,7 @@ d3.ez.groupedBarChart = function module() {
 					
 		yScale = d3.scale.linear()
     		.range([chartH, 0])
-    		.domain([0, (groupType == 'stacked' ? maxGroupTotal : maxValue)]);
+    		.domain([0, (groupType == "stacked" ? maxGroupTotal : maxValue)]);
 		
 		// X & Y Axis
 		xAxis = d3.svg.axis()
@@ -165,7 +165,7 @@ d3.ez.groupedBarChart = function module() {
 					return series;
 				});
 			
-			if (groupType == 'stacked') {
+			if (groupType == "stacked") {
 				
 				var gapSize = xScale.rangeBand() / 100 * gap;
 				var barW = xScale.rangeBand() - gapSize;
@@ -173,7 +173,7 @@ d3.ez.groupedBarChart = function module() {
 				bars.enter()
 					.append("rect")
 					.classed("bar", true)
-					.attr("class", function(d) { return d.name + ' bar'; })
+					.attr("class", function(d) { return d.name + " bar"; })
 					.attr({
 						width: barW,
 						x: 0,
@@ -198,7 +198,7 @@ d3.ez.groupedBarChart = function module() {
 					.style({opacity: 0})
 					.remove();
 				
-			} else if (groupType == 'clustered') {
+			} else if (groupType == "clustered") {
 				
 				var x1 = d3.scale.ordinal()
 					.rangeRoundBands([0, xScale.rangeBand()])

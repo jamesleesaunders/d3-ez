@@ -1,4 +1,4 @@
-/** 
+/**
  * Radial Bar Chart
  * 
  * @example
@@ -18,9 +18,9 @@ d3.ez.radialBarChart = function module() {
 	var height             = 300;
 	var margin             = {top: 20, right: 20, bottom: 20, left: 20};
 	var transition         = {ease: "bounce", duration: 500};
-	var classed            = 'radialBarChart';
+	var classed            = "radialBarChart";
 	var colors             = d3.ez.colors.categorical(4);	
-	var radius             = 150;
+	var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var capitalizeLabels   = false;
 	var colorLabels        = false;
 
@@ -71,8 +71,6 @@ d3.ez.radialBarChart = function module() {
 
 	function my(selection) {
 		selection.each(function(data) {	
-			width = 2 * radius + 50;
-			height = 2 * radius + 50;
 			var chartW = width - margin.left - margin.right;
 			var chartH = height - margin.top - margin.bottom;
 			
@@ -92,7 +90,7 @@ d3.ez.radialBarChart = function module() {
 					container.append("g").classed("layers", true);
 					container.append("g").classed("spokes", true);
 					container.append("g").classed("axis", true)
-					container.append('circle').classed("outerCircle", true)
+					container.append("circle").classed("outerCircle", true)
 					container.append("g").classed("labels", true);
 			}			
 
@@ -101,19 +99,19 @@ d3.ez.radialBarChart = function module() {
 			
 			// Update the inner dimensions
 			svg.select(".container")
-				.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 			// Concentric tick circles
-			tickCircles = d3.select('.tickCircles')
-				.selectAll('circle')
+			tickCircles = d3.select(".tickCircles")
+				.selectAll("circle")
 				.data(tickCircleValues)
 				
 			tickCircles.enter()
-				.append('circle')
-				.style('fill', 'none');
+				.append("circle")
+				.style("fill", "none");
 			
 			tickCircles.transition()
-				.attr('r', function(d) { return barScale(d);} )
+				.attr("r", function(d) { return barScale(d);} )
 				.ease(transition.ease)
 				.duration(transition.duration);
 			
@@ -128,17 +126,17 @@ d3.ez.radialBarChart = function module() {
 				.endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });			
 			
 			// Segment enter/exit/update
-			var segments = d3.select('.layers')
-				.selectAll('path')
+			var segments = d3.select(".layers")
+				.selectAll("path")
 				.data(data.values);
 
 			segments.enter()
-				.append('path')
-				.style('fill', function(d, i) {
+				.append("path")
+				.style("fill", function(d, i) {
 					if(!colors) return;
 					return colors[i % colors.length];
 				})
-				.classed('layer', true)
+				.classed("layer", true)
 				.on("mouseover", dispatch.customHover);
 
 			segments.exit()
@@ -147,46 +145,46 @@ d3.ez.radialBarChart = function module() {
 			segments.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr('d', arc);
+				.attr("d", arc);
 
 			// Spokes
-			spokes = d3.select('.spokes')
-				.selectAll('line')
+			spokes = d3.select(".spokes")
+				.selectAll("line")
 				.data(keys)
 				.enter()
-				.append('line')
-				.attr('y2', -radius)
-				.attr('transform', function(d, i) {return 'rotate('+ (i * 360 / numBars) +')';});
+				.append("line")
+				.attr("y2", -radius)
+				.attr("transform", function(d, i) {return "rotate(" + (i * 360 / numBars) + ")";});
 			
 			// Axis
 			var axisScale = d3.scale.linear().domain(domain).range([0, -radius]);
-			var axis = d3.svg.axis().scale(axisScale).orient('right');
+			var axis = d3.svg.axis().scale(axisScale).orient("right");
 			
 			if(tickValues) axis.tickValues(tickValues);
-			axis = d3.select('.axis')
+			axis = d3.select(".axis")
 				.call(axis);
 
 			// Outer Circle
-			outerCircle = d3.select('.outerCircle')
-				.attr('r', radius)
-				.style('fill', 'none');
+			outerCircle = d3.select(".outerCircle")
+				.attr("r", radius)
+				.style("fill", "none");
 
 			// Labels
-			var labels = d3.select('.labels');
-			labels.append('def')
-				.append('path')
-				.attr('id', 'label-path')
-				.attr('d', 'm0 ' + -labelRadius + ' a' + labelRadius + ' ' + labelRadius + ' 0 1,1 -0.01 0');
+			var labels = d3.select(".labels");
+			labels.append("def")
+				.append("path")
+				.attr("id", "label-path")
+				.attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");
 
-			labels.selectAll('text')
+			labels.selectAll("text")
 				.data(keys)
 				.enter()
-				.append('text')
-				.style('text-anchor', 'middle')
-				.style('fill', function(d, i) {return colorLabels ? barColors[i % barColors.length] : null;})
-				.append('textPath')
-				.attr('xlink:href', '#label-path')
-				.attr('startOffset', function(d, i) {return i * 100 / numBars + 50 / numBars + '%';})
+				.append("text")
+				.style("text-anchor", "middle")
+				.style("fill", function(d, i) {return colorLabels ? barColors[i % barColors.length] : null;})
+				.append("textPath")
+				.attr("xlink:href", "#label-path")
+				.attr("startOffset", function(d, i) {return i * 100 / numBars + 50 / numBars + "%";})
 				.text(function(d) {return capitalizeLabels ? d.toUpperCase() : d;});
 		});
 	}
@@ -209,55 +207,55 @@ d3.ez.radialBarChart = function module() {
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
-		return my;
+		return this;
 	};
 
 	my.radius = function(_) {
 		if (!arguments.length) return radius;
 		radius = _;
-		return my;
+		return this;
 	};
 
 	my.colors = function(_) {
 		if (!arguments.length) return colors;
 		colors = _;
-		return my;
+		return this;
 	};
 
 	my.capitalizeLabels = function(_) {
 		if (!arguments.length) return capitalizeLabels;
 		capitalizeLabels = _;
-		return my;
+		return this;
 	};
 
 	my.domain = function(_) {
 		if (!arguments.length) return domain;
 		domain = _;
-		return my;
+		return this;
 	};
 
 	my.tickValues = function(_) {
 		if (!arguments.length) return tickValues;
 		tickValues = _;
-		return my;
+		return this;
 	};
 
 	my.colorLabels = function(_) {
 		if (!arguments.length) return colorLabels;
 		colorLabels = _;
-		return my;
+		return this;
 	};
 
 	my.tickCircleValues = function(_) {
 		if (!arguments.length) return tickCircleValues;
 		tickCircleValues = _;
-		return my;
+		return this;
 	};
 
 	my.transition = function(_) {
 		if (!arguments.length) return transition;
 		transition = _;
-		return my;   
+		return this;   
 	};
 
 	d3.rebind(my, dispatch, "on");

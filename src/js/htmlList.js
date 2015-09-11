@@ -3,7 +3,7 @@
  * 
  * @example
  * var myList = d3.ez.htmlList()
- * 	.classed('myClass');
+ * 	.classed("myClass");
  * d3.select("#listholder")
  * 	.datum(data)
  * 	.call(myList);
@@ -42,7 +42,7 @@ d3.ez.htmlList = function module() {
 				d3.event.stopPropagation();
 				dispatch.customHover(d);
 				
-				if (typeof d.values === 'undefined') {
+				if (typeof d.values === "undefined") {
 					return 0;
 				} 
 				
@@ -55,7 +55,7 @@ d3.ez.htmlList = function module() {
 					.enter()
 					.append("li")
 					.text(function(d) {
-						if (typeof d.value !== 'undefined') {
+						if (typeof d.value !== "undefined") {
 							return d.key + " : " + d.value;
 						} else {
 							return d.key;

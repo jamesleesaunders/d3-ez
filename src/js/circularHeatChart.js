@@ -20,6 +20,7 @@ d3.ez.circularHeatChart = function module() {
 	var transition         = {ease: "bounce", duration: 500};	
 	var classed            = "circularHeatChart";
 	var colors             = ["white", "blue"];
+	var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 	var innerRadius        = 50
 	var segmentHeight      = 30;
 
@@ -167,40 +168,60 @@ d3.ez.circularHeatChart = function module() {
 	var accessor = function(d) {return d;};
 	
 	// Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
+		return this;
+	};
+
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
+		return this;
+	};
+	
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
-		return my;
+		return this;
+	};	
+
+	my.radius = function(_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
 	};
 
 	my.innerRadius = function(_) {
 		if (!arguments.length) return innerRadius;
 		innerRadius = _;
-		return my;
+		return this;
 	};
 	
 	my.segmentHeight = function(_) {
 		if (!arguments.length) return segmentHeight;
 		segmentHeight = _;
-		return my;
+		return this;
 	};
 
     my.colors = function(_) {
         if (!arguments.length) return colors;
         colors = _;
-        return my;
+        return this;
     };
 
 	my.domain = function(_) {
 		if (!arguments.length) return domain;
 		domain = _;
-		return my;
+		return this;
 	};    
     
     my.accessor = function(_) {
     	if (!arguments.length) return accessor;
     	accessor = _;
-    	return my;
+    	return this;
     };
     
 	d3.rebind(my, dispatch, "on");

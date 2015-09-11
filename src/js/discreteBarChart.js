@@ -106,7 +106,7 @@ d3.ez.discreteBarChart = function module() {
 				.call(yAxis);
 			
 			ylabel = svg.select(".y-axis")
-				.selectAll('.y-label')
+				.selectAll(".y-label")
 				.data([data.key]);
 
 			ylabel.enter()
@@ -129,7 +129,7 @@ d3.ez.discreteBarChart = function module() {
 				.data(data.values);
 						
 			bars.enter().append("rect")
-				.attr("class", function(d) { return d.key + ' bar'; })
+				.attr("class", function(d) { return d.key + " bar"; })
 				.attr("fill", function(d) { return colorScale(d.key); })
 				.attr({
 					width: barW,
