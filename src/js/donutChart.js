@@ -12,69 +12,85 @@
  * 	.call(myChart);
  */
 d3.ez.donutChart = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function) 
 	var svg;
 	
-	// Default settings (some configurable via Setters below)	
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 90, bottom: 20, left: 90};
-	var transition        = {ease: "cubic", duration: 300};
-	var radius            = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
-	var innerRadius       = 70;
-	var colors            = d3.ez.colors.categorical(4);
-	var classed           = "donutChart";
-	
+	// Default Options (Configurable via setters)
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 90, bottom: 20, left: 90};
+	var transition         = {ease: "cubic", duration: 300};
+	var classed            = "donutChart";
+	var colors             = d3.ez.colors.categorical(4);	
+	var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
+	var innerRadius        = 70;
+
 	// To sort...
-	var strokeColor       = "#FFF";
-	var strokeWidth       = 4;
-	var enableLabels      = true;
-	var labelGroupOffset  = 20;
-	var labelColor        = "#333";
-	var labelNameOffset   = 0;
-	var tickColor         = "#333";
-	var tickWidth         = 1;
-	var tickOffset        = [0, 0, 2, 8]; // [x1, x2, y1, y2]
-	var labelValueOffset  = 16;
+	var strokeColor        = "#FFF";
+	var strokeWidth        = 4;
+	var enableLabels       = true;
+	var labelGroupOffset   = 20;
+	var labelColor         = "#333";
+	var labelNameOffset    = 0;
+	var tickColor          = "#333";
+	var tickWidth          = 1;
+	var tickOffset         = [0, 0, 2, 8]; // [x1, x2, y1, y2]
+	var labelValueOffset   = 16;
 
-	var dispatch = d3.dispatch("customHover");
+	// Data Options (Populated by 'init' function)	
+	var values = null;
+	var categoryNames = null;
+	var colorScale = null;
+	var pie = null;
+	var arc = null;
+	var outerArc = null;
+	var key = null;
+	
+	// Dispatch (Custom events)
+	var dispatch           = d3.dispatch("customHover");
 
+	function init(data) {
+		values = d3.values(data)[1].map(function(d) { return d.value; });
+		categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
+		
+		// Colour Scale
+		colorScale = d3.scale.ordinal()
+			.range(colors)
+			.domain(categoryNames);
+		
+		pie = d3.layout.pie()
+			.sort(null);
+		
+		arc = d3.svg.arc()
+			.innerRadius(innerRadius)
+			.outerRadius(radius);
+		
+		outerArc = d3.svg.arc()
+			.innerRadius(radius * 0.9)
+			.outerRadius(radius * 0.9);
+	}	
+
+	function key(d, i) { 
+		return data.values[i].key; 
+	};
+	
+	function arcTween(d) {
+		var i = d3.interpolate(this._current, d);
+		this._current = i(0);
+		return function(t) {
+			return arc(i(t));
+		};
+	}
+	
+	function midAngle(d) {
+		return d.startAngle + (d.endAngle - d.startAngle) / 2;
+	}	
+	
 	function my(selection) {
-		selection.each(function(data) {
-			
-			var values = d3.values(data)[1].map(function(d) { return d.value; });
-			var categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
-			
-			// Colour Scale
-			var colorScale = d3.scale.ordinal()
-				.range(colors)
-				.domain(categoryNames);
-			
-			var pie = d3.layout.pie()
-				.sort(null);
-			
-			var arc = d3.svg.arc()
-				.innerRadius(innerRadius)
-				.outerRadius(radius);
-			
-			var outerArc = d3.svg.arc()
-				.innerRadius(radius * 0.9)
-				.outerRadius(radius * 0.9);
-			
-			function arcTween(d) {
-				var i = d3.interpolate(this._current, d);
-				this._current = i(0);
-				return function(t) {
-					return arc(i(t));
-				};
-			}
-			
-			function midAngle(d) {
-				return d.startAngle + (d.endAngle - d.startAngle) / 2;
-			}
-			
-			var key = function(d, i) { return data.values[i].key; };
-				
+		selection.each(function(data) {	
+			// Initialise Data
+			init(data);
+
 			// Create SVG element (if it does not exist already)
 			svg = d3.select(this).select("svg > g");
 			if (svg.empty()) {
@@ -82,7 +98,7 @@ d3.ez.donutChart = function module() {
 					.append("svg")
 					.classed("d3ez", true)
 					.classed(classed, true);
-				svg.attr("width", width).attr("height", height)
+				
 				svg.append("g")
 					.attr("class", "slices")
 					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -93,6 +109,9 @@ d3.ez.donutChart = function module() {
 					.attr("class", "lines")
 					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");					
 			}
+			
+			// Update the outer dimensions
+			svg.transition().attr({width: width, height: height});
 			
 			// Slices
 			var slices = d3.select(".slices")
@@ -198,6 +217,7 @@ d3.ez.donutChart = function module() {
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
+		radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
 		return this;
 	};	
 
@@ -226,5 +246,6 @@ d3.ez.donutChart = function module() {
 	};	
    
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

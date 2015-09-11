@@ -3,35 +3,43 @@
  * 
  * @example
  * var myTable = d3.ez.htmlTable()
- * 	.classed('myClass')
- * 	.width('600');
+ * 	.classed("myClass")
+ * 	.width("600");
  * d3.select("#tableholder")
  * 	.datum(data)
  * 	.call(myTable);
  */
 d3.ez.htmlTable = function module() {
-	// Table container (populated by 'my' function below) 
+	// HTML container (Populated by 'my' function)
 	var table;
 	
-	// Default settings (some configurable via Setters below)
-	var classed           = "htmlTable";
-	var width             = 800;
+	// Default Options (Configurable via setters)
+	var classed            = "htmlTable";
+	var width              = 800;
 	
-	var dispatch   = d3.dispatch("customHover");
+	// Data Options (Populated by 'init' function)
+	var rowNames = null;
+	var columnNames = [];
+	
+	// Dispatch (Custom events)
+	var dispatch           = d3.dispatch("customHover");
+	
+	function init(data) {
+		// Cut the data in different ways....
+		rowNames = data.map(function(d) { return d.key; });
+		
+		columnNames = [];
+		data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+			columnNames[i] = d.key;
+		});		
+	}	
 	
 	function my(selection) {	
 		selection.each(function(data) {
-
-			// Cut the data in different ways....
-			var rowNames = data.map(function(d) { return d.key; });
+			// Initialise Data
+			init(data);
 			
-			var columnNames = [];
-			data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-				columnNames[i] = d.key;
-			});
-			
-			// If the table does not exist then create it,
-			// otherwise empty it ready for new data.
+			// Create HTML Table element (if it does not exist already)
 			if(!table) {
 				table = d3.select(this)
 					.append("table")
@@ -53,7 +61,7 @@ d3.ez.htmlTable = function module() {
 				.data(function() {
 					// Tack on a blank cell at the beginning,
 					// this is for the top of the first column.
-					return [''].concat(columnNames);
+					return [""].concat(columnNames);
 				})
 				.enter()
 				.append("th")
@@ -95,5 +103,6 @@ d3.ez.htmlTable = function module() {
 	};
 	
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };

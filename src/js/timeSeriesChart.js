@@ -13,18 +13,27 @@
  * 	.call(myChart);
  */
 d3.ez.timeSeriesChart = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function) 
 	var svg;	
 	
-	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 20, bottom: 20, left: 40};
-	var color             = 'steelblue';
-	var xValue            = function(d) { return d[0]; };
-	var yValue            = function(d) { return d[1]; };
-	var classed           = "timeSeriesChart";
+	// Default Options (Configurable via setters)
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 20, bottom: 20, left: 40};
+	var transition         = {ease: "bounce", duration: 500};
+	var classed            = "timeSeriesChart";	
+	var color              = "steelblue";
+	var xValue             = function(d) { return d[0]; };
+	var yValue             = function(d) { return d[1]; };
 
+	// Data Options (Populated by 'init' function)	
+	
+	// Dispatch (Custom events)
+	var dispatch           = d3.dispatch("customHover");
+	
+	function init(data) {
+	}	
+	
 	function my(selection) {
 		selection.each(function(data) {
 			var chartW = width - margin.left - margin.right;
@@ -145,6 +154,8 @@ d3.ez.timeSeriesChart = function module() {
 		color = _;
 		return this;
 	};	
+	
+	d3.rebind(my, dispatch, "on");
 	
 	return my;
 };

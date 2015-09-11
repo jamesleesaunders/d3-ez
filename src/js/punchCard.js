@@ -14,39 +14,53 @@
  * 	.call(myChart);
  */
 d3.ez.punchCard = function module() {
-	// SVG container (populated by 'my' function below) 
+	// SVG container (Populated by 'my' function)
 	var svg;
 	
-	// Default settings (some configurable via Setters below)
-	var width             = 400;
-	var height            = 300;
-	var margin            = {top: 20, right: 80, bottom: 20, left: 20};
-	var maxRadius         = 9;
-	var minRadius         = 2;
-	var color             = "steelblue";
-	var formatTick        = d3.format("0000");
-	var useGlobalScale    = true;
-	var classed           = "punchCard";	
+	// Default Options (Configurable via setters)
+	var width              = 400;
+	var height             = 300;
+	var margin             = {top: 20, right: 80, bottom: 20, left: 20};
+	var transition         = {ease: "bounce", duration: 500};
+	var classed            = "punchCard";
+	var color              = "steelblue";	
+	var maxRadius          = 9;
+	var minRadius          = 2;
+	var formatTick         = d3.format("0000");
+	var useGlobalScale     = true;
 	
-	var dispatch   = d3.dispatch("customHover");
+	// Data Options (Populated by 'init' function)
+	var chartW = 0;
+	var chartH = 0;
+	
+	// Dispatch (Custom events)
+	var dispatch           = d3.dispatch("customHover");
 
+	function init(data) {
+		chartW = width - margin.left - margin.right;
+		chartH = height - margin.top - margin.bottom;		
+	}	
+	
+	function mouseover(d) {
+		var g = d3.select(this).node().parentNode;
+		d3.select(g).selectAll("circle").style("display", "none");
+		d3.select(g).selectAll("text.value").style("display", "block");
+		dispatch.customHover(d);
+	}
+
+	function mouseout(d) {
+		var g = d3.select(this).node().parentNode;
+		d3.select(g).selectAll("circle").style("display","block");
+		d3.select(g).selectAll("text.value").style("display","none");
+	}	
+	
 	function my(selection) {
 		selection.each(function(data) {
-			var chartW = width - margin.left - margin.right;
-			var chartH = height - margin.top - margin.bottom;
+			// If it is a single object, wrap it in an array
+			if (data.constructor !== Array) data = [data];	
 			
-			function mouseover(d) {
-				var g = d3.select(this).node().parentNode;
-				d3.select(g).selectAll("circle").style("display", "none");
-				d3.select(g).selectAll("text.value").style("display", "block");
-				dispatch.customHover(d);
-			}
-
-			function mouseout(d) {
-				var g = d3.select(this).node().parentNode;
-				d3.select(g).selectAll("circle").style("display","block");
-				d3.select(g).selectAll("text.value").style("display","none");
-			}			
+			// Initialise Data
+			init(data);			
 			
 			// Cut the data in different ways....
 		    var allValues = [];
@@ -156,13 +170,13 @@ d3.ez.punchCard = function module() {
 	my.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
-		return my;
+		return this;
 	};
 
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
-		return my;
+		return this;
 	};
 	
 	my.margin = function(_) {
@@ -174,28 +188,29 @@ d3.ez.punchCard = function module() {
 	my.minRadius = function(_) {
 		if (!arguments.length) return minRadius;
 		minRadius = _;
-		return my;
+		return this;
 	};
 
 	my.maxRadius = function(_) {
 		if (!arguments.length) return maxRadius;
 		maxRadius = _;
 		rowHeight = (maxRadius*2)+2;
-		return my;
+		return this;
 	};
 
 	my.color = function(_) {
 		if (!arguments.length) return color;
 		color = _;
-		return my;
+		return this;
 	};
 
 	my.useGlobalScale = function(_) {
 		if (!arguments.length) return useGlobalScale;
 		useGlobalScale = _;
-		return my;
+		return this;
 	};
 	
-	d3.rebind(my, dispatch, "on");	
+	d3.rebind(my, dispatch, "on");
+
 	return my;
 };

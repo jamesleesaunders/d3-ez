@@ -3,27 +3,24 @@
  * 
  * @example
  * var myList = d3.ez.htmlList()
- * 	.classed('myClass');
+ * 	.classed("myClass");
  * d3.select("#listholder")
  * 	.datum(data)
  * 	.call(myList);
  */
 d3.ez.htmlList = function module() {
-	// Table container (populated by 'my' function below) 
+	// HTML container (Populated by 'my' function)
 	var list;
 	
-	// Default settings (some configurable via Setters below)
-	var classed            = "htmlList";
+	// Default Options (Configurable via setters)
+	var classed             = "htmlList";
 	
-	var dispatch   = d3.dispatch("customHover");
+	// Dispatch (Custom events)
+	var dispatch            = d3.dispatch("customHover");
 	
 	function my(selection) {	
 		selection.each(function(data) {
-			// If it is a single object, wrap it in an array
-			if (data.constructor !== Array) data = [data];
-			
-			// If the ul list does not exist then create it,
-			// otherwise empty it ready for new data.
+			// Create HTML UL List element (if it does not exist already)
 			if(!list) {
 				list = d3.select(this)
 					.append("ul")
@@ -45,7 +42,7 @@ d3.ez.htmlList = function module() {
 				d3.event.stopPropagation();
 				dispatch.customHover(d);
 				
-				if (typeof d.values === 'undefined') {
+				if (typeof d.values === "undefined") {
 					return 0;
 				} 
 				
@@ -58,7 +55,7 @@ d3.ez.htmlList = function module() {
 					.enter()
 					.append("li")
 					.text(function(d) {
-						if (typeof d.value !== 'undefined') {
+						if (typeof d.value !== "undefined") {
 							return d.key + " : " + d.value;
 						} else {
 							return d.key;
@@ -86,5 +83,6 @@ d3.ez.htmlList = function module() {
 	};
 	
 	d3.rebind(my, dispatch, "on");
+	
 	return my;
 };
