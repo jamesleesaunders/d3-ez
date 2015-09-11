@@ -21,7 +21,7 @@
 	fill: #000000;
 }
 
-/* === Radial Bar Chart === */
+/* === Radial Bar Chart Styles === */
 .radialBarChart path {
 	fill: none;
 }
@@ -45,10 +45,10 @@
 .radialBarChart .labels text {
 	fill: #333;
 	font-size: 10px;
-	font-weight: 500;
+	font-weight: bold;
 }
 
-/* === Circular Heat Chart === */
+/* === Circular Heat Chart Styles === */
 .circularHeatChart .segments path {
 	stroke: #B6B6B6;
 	stroke-width: 0.5px;
