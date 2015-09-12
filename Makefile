@@ -44,7 +44,8 @@ min:
 	@echo Minifying...
 	@rm -f d3.ez.min.js
 	# @yuicompressor d3.ez.js -o d3.ez.min.js
-	uglify-js d3.ez.js d3.ez.min.js
+	node_modules/.bin/uglifyjs - -b indent-level=2 -o d3.ez.js
+	node_modules/.bin/uglify-js d3.ez.js d3.ez.min.js
 
 
 zip: $(GENERATED_FILES)
