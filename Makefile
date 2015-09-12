@@ -43,7 +43,8 @@ css: $(CSS_FILES)
 min:
 	@echo Minifying...
 	@rm -f d3.ez.min.js
-	@yuicompressor d3.ez.js -o d3.ez.min.js
+	# @yuicompressor d3.ez.js -o d3.ez.min.js
+	uglify d3.ez.js d3.ez.min.js
 
 
 zip: $(GENERATED_FILES)
