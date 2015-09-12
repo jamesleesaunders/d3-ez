@@ -4,7 +4,7 @@ node_js:
 
 before_script:
     # node deps
-    - npm install uglify-js@1 && mkdir -p vendor/uglifyjs && mv node_modules vendor/uglifyjs
+    - npm install uglify-js
     - export UGLIFYJS_BIN=vendor/uglifyjs/node_modules/uglify-js/bin/uglifyjs
   
 script: make
