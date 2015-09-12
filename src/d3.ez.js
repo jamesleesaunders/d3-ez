@@ -14,10 +14,10 @@ include('js/htmlList.js');
 include('js/reusableComponents.js');
 
 function include(file) {
-	var loc = document.currentScript.src
-	var path = loc.substring(0, loc.lastIndexOf("/") + 1);
-	var src = path + file;
-	var type = 'text/javascript';
+    var loc = document.currentScript.src
+    var path = loc.substring(0, loc.lastIndexOf("/") + 1);
+    var src = path + file;
+    var type = 'text/javascript';
 	
     document.write('<' + 'script src="' + src + '"' + ' type="' + type + '"><' + '/script>');
 }
