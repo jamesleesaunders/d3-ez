@@ -4,7 +4,6 @@ node_js:
 
 before_script:
     # node deps
-    - npm install uglify-js
-    - export UGLIFYJS_BIN=vendor/uglifyjs/node_modules/uglify-js/bin/uglifyjs
+    - sudo npm install uglify-js -g
   
 script: make
