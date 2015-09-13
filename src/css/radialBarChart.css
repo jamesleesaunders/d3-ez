@@ -2,10 +2,13 @@
 .radialBarChart path {
 	fill: none;
 }
-.radialBarChart path.layer {
+.radialBarChart path.segment {
 	fill: steelblue;
 	stroke-width: 1px;
 	stroke: #333333;
+}
+.radialBarChart path.segment:hover {
+	opacity: 0.7;
 }
 .radialBarChart circle.outerCircle {
 	stroke: #aaa;

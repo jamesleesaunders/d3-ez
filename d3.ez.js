@@ -90,7 +90,7 @@ d3.ez.radialBarChart = function module() {
                 svg = d3.select(this).append("svg").classed("d3ez", true).classed(classed, true);
                 var container = svg.append("g").classed("container", true);
                 container.append("g").classed("tickCircles", true);
-                container.append("g").classed("layers", true);
+                container.append("g").classed("segments", true);
                 container.append("g").classed("spokes", true);
                 container.append("g").classed("axis", true);
                 container.append("circle").classed("outerCircle", true);
@@ -119,11 +119,11 @@ d3.ez.radialBarChart = function module() {
                 return (i + 1) * 2 * Math.PI / numBars;
             });
             // Segment enter/exit/update
-            var segments = d3.select(".layers").selectAll("path").data(data.values);
+            var segments = d3.select(".segments").selectAll("path").data(data.values);
             segments.enter().append("path").style("fill", function(d, i) {
                 if (!colors) return;
                 return colors[i % colors.length];
-            }).classed("layer", true).on("mouseover", dispatch.customHover);
+            }).classed("segment", true).on("mouseover", dispatch.customHover);
             segments.exit().remove();
             segments.transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             // Spokes
