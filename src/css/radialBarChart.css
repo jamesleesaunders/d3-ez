@@ -5,15 +5,15 @@
 .radialBarChart path.layer {
 	fill: steelblue;
 	stroke-width: 1px;
-	stroke: #333333;	
+	stroke: #333333;
 }
 .radialBarChart circle.outerCircle {
 	stroke: #aaa;
-	stroke-dasharray: 4, 4;  
+	stroke-dasharray: 4, 4;
 }
 .radialBarChart .tickCircles circle {
 	stroke: #ddd;
-	stroke-dasharray: 2, 2;  
+	stroke-dasharray: 2, 2;
 }
 .radialBarChart .spokes line {
 	stroke: #666;

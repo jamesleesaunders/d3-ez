@@ -2,21 +2,20 @@
 - D3.EZ
 - Author:     James Saunders
 - Copyright:  Copyright (C) 2015 James Saunders
-- License:    GPLv3
-*/ 
- 
+- License:    GPL-3.0
+*/
+
 /* === Global Styles === */
 .d3ez {
 	font-family: "Helvetica Neue", Helvetica, sans-serif;
 	font-size: 10px;
 }
-
 /* === Axis Styles === */
 .d3ez .axis path, .axis line {
 	fill: none;
 	stroke: #B6B6B6;
 	shape-rendering: crispEdges;
 }
-.d3ez .tick text  {
+.d3ez .tick text {
 	fill: #000000;
 }

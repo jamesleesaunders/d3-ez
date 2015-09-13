@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.5.7",
+    version: "1.5.8",
     author: "James Saunders",
     copyright: "Copyright (C) 2015 James Saunders",
     license: "GPL-3.0"
@@ -240,7 +240,7 @@ d3.ez.circularHeatChart = function module() {
         duration: 500
     };
     var classed = "circularHeatChart";
-    var colors = [ "white", "blue" ];
+    var colors = [ "white", "orange" ];
     var radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
     var innerRadius = 50;
     // Data Options (Populated by 'init' function)
@@ -311,7 +311,7 @@ d3.ez.circularHeatChart = function module() {
                 return d.values;
             }).enter().append("path").attr("d", arc).attr("fill", function(d) {
                 return color(accessor(d.value));
-            });
+            }).classed("segment", true);
             // Unique id so that the text path defs are unique - is there a better way to do this?
             var id = d3.selectAll(".circularHeat")[0].length;
             // Radial Labels

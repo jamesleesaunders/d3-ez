@@ -19,7 +19,7 @@ d3.ez.circularHeatChart = function module() {
     var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};	
     var classed            = "circularHeatChart";
-    var colors             = ["white", "blue"];
+    var colors             = ["white", "orange"];
     var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     var innerRadius        = 50;
 
@@ -112,7 +112,8 @@ d3.ez.circularHeatChart = function module() {
                 .enter()
                 .append("path")
                 .attr("d", arc)
-                .attr("fill", function(d) { return color(accessor(d.value)); });
+                .attr("fill", function(d) { return color(accessor(d.value)); })
+                .classed("segment", true);
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
             var id = d3.selectAll(".circularHeat")[0].length;

@@ -7,7 +7,7 @@
 }
 .donutChart path.slice {
 	stroke: #333333;
-	stroke-width: 1px;			
+	stroke-width: 1px;
 }
 .donutChart path.slice:hover {
 	opacity: 0.7;
