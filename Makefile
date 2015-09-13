@@ -32,7 +32,7 @@ all: js css min zip
 js: $(JS_FILES)
 	@echo Concatinating JS Files...
 	@rm -f d3.ez.js
-	@for file in $^; do cat "$$file"; echo "\n"; done > d3.ez.js
+	@uglifyjs $^ --beautify indent-level=4 --comments all > d3.ez.js
 
 css: $(CSS_FILES)
 	@echo Concatinating CSS Files...
@@ -42,7 +42,7 @@ css: $(CSS_FILES)
 min:
 	@echo Minifying...
 	@rm -f d3.ez.min.js
-	@yuicompressor d3.ez.js -o d3.ez.min.js
+	@uglifyjs d3.ez.js > d3.ez.min.js
 
 zip: $(GENERATED_FILES)
 	@echo Zipping...
