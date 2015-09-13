@@ -9,5 +9,5 @@ d3.ez = {
     version: "1.5.7",
     author: "James Saunders",
     copyright: "Copyright (C) 2015 James Saunders",
-    license: "GPLv3"
+    license: "GPL-3.0"
 };
