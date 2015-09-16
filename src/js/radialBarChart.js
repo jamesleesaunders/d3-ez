@@ -28,16 +28,19 @@ d3.ez.radialBarChart = function module() {
     var tickValues         = [];	
     var tickCircleValues   = [];	
     var domain             = [];
-    var numBars            = null;
-    var barScale           = null;
-    var keys               = null;
+    var numBars            = undefined;
+    var barScale           = undefined;
+    var keys               = undefined;
     var labelRadius        = 0;
+    var categoryTotals     = [];
+    var groupTotals        = [];
+    var maxValue           = 0;
 
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
 
     function init(data) {
-        // bars
+        // Bars
         keys = d3.values(data)[1].map(function(d) { return d.key; });
         numBars = keys.length;
 
@@ -45,18 +48,15 @@ d3.ez.radialBarChart = function module() {
         labelRadius = radius * 1.025;
 
         // Totals Max, etc
-        var categoryTotals = [];
-        var groupTotals = [];
-        var maxValue = d3.max(data.values, function(d) { return d.value;} );	
+        maxValue = d3.max(data.values, function(d) { return d.value;} );	
 
-        // tickCircleValues
-        tickCircleValues   = [];
+        // Tick Circle Rings
+        tickCircleValues = [];
         for (var i=0; i<=maxValue; i++) {
             tickCircleValues.push(i);
         }
 
-        // tickCircleValues (dont know the difference really?)
-        tickValues         = [];	
+        // tickCircleValues (dont know the difference really?)	
         tickValues = tickCircleValues;
         tickValues.push(maxValue + 1)		
 
@@ -176,10 +176,10 @@ d3.ez.radialBarChart = function module() {
                 .enter()
                 .append("text")
                 .style("text-anchor", "middle")
-                .style("fill", function(d, i) {return colorLabels ? barColors[i % barColors.length] : null;})
+                .style("fill", function(d, i) { return colorLabels ? colors[i % colors.length] : null; })
                 .append("textPath")
                 .attr("xlink:href", "#label-path")
-                .attr("startOffset", function(d, i) {return i * 100 / numBars + 50 / numBars + "%";})
+                .attr("startOffset", function(d, i) { return i * 100 / numBars + 50 / numBars + "%"; })
                 .text(function(d) {return capitalizeLabels ? d.toUpperCase() : d;});
         });
     }
@@ -217,6 +217,12 @@ d3.ez.radialBarChart = function module() {
         colors = _;
         return this;
     };
+    
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;   
+    };    
 
     my.capitalizeLabels = function(_) {
         if (!arguments.length) return capitalizeLabels;
@@ -224,34 +230,10 @@ d3.ez.radialBarChart = function module() {
         return this;
     };
 
-    my.domain = function(_) {
-        if (!arguments.length) return domain;
-        domain = _;
-        return this;
-    };
-
-    my.tickValues = function(_) {
-        if (!arguments.length) return tickValues;
-        tickValues = _;
-        return this;
-    };
-
     my.colorLabels = function(_) {
         if (!arguments.length) return colorLabels;
         colorLabels = _;
         return this;
-    };
-
-    my.tickCircleValues = function(_) {
-        if (!arguments.length) return tickCircleValues;
-        tickCircleValues = _;
-        return this;
-    };
-
-    my.transition = function(_) {
-        if (!arguments.length) return transition;
-        transition = _;
-        return this;   
     };
 
     d3.rebind(my, dispatch, "on");

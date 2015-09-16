@@ -27,14 +27,14 @@ d3.ez.discreteBarChart = function module() {
     // Data Options (Populated by 'init' function)
     var chartW             = 0;
     var chartH             = 0;
-    var yAxisLabel         = null;
-    var maxValue           = null;
-    var categories         = null;
-    var xScale             = null;
-    var yScale             = null;
-    var xAxis              = null;
-    var yAxis              = null;
-    var colorScale         = null;	
+    var maxValue           = 0;
+    var categories         = [];
+    var xScale             = undefined;
+    var yScale             = undefined;
+    var yAxisLabel         = undefined;
+    var xAxis              = undefined;
+    var yAxis              = undefined;
+    var colorScale         = undefined;
 
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
@@ -49,8 +49,8 @@ d3.ez.discreteBarChart = function module() {
 
         // X & Y Scales
         xScale = d3.scale.ordinal()
-        .domain(categories)
-        .rangeRoundBands([0, chartW], 0.1);
+            .domain(categories)
+            .rangeRoundBands([0, chartW], 0.1);
 
         yScale = d3.scale.linear()
             .domain([0, maxValue])

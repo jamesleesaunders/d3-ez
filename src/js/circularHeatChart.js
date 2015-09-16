@@ -24,7 +24,7 @@ d3.ez.circularHeatChart = function module() {
     var innerRadius        = 50;
 
     // Data Options (Populated by 'init' function)
-    var domain             = null;
+    var domain             = undefined;
     var radialLabels       = [];
     var numRadials         = 24;
     var segmentLabels      = [];
@@ -37,12 +37,9 @@ d3.ez.circularHeatChart = function module() {
 
     function init(data) {
         radialLabels = data.map(function(d) {return d.key; });
-
         numRadials = radialLabels.length;
 
-        segmentLabels = d3.values(data[0].values)
-            .map(function(d) { return d.key; });
-
+        segmentLabels = d3.values(data[0].values).map(function(d) { return d.key; });
         numSegments = segmentLabels.length;
 
         segmentHeight = ((radius - innerRadius) / numRadials);
@@ -200,17 +197,16 @@ d3.ez.circularHeatChart = function module() {
         return this;
     };
 
-
     my.colors = function(_) {
         if (!arguments.length) return colors;
         colors = _;
         return this;
     };
-
-    my.domain = function(_) {
-        if (!arguments.length) return domain;
-        domain = _;
-        return this;
+    
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;   
     };    
 
     my.accessor = function(_) {

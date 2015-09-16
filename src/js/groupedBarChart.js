@@ -29,17 +29,17 @@ d3.ez.groupedBarChart = function module() {
     // Data Options (Populated by 'init' function)	
     var chartW             = 0;
     var chartH             = 0;
-    var groupNames         = null;
+    var groupNames         = undefined;
     var categoryNames      = [];
     var categoryTotals     = [];
     var groupTotals        = [];
     var maxValue           = 0;
-    var maxGroupTotal      = null;
-    var xScale             = null;
-    var yScale             = null;
-    var xAxis              = null;
-    var yAxis              = null;
-    var colorScale         = null;
+    var maxGroupTotal      = undefined;
+    var xScale             = undefined;
+    var yScale             = undefined;
+    var xAxis              = undefined;
+    var yAxis              = undefined;
+    var colorScale         = undefined;
 
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");	
