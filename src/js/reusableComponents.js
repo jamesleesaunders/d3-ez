@@ -89,6 +89,12 @@ d3.ez.labeledNode = function module() {
 
 /** 
  * Credit Tag
+ * 
+ * @example
+ * var myNode = d3.ez.labeledNode()
+ *     .enabled(true)
+ *     .text("Hello World")
+ *     .href("http://d3ez.org");
  */
 d3.ez.creditTag = function module() {
     var enabled        = true;
