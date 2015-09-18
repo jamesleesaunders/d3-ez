@@ -18,33 +18,21 @@ d3.ez.donutChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 90, bottom: 20, left: 90};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "cubic", duration: 300};
     var classed            = "donutChart";
     var colors             = d3.ez.colors.categorical(4);	
     var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     var innerRadius        = 70;
 
-    // To sort...
-    var strokeColor        = "#FFF";
-    var strokeWidth        = 4;
-    var enableLabels       = true;
-    var labelGroupOffset   = 20;
-    var labelColor         = "#333";
-    var labelNameOffset    = 0;
-    var tickColor          = "#333";
-    var tickWidth          = 1;
-    var tickOffset         = [0, 0, 2, 8]; // [x1, x2, y1, y2]
-    var labelValueOffset   = 16;
-
     // Data Options (Populated by 'init' function)	
-    var values             = null;
-    var categoryNames      = null;
-    var colorScale         = null;
-    var pie                = null;
-    var arc                = null;
-    var outerArc           = null;
-    var key                = null;
+    var values             = [];
+    var categoryNames      = [];
+    var colorScale         = undefined;
+    var pie                = undefined;
+    var arc                = undefined;
+    var outerArc           = undefined;
+    var key                = undefined;
 
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
@@ -113,8 +101,11 @@ d3.ez.donutChart = function module() {
             }
 
             // Update the outer dimensions
-            svg.transition().attr({width: width, height: height});
+            svg.attr({width: width, height: height});
 
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
+            
             // Slices
             var slices = d3.select(".slices")
                 .selectAll("path.slice")

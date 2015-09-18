@@ -48,14 +48,17 @@ d3.ez.radialBarChart = function module() {
     var tickValues = [];
     var tickCircleValues = [];
     var domain = [];
-    var numBars = null;
-    var barScale = null;
-    var keys = null;
+    var numBars = undefined;
+    var barScale = undefined;
+    var keys = undefined;
     var labelRadius = 0;
+    var categoryTotals = [];
+    var groupTotals = [];
+    var maxValue = 0;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
     function init(data) {
-        // bars
+        // Bars
         keys = d3.values(data)[1].map(function(d) {
             return d.key;
         });
@@ -63,18 +66,15 @@ d3.ez.radialBarChart = function module() {
         // Radius of the key labels
         labelRadius = radius * 1.025;
         // Totals Max, etc
-        var categoryTotals = [];
-        var groupTotals = [];
-        var maxValue = d3.max(data.values, function(d) {
+        maxValue = d3.max(data.values, function(d) {
             return d.value;
         });
-        // tickCircleValues
+        // Tick Circle Rings
         tickCircleValues = [];
         for (var i = 0; i <= maxValue; i++) {
             tickCircleValues.push(i);
         }
-        // tickCircleValues (dont know the difference really?)
-        tickValues = [];
+        // tickCircleValues (dont know the difference really?)	
         tickValues = tickCircleValues;
         tickValues.push(maxValue + 1);
         // Domain
@@ -90,17 +90,19 @@ d3.ez.radialBarChart = function module() {
                 svg = d3.select(this).append("svg").classed("d3ez", true).classed(classed, true);
                 var container = svg.append("g").classed("container", true);
                 container.append("g").classed("tickCircles", true);
-                container.append("g").classed("layers", true);
+                container.append("g").classed("segments", true);
                 container.append("g").classed("spokes", true);
                 container.append("g").classed("axis", true);
                 container.append("circle").classed("outerCircle", true);
                 container.append("g").classed("labels", true);
             }
             // Update the outer dimensions
-            svg.transition().attr({
+            svg.attr({
                 width: width,
                 height: height
             });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Update the inner dimensions
             svg.select(".container").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
             // Concentric tick circles
@@ -119,11 +121,11 @@ d3.ez.radialBarChart = function module() {
                 return (i + 1) * 2 * Math.PI / numBars;
             });
             // Segment enter/exit/update
-            var segments = d3.select(".layers").selectAll("path").data(data.values);
+            var segments = d3.select(".segments").selectAll("path").data(data.values);
             segments.enter().append("path").style("fill", function(d, i) {
                 if (!colors) return;
                 return colors[i % colors.length];
-            }).classed("layer", true).on("mouseover", dispatch.customHover);
+            }).classed("segment", true).on("mouseover", dispatch.customHover);
             segments.exit().remove();
             segments.transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             // Spokes
@@ -141,7 +143,7 @@ d3.ez.radialBarChart = function module() {
             var labels = d3.select(".labels");
             labels.append("def").append("path").attr("id", "label-path").attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");
             labels.selectAll("text").data(keys).enter().append("text").style("text-anchor", "middle").style("fill", function(d, i) {
-                return colorLabels ? barColors[i % barColors.length] : null;
+                return colorLabels ? colors[i % colors.length] : null;
             }).append("textPath").attr("xlink:href", "#label-path").attr("startOffset", function(d, i) {
                 return i * 100 / numBars + 50 / numBars + "%";
             }).text(function(d) {
@@ -178,34 +180,19 @@ d3.ez.radialBarChart = function module() {
         colors = _;
         return this;
     };
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;
+    };
     my.capitalizeLabels = function(_) {
         if (!arguments.length) return capitalizeLabels;
         capitalizeLabels = _;
         return this;
     };
-    my.domain = function(_) {
-        if (!arguments.length) return domain;
-        domain = _;
-        return this;
-    };
-    my.tickValues = function(_) {
-        if (!arguments.length) return tickValues;
-        tickValues = _;
-        return this;
-    };
     my.colorLabels = function(_) {
         if (!arguments.length) return colorLabels;
         colorLabels = _;
-        return this;
-    };
-    my.tickCircleValues = function(_) {
-        if (!arguments.length) return tickCircleValues;
-        tickCircleValues = _;
-        return this;
-    };
-    my.transition = function(_) {
-        if (!arguments.length) return transition;
-        transition = _;
         return this;
     };
     d3.rebind(my, dispatch, "on");
@@ -244,7 +231,7 @@ d3.ez.circularHeatChart = function module() {
     var radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
     var innerRadius = 50;
     // Data Options (Populated by 'init' function)
-    var domain = null;
+    var domain = undefined;
     var radialLabels = [];
     var numRadials = 24;
     var segmentLabels = [];
@@ -283,10 +270,12 @@ d3.ez.circularHeatChart = function module() {
                 container.append("g").classed("segmentLabels", true);
             }
             // Update the outer dimensions
-            svg.transition().attr({
+            svg.attr({
                 width: width,
                 height: height
             });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Update the inner dimensions
             svg.select(".container").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
             var color = d3.scale.linear().domain(domain).range(colors);
@@ -378,9 +367,9 @@ d3.ez.circularHeatChart = function module() {
         colors = _;
         return this;
     };
-    my.domain = function(_) {
-        if (!arguments.length) return domain;
-        domain = _;
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
         return this;
     };
     my.accessor = function(_) {
@@ -412,9 +401,9 @@ d3.ez.discreteBarChart = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
+        top: 40,
+        right: 40,
+        bottom: 40,
         left: 40
     };
     var transition = {
@@ -427,14 +416,14 @@ d3.ez.discreteBarChart = function module() {
     // Data Options (Populated by 'init' function)
     var chartW = 0;
     var chartH = 0;
-    var yAxisLabel = null;
-    var maxValue = null;
-    var categories = null;
-    var xScale = null;
-    var yScale = null;
-    var xAxis = null;
-    var yAxis = null;
-    var colorScale = null;
+    var maxValue = 0;
+    var categories = [];
+    var xScale = undefined;
+    var yScale = undefined;
+    var yAxisLabel = undefined;
+    var xAxis = undefined;
+    var yAxis = undefined;
+    var colorScale = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
     function init(data) {
@@ -469,10 +458,12 @@ d3.ez.discreteBarChart = function module() {
                 container.append("g").classed("y-axis axis", true);
             }
             // Update the outer dimensions
-            svg.transition().attr({
+            svg.attr({
                 width: width,
                 height: height
             });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Update the inner dimensions.
             svg.select(".container").attr({
                 transform: "translate(" + margin.left + "," + margin.top + ")"
@@ -565,9 +556,9 @@ d3.ez.groupedBarChart = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 20,
-        right: 70,
-        bottom: 20,
+        top: 40,
+        right: 40,
+        bottom: 40,
         left: 40
     };
     var transition = {
@@ -582,17 +573,17 @@ d3.ez.groupedBarChart = function module() {
     // Data Options (Populated by 'init' function)	
     var chartW = 0;
     var chartH = 0;
-    var groupNames = null;
+    var groupNames = undefined;
     var categoryNames = [];
     var categoryTotals = [];
     var groupTotals = [];
     var maxValue = 0;
-    var maxGroupTotal = null;
-    var xScale = null;
-    var yScale = null;
-    var xAxis = null;
-    var yAxis = null;
-    var colorScale = null;
+    var maxGroupTotal = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var xAxis = undefined;
+    var yAxis = undefined;
+    var colorScale = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
     function init(data) {
@@ -645,10 +636,12 @@ d3.ez.groupedBarChart = function module() {
                 container.append("g").classed("y-axis axis", true).append("text").attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end").text(yAxisLabel);
             }
             // Update the outer dimensions
-            svg.transition().attr({
+            svg.attr({
                 width: width,
                 height: height
             });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Update the inner dimensions
             svg.select(".container").attr({
                 transform: "translate(" + margin.left + "," + margin.top + ")"
@@ -808,10 +801,10 @@ d3.ez.punchCard = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 20,
+        top: 40,
         right: 80,
-        bottom: 20,
-        left: 20
+        bottom: 40,
+        left: 40
     };
     var transition = {
         ease: "bounce",
@@ -887,10 +880,12 @@ d3.ez.punchCard = function module() {
                 container.append("g").classed("x-axis axis", true);
             }
             // Update the outer dimensions
-            svg.transition().attr({
+            svg.attr({
                 width: width,
                 height: height
             });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Update the inner dimensions
             svg.select(".container").attr({
                 transform: "translate(" + margin.left + "," + margin.top + ")"
@@ -987,9 +982,9 @@ d3.ez.timeSeriesChart = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
+        top: 40,
+        right: 40,
+        bottom: 40,
         left: 40
     };
     var transition = {
@@ -1053,7 +1048,12 @@ d3.ez.timeSeriesChart = function module() {
                 container.append("g").classed("y-axis-group axis", true);
             }
             // Update the outer dimensions
-            svg.attr("width", width).attr("height", height);
+            svg.attr({
+                width: width,
+                height: height
+            });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Update the inner dimensions
             var g = svg.select("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
             // Add X & Y axis to the chart
@@ -1121,9 +1121,9 @@ d3.ez.donutChart = function module() {
     var height = 300;
     var margin = {
         top: 20,
-        right: 90,
+        right: 20,
         bottom: 20,
-        left: 90
+        left: 20
     };
     var transition = {
         ease: "cubic",
@@ -1133,26 +1133,14 @@ d3.ez.donutChart = function module() {
     var colors = d3.ez.colors.categorical(4);
     var radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
     var innerRadius = 70;
-    // To sort...
-    var strokeColor = "#FFF";
-    var strokeWidth = 4;
-    var enableLabels = true;
-    var labelGroupOffset = 20;
-    var labelColor = "#333";
-    var labelNameOffset = 0;
-    var tickColor = "#333";
-    var tickWidth = 1;
-    var tickOffset = [ 0, 0, 2, 8 ];
-    // [x1, x2, y1, y2]
-    var labelValueOffset = 16;
     // Data Options (Populated by 'init' function)	
-    var values = null;
-    var categoryNames = null;
-    var colorScale = null;
-    var pie = null;
-    var arc = null;
-    var outerArc = null;
-    var key = null;
+    var values = [];
+    var categoryNames = [];
+    var colorScale = undefined;
+    var pie = undefined;
+    var arc = undefined;
+    var outerArc = undefined;
+    var key = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
     function init(data) {
@@ -1194,10 +1182,12 @@ d3.ez.donutChart = function module() {
                 svg.append("g").attr("class", "lines").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
             }
             // Update the outer dimensions
-            svg.transition().attr({
+            svg.attr({
                 width: width,
                 height: height
             });
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
             // Slices
             var slices = d3.select(".slices").selectAll("path.slice").data(pie(values));
             slices.enter().append("path").attr("class", "slice").attr("fill", function(d, i) {
@@ -1310,7 +1300,7 @@ d3.ez.htmlTable = function module() {
     var classed = "htmlTable";
     var width = 800;
     // Data Options (Populated by 'init' function)
-    var rowNames = null;
+    var rowNames = undefined;
     var columnNames = [];
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
@@ -1502,6 +1492,70 @@ d3.ez.labeledNode = function module() {
     function sizeAccessor(_) {
         return typeof radius === "function" ? radius(_) : radius;
     }
+    return my;
+};
+
+/** 
+ * Credit Tag
+ * 
+ * @example
+ * var myNode = d3.ez.labeledNode()
+ *     .enabled(true)
+ *     .text("Hello World")
+ *     .href("http://d3ez.org");
+ */
+d3.ez.creditTag = function module() {
+    var enabled = true;
+    var text = "d3ez.org";
+    var href = "http://d3ez.org";
+    var position = {
+        align: "right",
+        x: -10,
+        verticalAlign: "bottom",
+        y: -5
+    };
+    var style = {
+        cursor: "pointer",
+        color: "#909090",
+        fontSize: "10px"
+    };
+    function my() {
+        svg = this;
+        var width = svg.attr("width") - 70;
+        var height = svg.attr("height") - 5;
+        svg.selectAll("#creditTag").data([ 0 ]).enter().append("g").attr("id", "creditTag").attr({
+            transform: "translate(" + width + ", " + height + ")"
+        }).append("text").attr({
+            "xlink:href": href
+        }).text(text).on("click", function() {
+            window.open(href);
+        });
+    }
+    my.enabled = function(_) {
+        if (!arguments.length) return enabled;
+        enabled = _;
+        return this;
+    };
+    my.text = function(_) {
+        if (!arguments.length) return text;
+        text = _;
+        return this;
+    };
+    my.href = function(_) {
+        if (!arguments.length) return href;
+        href = _;
+        return this;
+    };
+    my.position = function(_) {
+        if (!arguments.length) return position;
+        position = _;
+        return this;
+    };
+    my.style = function(_) {
+        if (!arguments.length) return style;
+        style = _;
+        return this;
+    };
     return my;
 };
 

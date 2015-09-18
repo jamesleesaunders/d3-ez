@@ -13,21 +13,29 @@
 /* === Axis Styles === */
 .d3ez .axis path, .axis line {
 	fill: none;
-	stroke: #B6B6B6;
+	stroke: #b6b6b6;
 	shape-rendering: crispEdges;
 }
 .d3ez .tick text {
 	fill: #000000;
+}
+/* === Credit Label === */
+.d3ez #creditTag text {
+	cursor: pointer; 
+	fill: #cccccc;
 }
 
 /* === Radial Bar Chart Styles === */
 .radialBarChart path {
 	fill: none;
 }
-.radialBarChart path.layer {
+.radialBarChart path.segment {
 	fill: steelblue;
 	stroke-width: 1px;
 	stroke: #333333;
+}
+.radialBarChart path.segment:hover {
+	opacity: 0.7;
 }
 .radialBarChart circle.outerCircle {
 	stroke: #aaa;
@@ -108,7 +116,7 @@
 	margin-left: .5em; /* Indentation / 2 */
 }
 .htmlList ul:before {
-	content: "";
+	content: '';
 	display: block;
 	width: 0;
 	position: absolute;
@@ -125,7 +133,7 @@
 	position: relative;
 }
 .htmlList ul li:before {
-	content: "";
+	content: '';
 	display: block;
 	width: 10px; /* Same with Indentation */
 	height: 0;

@@ -18,7 +18,7 @@ d3.ez.htmlTable = function module() {
     var width              = 800;
 
     // Data Options (Populated by 'init' function)
-    var rowNames           = null;
+    var rowNames           = undefined;
     var columnNames        = [];
 
     // Dispatch (Custom events)
