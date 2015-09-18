@@ -13,9 +13,14 @@
 /* === Axis Styles === */
 .d3ez .axis path, .axis line {
 	fill: none;
-	stroke: #B6B6B6;
+	stroke: #b6b6b6;
 	shape-rendering: crispEdges;
 }
 .d3ez .tick text {
 	fill: #000000;
+}
+/* === Credit Label === */
+.d3ez #creditTag text {
+	cursor: pointer; 
+	fill: #cccccc;
 }

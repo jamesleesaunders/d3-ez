@@ -19,7 +19,7 @@ d3.ez.timeSeriesChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 20, bottom: 20, left: 40};
+    var margin             = {top: 40, right: 40, bottom: 40, left: 40};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "timeSeriesChart";	
     var color              = "steelblue";
@@ -93,9 +93,11 @@ d3.ez.timeSeriesChart = function module() {
             }
 
             // Update the outer dimensions
-            svg.attr("width", width)
-                .attr("height", height);
+            svg.attr({width: width, height: height});
 
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
+            
             // Update the inner dimensions
             var g = svg.select("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

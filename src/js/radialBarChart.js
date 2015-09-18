@@ -90,8 +90,11 @@ d3.ez.radialBarChart = function module() {
             }			
 
             // Update the outer dimensions
-            svg.transition().attr({width: width, height: height});
-
+            svg.attr({width: width, height: height});
+            
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag); 
+            
             // Update the inner dimensions
             svg.select(".container")
                 .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");

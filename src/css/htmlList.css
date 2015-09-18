@@ -12,7 +12,7 @@
 	margin-left: .5em; /* Indentation / 2 */
 }
 .htmlList ul:before {
-	content: "";
+	content: '';
 	display: block;
 	width: 0;
 	position: absolute;
@@ -29,7 +29,7 @@
 	position: relative;
 }
 .htmlList ul li:before {
-	content: "";
+	content: '';
 	display: block;
 	width: 10px; /* Same with Indentation */
 	height: 0;

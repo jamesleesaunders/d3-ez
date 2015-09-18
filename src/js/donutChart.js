@@ -18,7 +18,7 @@ d3.ez.donutChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 90, bottom: 20, left: 90};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "cubic", duration: 300};
     var classed            = "donutChart";
     var colors             = d3.ez.colors.categorical(4);	
@@ -101,8 +101,11 @@ d3.ez.donutChart = function module() {
             }
 
             // Update the outer dimensions
-            svg.transition().attr({width: width, height: height});
+            svg.attr({width: width, height: height});
 
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
+            
             // Slices
             var slices = d3.select(".slices")
                 .selectAll("path.slice")

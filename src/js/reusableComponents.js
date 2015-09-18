@@ -87,6 +87,66 @@ d3.ez.labeledNode = function module() {
     return my;
 };
 
+/** 
+ * Credit Tag
+ */
+d3.ez.creditTag = function module() {
+    var enabled        = true;
+    var text           = "d3ez.org";
+    var href           = "http://d3ez.org";
+    var position       = {align: "right", x: -10, verticalAlign: "bottom", y: -5};
+    var style          = {cursor: "pointer", color: "#909090", fontSize: "10px"};
+    
+    function my() {
+        svg = this;
+        var width = svg.attr("width") - 70;
+        var height = svg.attr("height") - 5;
+        
+        svg.selectAll("#creditTag")
+            .data([0])
+            .enter()
+            .append("g")
+            .attr("id", "creditTag")
+            .attr({transform: "translate(" + width + ", " + height + ")"})
+            .append("text")
+            .attr({"xlink:href": href})
+            .text(text)
+            .on("click", function() { window.open(href); });
+    };
+
+    my.enabled = function(_) {
+        if (!arguments.length) return enabled;
+        enabled = _;
+        return this;
+    };
+
+    my.text = function(_) {
+        if (!arguments.length) return text;
+        text = _;
+        return this;
+    };
+
+    my.href = function(_) {
+        if (!arguments.length) return href;
+        href = _;
+        return this;
+    };
+    
+    my.position = function(_) {
+        if (!arguments.length) return position;
+        position = _;
+        return this;
+    }; 
+
+    my.style = function(_) {
+        if (!arguments.length) return style;
+        style = _;
+        return this;
+    };
+    
+    return my;    
+}
+
 /**
  * Colour Palettes
  * 

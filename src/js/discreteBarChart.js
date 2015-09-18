@@ -18,7 +18,7 @@ d3.ez.discreteBarChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 20, bottom: 20, left: 40};
+    var margin             = {top: 40, right: 40, bottom: 40, left: 40};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "discreteBarChart";	
     var colors             = d3.ez.colors.categorical(4);	
@@ -87,12 +87,14 @@ d3.ez.discreteBarChart = function module() {
                 container.append("g").classed("chart", true);
                 container.append("g").classed("x-axis axis", true);
                 container.append("g").classed("y-axis axis", true);
-
             }
 
             // Update the outer dimensions
-            svg.transition().attr({width: width, height: height});
-
+            svg.attr({width: width, height: height});
+            
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag); 
+            
             // Update the inner dimensions.
             svg.select(".container")
                 .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
@@ -118,7 +120,7 @@ d3.ez.discreteBarChart = function module() {
                 .style("text-anchor", "end");
 
             ylabel.transition()
-            .text(function(d) { return (d);} );
+                .text(function(d) { return (d);} );
 
             // Add columns to the chart
             var gapSize = xScale.rangeBand() / 100 * gap;
@@ -155,6 +157,8 @@ d3.ez.discreteBarChart = function module() {
                 .remove();	
 
         });
+        
+
     }
 
     // Configuration Getters & Setters
