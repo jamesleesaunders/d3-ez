@@ -1,4 +1,156 @@
 /** 
+ * Title
+ * 
+ * @example
+ * var myTitle = d3.ez.title()
+ *     .enabled(true)
+ *     .text("Hello World")
+ *     .subText("This is a test");
+ * d3.select("svg").call(myTitle);
+ */
+d3.ez.title = function module() {
+    var enabled        = false;
+    var text           = "Title";
+    var subText        = "Sub Title";
+    var position       = {align: "right", x: -10, verticalAlign: "bottom", y: -5};
+    var style          = {cursor: "pointer", color: "#909090", fontSize: "10px"};
+    
+    function my() {
+        svg = this;
+        var width = svg.attr("width");
+        var height = svg.attr("height");
+        
+        if (enabled) {
+            var titleGroup = svg.selectAll("#titleBox")
+                .data([0])
+                .enter()
+                .append("g")
+                .attr("id", "titleBox")
+                .attr({transform: "translate(" + width / 2 + ", " + 10 + ")"});    
+    
+            var title = titleGroup.append("text")
+                .text(text)
+                .classed("title", true);
+            var subTitle = titleGroup.append("text")
+                .text(subText)
+                .classed("subTitle", true);
+    
+            // Centre text        
+            var titleOffset    = 1 - (d3.select("#titleBox").selectAll(".title").node().getBBox().width / 2);
+            var subTitleOffset = 1 - (d3.select("#titleBox").selectAll(".subTitle").node().getComputedTextLength() / 2);
+            title.attr({transform: "translate(" + titleOffset + ", " + 0 + ")"});
+            subTitle.attr({transform: "translate(" + subTitleOffset + ", " + 15 + ")"});
+        }
+    };
+
+    my.enabled = function(_) {
+        if (!arguments.length) return enabled;
+        enabled = _;
+        return this;
+    };
+
+    my.text = function(_) {
+        if (!arguments.length) return text;
+        text = _;
+        return this;
+    };
+    
+    my.subText = function(_) {
+        if (!arguments.length) return subText;
+        subText = _;
+        return this;
+    };    
+    
+    my.position = function(_) {
+        if (!arguments.length) return position;
+        position = _;
+        return this;
+    }; 
+
+    my.style = function(_) {
+        if (!arguments.length) return style;
+        style = _;
+        return this;
+    };
+    
+    return my;    
+}
+
+/** 
+ * Credit Tag
+ * 
+ * @example
+ * var myCredit = d3.ez.creditTag()
+ *     .enabled(true)
+ *     .text("Hello World")
+ *     .href("http://d3ez.org");
+ * d3.select("svg").call(myCredit);
+ */
+d3.ez.creditTag = function module() {
+    var enabled        = true;
+    var text           = "d3ez.org";
+    var href           = "http://d3ez.org";
+    var position       = {align: "right", x: -10, verticalAlign: "bottom", y: -5};
+    var style          = {cursor: "pointer", color: "#909090", fontSize: "10px"};
+    
+    function my() {
+        svg = this;
+        var width = svg.attr("width");
+        var height = svg.attr("height");
+        
+        if (enabled) {
+            var creditTag = svg.selectAll("#creditTag")
+                .data([0])
+                .enter()
+                .append("g")
+                .attr("id", "creditTag");
+            
+            var creditText = creditTag.append("text")
+                .text(text)
+                .attr({"xlink:href": href})
+                .on("click", function() { window.open(href); });
+            
+            // Position in bottom right corner
+            var xPos = (width - d3.select("#creditTag").selectAll("text").node().getBBox().width) - 5;
+            var yPos = (height - d3.select("#creditTag").selectAll("text").node().getBBox().height) - 5;
+            creditText.attr({transform: "translate(" + xPos + ", " + yPos + ")"});
+        }
+    };
+
+    my.enabled = function(_) {
+        if (!arguments.length) return enabled;
+        enabled = _;
+        return this;
+    };
+
+    my.text = function(_) {
+        if (!arguments.length) return text;
+        text = _;
+        return this;
+    };
+
+    my.href = function(_) {
+        if (!arguments.length) return href;
+        href = _;
+        return this;
+    };
+    
+    my.position = function(_) {
+        if (!arguments.length) return position;
+        position = _;
+        return this;
+    }; 
+
+    my.style = function(_) {
+        if (!arguments.length) return style;
+        style = _;
+        return this;
+    };
+    
+    return my;    
+}
+
+/** 
  * Labeled Node
  * 
  * @example
@@ -8,6 +160,7 @@
  *     .stroke(1)
  *     .label("Node Label")
  *     .radius(5);
+ * d3.selectAll("g").call(myNode);
  */
 d3.ez.labeledNode = function module() {
     // Default Options (Configurable via setters)
@@ -86,72 +239,6 @@ d3.ez.labeledNode = function module() {
 
     return my;
 };
-
-/** 
- * Credit Tag
- * 
- * @example
- * var myNode = d3.ez.labeledNode()
- *     .enabled(true)
- *     .text("Hello World")
- *     .href("http://d3ez.org");
- */
-d3.ez.creditTag = function module() {
-    var enabled        = true;
-    var text           = "d3ez.org";
-    var href           = "http://d3ez.org";
-    var position       = {align: "right", x: -10, verticalAlign: "bottom", y: -5};
-    var style          = {cursor: "pointer", color: "#909090", fontSize: "10px"};
-    
-    function my() {
-        svg = this;
-        var width = svg.attr("width") - 70;
-        var height = svg.attr("height") - 5;
-        
-        svg.selectAll("#creditTag")
-            .data([0])
-            .enter()
-            .append("g")
-            .attr("id", "creditTag")
-            .attr({transform: "translate(" + width + ", " + height + ")"})
-            .append("text")
-            .attr({"xlink:href": href})
-            .text(text)
-            .on("click", function() { window.open(href); });
-    };
-
-    my.enabled = function(_) {
-        if (!arguments.length) return enabled;
-        enabled = _;
-        return this;
-    };
-
-    my.text = function(_) {
-        if (!arguments.length) return text;
-        text = _;
-        return this;
-    };
-
-    my.href = function(_) {
-        if (!arguments.length) return href;
-        href = _;
-        return this;
-    };
-    
-    my.position = function(_) {
-        if (!arguments.length) return position;
-        position = _;
-        return this;
-    }; 
-
-    my.style = function(_) {
-        if (!arguments.length) return style;
-        style = _;
-        return this;
-    };
-    
-    return my;    
-}
 
 /**
  * Colour Palettes

@@ -18,7 +18,7 @@ d3.ez.discreteBarChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 40, right: 40, bottom: 40, left: 40};
+    var margin             = {top: 50, right: 40, bottom: 50, left: 40};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "discreteBarChart";	
     var colors             = d3.ez.colors.categorical(4);	
@@ -92,8 +92,11 @@ d3.ez.discreteBarChart = function module() {
             // Update the outer dimensions
             svg.attr({width: width, height: height});
             
+            var title = d3.ez.title();
+            svg.call(title);
+            
             var creditTag = d3.ez.creditTag();
-            svg.call(creditTag); 
+            svg.call(creditTag);
             
             // Update the inner dimensions.
             svg.select(".container")

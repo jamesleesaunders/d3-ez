@@ -20,7 +20,7 @@ d3.ez.punchCard = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 40, right: 80, bottom: 40, left: 40};
+    var margin             = {top: 60, right: 80, bottom: 40, left: 40};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "punchCard";
     var color              = "steelblue";	
@@ -115,6 +115,9 @@ d3.ez.punchCard = function module() {
             // Update the outer dimensions
             svg.attr({width: width, height: height});			
 
+            var title = d3.ez.title();
+            svg.call(title);
+            
             var creditTag = d3.ez.creditTag();
             svg.call(creditTag);
             

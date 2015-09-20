@@ -19,6 +19,17 @@
 .d3ez .tick text {
 	fill: #000000;
 }
+/* === Title === */
+.d3ez #titleBox text {
+	fill: ##909090;
+}
+.d3ez text.title {
+	font-size: 14px;
+	font-weight: bold;
+}
+.d3ez text.subTitle {
+	font-size: 12px;
+}
 /* === Credit Label === */
 .d3ez #creditTag text {
 	cursor: pointer; 

@@ -18,7 +18,7 @@ d3.ez.donutChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
+    var margin             = {top: 90, right: 10, bottom: 10, left: 10};
     var transition         = {ease: "cubic", duration: 300};
     var classed            = "donutChart";
     var colors             = d3.ez.colors.categorical(4);	
@@ -80,9 +80,8 @@ d3.ez.donutChart = function module() {
             init(data);
 
             // Create SVG element (if it does not exist already)
-            svg = d3.select(this).select("svg > g");
-            if (svg.empty()) {
-                var svg = d3.select(this)
+            if (!svg) {
+                svg = d3.select(this)
                     .append("svg")
                     .classed("d3ez", true)
                     .classed(classed, true);
@@ -103,6 +102,9 @@ d3.ez.donutChart = function module() {
             // Update the outer dimensions
             svg.attr({width: width, height: height});
 
+            var title = d3.ez.title();
+            svg.call(title);
+            
             var creditTag = d3.ez.creditTag();
             svg.call(creditTag);
             
