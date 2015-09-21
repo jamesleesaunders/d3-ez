@@ -9,46 +9,32 @@
  * d3.select("svg").call(myTitle);
  */
 d3.ez.title = function module() {
-    var enabled        = false;
-    var text           = "Title";
-    var subText        = "Sub Title";
-    var position       = {align: "right", x: -10, verticalAlign: "bottom", y: -5};
-    var style          = {cursor: "pointer", color: "#909090", fontSize: "10px"};
+    // Default Options (Configurable via setters)
+    var text               = "Title";
+    var subText            = "Sub Title";
     
     function my() {
-        svg = this;
-        var width = svg.attr("width");
-        var height = svg.attr("height");
-        
-        if (enabled) {
-            var titleGroup = svg.selectAll("#titleBox")
-                .data([0])
-                .enter()
-                .append("g")
-                .attr("id", "titleBox")
-                .attr({transform: "translate(" + width / 2 + ", " + 10 + ")"});    
-    
-            var title = titleGroup.append("text")
-                .text(text)
-                .classed("title", true);
-            var subTitle = titleGroup.append("text")
-                .text(subText)
-                .classed("subTitle", true);
-    
-            // Centre text        
-            var titleOffset    = 1 - (d3.select("#titleBox").selectAll(".title").node().getBBox().width / 2);
-            var subTitleOffset = 1 - (d3.select("#titleBox").selectAll(".subTitle").node().getComputedTextLength() / 2);
-            title.attr({transform: "translate(" + titleOffset + ", " + 0 + ")"});
-            subTitle.attr({transform: "translate(" + subTitleOffset + ", " + 15 + ")"});
-        }
-    };
+        var titleGroup = this.selectAll("#titleGroup")
+            .data([0])
+            .enter()
+            .append("g")
+            .attr("id", "titleGroup");
 
-    my.enabled = function(_) {
-        if (!arguments.length) return enabled;
-        enabled = _;
-        return this;
-    };
+        var title = titleGroup.append("text")
+            .text(text)
+            .classed("title", true);
+        var subTitle = titleGroup.append("text")
+            .text(subText)
+            .classed("subTitle", true);
 
+        // Centre Text
+        var titleOffset    = 1 - (d3.select("#titleGroup").selectAll(".title").node().getBBox().width / 2);
+        var subTitleOffset = 1 - (d3.select("#titleGroup").selectAll(".subTitle").node().getComputedTextLength() / 2);
+        title.attr({transform: "translate(" + titleOffset + ", " + 15 + ")"});
+        subTitle.attr({transform: "translate(" + subTitleOffset + ", " + 30 + ")"});
+    }
+    
+    // Configuration Getters & Setters
     my.text = function(_) {
         if (!arguments.length) return text;
         text = _;
@@ -59,22 +45,10 @@ d3.ez.title = function module() {
         if (!arguments.length) return subText;
         subText = _;
         return this;
-    };    
-    
-    my.position = function(_) {
-        if (!arguments.length) return position;
-        position = _;
-        return this;
-    }; 
-
-    my.style = function(_) {
-        if (!arguments.length) return style;
-        style = _;
-        return this;
     };
     
     return my;    
-}
+};
 
 /** 
  * Credit Tag
@@ -87,42 +61,28 @@ d3.ez.title = function module() {
  * d3.select("svg").call(myCredit);
  */
 d3.ez.creditTag = function module() {
-    var enabled        = true;
-    var text           = "d3ez.org";
-    var href           = "http://d3ez.org";
-    var position       = {align: "right", x: -10, verticalAlign: "bottom", y: -5};
-    var style          = {cursor: "pointer", color: "#909090", fontSize: "10px"};
+    // Default Options (Configurable via setters)
+    var text               = "d3ez.org";
+    var href               = "http://d3ez.org";
     
     function my() {
-        svg = this;
-        var width = svg.attr("width");
-        var height = svg.attr("height");
-        
-        if (enabled) {
-            var creditTag = svg.selectAll("#creditTag")
-                .data([0])
-                .enter()
-                .append("g")
-                .attr("id", "creditTag");
-            
-            var creditText = creditTag.append("text")
-                .text(text)
-                .attr({"xlink:href": href})
-                .on("click", function() { window.open(href); });
-            
-            // Position in bottom right corner
-            var xPos = (width - d3.select("#creditTag").selectAll("text").node().getBBox().width) - 5;
-            var yPos = (height - d3.select("#creditTag").selectAll("text").node().getBBox().height) - 5;
-            creditText.attr({transform: "translate(" + xPos + ", " + yPos + ")"});
-        }
-    };
+        var creditTag = this.selectAll("#creditTag")
+            .data([0])
+            .enter()
+            .append("g")
+            .attr("id", "creditTag");
 
-    my.enabled = function(_) {
-        if (!arguments.length) return enabled;
-        enabled = _;
-        return this;
-    };
+        var creditText = creditTag.append("text")
+            .text(text)
+            .attr({"xlink:href": href})
+            .on("click", function() { window.open(href); });
 
+        // Right Justify Text
+        var xPos = 0 - (d3.select("#creditTag").selectAll("text").node().getBBox().width);
+        creditText.attr({transform: "translate(" + xPos + ", 0)"});
+    }
+    
+    // Configuration Getters & Setters
     my.text = function(_) {
         if (!arguments.length) return text;
         text = _;
@@ -135,20 +95,8 @@ d3.ez.creditTag = function module() {
         return this;
     };
     
-    my.position = function(_) {
-        if (!arguments.length) return position;
-        position = _;
-        return this;
-    }; 
-
-    my.style = function(_) {
-        if (!arguments.length) return style;
-        style = _;
-        return this;
-    };
-    
     return my;    
-}
+};
 
 /** 
  * Labeled Node
@@ -163,7 +111,7 @@ d3.ez.creditTag = function module() {
  * d3.selectAll("g").call(myNode);
  */
 d3.ez.labeledNode = function module() {
-    // Default Options (Configurable via setters)
+    // Default Options (Configurable via setters) 
     var color              = "steelblue";
     var opacity            = 1;
     var strokeColor        = "#000000";
@@ -172,7 +120,6 @@ d3.ez.labeledNode = function module() {
     var label              = null;
     var fontSize           = 10;
 
-    // Create Label Object
     function my(d, i) {
         var r = sizeAccessor(d);
 
@@ -342,4 +289,175 @@ d3.ez.colors = {
             });
             return result;
         }
+};
+
+/**
+ * Legend
+ * 
+ * @example
+ * var myLegend = d3.ez.legend()
+ *     .sizeScale(**D3 Scale Object**)
+ *     .sizeLabel('Label for Size')
+ *     .colorScale(**D3 Scale Object**)
+ *     .colorLabel('Label for Colours')
+ *     .position('top-right'); 
+ */
+d3.ez.legend = function module() {
+    // Default Options (Configurable via setters)
+    var sizeScale          = undefined;
+    var sizeLabel          = null;
+    var colorScale         = undefined;
+    var colorLabel         = null;
+    var width              = null;
+    var height             = null;
+    var opacity            = 0.7;
+    var fill               = "#ffffff";
+    var stroke             = "#000000";
+    var strokewidth        = "1px";
+    var spacing            = 5;
+
+    function my() {
+        height = (height ? height : this.attr("height"));
+        width = (width ? width : this.attr("width"));
+
+        numElements = colorScale.range().length;
+        elementHeight = ((height - 30) / numElements) - 5;
+        
+        // Legend Box
+        var legendBox = this.selectAll("#legendBox")
+            .data([0])
+            .enter()
+            .append("g")
+            .attr("id", "legendBox");
+            
+        legendBox.append("rect")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("fill-opacity", opacity)
+            .attr("fill", fill)
+            .attr("stroke-width", strokewidth)
+            .attr("stroke", stroke);
+
+        title = legendBox.append('g')
+            .attr('transform', 'translate(5,15)');
+        title.append('text')
+            .style('font-weight', 'bold')
+            .text(colorLabel);
+
+        // Size Key
+        if(typeof sizeScale != "undefined") {
+            var i = 10;
+            for(index = 0; index < sizeScale.range().length; index++) {
+                sizeKey.append('circle')
+                    .attr('cx', 17)
+                    .attr('cy', i)
+                    .attr('fill', 'lightgrey')
+                    .attr('stroke-width', '1px')
+                    .attr('stroke', 'grey')
+                    .attr('fill-opacity', 0.8)
+                    .attr('r', sizeScale.range()[index]);
+                sizeKey.append('text')
+                    .attr('x', 40)
+                    .attr('y', i + 5)
+                    .text(keyScaleRange('size', index));
+                
+                i = i + 20;
+            }
+        }
+
+        // Colour Key
+        if(typeof colorScale != 'undefined') {
+            colorKey = legendBox.append('g')
+                .attr('transform', 'translate(5,15)');
+            var i = 10;
+            for(index = 0; index < colorScale.domain().length; index++) {
+                colorKey.append('rect')
+                    .attr('x', 10)
+                    .attr('y', i)
+                    .attr('fill', colorScale.range()[index])
+                    .attr('stroke-width', '1px')
+                    .attr('stroke', 'grey')
+                    .attr('fill-opacity', 0.8)
+                    .attr('width', 20)
+                    .attr('height', elementHeight);
+                colorKey.append('text')
+                    .attr('x', 40)
+                    .attr('y', i + 10)
+                    .text(colorScale.domain()[index]);
+                i = i + (elementHeight + spacing);
+            }
+        }
+    }
+
+    // Helper function to calculate the keys min and max values
+    function keyScaleRange(type, position) {
+        switch(type) {
+            case 'size':    
+                var domainMin   = Math.min.apply(Math, sizeScale.domain());
+                var domainMax   = Math.max.apply(Math, sizeScale.domain());
+                var domainSize  = domainMax - domainMin;
+                var rangeLength = sizeScale.range().length;
+                break;
+            case 'color':   
+                var domainMin   = Math.min.apply(Math, colorScale.domain());
+                var domainMax   = Math.max.apply(Math, colorScale.domain());
+                var domainSize  = domainMax - domainMin;
+                var rangeLength = colorScale.range().length;
+                break;
+        }
+        var rangeIncrement = domainSize / rangeLength;
+        var ranges = [];
+        var range  = [];
+        var rangeStart = domainMin;
+        var rangeEnd = domainMin + rangeIncrement;
+
+        for(i = 0; i < rangeLength; i++) {
+            range = [rangeStart, rangeEnd];
+            ranges.push(range);
+            rangeStart = rangeEnd;
+            rangeEnd = rangeStart + rangeIncrement; 
+        }
+
+        var rangeStr = ranges[position][0].toFixed(0) + ' - ' + ranges[position][1].toFixed(0);
+        return rangeStr;
+    }
+
+    // Configuration Getters & Setters
+    my.sizeScale = function(_) {
+        if (!arguments.length) return sizeScale;
+        sizeScale = _;
+        return my;
+    };
+
+    my.sizeLabel = function(_) {
+        if (!arguments.length) return sizeLabel;
+        sizeLabel = _;
+        return my;
+    };
+
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+
+    my.colorLabel = function(_) {
+        if (!arguments.length) return colorLabel;
+        colorLabel = _;
+        return my;
+    };
+
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return my;
+    };
+
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return my;
+    };
+
+    return my;
 };

@@ -16,7 +16,7 @@ d3.ez.circularHeatChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 90, right: 10, bottom: 10, left: 10};
+    var margin             = {top: 20, right: 200, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};	
     var classed            = "circularHeatChart";
     var colors             = ["white", "orange"];
@@ -30,7 +30,8 @@ d3.ez.circularHeatChart = function module() {
     var segmentLabels      = [];
     var numSegments        = 24;
     var segmentHeight      = 0;
-    var maxValue           = 0
+    var maxValue           = 0;
+    var colorScale         = undefined;
 
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
@@ -51,6 +52,10 @@ d3.ez.circularHeatChart = function module() {
         });
 
         domain = [0, maxValue];
+
+        colorScale = d3.scale.linear()
+            .domain(domain)
+            .range(colors);
     }	
 
     function my(selection) {
@@ -76,17 +81,13 @@ d3.ez.circularHeatChart = function module() {
             
             var title = d3.ez.title();
             svg.call(title);
-            
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);            
-            
-            // Update the inner dimensions
-            svg.select(".container")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-            var color = d3.scale.linear()
-                .domain(domain)
-                .range(colors);
+            var creditTag = d3.ez.creditTag();
+            svg.call(creditTag);
+            
+            // Locate the center point
+            svg.select(".container")
+                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
             // Arc Generator
             var arc = d3.svg.arc()
@@ -115,7 +116,7 @@ d3.ez.circularHeatChart = function module() {
                 .enter()
                 .append("path")
                 .attr("d", arc)
-                .attr("fill", function(d) { return color(accessor(d.value)); })
+                .attr("fill", function(d) { return colorScale(accessor(d.value)); })
                 .classed("segment", true);
 
             // Unique id so that the text path defs are unique - is there a better way to do this?

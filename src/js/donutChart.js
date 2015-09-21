@@ -18,7 +18,7 @@ d3.ez.donutChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 90, right: 10, bottom: 10, left: 10};
+    var margin             = {top: 20, right: 200, bottom: 20, left: 20};
     var transition         = {ease: "cubic", duration: 300};
     var classed            = "donutChart";
     var colors             = d3.ez.colors.categorical(4);	
@@ -86,17 +86,10 @@ d3.ez.donutChart = function module() {
                     .classed("d3ez", true)
                     .classed(classed, true);
 
-                svg.append("g")
-                    .attr("class", "slices")
-                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-                
-                svg.append("g")
-                    .attr("class", "labels")
-                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-                
-                svg.append("g")
-                    .attr("class", "lines")
-                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");					
+                var container = svg.append("g").classed("container", true);
+                container.append("g").attr("class", "slices");
+                container.append("g").attr("class", "labels");
+                container.append("g").attr("class", "lines");					
             }
 
             // Update the outer dimensions
@@ -107,6 +100,16 @@ d3.ez.donutChart = function module() {
             
             var creditTag = d3.ez.creditTag();
             svg.call(creditTag);
+            
+            var legend = d3.ez.legend()
+                .colorScale(colorScale)
+                .colorLabel('Label for Colours')
+                .position('top-right');
+            svg.call(legend);
+            
+            // Locate the center point
+            svg.select(".container")
+                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"); 
             
             // Slices
             var slices = d3.select(".slices")

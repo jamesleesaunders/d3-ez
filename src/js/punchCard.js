@@ -170,7 +170,7 @@ d3.ez.punchCard = function module() {
             }
 
         });
-    };
+    }
 
     // Configuration Getters & Setters
     my.width = function(_) {

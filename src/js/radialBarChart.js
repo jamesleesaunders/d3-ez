@@ -16,7 +16,7 @@ d3.ez.radialBarChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 90, right: 10, bottom: 10, left: 10};
+    var margin             = {top: 20, right: 200, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "radialBarChart";
     var colors             = d3.ez.colors.categorical(4);	
@@ -67,6 +67,12 @@ d3.ez.radialBarChart = function module() {
         barScale = d3.scale.linear()
             .domain(domain)
             .range([0, radius]);
+        
+        // Colour Scale
+        colorScale = d3.scale.ordinal()
+            .range(colors)
+            .domain(keys);        
+        
     }
 
     function my(selection) {
@@ -95,12 +101,18 @@ d3.ez.radialBarChart = function module() {
             var title = d3.ez.title();
             svg.call(title);
             
+            var legend = d3.ez.legend()
+                .position("top-right")
+                .colorLabel("Hello")                
+                .colorScale(colorScale);
+            svg.call(legend);   
+            
             var creditTag = d3.ez.creditTag();
             svg.call(creditTag);
             
-            // Update the inner dimensions
+            // Locate the center point
             svg.select(".container")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
             // Concentric tick circles
             tickCircles = d3.select(".tickCircles")

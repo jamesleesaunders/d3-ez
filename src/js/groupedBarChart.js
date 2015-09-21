@@ -18,7 +18,7 @@ d3.ez.groupedBarChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 50, right: 40, bottom: 50, left: 40};
+    var margin             = {top: 50, right: 160, bottom: 50, left: 40};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "groupedBarChart";	
     var colors             = d3.ez.colors.categorical(4);
@@ -134,7 +134,13 @@ d3.ez.groupedBarChart = function module() {
             svg.call(title);
             
             var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);       
+            svg.call(creditTag);
+            
+            var legend = d3.ez.legend()
+                .colorScale(colorScale)
+                .colorLabel('Label for Colours')
+                .position('top-right');
+            svg.call(legend);            
             
             // Update the inner dimensions
             svg.select(".container")
@@ -238,28 +244,6 @@ d3.ez.groupedBarChart = function module() {
                     .style({opacity: 0})
                     .remove();
             }
-
-            // Add legend to chart
-            var legend = svg.selectAll(".legend")
-                .data(categoryNames.slice().reverse())
-                .enter()
-                .append("g")
-                .attr("class", "legend")
-                .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-            legend.append("rect")
-                .attr("x", width - 18)
-                .attr("width", 18)
-                .attr("height", 18)
-                .style("fill", colorScale);
-
-            legend.append("text")
-                .attr("x", width - 24)
-                .attr("y", 9)
-                .attr("dy", ".35em")
-                .style("text-anchor", "end")
-                .text(function(d) { return d; });
-
         });
     }
 

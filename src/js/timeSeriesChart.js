@@ -97,7 +97,7 @@ d3.ez.timeSeriesChart = function module() {
 
             var title = d3.ez.title();
             svg.call(title);
-            
+
             var creditTag = d3.ez.creditTag();
             svg.call(creditTag);
             

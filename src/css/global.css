@@ -20,7 +20,7 @@
 	fill: #000000;
 }
 /* === Title === */
-.d3ez #titleBox text {
+.d3ez #titleGroup text {
 	fill: ##909090;
 }
 .d3ez text.title {

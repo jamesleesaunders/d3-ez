@@ -18,7 +18,7 @@ d3.ez.discreteBarChart = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 50, right: 40, bottom: 50, left: 40};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "discreteBarChart";	
     var colors             = d3.ez.colors.categorical(4);	
@@ -27,6 +27,8 @@ d3.ez.discreteBarChart = function module() {
     // Data Options (Populated by 'init' function)
     var chartW             = 0;
     var chartH             = 0;
+    var containerW          = 0;
+    var containerH         = 0;
     var maxValue           = 0;
     var categories         = [];
     var xScale             = undefined;
@@ -39,9 +41,16 @@ d3.ez.discreteBarChart = function module() {
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
 
-    function init(data) {		
-        chartW = width - margin.left - margin.right;
-        chartH = height - margin.top - margin.bottom;
+
+    var legendW = 100;
+    var titleH = 40;
+
+    function init(data) {
+
+        containerW = width - (margin.left + margin.right);
+        containerH = height - (margin.top + margin.bottom);
+        chartW = containerW - legendW;
+        chartH = containerH - titleH;
 
         yAxisLabel = d3.values(data)[0];
         maxValue = d3.max(data.values, function(d) { return d.value;} );
@@ -84,33 +93,54 @@ d3.ez.discreteBarChart = function module() {
                     .classed(classed, true);
 
                 var container = svg.append("g").classed("container", true);
-                container.append("g").classed("chart", true);
-                container.append("g").classed("x-axis axis", true);
-                container.append("g").classed("y-axis axis", true);
+                var chart = container.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true);
+                container.append("g").classed("legend", true);
+                container.append("g").classed("title", true);
+                container.append("g").classed("credit", true);
             }
 
             // Update the outer dimensions
             svg.attr({width: width, height: height});
-            
-            var title = d3.ez.title();
-            svg.call(title);
-            
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);
-            
-            // Update the inner dimensions.
-            svg.select(".container")
-                .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
+            var container = svg.select(".container")
+                .attr({width: containerW, height: containerH})
+                .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
             // Add X & Y axis to the chart
-            svg.select(".x-axis")
+            var chart = svg.select(".chart")
+                .attr({width: chartW, height: chartH})
+                .attr({transform: "translate(0," + titleH + ")"});
+            chart.select(".x-axis")
                 .attr({transform: "translate(0," + chartH + ")"})
                 .call(xAxis);
 
-            svg.select(".y-axis")	
+            chart.select(".y-axis")
                 .call(yAxis);
 
-            ylabel = svg.select(".y-axis")
+            // Add Title
+            var title = d3.ez.title();
+            container.select(".title")
+                .attr({transform: "translate(" + width / 2 + ",0)"})
+                .call(title);
+
+            // Add Legend
+            var legend = d3.ez.legend()
+                .colorScale(colorScale)
+                .colorLabel('Label for Colours');
+            container.select(".legend")
+                .attr({transform: "translate(" + (width - (margin.right + 100)) + ",0)"})
+                .attr({width: 100, height: 150})
+                .call(legend);
+
+            // Add Credit Tag
+            var creditTag = d3.ez.creditTag();
+            container.select(".credit")
+                .attr({transform: "translate(" + (width - 20) + "," + (height - 20) + ")"})
+                .call(creditTag);
+
+            // Add Y-Axis Label
+            ylabel = container.select(".y-axis")
                 .selectAll(".y-label")
                 .data([data.key]);
 
@@ -129,7 +159,7 @@ d3.ez.discreteBarChart = function module() {
             var gapSize = xScale.rangeBand() / 100 * gap;
             var barW = xScale.rangeBand() - gapSize;
 
-            var bars = svg.select(".chart")
+            var bars = container.select(".chart")
                 .selectAll(".bar")
                 .data(data.values);
 
@@ -160,8 +190,6 @@ d3.ez.discreteBarChart = function module() {
                 .remove();	
 
         });
-        
-
     }
 
     // Configuration Getters & Setters
