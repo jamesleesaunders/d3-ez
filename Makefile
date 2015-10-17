@@ -1,21 +1,23 @@
 # D3.EZ Makefile
 
 JS_FILES :=        src/js/header.js \
-                   src/js/radialBarChart.js \
-                   src/js/circularHeatChart.js \
                    src/js/discreteBarChart.js \
                    src/js/groupedBarChart.js \
+                   src/js/radialBarChart.js \
+                   src/js/circularHeatChart.js \
+                   src/js/tabularHeatChart.js \
+                   src/js/donutChart.js \
                    src/js/punchCard.js \
                    src/js/timeSeriesChart.js \
-                   src/js/donutChart.js \
                    src/js/htmlTable.js \
                    src/js/htmlList.js \
                    src/js/reusableComponents.js
 	
 CSS_FILES :=       src/css/global.css \
+                   src/css/groupedBarChart.css \
                    src/css/radialBarChart.css \
                    src/css/circularHeatChart.css \
-                   src/css/groupedBarChart.css \
+                   src/css/tabularHeatChart.css \
                    src/css/donutChart.css \
                    src/css/htmlList.css \
                    src/css/htmlTable.css

@@ -70,6 +70,36 @@ d3.ez.tabularHeatChart = function module() {
             // Update the inner dimensions
             svg.select(".container").attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
+            var deck = container.selectAll(".deck")
+                .data(data)
+                .enter()
+                .append("g")
+                .attr("class", "deck")
+                .attr("transform", function(d, i) {
+                    return "translate(" + rowNames.indexOf(d.key) + ", " +  ((colNames.indexOf(d.key)) * gridSize) + ")";
+                });
+
+            var cards = deck.selectAll(".card")
+                .data(function(d) {return d.values;});
+
+            cards.enter().append("rect")
+                .attr("x", function(d) { return (rowNames.indexOf(d.key)) * gridSize; })
+                .attr("y", 0)
+                .attr("rx", 5)
+                .attr("ry", 5)
+                .attr("class", "card")
+                .attr("width", gridSize)
+                .attr("height", gridSize)
+                .style("fill", colors[0])
+                .on("mouseover", dispatch.customHover);
+
+            cards.transition().duration(1000)
+                .style("fill", function(d) { return colorScale(d.value); });
+
+            cards.select("title").text(function(d) { return d.value; });
+
+            cards.exit().remove();
+
             var colLabels = container.selectAll(".colLabel")
                 .data(colNames)
                 .enter().append("text")
@@ -95,29 +125,6 @@ d3.ez.tabularHeatChart = function module() {
                     return "rotate(-90)"
                 });
 
-
-            var cards = container.selectAll(".hour")
-                .data(data, function(d) {return colNames.indexOf(d.key) + ':' + rowNames.indexOf(d.key);});
-
-            cards.append("title");
-
-            cards.enter().append("rect")
-                .attr("x", function(d) { return (colNames.indexOf(d.key)) * gridSize; })
-                .attr("y", function(d) { console.log(d.values[colNames.indexOf(d.key)].key); return (rowNames.indexOf(d.values[colNames.indexOf(d.key)].key)) * gridSize; })
-                .attr("rx", 4)
-                .attr("ry", 4)
-                .attr("class", "hour bordered")
-                .attr("width", gridSize)
-                .attr("height", gridSize)
-                .style("fill", colors[0]);
-
-            cards.transition().duration(1000)
-                .style("fill", function(d) { return colorScale(d.value); });
-
-            cards.select("title").text(function(d) { return d.value; });
-
-            cards.exit().remove();
-
             var legend = svg.selectAll(".legend")
                 .data([0].concat(colorScale.quantiles()), function(d) { return d; });
 
@@ -142,10 +149,6 @@ d3.ez.tabularHeatChart = function module() {
 
         });
     }
-
-    var accessor = function(d) {
-        return d;
-    };
 
     // Configuration Getters & Setters
     my.width = function(_) {
