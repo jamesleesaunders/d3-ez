@@ -78,7 +78,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("y", function (d, i) { return i * gridSize; })
                 .style("text-anchor", "end")
                 .attr("transform", "translate(-6," + gridSize / 2 + ")")
-                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "controllerLabel mono axis axis-workweek" : "controllerLabel mono axis"); });
+                .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "colLabel mono axis axis-workweek" : "colLabel mono axis"); });
 
             var rowLabels = container.selectAll(".rowLabel")
                 .data(rowNames)
@@ -90,7 +90,7 @@ d3.ez.tabularHeatChart = function module() {
                 .append("text")
                 .text(function(d) { return d; })
                 .style("text-anchor", "start")
-                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "responderLabel mono axis axis-worktime" : "responderLabel mono axis"); })
+                .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "rowLabel mono axis axis-worktime" : "rowLabel mono axis"); })
                 .attr("transform", function(d) {
                     return "rotate(-90)"
                 });
