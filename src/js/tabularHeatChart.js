@@ -38,10 +38,21 @@ d3.ez.tabularHeatChart = function module() {
         // Group and Category Names
         colNames = data.map(function(d) { return d.key; });
 
-        rowNames = [];
+        // This next section of code is v.dirty!
+        // This is a workaround to fix the problem where the first record does not contain
+        // all the keys (rowNames). This needs to be fixed correctly!
+        var a =[];
         data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-            rowNames[i] = d.key;
+            a[i] = d.key;
         });
+        var b =[];
+        data.map(function(d) { return d.values; })[1].forEach(function(d, i) {
+            b[i] = d.key;
+        });
+        rowNames = a.concat(b.filter(function (item) {
+            return a.indexOf(item) < 0;
+        }));
+        rowNames.sort()
 
         numCols = colNames.length;
         numRows = rowNames.length;
@@ -64,7 +75,7 @@ d3.ez.tabularHeatChart = function module() {
     function my(selection) {
         selection.each(function(data) {
             // Initialise Data
-            console.log(data);
+
             init(data);
 
             // Create SVG element (if it does not exist already)
@@ -88,7 +99,7 @@ d3.ez.tabularHeatChart = function module() {
                 .append("g")
                 .attr("class", "deck")
                 .attr("transform", function(d, i) {
-                    return "translate(" + rowNames.indexOf(d.key) + ", " +  ((colNames.indexOf(d.key)) * gridSize) + ")";
+                    return "translate(0, " +  ((colNames.indexOf(d.key)) * gridSize) + ")";
                 });
 
             var cards = deck.selectAll(".card")
