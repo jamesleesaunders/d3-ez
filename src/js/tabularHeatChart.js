@@ -37,6 +37,7 @@ d3.ez.tabularHeatChart = function module() {
     function init(data) {
         // Group and Category Names
         colNames = data.map(function(d) { return d.key; });
+        numCols = colNames.length;
 
         // This next section of code is v.dirty!
         // This is a workaround to fix the problem where the first record does not contain
@@ -46,15 +47,13 @@ d3.ez.tabularHeatChart = function module() {
             a[i] = d.key;
         });
         var b =[];
-        data.map(function(d) { return d.values; })[1].forEach(function(d, i) {
+        data.map(function(d) { return d.values; })[numCols-1].forEach(function(d, i) {
             b[i] = d.key;
         });
-        rowNames = a.concat(b.filter(function (item) {
-            return a.indexOf(item) < 0;
+        rowNames = b.concat(a.filter(function (item) {
+            return b.indexOf(item) < 0;
         }));
-        rowNames.sort()
-
-        numCols = colNames.length;
+        //rowNames.sort()
         numRows = rowNames.length;
 
         gridSize = Math.floor((width - (margin.left + margin.right)) / d3.max([numCols, numRows]));
