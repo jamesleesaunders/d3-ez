@@ -10,6 +10,7 @@
 d3.ez.tabularHeatChart = function module() {
     // SVG container (Populated by 'my' function)
     var svg;
+
     // Default Options (Configurable via setters)
     var width = 600;
     var height = 600;
@@ -21,21 +22,31 @@ d3.ez.tabularHeatChart = function module() {
     // Data Options (Populated by 'init' function)
     var domain = null;
     var maxValue = 0;
-    var numberCols = 0;
+    var numCols = 0;
     var numRows = 0;
     var gridSize = 0;
-    var legendElementWidth = gridSize * 2;
-    var colNames = ["asfd", "brig", "popl",	"winn"];
-    var rowNames = ["Apples", "Oranges", "Pears", "Bananas"];
+    // var legendElementWidth = gridSize * 2;
+    var colNames = [];
+
+    var rowNames = [];
+    var colorScale = undefined;
 
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
 
     function init(data) {
+        // Group and Category Names
+        colNames = data.map(function(d) { return d.key; });
+
+        rowNames = [];
+        data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+            rowNames[i] = d.key;
+        });
 
         numCols = colNames.length;
         numRows = rowNames.length;
-        gridSize = Math.floor((width - (margin.left + margin.right)) / numCols);
+
+        gridSize = Math.floor((width - (margin.left + margin.right)) / d3.max([numCols, numRows]));
 
         d3.map(data).values().forEach(function(d) {
             d.values.forEach(function(d) {
@@ -44,6 +55,7 @@ d3.ez.tabularHeatChart = function module() {
         });
         domain = [ 0, maxValue ];
 
+        // Colour Scale
         colorScale = d3.scale.quantile()
             .domain(domain)
             .range(colors);
@@ -59,9 +71,9 @@ d3.ez.tabularHeatChart = function module() {
             if (!svg) {
                 svg = d3.select(this).append("svg").classed("d3ez", true).classed(classed, true);
                 var container = svg.append("g").classed("container", true);
-                container.append("g").classed("rings", true);
-                container.append("g").classed("radialLabels", true);
-                container.append("g").classed("segmentLabels", true);
+                container.append("g").classed("x-axis axis", true);
+                container.append("g").classed("y-axis axis", true);
+                container.append("g").classed("cards", true);
             }
 
             // Update the outer dimensions
@@ -70,7 +82,7 @@ d3.ez.tabularHeatChart = function module() {
             // Update the inner dimensions
             svg.select(".container").attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
-            var deck = container.selectAll(".deck")
+            var deck = svg.select(".cards").selectAll(".deck")
                 .data(data)
                 .enter()
                 .append("g")
@@ -100,7 +112,7 @@ d3.ez.tabularHeatChart = function module() {
 
             cards.exit().remove();
 
-            var colLabels = container.selectAll(".colLabel")
+            var colLabels = svg.select(".x-axis").selectAll(".colLabel")
                 .data(colNames)
                 .enter().append("text")
                 .text(function (d) { return d; })
@@ -110,7 +122,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("transform", "translate(-6," + gridSize / 2 + ")")
                 .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "colLabel mono axis axis-workweek" : "colLabel mono axis"); });
 
-            var rowLabels = container.selectAll(".rowLabel")
+            var rowLabels = svg.select(".y-axis").selectAll(".rowLabel")
                 .data(rowNames)
                 .enter()
                 .append("g")
@@ -125,6 +137,7 @@ d3.ez.tabularHeatChart = function module() {
                     return "rotate(-90)"
                 });
 
+            /*
             var legend = svg.selectAll(".legend")
                 .data([0].concat(colorScale.quantiles()), function(d) { return d; });
 
@@ -145,7 +158,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("y", height + gridSize);
 
             legend.exit().remove();
-
+            */
 
         });
     }
@@ -154,36 +167,40 @@ d3.ez.tabularHeatChart = function module() {
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
+
     my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
+
     my.margin = function(_) {
         if (!arguments.length) return margin;
         margin = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
+
     my.colors = function(_) {
         if (!arguments.length) return colors;
         colors = _;
         return this;
     };
+
     my.domain = function(_) {
         if (!arguments.length) return domain;
         domain = _;
         return this;
     };
+
     my.accessor = function(_) {
         if (!arguments.length) return accessor;
         accessor = _;
         return this;
     };
+
     d3.rebind(my, dispatch, "on");
+
     return my;
 };
