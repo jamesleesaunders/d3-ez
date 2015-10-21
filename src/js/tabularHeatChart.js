@@ -25,7 +25,6 @@ d3.ez.tabularHeatChart = function module() {
     var numCols = 0;
     var numRows = 0;
     var gridSize = 0;
-    // var legendElementWidth = gridSize * 2;
     var colNames = [];
 
     var rowNames = [];
@@ -39,31 +38,37 @@ d3.ez.tabularHeatChart = function module() {
         colNames = data.map(function(d) { return d.key; });
         numCols = colNames.length;
 
-        // This next section of code is v.dirty!
-        // This is a workaround to fix the problem where the first record does not contain
-        // all the keys (rowNames). This needs to be fixed correctly!
+        /*
+         The following bit of code is a little dirty! Its purpose is to identify the complete list of row names.
+         In some cases the first (index 0) set of values may not contain the complete list of key names.
+         This typically this happens in 'matrix' (site A to site B) type scenario, for example where no data
+         would exist where both site A is the same as site B.
+         The code therefore takes the list of keys from the first (index 0) set of values and then concatenates
+         it with the last (index max) set of values, finally removing duplicates.
+         */
         var a =[];
+        var b =[];
         data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
             a[i] = d.key;
         });
-        var b =[];
         data.map(function(d) { return d.values; })[numCols-1].forEach(function(d, i) {
             b[i] = d.key;
         });
-        rowNames = b.concat(a.filter(function (item) {
-            return b.indexOf(item) < 0;
+        rowNames = b.concat(a.filter(function (element) {
+            return b.indexOf(element) < 0;
         }));
-        //rowNames.sort()
         numRows = rowNames.length;
 
         gridSize = Math.floor((width - (margin.left + margin.right)) / d3.max([numCols, numRows]));
 
+        // Calculate the Max Value
+        var values = [];
         d3.map(data).values().forEach(function(d) {
             d.values.forEach(function(d) {
-                maxValue = d.value > maxValue ? d.value : maxValue;
+                values.push(d.value);
             });
         });
-        domain = [ 0, maxValue ];
+        maxValue = d3.quantile(values, 0.95) + 5;
 
         // Colour Scale
         colorScale = d3.scale.quantile()
@@ -74,12 +79,15 @@ d3.ez.tabularHeatChart = function module() {
     function my(selection) {
         selection.each(function(data) {
             // Initialise Data
-
             init(data);
 
             // Create SVG element (if it does not exist already)
             if (!svg) {
-                svg = d3.select(this).append("svg").classed("d3ez", true).classed(classed, true);
+                svg = d3.select(this)
+                    .append("svg")
+                    .classed("d3ez", true)
+                    .classed(classed, true);
+
                 var container = svg.append("g").classed("container", true);
                 container.append("g").classed("x-axis axis", true);
                 container.append("g").classed("y-axis axis", true);
@@ -90,32 +98,40 @@ d3.ez.tabularHeatChart = function module() {
             svg.transition().attr({width: width, height: height});
 
             // Update the inner dimensions
-            svg.select(".container").attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
+            svg.select(".container")
+                .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
             var deck = svg.select(".cards").selectAll(".deck")
-                .data(data)
-                .enter()
-                .append("g")
+                .data(data);
+
+            deck.enter().append("g")
                 .attr("class", "deck")
                 .attr("transform", function(d, i) {
                     return "translate(0, " +  ((colNames.indexOf(d.key)) * gridSize) + ")";
                 });
+            deck.transition()
+                .attr("class", "deck");
 
             var cards = deck.selectAll(".card")
-                .data(function(d) {return d.values;});
+                .data(function(d) {
+                    // Map row, column and value to new data array
+                    var ret = [];
+                    d3.map(d.values).values().forEach(function(v, i) { ret[i] = {row: d.key, column: v.key, value: v.value} });
+                    return ret;
+                });
 
             cards.enter().append("rect")
-                .attr("x", function(d) { return (rowNames.indexOf(d.key)) * gridSize; })
+                .attr("x", function(d) { return (rowNames.indexOf(d.column)) * gridSize; })
                 .attr("y", 0)
                 .attr("rx", 5)
                 .attr("ry", 5)
                 .attr("class", "card")
                 .attr("width", gridSize)
                 .attr("height", gridSize)
-                .style("fill", colors[0])
-                .on("mouseover", dispatch.customHover);
+                .on("click", dispatch.customHover);
 
-            cards.transition().duration(1000)
+            cards.transition()
+                .duration(1000)
                 .style("fill", function(d) { return colorScale(d.value); });
 
             cards.select("title").text(function(d) { return d.value; });
@@ -146,30 +162,6 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("transform", function(d) {
                     return "rotate(-90)"
                 });
-
-            /*
-            var legend = svg.selectAll(".legend")
-                .data([0].concat(colorScale.quantiles()), function(d) { return d; });
-
-            legend.enter().append("g")
-                .attr("class", "legend");
-
-            legend.append("rect")
-                .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height)
-                .attr("width", legendElementWidth)
-                .attr("height", gridSize / 2)
-                .style("fill", function(d, i) { return colors[i]; });
-
-            legend.append("text")
-                .attr("class", "mono")
-                .text(function(d) { return "≥ " + Math.round(d); })
-                .attr("x", function(d, i) { return legendElementWidth * i; })
-                .attr("y", height + gridSize);
-
-            legend.exit().remove();
-            */
-
         });
     }
 
