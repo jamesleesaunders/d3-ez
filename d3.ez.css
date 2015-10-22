@@ -21,7 +21,7 @@
 }
 /* === Credit Label === */
 .d3ez #creditTag text {
-	cursor: pointer;
+	cursor: pointer; 
 	fill: #cccccc;
 }
 
