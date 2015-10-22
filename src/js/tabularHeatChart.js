@@ -21,6 +21,7 @@ d3.ez.tabularHeatChart = function module() {
 
     // Data Options (Populated by 'init' function)
     var domain = null;
+    var minValue = 0;
     var maxValue = 0;
     var numCols = 0;
     var numRows = 0;
@@ -68,9 +69,11 @@ d3.ez.tabularHeatChart = function module() {
                 values.push(d.value);
             });
         });
-        maxValue = d3.quantile(values, 0.95) + 5;
+        // maxValue = d3.quantile(values, 0.95) + 5;
+        minValue = d3.min(values);
+        maxValue = d3.max(values);
 
-        domain = [ 0, maxValue ];
+        domain = [ minValue, maxValue ];
 
         // Colour Scale
         colorScale = d3.scale.quantile()
