@@ -70,6 +70,8 @@ d3.ez.tabularHeatChart = function module() {
         });
         maxValue = d3.quantile(values, 0.95) + 5;
 
+        domain = [ 0, maxValue ];
+
         // Colour Scale
         colorScale = d3.scale.quantile()
             .domain(domain)

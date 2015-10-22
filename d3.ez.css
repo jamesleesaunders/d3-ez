@@ -21,7 +21,7 @@
 }
 /* === Credit Label === */
 .d3ez #creditTag text {
-	cursor: pointer; 
+	cursor: pointer;
 	fill: #cccccc;
 }
 
@@ -92,6 +92,7 @@
 .tabularHeatChart rect.card:hover {
 	opacity: 0.7;
 	stroke: #B6B6B6;
+	cursor: pointer;
 }
 
 /* === Donut Chart Styles === */
