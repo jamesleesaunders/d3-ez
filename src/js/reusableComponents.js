@@ -37,7 +37,7 @@ d3.ez.labeledNode = function module() {
             .text(label)
             .attr("dx", r + 2)
             .attr("dy", r + 6)
-            .style("text-anchor", "left")
+            .style("text-anchor", "start")
             .style("font-size", fontSize + "px")
             .attr("class", "nodetext");
     }
