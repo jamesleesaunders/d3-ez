@@ -34,7 +34,7 @@ all: js css min zip
 js: $(JS_FILES)
 	@echo Concatinating JS Files...
 	@rm -f d3.ez.js
-	@uglifyjs $^ --beautify indent-level=4 --comments all > d3.ez.js
+	@uglifyjs $^ --beautify indent_level=4 --comments all > d3.ez.js
 
 css: $(CSS_FILES)
 	@echo Concatinating CSS Files...

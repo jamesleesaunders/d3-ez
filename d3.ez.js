@@ -2,13 +2,13 @@
  * D3.EZ
  * 
  * @author James Saunders [james@saunders-family.net]
- * @copyright Copyright (C) 2015 James Saunders
+ * @copyright Copyright (C) 2017 James Saunders
  * @license GPLv3
  */
 d3.ez = {
     version: "1.5.9",
     author: "James Saunders",
-    copyright: "Copyright (C) 2015 James Saunders",
+    copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
 };
 
@@ -1640,7 +1640,7 @@ d3.ez.labeledNode = function module() {
         var r = sizeAccessor(d);
         var node = d3.select(this).attr("class", "node");
         node.append("circle").attr("fill-opacity", opacity).attr("r", r).style("stroke", strokeColor).style("stroke-width", strokeWidth).style("fill", color);
-        node.append("text").text(label).attr("dx", r + 2).attr("dy", r + 6).style("text-anchor", "left").style("font-size", fontSize + "px").attr("class", "nodetext");
+        node.append("text").text(label).attr("dx", r + 2).attr("dy", r + 6).style("text-anchor", "start").style("font-size", fontSize + "px").attr("class", "nodetext");
     }
     // Configuration Getters & Setters
     my.color = function(_) {
