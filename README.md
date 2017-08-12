@@ -15,7 +15,11 @@ Gist (bl.ocks) Examples:
 * [HTML Expanding List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [D3.EZ Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
-**D3.EZ** also aims to make it easier to create interactive visulisations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase below for examples.
+**D3.EZ** also aims to make it easier to create interactive visulisations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase above for examples.
+
+What type of chart is best for different types of data?
+* Bar Charts are good for quantative data.
+* Pie charts for good to represent parts of a whole.
 
 For reference there are a few other reusable D3 chart libraries similar to D3.JS indluding:
 * [NVD3](http://nvd3.org)
