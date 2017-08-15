@@ -2,83 +2,81 @@
 <html>
 <head>
 	<title>D3.EZ : Tabular Heat Chart Example</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-  <script src="../src/d3.ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="../src/d3.ez.js"></script>
+	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 <body>
 	<div id="chartholder"></div>
 
 	<script type="text/javascript">
+	// Generate some data
+	function randomDataset() {
+		var j=1;
+		var _randomNum = function() {
+			return Math.floor(Math.random() * 10);
+		};
 
-		// Generate some data
-		function randomDataset() {
-			var j=1;
-			var _randomNum = function() {
-				return Math.floor(Math.random() * 10);
-			};
+		var data = [
+			{
+				key: "asfd",
+				values: [
+					{key: "brig", value: _randomNum()},
+					{key: "cosh", value: _randomNum()},
+					{key: "popl", value: _randomNum()},
+					{key: "winn", value: _randomNum()}
+				]
+			},
+			{
+				key: "brig",
+				values: [
+					{key: "asfd", value: _randomNum()},
+					{key: "cosh", value: _randomNum()},
+					{key: "popl", value: _randomNum()},
+					{key: "winn", value: _randomNum()}
+				]
+			},
+			{
+				key: "cosh",
+				values: [
+					{key: "asfd", value: _randomNum()},
+					{key: "brig", value: _randomNum()},
+					{key: "popl", value: _randomNum()},
+					{key: "winn", value: _randomNum()}
+				]
+			},
+			{
+				key: "popl",
+				values: [
+					{key: "asfd", value: _randomNum()},
+					{key: "brig", value: _randomNum()},
+					{key: "cosh", value: _randomNum()},
+					{key: "winn", value: _randomNum()}
+				]
+			},
+			{
+				key: "winn",
+				values: [
+					{key: "asfd", value: _randomNum()},
+					{key: "brig", value: _randomNum()},
+					{key: "cosh", value: _randomNum()},
+					{key: "popl", value: _randomNum()}
+				]
+			}
+		];
+		return data;
+	}
+	// Create Tabular Heat Chart object
+	var myChart = d3.ez.tabularHeatChart()
+		.width(600)
+		.height(600)
+		.on("customHover", function(d, i) {
+			console.log(d);
+		});
 
-			var data = [
-				{
-					key: "asfd",
-					values: [
-						{key: "brig", value: _randomNum()},
-						{key: "cosh", value: _randomNum()},
-						{key: "popl", value: _randomNum()},
-						{key: "winn", value: _randomNum()}
-					]
-				},
-				{
-					key: "brig",
-					values: [
-						{key: "asfd", value: _randomNum()},
-						{key: "cosh", value: _randomNum()},
-						{key: "popl", value: _randomNum()},
-						{key: "winn", value: _randomNum()}
-					]
-				},
-				{
-					key: "cosh",
-					values: [
-						{key: "asfd", value: _randomNum()},
-						{key: "brig", value: _randomNum()},
-						{key: "popl", value: _randomNum()},
-						{key: "winn", value: _randomNum()}
-					]
-				},
-				{
-					key: "popl",
-					values: [
-						{key: "asfd", value: _randomNum()},
-						{key: "brig", value: _randomNum()},
-						{key: "cosh", value: _randomNum()},
-						{key: "winn", value: _randomNum()}
-					]
-				},
-				{
-					key: "winn",
-					values: [
-						{key: "asfd", value: _randomNum()},
-						{key: "brig", value: _randomNum()},
-						{key: "cosh", value: _randomNum()},
-						{key: "popl", value: _randomNum()}
-					]
-				}
-			];
-			return data;
-		}
-		// Create Tabular Heat Chart object
-		var myChart = d3.ez.tabularHeatChart()
-			.width(600)
-			.height(600)
-			.on("customHover", function(d, i) {
-				console.log(d);
-			});
-
-
-		d3.select('#chartholder')
-			.datum(randomDataset())
-			.call(myChart);
+	d3.select('#chartholder')
+		.datum(randomDataset())
+		.call(myChart);
 
 	</script>
 </body>

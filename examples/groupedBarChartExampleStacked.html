@@ -1,116 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-<head>
 	<title>D3.EZ : Reusable Grouped Bar Chart (Stacked) Example</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-  <script src="../src/d3.ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="../src/d3.ez.js"></script>
+	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 <body>
 	<div id="chartholder"></div>
 
 	<script type="text/javascript">
-		// Generate some data
-		var data = [
-		            {
-		                "key": "Jim",
-		                "values": [
-		                    {
-		                        "key": "Apples",
-		                        "value": 4
-		                    },
-		                    {
-		                        "key": "Oranges",
-		                        "value": 3
-		                    },
-		                    {
-		                        "key": "Pears",
-		                        "value": 1
-		                    },
-		                    {
-		                        "key": "Bananas",
-		                        "value": 0
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Claire",
-		                "values": [
-		                    {
-		                        "key": "Apples",
-		                        "value": 3
-		                    },
-		                    {
-		                        "key": "Oranges",
-		                        "value": 1
-		                    },
-		                    {
-		                        "key": "Pears",
-		                        "value": 2
-		                    },
-		                    {
-		                        "key": "Bananas",
-		                        "value": 2
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Beth",
-		                "values": [
-		                    {
-		                        "key": "Apples",
-		                        "value": 5
-		                    },
-		                    {
-		                        "key": "Oranges",
-		                        "value": 2
-		                    },
-		                    {
-		                        "key": "Pears",
-		                        "value": 4
-		                    },
-		                    {
-		                        "key": "Bananas",
-		                        "value": 1
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Grace",
-		                "values": [
-		                    {
-		                        "key": "Apples",
-		                        "value": 1
-		                    },
-		                    {
-		                        "key": "Oranges",
-		                        "value": 4
-		                    },
-		                    {
-		                        "key": "Pears",
-		                        "value": 2
-		                    },
-		                    {
-		                        "key": "Bananas",
-		                        "value": 3
-		                    }
-		                ]
-		            }
-		        ];
+	// Generate some data
+	var data = [
+		{
+			"key": "Jim",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 4
+				},
+				{
+					"key": "Oranges",
+					"value": 3
+				},
+				{
+					"key": "Pears",
+					"value": 1
+				},
+				{
+					"key": "Bananas",
+					"value": 0
+				}
+			]
+		},
+		{
+			"key": "Claire",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 3
+				},
+				{
+					"key": "Oranges",
+					"value": 1
+				},
+				{
+					"key": "Pears",
+					"value": 2
+				},
+				{
+					"key": "Bananas",
+					"value": 2
+				}
+			]
+		},
+		{
+			"key": "Beth",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 5
+				},
+				{
+					"key": "Oranges",
+					"value": 2
+				},
+				{
+					"key": "Pears",
+					"value": 4
+				},
+				{
+					"key": "Bananas",
+					"value": 1
+				}
+			]
+		},
+		{
+			"key": "Grace",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 1
+				},
+				{
+					"key": "Oranges",
+					"value": 4
+				},
+				{
+					"key": "Pears",
+					"value": 2
+				},
+				{
+					"key": "Bananas",
+					"value": 3
+				}
+			]
+		}
+	];
 
-		// Create Clustered Bar Chart object
-		var myChart = d3.ez.groupedBarChart()
-			.width(600)
-			.height(350)
-			.yAxisLabel('Fruit')
-			.groupType('stacked');
-			// .colors(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+	// Create Clustered Bar Chart object
+	var myChart = d3.ez.groupedBarChart()
+		.width(600)
+		.height(350)
+		.yAxisLabel('Fruit')
+		.groupType('stacked');
+		// .colors(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-		// Add to page
-		d3.select("#chartholder")
-			.datum(data)
-			.call(myChart);
+	// Add to page
+	d3.select("#chartholder")
+		.datum(data)
+		.call(myChart);
 
 	</script>
 </body>

@@ -2,747 +2,747 @@
 <html>
 <head>
 	<title>D3.EZ : Circular Heat Chart Example</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-  <script src="../src/d3.ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="../src/d3.ez.js"></script>
+	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 <body>
 	<div id="chartholder"></div>
 
 	<script type="text/javascript">
 
-		function randomDataset() {
-			var j=1;
-			var _randomNum = function() {
-				return Math.floor(Math.random() * 10);
-			};
+	function randomDataset() {
+		var j=1;
+		var _randomNum = function() {
+			return Math.floor(Math.random() * 10);
+		};
 
-			var data = [
-		            {
-		                "key": "Monday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Tuesday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Wednesday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Thursday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Friday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Saturday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            },
-		            {
-		                "key": "Sunday",
-		                "values": [
-		                    {
-		                        "key": "Midnight",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11am",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "Midday",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "1pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "2pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "3pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "4pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "5pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "6pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "7pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "8pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "9pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "10pm",
-		                        "value": _randomNum()
-		                    },
-		                    {
-		                        "key": "11pm",
-		                        "value": _randomNum()
-		                    }
-		                ]
-		            }
-		        ];
-			return data;
-		}
+		var data = [
+			{
+				"key": "Monday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			},
+			{
+				"key": "Tuesday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			},
+			{
+				"key": "Wednesday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			},
+			{
+				"key": "Thursday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			},
+			{
+				"key": "Friday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			},
+			{
+				"key": "Saturday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			},
+			{
+				"key": "Sunday",
+				"values": [
+					{
+						"key": "Midnight",
+						"value": _randomNum()
+					},
+					{
+						"key": "1am",
+						"value": _randomNum()
+					},
+					{
+						"key": "2am",
+						"value": _randomNum()
+					},
+					{
+						"key": "3am",
+						"value": _randomNum()
+					},
+					{
+						"key": "4am",
+						"value": _randomNum()
+					},
+					{
+						"key": "5am",
+						"value": _randomNum()
+					},
+					{
+						"key": "6am",
+						"value": _randomNum()
+					},
+					{
+						"key": "7am",
+						"value": _randomNum()
+					},
+					{
+						"key": "8am",
+						"value": _randomNum()
+					},
+					{
+						"key": "9am",
+						"value": _randomNum()
+					},
+					{
+						"key": "10am",
+						"value": _randomNum()
+					},
+					{
+						"key": "11am",
+						"value": _randomNum()
+					},
+					{
+						"key": "Midday",
+						"value": _randomNum()
+					},
+					{
+						"key": "1pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "2pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "3pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "4pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "5pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "6pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "7pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "8pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "9pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "10pm",
+						"value": _randomNum()
+					},
+					{
+						"key": "11pm",
+						"value": _randomNum()
+					}
+				]
+			}
+		];
+		return data;
+	}
 
-		// Create Circular Heat Chart object
-		var myChart = d3.ez.circularHeatChart()
-			.width(600)
-			.height(450)
-			//.radius(150)
-			.innerRadius(80)
-			.on("customHover", function(d, i) {
-				console.log(d);
-			});
+	// Create Circular Heat Chart object
+	var myChart = d3.ez.circularHeatChart()
+		.width(600)
+		.height(450)
+		//.radius(150)
+		.innerRadius(80)
+		.on("customHover", function(d, i) {
+			console.log(d);
+		});
 
 
-		d3.select('#chartholder')
-			.datum(randomDataset())
-			.call(myChart);
+	d3.select('#chartholder')
+		.datum(randomDataset())
+		.call(myChart);
 
 	</script>
 </body>
