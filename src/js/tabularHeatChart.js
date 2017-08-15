@@ -12,27 +12,27 @@ d3.ez.tabularHeatChart = function module() {
     var svg;
 
     // Default Options (Configurable via setters)
-    var width = 600;
-    var height = 600;
-    var margin = {top: 40, right: 40, bottom: 40, left: 40};
-    var transition = {ease: "bounce", duration: 500};
-    var classed = "tabularHeatChart";
-    var colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"];
+    var width              = 600;
+    var height             = 600;
+    var margin             = {top: 40, right: 40, bottom: 40, left: 40};
+    var transition         = {ease: "bounce", duration: 500};
+    var classed            = "tabularHeatChart";
+    var colors             = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
 
     // Data Options (Populated by 'init' function)
-    var domain = null;
-    var minValue = 0;
-    var maxValue = 0;
-    var numCols = 0;
-    var numRows = 0;
-    var gridSize = 0;
-    var colNames = [];
+    var domain             = null;
+    var minValue           = 0;
+    var maxValue           = 0;
+    var numCols            = 0;
+    var numRows            = 0;
+    var gridSize           = 0;
+    var colNames           = [];
 
-    var rowNames = [];
-    var colorScale = undefined;
+    var rowNames           = [];
+    var colorScale         = undefined;
 
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch           = d3.dispatch("customHover");
 
     function init(data) {
         // Group and Category Names

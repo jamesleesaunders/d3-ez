@@ -1,6 +1,6 @@
-/** 
+/**
  * Donut Chart
- * 
+ *
  * @example
  * var myChart = d3.ez.donutChart()
  *     .width(400)
@@ -12,7 +12,7 @@
  *     .call(myChart);
  */
 d3.ez.donutChart = function module() {
-    // SVG container (Populated by 'my' function) 
+    // SVG container (Populated by 'my' function)
     var svg;
 
     // Default Options (Configurable via setters)
@@ -21,11 +21,11 @@ d3.ez.donutChart = function module() {
     var margin             = {top: 20, right: 200, bottom: 20, left: 20};
     var transition         = {ease: "cubic", duration: 300};
     var classed            = "donutChart";
-    var colors             = d3.ez.colors.categorical(4);	
+    var colors             = d3.ez.colors.categorical(4);
     var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     var innerRadius        = 70;
 
-    // Data Options (Populated by 'init' function)	
+    // Data Options (Populated by 'init' function)
     var values             = [];
     var categoryNames      = [];
     var colorScale         = undefined;
@@ -56,10 +56,10 @@ d3.ez.donutChart = function module() {
         outerArc = d3.svg.arc()
             .innerRadius(radius * 0.9)
             .outerRadius(radius * 0.9);
-    }	
+    }
 
-    function key(d, i) { 
-        return data.values[i].key; 
+    function key(d, i) {
+        return data.values[i].key;
     };
 
     function arcTween(d) {
@@ -72,10 +72,10 @@ d3.ez.donutChart = function module() {
 
     function midAngle(d) {
         return d.startAngle + (d.endAngle - d.startAngle) / 2;
-    }	
+    }
 
     function my(selection) {
-        selection.each(function(data) {	
+        selection.each(function(data) {
             // Initialise Data
             init(data);
 
@@ -89,7 +89,7 @@ d3.ez.donutChart = function module() {
                 var container = svg.append("g").classed("container", true);
                 container.append("g").attr("class", "slices");
                 container.append("g").attr("class", "labels");
-                container.append("g").attr("class", "lines");					
+                container.append("g").attr("class", "lines");
             }
 
             // Update the outer dimensions
@@ -97,20 +97,20 @@ d3.ez.donutChart = function module() {
 
             var title = d3.ez.title();
             svg.call(title);
-            
+
             var creditTag = d3.ez.creditTag();
             svg.call(creditTag);
-            
+
             var legend = d3.ez.legend()
                 .colorScale(colorScale)
                 .colorLabel('Label for Colours')
                 .position('top-right');
             svg.call(legend);
-            
+
             // Locate the center point
             svg.select(".container")
-                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"); 
-            
+                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
+
             // Slices
             var slices = d3.select(".slices")
                 .selectAll("path.slice")
@@ -167,7 +167,7 @@ d3.ez.donutChart = function module() {
                 });
 
             labels.exit()
-                .remove();	
+                .remove();
 
             // Slice to Label Lines
             var lines = d3.select(".lines")
@@ -188,7 +188,7 @@ d3.ez.donutChart = function module() {
                         var pos = outerArc.centroid(d2);
                         pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
                         return [arc.centroid(d2), outerArc.centroid(d2), pos];
-                    };			
+                    };
                 });
 
             lines.exit()
@@ -217,7 +217,7 @@ d3.ez.donutChart = function module() {
         margin = _;
         radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
         return this;
-    };	
+    };
 
     my.radius = function(_) {
         if (!arguments.length) return radius;
@@ -235,13 +235,13 @@ d3.ez.donutChart = function module() {
         if (!arguments.length) return colors;
         colors = _;
         return this;
-    }; 
+    };
 
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
         return this;
-    };	
+    };
 
     d3.rebind(my, dispatch, "on");
 

@@ -1,18 +1,18 @@
-/** 
+/**
  * Title
- * 
+ *
  * @example
  * var myTitle = d3.ez.title()
  *     .enabled(true)
- *     .text("Hello World")
+ *     .mainText("Hello World")
  *     .subText("This is a test");
  * d3.select("svg").call(myTitle);
  */
 d3.ez.title = function module() {
     // Default Options (Configurable via setters)
-    var text               = "Title";
+    var mainText           = "Title";
     var subText            = "Sub Title";
-    
+
     function my() {
         var titleGroup = this.selectAll("#titleGroup")
             .data([0])
@@ -21,7 +21,7 @@ d3.ez.title = function module() {
             .attr("id", "titleGroup");
 
         var title = titleGroup.append("text")
-            .text(text)
+            .text(mainText)
             .classed("title", true);
         var subTitle = titleGroup.append("text")
             .text(subText)
@@ -33,26 +33,26 @@ d3.ez.title = function module() {
         title.attr({transform: "translate(" + titleOffset + ", " + 15 + ")"});
         subTitle.attr({transform: "translate(" + subTitleOffset + ", " + 30 + ")"});
     }
-    
+
     // Configuration Getters & Setters
-    my.text = function(_) {
-        if (!arguments.length) return text;
-        text = _;
+    my.mainText = function(_) {
+        if (!arguments.length) return mainText;
+        mainText = _;
         return this;
     };
-    
+
     my.subText = function(_) {
         if (!arguments.length) return subText;
         subText = _;
         return this;
     };
-    
-    return my;    
+
+    return my;
 };
 
-/** 
+/**
  * Credit Tag
- * 
+ *
  * @example
  * var myCredit = d3.ez.creditTag()
  *     .enabled(true)
@@ -64,7 +64,7 @@ d3.ez.creditTag = function module() {
     // Default Options (Configurable via setters)
     var text               = "d3ez.org";
     var href               = "http://d3ez.org";
-    
+
     function my() {
         var creditTag = this.selectAll("#creditTag")
             .data([0])
@@ -81,7 +81,7 @@ d3.ez.creditTag = function module() {
         var xPos = 0 - (d3.select("#creditTag").selectAll("text").node().getBBox().width);
         creditText.attr({transform: "translate(" + xPos + ", 0)"});
     }
-    
+
     // Configuration Getters & Setters
     my.text = function(_) {
         if (!arguments.length) return text;
@@ -94,13 +94,13 @@ d3.ez.creditTag = function module() {
         href = _;
         return this;
     };
-    
-    return my;    
+
+    return my;
 };
 
-/** 
+/**
  * Labeled Node
- * 
+ *
  * @example
  * var myNode = d3.ez.labeledNode()
  *     .color("#FF0000")
@@ -111,7 +111,7 @@ d3.ez.creditTag = function module() {
  * d3.selectAll("g").call(myNode);
  */
 d3.ez.labeledNode = function module() {
-    // Default Options (Configurable via setters) 
+    // Default Options (Configurable via setters)
     var color              = "steelblue";
     var opacity            = 1;
     var strokeColor        = "#000000";
@@ -178,7 +178,7 @@ d3.ez.labeledNode = function module() {
         strokeWidth = _width;
         strokeColor = _color;
         return this;
-    };	
+    };
 
     function sizeAccessor(_) {
         return (typeof radius === "function" ? radius(_) : radius);
@@ -189,18 +189,18 @@ d3.ez.labeledNode = function module() {
 
 /**
  * Colour Palettes
- * 
+ *
  * @example
  * d3.ez.colors.categorical(1);
  * d3.ez.colors.diverging(1);
  * d3.ez.colors.sequential("#ff0000", 9);
  * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
- * 
+ *
  */
 d3.ez.colors = {
         categorical: function(scheme) {
-            // Categorical colour schemes are the ones that are used to separate items into 
-            // distinct groups or categories.		
+            // Categorical colour schemes are the ones that are used to separate items into
+            // distinct groups or categories.
             switch(scheme) {
             case 1:
                 // Stephen Few - Show Me the Numbers Book
@@ -212,7 +212,7 @@ d3.ez.colors = {
                 return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
             case 3:
                 // Google Design - http://www.google.com/design/spec/style/color.html
-                //       D. Blue    Orange     L.Green     Purple     Yello       L.Blue       Red     D.Green     Brown     
+                //       D. Blue    Orange     L.Green     Purple     Yello       L.Blue       Red     D.Green     Brown
                 return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b",  "#03a9f4", "#f44336", "#009688", "#795548"];
             case 4:
                 return(d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
@@ -220,7 +220,7 @@ d3.ez.colors = {
         },
 
         diverging: function(scheme) {
-            // Diverging colour schemes are used for quantitative data. Usually two different hues 
+            // Diverging colour schemes are used for quantitative data. Usually two different hues
             // that diverge from a light colour, for the critical midpoint, toward dark colours.
             switch(scheme) {
             case 1:
@@ -232,11 +232,11 @@ d3.ez.colors = {
             case 3:
                 // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
                 return ['#0000ff', '#8052fe', '#b58bfb', '#ddc5f7', '#fffff0', '#ffcfb4', '#ff9e7a', '#ff6842', '#ff0000'];
-            }		
+            }
         },
 
         sequential: function(origHex, count) {
-            // Sequential colour schemes are primarily used to encode quantitative differences. 
+            // Sequential colour schemes are primarily used to encode quantitative differences.
             // Quantitative values are arranged sequentially, from low to high.
             var lumStep = 0.1;
             var lumMax = (lumStep * count) / 2;
@@ -293,14 +293,14 @@ d3.ez.colors = {
 
 /**
  * Legend
- * 
+ *
  * @example
  * var myLegend = d3.ez.legend()
  *     .sizeScale(**D3 Scale Object**)
  *     .sizeLabel('Label for Size')
  *     .colorScale(**D3 Scale Object**)
  *     .colorLabel('Label for Colours')
- *     .position('top-right'); 
+ *     .position('top-right');
  */
 d3.ez.legend = function module() {
     // Default Options (Configurable via setters)
@@ -322,14 +322,14 @@ d3.ez.legend = function module() {
 
         numElements = colorScale.range().length;
         elementHeight = ((height - 30) / numElements) - 5;
-        
+
         // Legend Box
         var legendBox = this.selectAll("#legendBox")
             .data([0])
             .enter()
             .append("g")
             .attr("id", "legendBox");
-            
+
         legendBox.append("rect")
             .attr("width", width)
             .attr("height", height)
@@ -360,7 +360,7 @@ d3.ez.legend = function module() {
                     .attr('x', 40)
                     .attr('y', i + 5)
                     .text(keyScaleRange('size', index));
-                
+
                 i = i + 20;
             }
         }
@@ -392,13 +392,13 @@ d3.ez.legend = function module() {
     // Helper function to calculate the keys min and max values
     function keyScaleRange(type, position) {
         switch(type) {
-            case 'size':    
+            case 'size':
                 var domainMin   = Math.min.apply(Math, sizeScale.domain());
                 var domainMax   = Math.max.apply(Math, sizeScale.domain());
                 var domainSize  = domainMax - domainMin;
                 var rangeLength = sizeScale.range().length;
                 break;
-            case 'color':   
+            case 'color':
                 var domainMin   = Math.min.apply(Math, colorScale.domain());
                 var domainMax   = Math.max.apply(Math, colorScale.domain());
                 var domainSize  = domainMax - domainMin;
@@ -415,7 +415,7 @@ d3.ez.legend = function module() {
             range = [rangeStart, rangeEnd];
             ranges.push(range);
             rangeStart = rangeEnd;
-            rangeEnd = rangeStart + rangeIncrement; 
+            rangeEnd = rangeStart + rangeIncrement;
         }
 
         var rangeStr = ranges[position][0].toFixed(0) + ' - ' + ranges[position][1].toFixed(0);

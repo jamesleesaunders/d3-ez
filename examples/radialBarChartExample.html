@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3.EZ : Radial Bar Chart Example</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+</head>
+<body>
+	<div id="chartholder"></div>
+
+	<script type="text/javascript">
+
+		function randomDataset() {
+			var _randomNum = function() {
+				return Math.floor(Math.random() * 10);
+			};
+			var data = [
+						{
+							"key": 2012,
+							"values": [
+								{"key": "Measure 1", "value": _randomNum()},
+								{"key": "Measure 2", "value": _randomNum()},
+								{"key": "Measure 3", "value": _randomNum()},
+								{"key": "Measure 4", "value": _randomNum()},
+								{"key": "Measure 5", "value": _randomNum()},
+								{"key": "Measure 6", "value": _randomNum()}
+							]
+						}, {
+							"key": 2013,
+							"values": [
+								{"key": "Measure 1", "value": _randomNum()},
+								{"key": "Measure 2", "value": _randomNum()},
+								{"key": "Measure 3", "value": _randomNum()},
+								{"key": "Measure 4", "value": _randomNum()},
+								{"key": "Measure 5", "value": _randomNum()},
+								{"key": "Measure 6", "value": _randomNum()}
+							]
+						}
+					];
+			var data2 = {
+						"key": 2012,
+						"values": [
+							{"key": "Measure 1", "value": _randomNum()},
+							{"key": "Measure 2", "value": _randomNum()},
+							{"key": "Measure 3", "value": _randomNum()},
+							{"key": "Measure 4", "value": _randomNum()},
+							{"key": "Measure 5", "value": _randomNum()},
+							{"key": "Measure 6", "value": _randomNum()}
+						]
+					};
+
+			return data2;
+		}
+
+		// Create Radial Bar Chart object
+		var myChart = d3.ez.radialBarChart()
+			.width(600)
+			.height(450)
+			//.radius(150)
+			.capitalizeLabels(true)
+			.colorLabels(true)
+			.on("customHover", function(d, i) {
+				console.log(d);
+			});
+
+		// Add to page
+		function update() {
+			var data = randomDataset();
+
+			d3.select("#chartholder")
+				.datum(data)
+				.call(myChart);
+		}
+
+		update();
+		setInterval(update, 2000);
+
+
+	</script>
+</body>
+</html>

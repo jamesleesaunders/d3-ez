@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3.EZ : Reusable Donut Chart Example</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+</head>
+<body>
+	<div id="chartholder"></div>
+	<br />
+	<div>Value: <span id="message"></span></div>
+
+	<script type="text/javascript">
+		// Generate some data
+		function randomDataset() {
+			var _randomNum = function() {
+				return Math.floor(Math.random() * 100) + 10;
+			};
+			var data = {
+					"key": "Languages",
+					"values": [
+						{"key": "JavaScript", "value": _randomNum() + 10},
+						{"key": "C++", "value": _randomNum()},
+						{"key": "Java", "value": _randomNum()},
+						{"key": "Ruby", "value": _randomNum()},
+						{"key": "Python", "value": _randomNum()},
+						{"key": "2C++", "value": _randomNum()},
+						{"key": "2Java", "value": _randomNum()},
+						{"key": "2Ruby", "value": _randomNum()},
+						{"key": "2Python", "value": _randomNum()}
+					]
+			};
+			return data;
+		}
+
+		// Create Donut Chart object
+		var myChart = d3.ez.donutChart()
+			.width(600)
+			.height(450)
+			//.radius(150)
+			.innerRadius(80)
+			.on("customHover", function(d, i) {
+				console.log(d);
+			});
+
+		// Add to page
+		function update() {
+			var data = randomDataset();
+
+			d3.select("#chartholder")
+				.datum(data)
+				.call(myChart);
+		}
+
+		update();
+		setInterval(update, 2000);
+
+	</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /**
  * Discrete Bar Chart
- * 
+ *
  * @example
  * var myChart = d3.ez.discreteBarChart()
  *     .width(400)
@@ -12,7 +12,7 @@
  *     .call(myChart);
  */
 d3.ez.discreteBarChart = function module() {
-    // SVG container (Populated by 'my' function) 
+    // SVG container (Populated by 'my' function)
     var svg;
 
     // Default Options (Configurable via setters)
@@ -20,14 +20,14 @@ d3.ez.discreteBarChart = function module() {
     var height             = 300;
     var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
-    var classed            = "discreteBarChart";	
-    var colors             = d3.ez.colors.categorical(4);	
+    var classed            = "discreteBarChart";
+    var colors             = d3.ez.colors.categorical(4);
     var gap                = 0;
 
     // Data Options (Populated by 'init' function)
     var chartW             = 0;
     var chartH             = 0;
-    var containerW          = 0;
+    var containerW         = 0;
     var containerH         = 0;
     var maxValue           = 0;
     var categories         = [];
@@ -41,12 +41,13 @@ d3.ez.discreteBarChart = function module() {
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
 
-
-    var legendW = 100;
-    var titleH = 40;
+    var title              = '';
+    var subTitle           = '';
+    var legendTitle        = '';
+    var legendW            = 100;
+    var titleH             = 40;
 
     function init(data) {
-
         containerW = width - (margin.left + margin.right);
         containerH = height - (margin.top + margin.bottom);
         chartW = containerW - legendW;
@@ -114,12 +115,13 @@ d3.ez.discreteBarChart = function module() {
             chart.select(".x-axis")
                 .attr({transform: "translate(0," + chartH + ")"})
                 .call(xAxis);
-
             chart.select(".y-axis")
                 .call(yAxis);
 
             // Add Title
-            var title = d3.ez.title();
+            var title = d3.ez.title()
+                .mainText(my.title())
+                .subText(my.subTitle());
             container.select(".title")
                 .attr({transform: "translate(" + width / 2 + ",0)"})
                 .call(title);
@@ -127,7 +129,7 @@ d3.ez.discreteBarChart = function module() {
             // Add Legend
             var legend = d3.ez.legend()
                 .colorScale(colorScale)
-                .colorLabel('Label for Colours');
+                .colorLabel(my.legendTitle());
             container.select(".legend")
                 .attr({transform: "translate(" + (width - (margin.right + 100)) + ",0)"})
                 .attr({width: 100, height: 150})
@@ -176,10 +178,10 @@ d3.ez.discreteBarChart = function module() {
 
             bars.transition()
                 .ease(transition.ease)
-                .duration(transition.duration)				
+                .duration(transition.duration)
                 .attr({
                     width: barW,
-                    x: function(d, i) { return xScale(d.key) + gapSize / 2; },				
+                    x: function(d, i) { return xScale(d.key) + gapSize / 2; },
                     y: function(d, i) { return yScale(d.value); },
                     height: function(d, i) { return chartH - yScale(d.value); }
                 });
@@ -187,7 +189,7 @@ d3.ez.discreteBarChart = function module() {
             bars.exit()
                 .transition()
                 .style({opacity: 0})
-                .remove();	
+                .remove();
 
         });
     }
@@ -215,7 +217,25 @@ d3.ez.discreteBarChart = function module() {
         if (!arguments.length) return transition;
         transition = _;
         return this;
-    };		
+    };
+
+    my.title = function(_) {
+        if (!arguments.length) return title;
+        title = _;
+        return this;
+    };
+
+    my.subTitle = function(_) {
+        if (!arguments.length) return subTitle;
+        subTitle = _;
+        return this;
+    };
+
+    my.legendTitle = function(_) {
+        if (!arguments.length) return legendTitle;
+        legendTitle = _;
+        return this;
+    };
 
     d3.rebind(my, dispatch, "on");
 

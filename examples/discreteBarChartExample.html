@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3.EZ : Reusable Discrete Bar Chart Example</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+</head>
+<body>
+	<div id="chartholder"></div>
+	<br />
+	<div>Value: <span id="message"></span></div>
+
+	<script type="text/javascript">
+		// Generate some data
+		function randomDataset() {
+			var _randomNum = function() {
+				return Math.floor(Math.random() * 100) + 10;
+			};
+			var data = {
+					"key": "Languages",
+					"values": [
+						{"key": "JavaScript", "value": _randomNum() + 10},
+						{"key": "C++", "value": _randomNum()},
+						{"key": "Java", "value": _randomNum()},
+						{"key": "Ruby", "value": _randomNum()},
+						{"key": "Python", "value": _randomNum()},
+						{"key": "PHP", "value": _randomNum()},
+						{"key": "Perl", "value": _randomNum()},
+						{"key": "Basic", "value": _randomNum()},
+						{"key": "Assembly", "value": _randomNum()}
+					]
+			};
+			return data;
+		}
+
+		// Create Column Chart object
+		var myChart = d3.ez.discreteBarChart()
+			.width(600)
+			.height(350)
+			.title("Programming Languages")
+      .subTitle("Use on Github")
+      .legendTitle("Languages")
+			//.colors(d3.scale.category10().range())
+			//.colors(d3.ez.colors.diverging(3))
+			.on("customHover", function(d, i) {
+				d3.select("#message").text(d.value);
+			});
+
+		// Add to page
+		function update() {
+			var data = randomDataset();
+
+			d3.select("#chartholder")
+				.datum(data)
+				.call(myChart);
+		}
+
+		update();
+		setInterval(update, 2000);
+
+	</script>
+</body>
+</html>
