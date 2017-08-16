@@ -41,17 +41,14 @@ d3.ez.discreteBarChart = function module() {
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
 
-    var title              = '';
-    var subTitle           = '';
-    var legendTitle        = '';
-    var legendW            = 100;
-    var titleH             = 40;
+    var title              = d3.ez.title();
+    var legend             = d3.ez.legend();
 
     function init(data) {
         containerW = width - (margin.left + margin.right);
         containerH = height - (margin.top + margin.bottom);
-        chartW = containerW - legendW;
-        chartH = containerH - titleH;
+        chartW = containerW - legend.width();
+        chartH = containerH - title.height();
 
         yAxisLabel = d3.values(data)[0];
         maxValue = d3.max(data.values, function(d) { return d.value;} );
@@ -79,6 +76,7 @@ d3.ez.discreteBarChart = function module() {
         colorScale = d3.scale.ordinal()
             .domain(categories)
             .range(colors);
+        legend.colorScale(colorScale);
     }
 
     function my(selection) {
@@ -111,7 +109,7 @@ d3.ez.discreteBarChart = function module() {
             // Add X & Y axis to the chart
             var chart = svg.select(".chart")
                 .attr({width: chartW, height: chartH})
-                .attr({transform: "translate(0," + titleH + ")"});
+                .attr({transform: "translate(0," + title.height() + ")"});
             chart.select(".x-axis")
                 .attr({transform: "translate(0," + chartH + ")"})
                 .call(xAxis);
@@ -119,19 +117,13 @@ d3.ez.discreteBarChart = function module() {
                 .call(yAxis);
 
             // Add Title
-            var title = d3.ez.title()
-                .mainText(my.title())
-                .subText(my.subTitle());
             container.select(".title")
-                .attr({transform: "translate(" + width / 2 + ",0)"})
+                .attr({transform: "translate(" + width / 2 + ", 0)"})
                 .call(title);
 
             // Add Legend
-            var legend = d3.ez.legend()
-                .colorScale(colorScale)
-                .colorLabel(my.legendTitle());
             container.select(".legend")
-                .attr({transform: "translate(" + (width - (margin.right + 100)) + ",0)"})
+                .attr({transform: "translate(" + (width - (margin.right + 100)) + ", 0)"})
                 .attr({width: 100, height: 150})
                 .call(legend);
 
@@ -219,21 +211,21 @@ d3.ez.discreteBarChart = function module() {
         return this;
     };
 
-    my.title = function(_) {
-        if (!arguments.length) return title;
-        title = _;
+    my.titleMain = function(_) {
+        if (!arguments.length) return title.mainText();
+        title.mainText(_)
         return this;
     };
 
-    my.subTitle = function(_) {
-        if (!arguments.length) return subTitle;
-        subTitle = _;
+    my.titleSub = function(_) {
+        if (!arguments.length) return title.subText();
+        title.subText(_)
         return this;
     };
 
     my.legendTitle = function(_) {
-        if (!arguments.length) return legendTitle;
-        legendTitle = _;
+        if (!arguments.length) return legend.title();
+        legend.title(_)
         return this;
     };
 

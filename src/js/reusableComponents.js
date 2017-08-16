@@ -12,6 +12,7 @@ d3.ez.title = function module() {
     // Default Options (Configurable via setters)
     var mainText           = "Title";
     var subText            = "Sub Title";
+    var height             = 40;
 
     function my() {
         var titleGroup = this.selectAll("#titleGroup")
@@ -44,6 +45,12 @@ d3.ez.title = function module() {
     my.subText = function(_) {
         if (!arguments.length) return subText;
         subText = _;
+        return this;
+    };
+
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
 
@@ -307,7 +314,7 @@ d3.ez.legend = function module() {
     var sizeScale          = undefined;
     var sizeLabel          = null;
     var colorScale         = undefined;
-    var colorLabel         = null;
+    var title              = null;
     var width              = null;
     var height             = null;
     var opacity            = 0.7;
@@ -329,7 +336,6 @@ d3.ez.legend = function module() {
             .enter()
             .append("g")
             .attr("id", "legendBox");
-
         legendBox.append("rect")
             .attr("width", width)
             .attr("height", height)
@@ -338,11 +344,11 @@ d3.ez.legend = function module() {
             .attr("stroke-width", strokewidth)
             .attr("stroke", stroke);
 
-        title = legendBox.append('g')
+        legendTitle = legendBox.append('g')
             .attr('transform', 'translate(5,15)');
-        title.append('text')
+        legendTitle.append('text')
             .style('font-weight', 'bold')
-            .text(colorLabel);
+            .text(title);
 
         // Size Key
         if(typeof sizeScale != "undefined") {
@@ -441,9 +447,9 @@ d3.ez.legend = function module() {
         return my;
     };
 
-    my.colorLabel = function(_) {
-        if (!arguments.length) return colorLabel;
-        colorLabel = _;
+    my.title = function(_) {
+        if (!arguments.length) return title;
+        title = _;
         return my;
     };
 
