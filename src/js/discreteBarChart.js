@@ -124,7 +124,7 @@ d3.ez.discreteBarChart = function module() {
             // Add Legend
             container.select(".legend")
                 .attr({transform: "translate(" + (width - (margin.right + 100)) + ", 0)"})
-                .attr({width: 100, height: 150})
+                //.attr({width: 100, height: 150})
                 .call(legend);
 
             // Add Credit Tag
@@ -226,6 +226,18 @@ d3.ez.discreteBarChart = function module() {
     my.legendTitle = function(_) {
         if (!arguments.length) return legend.title();
         legend.title(_)
+        return this;
+    };
+
+    my.legendWidth = function(_) {
+        if (!arguments.length) return legend.width();
+        legend.width(_)
+        return this;
+    };
+
+    my.legendHeight = function(_) {
+        if (!arguments.length) return legend.height();
+        legend.height(_)
         return this;
     };
 
