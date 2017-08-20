@@ -118,13 +118,12 @@ d3.ez.discreteBarChart = function module() {
 
             // Add Title
             container.select(".title")
-                .attr({transform: "translate(" + width / 2 + ", 0)"})
+                .attr({transform: "translate(" + width / 2 + "," + 0 + ")"})
                 .call(title);
 
             // Add Legend
             container.select(".legend")
-                .attr({transform: "translate(" + (width - (margin.right + 100)) + ", 0)"})
-                //.attr({width: 100, height: 150})
+                .attr({transform: "translate(" + (width - (margin.right + legend.width())) + "," + (margin.top + 25) + ")"})
                 .call(legend);
 
             // Add Credit Tag

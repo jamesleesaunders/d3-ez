@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>D3.EZ : Reusable Discrete Bar Chart Example</title>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../../d3/d3.min.js"></script>
   <script src="../src/d3.ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
@@ -36,14 +36,13 @@
 
   // Create Column Chart object
   var myChart = d3.ez.discreteBarChart()
-    .width(600)
-    .height(350)
+    .width(650)
+    .height(400)
     .titleMain("Programming Languages")
     .titleSub("Use on Github")
     .legendTitle("Languages")
     .legendWidth(100)
     .legendHeight(200)
-    //.colors(d3.scale.category10().range())
     //.colors(d3.ez.colors.diverging(3))
     .on("customHover", function(d, i) {
       d3.select("#message").text(d.value);
