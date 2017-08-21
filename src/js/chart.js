@@ -11,7 +11,7 @@ d3.ez.chart = function module() {
     // Default Options (Configurable via setters)
     var width              = 600;
     var height             = 400;
-    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
+    var margin             = {top: 10, right: 10, bottom: 10, left: 10};
     var classed            = "d3ez";
 
     // Data
@@ -23,6 +23,9 @@ d3.ez.chart = function module() {
 
     // Title
     var title              = d3.ez.title();
+
+    // Chart
+    var chart              = d3.ez.discreteBarChart();
 
     // Legend
     var legend             = d3.ez.legend();
@@ -45,7 +48,14 @@ d3.ez.chart = function module() {
       colorScale.domain(categories).range(colors);
 
       // Init Legend
-      legend.colorScale(colorScale);
+      legend.width(150)
+        .colorScale(colorScale);
+
+      // Init Chart
+      chart.dispatch(dispatch)
+        .width(containerW - legend.width())
+        .height(containerH - title.height())
+        .colorScale(colorScale);
 
       // Init creditTag
       creditTag.text("d3ez.org").href("http://d3ez.org");
@@ -63,10 +73,10 @@ d3.ez.chart = function module() {
                   .classed(classed, true);
 
               var container = svg.append("g").classed("container", true);
-              container.append("g").classed("title", true);
-              container.append("g").classed("chart", true);
-              container.append("g").classed("legend", true);
-              container.append("g").classed("credit", true);
+              container.append("g").classed("chartlayer", true);
+              container.append("g").classed("legendlayer", true);
+              container.append("g").classed("titlelayer", true);
+              container.append("g").classed("creditlayer", true);
           }
 
           // Update Container Dimensions
@@ -75,23 +85,23 @@ d3.ez.chart = function module() {
               .attr({width: containerW, height: containerH})
               .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
+          // Add Chart
+          container.select(".chartlayer")
+              .attr({transform: "translate(" + 0 + "," + title.height() + ")"})
+              .call(chart);
+
+          // Add Legend
+          container.select(".legendlayer")
+              .attr({transform: "translate(" + (containerW - legend.width()) + "," + title.height() + ")"})
+              .call(legend);
+
           // Add Title
-          container.select(".title")
+          container.select(".titlelayer")
               .attr({transform: "translate(" + width / 2 + "," + 0 + ")"})
               .call(title);
 
-          // Add Chart
-          container.select(".chart")
-              .attr({transform: "translate(" + 0 + "," + 0 + ")"})
-              ;//.call(chart);
-
-          // Add Legend
-          container.select(".legend")
-              .attr({transform: "translate(" + (width - (margin.right + legend.width())) + "," + (margin.top + 25) + ")"})
-              .call(legend);
-
           // Add Credit Tag
-          container.select(".credit")
+          container.select(".creditlayer")
               .attr({transform: "translate(" + (width - 20) + "," + (height - 20) + ")"})
               .call(creditTag);
         }
@@ -105,7 +115,7 @@ d3.ez.chart = function module() {
         return this;
     };
 
-    my.height= function(_) {
+    my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
         return this;
