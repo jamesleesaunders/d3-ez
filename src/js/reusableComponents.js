@@ -386,6 +386,7 @@ d3.ez.legend = function module() {
                     .attr('fill-opacity', 0.8)
                     .attr('width', 20)
                     .attr('height', elementHeight);
+
                 colorKey.append('text')
                     .attr('x', 40)
                     .attr('y', i + 10)

@@ -45,17 +45,15 @@
   var myChart = d3.ez.chart()
     .width(750)
     .height(400)
-    .title("Cake")
-    .description("Types of Cake")
+    .title("Programming Languages")
+    .description("Top 10 Languages Used By Developers")
     .colors(colors)
     .legend(legend)
     .on("customHover", function(d, i) {
       d3.select("#message").text(d.value);
     });
 
-
   var data = randomDataset();
-
   d3.select("#chartholder")
     .datum(data)
     .call(myChart);
