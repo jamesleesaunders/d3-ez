@@ -222,21 +222,9 @@ d3.ez.discreteBarChart = function module() {
         return this;
     };
 
-    my.legendTitle = function(_) {
-        if (!arguments.length) return legend.title();
-        legend.title(_)
-        return this;
-    };
-
-    my.legendWidth = function(_) {
-        if (!arguments.length) return legend.width();
-        legend.width(_)
-        return this;
-    };
-
-    my.legendHeight = function(_) {
-        if (!arguments.length) return legend.height();
-        legend.height(_)
+    my.legend = function(_) {
+        if (!arguments.length) return legend();
+        legend = _;
         return this;
     };
 

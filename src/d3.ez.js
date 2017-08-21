@@ -2,6 +2,7 @@
 // Use before Makefile
 
 include('js/header.js');
+include('js/chart.js');
 include('js/discreteBarChart.js');
 include('js/groupedBarChart.js');
 include('js/radialBarChart.js');
@@ -19,6 +20,6 @@ function include(file) {
     var path = loc.substring(0, loc.lastIndexOf("/") + 1);
     var src = path + file;
     var type = 'text/javascript';
-	
+
     document.write('<' + 'script src="' + src + '"' + ' type="' + type + '"><' + '/script>');
 }
