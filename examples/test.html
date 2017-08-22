@@ -34,21 +34,20 @@
     return data;
   }
 
-  var legend = d3.ez.legend()
-    .title('Top 10')
-    .width(230)
-    .height(220);
-
-  var colors = d3.ez.colors.diverging(3);
+  var colors = d3.ez.colors.diverging(2);
+  var chart = d3.ez.discreteBarChart();
+  // var chart = d3.ez.donutChart();
+  var legend = d3.ez.legend().title('Top 10');
 
   // Create Column Chart object
   var myChart = d3.ez.chart()
     .width(750)
     .height(400)
+    .colors(colors)
+    .chart(chart)
+    .legend(legend)
     .title("Programming Languages")
     .description("Top 10 Languages Used By Developers")
-    .colors(colors)
-    .legend(legend)
     .on("customHover", function(d, i) {
       d3.select("#message").text(d.value);
     });

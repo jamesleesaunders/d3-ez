@@ -13,12 +13,12 @@
  */
 d3.ez.donutChart = function module() {
     // SVG container (Populated by 'my' function)
-    var svg;
+    var container;
 
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 200, bottom: 20, left: 20};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "cubic", duration: 300};
     var classed            = "donutChart";
     var colors             = d3.ez.colors.categorical(4);
@@ -40,11 +40,6 @@ d3.ez.donutChart = function module() {
     function init(data) {
         values = d3.values(data)[1].map(function(d) { return d.value; });
         categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
-
-        // Colour Scale
-        colorScale = d3.scale.ordinal()
-            .range(colors)
-            .domain(categoryNames);
 
         pie = d3.layout.pie()
             .sort(null);
@@ -75,126 +70,107 @@ d3.ez.donutChart = function module() {
     }
 
     function my(selection) {
-        selection.each(function(data) {
-            // Initialise Data
-            init(data);
+        // Initialise Data
+        init(data);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                    .append("svg")
-                    .classed("d3ez", true)
-                    .classed(classed, true);
+        // Create chart element (if it does not exist already)
+        if (!chart) {
+            var chart = selection.append("g").classed(classed, true);
+            chart.append("g").attr("class", "slices");
+            chart.append("g").attr("class", "labels");
+            chart.append("g").attr("class", "lines");
+        }
 
-                var container = svg.append("g").classed("container", true);
-                container.append("g").attr("class", "slices");
-                container.append("g").attr("class", "labels");
-                container.append("g").attr("class", "lines");
-            }
+        // Update the outer dimensions
+        chart.attr({width: width, height: height});
 
-            // Update the outer dimensions
-            svg.attr({width: width, height: height});
+        // Locate the center point
+        chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
-            var title = d3.ez.title();
-            svg.call(title);
+        // Slices
+        var slices = d3.select(".slices")
+            .selectAll("path.slice")
+            .data(pie(values));
 
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);
+        slices.enter()
+            .append("path")
+            .attr("class", "slice")
+            .attr("fill", function(d, i) { return colorScale(data.values[i].key); })
+            .attr("d", arc)
+            .each(function(d) { this._current = d; } )
+            .on("mouseover", dispatch.customHover);
 
-            var legend = d3.ez.legend()
-                .colorScale(colorScale)
-                .colorLabel('Label for Colours')
-                .position('top-right');
-            svg.call(legend);
+        slices.transition()
+            .ease(transition.ease)
+            .duration(transition.duration)
+            .attrTween("d", arcTween);
 
-            // Locate the center point
-            svg.select(".container")
-                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
+        slices.exit()
+            .remove();
 
-            // Slices
-            var slices = d3.select(".slices")
-                .selectAll("path.slice")
-                .data(pie(values));
+        // Labels
+        var labels = d3.select(".labels")
+            .selectAll("text.label")
+            .data(pie(values), key);
 
-            slices.enter()
-                .append("path")
-                .attr("class", "slice")
-                .attr("fill", function(d, i) { return colorScale(data.values[i].key); })
-                .attr("d", arc)
-                .each(function(d) { this._current = d; } )
-                .on("mouseover", dispatch.customHover);
+        labels.enter()
+            .append("text")
+            .attr("class", "label")
+            .attr("dy", ".35em");
 
-            slices.transition()
-                .ease(transition.ease)
-                .duration(transition.duration)
-                .attrTween("d", arcTween);
+        labels.transition()
+            .duration(transition.duration)
+            .text(function(d, i) { return data.values[i].key; })
+            .attrTween("transform", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
+                    return "translate("+ pos +")";
+                };
+            })
+            .styleTween("text-anchor", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI ? "start":"end";
+                };
+            });
 
-            slices.exit()
-                .remove();
+        labels.exit()
+            .remove();
 
-            // Labels
-            var labels = d3.select(".labels")
-                .selectAll("text.label")
-                .data(pie(values), key);
+        // Slice to Label Lines
+        var lines = d3.select(".lines")
+            .selectAll("polyline.line")
+            .data(pie(values));
 
-            labels.enter()
-                .append("text")
-                .attr("class", "label")
-                .attr("dy", ".35em");
+        lines.enter()
+            .append("polyline")
+            .attr("class", "line");
 
-            labels.transition()
-                .duration(transition.duration)
-                .text(function(d, i) { return data.values[i].key; })
-                .attrTween("transform", function(d) {
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        var d2 = interpolate(t);
-                        var pos = outerArc.centroid(d2);
-                        pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
-                        return "translate("+ pos +")";
-                    };
-                })
-                .styleTween("text-anchor", function(d) {
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        var d2 = interpolate(t);
-                        return midAngle(d2) < Math.PI ? "start":"end";
-                    };
-                });
+        lines.transition().duration(transition.duration)
+            .attrTween("points", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
+                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+                };
+            });
 
-            labels.exit()
-                .remove();
+        lines.exit()
+            .remove();
 
-            // Slice to Label Lines
-            var lines = d3.select(".lines")
-                .selectAll("polyline.line")
-                .data(pie(values));
 
-            lines.enter()
-                .append("polyline")
-                .attr("class", "line");
-
-            lines.transition().duration(transition.duration)
-                .attrTween("points", function(d) {
-                    this._current = this._current || d;
-                    var interpolate = d3.interpolate(this._current, d);
-                    this._current = interpolate(0);
-                    return function(t) {
-                        var d2 = interpolate(t);
-                        var pos = outerArc.centroid(d2);
-                        pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
-                        return [arc.centroid(d2), outerArc.centroid(d2), pos];
-                    };
-                });
-
-            lines.exit()
-                .remove();
-
-        });
     }
 
     // Configuration Getters & Setters
@@ -237,9 +213,21 @@ d3.ez.donutChart = function module() {
         return this;
     };
 
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 

@@ -109,6 +109,12 @@ d3.ez.chart = function module() {
     }
 
     // Configuration Getters & Setters
+    my.chart = function(_) {
+        if (!arguments.length) return chart;
+        chart = _;
+        return this;
+    };
+
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;

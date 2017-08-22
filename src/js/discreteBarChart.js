@@ -65,24 +65,20 @@ d3.ez.discreteBarChart = function module() {
             .scale(yScale)
             .orient("left");
 
-        // Colour Scale
-        colorScale = d3.scale.ordinal()
-            .domain(categories)
-            .range(colors);
-        legend.colorScale(colorScale);
     }
 
     function my(selection) {
         // Initialise Data
         init(data);
 
-        // Create SVG element (if it does not exist already)
+        // Create chart element (if it does not exist already)
         if (!chart) {
             var chart = selection.append("g").classed(classed, true);
             chart.append("g").classed("x-axis axis", true);
             chart.append("g").classed("y-axis axis", true);
         }
 
+        // Update the outer dimensions
         chart.attr({width: chartW, height: chartH})
           .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
