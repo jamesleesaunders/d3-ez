@@ -87,6 +87,7 @@ d3.ez.chart = function module() {
 
           // Add Chart
           container.select(".chartlayer")
+              .datum(data)
               .attr({transform: "translate(" + 0 + "," + title.height() + ")"})
               .call(chart);
 

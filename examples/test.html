@@ -52,10 +52,16 @@
       d3.select("#message").text(d.value);
     });
 
-  var data = randomDataset();
-  d3.select("#chartholder")
-    .datum(data)
-    .call(myChart);
+  // Add to page
+  function update() {
+    var data = randomDataset();
+    d3.select("#chartholder")
+      .datum(data)
+      .call(myChart);
+  }
+
+  update();
+  setInterval(update, 2000);
 
   </script>
 </body>

@@ -68,75 +68,80 @@ d3.ez.discreteBarChart = function module() {
     }
 
     function my(selection) {
-        // Initialise Data
-        init(data);
+      selection.each(function(data) {
+          // Initialise Data
+          init(data);
 
-        // Create chart element (if it does not exist already)
-        if (!chart) {
-            var chart = selection.append("g").classed(classed, true);
-            chart.append("g").classed("x-axis axis", true);
-            chart.append("g").classed("y-axis axis", true);
-        }
+          // Set the class appropriate to this chart type (so css works)
+          selection.classed(classed, true);
 
-        // Update the outer dimensions
-        chart.attr({width: chartW, height: chartH})
-          .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
+          // Create chart element (if it does not exist already)
+          if (!chart) {
+              var chart = selection.append("g").classed("chart", true);
+              chart.append("g").classed("x-axis axis", true);
+              chart.append("g").classed("y-axis axis", true);
+          }
+          chart = selection.select(".chart");
 
-        chart.select(".x-axis")
-            .attr({transform: "translate(0," + chartH + ")"})
-            .call(xAxis);
-        chart.select(".y-axis")
-            .call(yAxis);
+          // Update the outer dimensions
+          chart.attr({width: chartW, height: chartH})
+            .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
-        // Add Y-Axis Label
-        ylabel = chart.select(".y-axis")
-            .selectAll(".y-label")
-            .data([data.key]);
+          chart.select(".x-axis")
+              .attr({transform: "translate(0," + chartH + ")"})
+              .call(xAxis);
+          chart.select(".y-axis")
+              .call(yAxis);
 
-        ylabel.enter()
-            .append("text")
-            .classed("y-label", true)
-            .attr("transform", "rotate(-90)")
-            .attr("y", -35)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end");
+          // Add Y-Axis Label
+          ylabel = chart.select(".y-axis")
+              .selectAll(".y-label")
+              .data([data.key]);
 
-        ylabel.transition()
-            .text(function(d) { return (d);} );
+          ylabel.enter()
+              .append("text")
+              .classed("y-label", true)
+              .attr("transform", "rotate(-90)")
+              .attr("y", -35)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end");
 
-        // Add columns to the chart
-        var gapSize = xScale.rangeBand() / 100 * gap;
-        var barW = xScale.rangeBand() - gapSize;
+          ylabel.transition()
+              .text(function(d) { return (d);} );
 
-        var bars = chart.selectAll(".bar")
-            .data(data.values);
+          // Add columns to the chart
+          var gapSize = xScale.rangeBand() / 100 * gap;
+          var barW = xScale.rangeBand() - gapSize;
 
-        bars.enter().append("rect")
-            .attr("class", function(d) { return d.key + " bar"; })
-            .attr("fill", function(d) { return colorScale(d.key); })
-            .attr({
-                width: barW,
-                x: function(d, i) { return xScale(d.key) + gapSize / 2; },
-                y: chartH,
-                height: 0
-            })
-            .on("mouseover", dispatch.customHover);
+          var bars = chart.selectAll(".bar")
+              .data(data.values);
 
-        bars.transition()
-            .ease(transition.ease)
-            .duration(transition.duration)
-            .attr({
-                width: barW,
-                x: function(d, i) { return xScale(d.key) + gapSize / 2; },
-                y: function(d, i) { return yScale(d.value); },
-                height: function(d, i) { return chartH - yScale(d.value); }
-            });
+          bars.enter().append("rect")
+              .attr("class", function(d) { return d.key + " bar"; })
+              .attr("fill", function(d) { return colorScale(d.key); })
+              .attr({
+                  width: barW,
+                  x: function(d, i) { return xScale(d.key) + gapSize / 2; },
+                  y: chartH,
+                  height: 0
+              })
+              .on("mouseover", dispatch.customHover);
 
-        bars.exit()
-            .transition()
-            .style({opacity: 0})
-            .remove();
+          bars.transition()
+              .ease(transition.ease)
+              .duration(transition.duration)
+              .attr({
+                  width: barW,
+                  x: function(d, i) { return xScale(d.key) + gapSize / 2; },
+                  y: function(d, i) { return yScale(d.value); },
+                  height: function(d, i) { return chartH - yScale(d.value); }
+              });
 
+          bars.exit()
+              .transition()
+              .style({opacity: 0})
+              .remove();
+      });
     }
 
     // Configuration Getters & Setters
