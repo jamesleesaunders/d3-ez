@@ -7,7 +7,7 @@
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 <body>
-  <div id="chartholder"></div>
+  <svg id="chartholder" width="800" height="500" class="d3ez"></svg>
   <br />
   <div>Value: <span id="message"></span></div>
 
@@ -45,25 +45,22 @@
   var myChart = d3.ez.discreteBarChart()
     .width(650)
     .height(400)
-    .titleMain("Programming Languages")
-    .titleSub("Use on Github")
-    .legend(legend)
     .colors(colors)
     .on("customHover", function(d, i) {
       d3.select("#message").text(d.value);
     });
 
   // Add to page
-  function update() {
+  //function update() {
     var data = randomDataset();
 
     d3.select("#chartholder")
       .datum(data)
       .call(myChart);
-  }
+  //}
 
-  update();
-  setInterval(update, 2000);
+  //update();
+  //setInterval(update, 2000);
 
   </script>
 </body>

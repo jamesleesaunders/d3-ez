@@ -51,6 +51,14 @@ d3.ez.donutChart = function module() {
         outerArc = d3.svg.arc()
             .innerRadius(radius * 0.9)
             .outerRadius(radius * 0.9);
+
+        if(!colorScale) {
+          // If the colorScale has not already been passed
+          // then attempt to calculate.
+          colorScale = d3.scale.ordinal()
+              .range(colors)
+              .domain(categoryNames);
+        }
     }
 
     function key(d, i) {
@@ -216,6 +224,7 @@ d3.ez.donutChart = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        colors = colorScale.range();
         return my;
     };
 

@@ -28,7 +28,7 @@ d3.ez.discreteBarChart = function module() {
     var chartW             = 0;
     var chartH             = 0;
     var maxValue           = 0;
-    var categories         = [];
+    var categoryNames      = [];
     var xScale             = undefined;
     var yScale             = undefined;
     var yAxisLabel         = undefined;
@@ -45,11 +45,11 @@ d3.ez.discreteBarChart = function module() {
 
         yAxisLabel = d3.values(data)[0];
         maxValue = d3.max(data.values, function(d) { return d.value;} );
-        categories = d3.values(data)[1].map(function(d) { return d.key; });
+        categoryNames = d3.values(data)[1].map(function(d) { return d.key; });
 
         // X & Y Scales
         xScale = d3.scale.ordinal()
-            .domain(categories)
+            .domain(categoryNames)
             .rangeRoundBands([0, chartW], 0.1);
 
         yScale = d3.scale.linear()
@@ -65,15 +65,20 @@ d3.ez.discreteBarChart = function module() {
             .scale(yScale)
             .orient("left");
 
+        if(!colorScale) {
+          // If the colorScale has not already been passed
+          // then attempt to calculate.
+          colorScale = d3.scale.ordinal()
+              .range(colors)
+              .domain(categoryNames);
+        }
+
     }
 
     function my(selection) {
       selection.each(function(data) {
           // Initialise Data
           init(data);
-
-          // Set the class appropriate to this chart type (so css works)
-          selection.classed(classed, true);
 
           // Create chart element (if it does not exist already)
           if (!chart) {
@@ -82,6 +87,7 @@ d3.ez.discreteBarChart = function module() {
               chart.append("g").classed("y-axis axis", true);
           }
           chart = selection.select(".chart");
+          chart.classed(classed, true);
 
           // Update the outer dimensions
           chart.attr({width: chartW, height: chartH})
@@ -166,18 +172,13 @@ d3.ez.discreteBarChart = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        colors = colorScale.range();
         return my;
     };
 
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
-        return this;
-    };
-
-    my.legend = function(_) {
-        if (!arguments.length) return legend();
-        legend = _;
         return this;
     };
 

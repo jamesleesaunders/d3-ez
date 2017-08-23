@@ -15,7 +15,7 @@ d3.ez.chart = function module() {
     var classed            = "d3ez";
 
     // Data
-    var categories         = [];
+    var categoryNames       = [];
 
     // Colours
     var colors             = d3.ez.colors.categorical(4);
@@ -42,14 +42,22 @@ d3.ez.chart = function module() {
       containerH = height - (margin.top + margin.bottom);
 
       // Init Data
-      categories = d3.values(data)[1].map(function(d) { return d.key; });
+      if(!data[0]) {   // TODO: Can this be done better?
+        // If 1 dimensional data
+        categories = d3.values(data)[1];
+      } else {
+        // If 2 dimensional data
+        categories = data.map(function(d) { return d.values; })[0];
+      }
+      categoryNames = categories.map(function(d) { return d.key; });
 
       // Init Colours
-      colorScale.domain(categories).range(colors);
+      colorScale.domain(categoryNames).range(colors);
 
       // Init Legend
-      legend.width(150)
-        .colorScale(colorScale);
+      legend.colorScale(colorScale)
+        .width(150)
+        .height(200);
 
       // Init Chart
       chart.dispatch(dispatch)
