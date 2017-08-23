@@ -11,12 +11,12 @@
  */
 d3.ez.radialBarChart = function module() {
     // SVG container (Populated by 'my' function)
-    var svg;
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 200, bottom: 20, left: 20};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "radialBarChart";
     var colors             = d3.ez.colors.categorical(4);
@@ -80,26 +80,21 @@ d3.ez.radialBarChart = function module() {
             init(data);
 
             // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                    .append("svg")
-                    .classed("d3ez", true)
-                    .classed(classed, true);
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
 
-                var container = svg.append("g").classed("container", true);
-                container.append("g").classed("tickCircles", true);
-                container.append("g").classed("segments", true);
-                container.append("g").classed("spokes", true);
-                container.append("g").classed("axis", true)
-                container.append("circle").classed("outerCircle", true)
-                container.append("g").classed("labels", true);
+                chart.append("g").classed("tickCircles", true);
+                chart.append("g").classed("segments", true);
+                chart.append("g").classed("spokes", true);
+                chart.append("g").classed("axis", true)
+                chart.append("circle").classed("outerCircle", true)
+                chart.append("g").classed("labels", true);
             }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.attr({width: width, height: height});
-
-            // Locate the center point
-            svg.select(".container")
+            chart.attr({width: width, height: height})
                 .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
             // Concentric tick circles
@@ -161,7 +156,7 @@ d3.ez.radialBarChart = function module() {
             var axisScale = d3.scale.linear().domain(domain).range([0, -radius]);
             var axis = d3.svg.axis().scale(axisScale).orient("right");
 
-            if(tickValues) axis.tickValues(tickValues);
+            //if(tickValues) axis.tickValues(tickValues);
             axis = d3.select(".axis")
                 .call(axis);
 
