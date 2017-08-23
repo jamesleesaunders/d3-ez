@@ -1,16 +1,16 @@
 /**
  * Radial Bar Chart
- * 
+ *
  * @example
  * var myChart = d3.ez.radialBarChart();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);
- * 
+ *
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.radialBarChart = function module() {
-    // SVG container (Populated by 'my' function) 
+    // SVG container (Populated by 'my' function)
     var svg;
 
     // Default Options (Configurable via setters)
@@ -19,14 +19,14 @@ d3.ez.radialBarChart = function module() {
     var margin             = {top: 20, right: 200, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "radialBarChart";
-    var colors             = d3.ez.colors.categorical(4);	
+    var colors             = d3.ez.colors.categorical(4);
     var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     var capitalizeLabels   = false;
     var colorLabels        = false;
 
-    // Data Options (Populated by 'init' function)	
-    var tickValues         = [];	
-    var tickCircleValues   = [];	
+    // Data Options (Populated by 'init' function)
+    var tickValues         = [];
+    var tickCircleValues   = [];
     var domain             = [];
     var numBars            = undefined;
     var barScale           = undefined;
@@ -48,7 +48,7 @@ d3.ez.radialBarChart = function module() {
         labelRadius = radius * 1.025;
 
         // Totals Max, etc
-        maxValue = d3.max(data.values, function(d) { return d.value;} );	
+        maxValue = d3.max(data.values, function(d) { return d.value;} );
 
         // Tick Circle Rings
         tickCircleValues = [];
@@ -56,9 +56,9 @@ d3.ez.radialBarChart = function module() {
             tickCircleValues.push(i);
         }
 
-        // tickCircleValues (dont know the difference really?)	
+        // tickCircleValues (dont know the difference really?)
         tickValues = tickCircleValues;
-        tickValues.push(maxValue + 1)		
+        tickValues.push(maxValue + 1)
 
         // Domain
         domain = [0, maxValue+1];
@@ -67,19 +67,19 @@ d3.ez.radialBarChart = function module() {
         barScale = d3.scale.linear()
             .domain(domain)
             .range([0, radius]);
-        
+
         // Colour Scale
         colorScale = d3.scale.ordinal()
             .range(colors)
-            .domain(keys);        
-        
+            .domain(keys);
+
     }
 
     function my(selection) {
         selection.each(function(data) {
             init(data);
 
-            // Create SVG element (if it does not exist already)			
+            // Create SVG element (if it does not exist already)
             if (!svg) {
                 svg = d3.select(this)
                     .append("svg")
@@ -93,23 +93,11 @@ d3.ez.radialBarChart = function module() {
                 container.append("g").classed("axis", true)
                 container.append("circle").classed("outerCircle", true)
                 container.append("g").classed("labels", true);
-            }			
+            }
 
             // Update the outer dimensions
             svg.attr({width: width, height: height});
-            
-            var title = d3.ez.title();
-            svg.call(title);
-            
-            var legend = d3.ez.legend()
-                .position("top-right")
-                .colorLabel("Hello")                
-                .colorScale(colorScale);
-            svg.call(legend);   
-            
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);
-            
+
             // Locate the center point
             svg.select(".container")
                 .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
@@ -136,7 +124,7 @@ d3.ez.radialBarChart = function module() {
                 .innerRadius(0)
                 .outerRadius(function(d, i) { return barScale(d.value); })
                 .startAngle(function(d, i) { return (i * 2 * Math.PI) / numBars; })
-                .endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });			
+                .endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numBars; });
 
             // Segment enter/exit/update
             var segments = d3.select(".segments")
@@ -215,7 +203,7 @@ d3.ez.radialBarChart = function module() {
         height = _;
         radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
         return this;
-    };	
+    };
 
     my.margin = function(_) {
         if (!arguments.length) return margin;
@@ -235,12 +223,19 @@ d3.ez.radialBarChart = function module() {
         colors = _;
         return this;
     };
-    
+
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        colors = colorScale.range();
+        return my;
+    };
+
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
-        return this;   
-    };    
+        return this;
+    };
 
     my.capitalizeLabels = function(_) {
         if (!arguments.length) return capitalizeLabels;
@@ -251,6 +246,12 @@ d3.ez.radialBarChart = function module() {
     my.colorLabels = function(_) {
         if (!arguments.length) return colorLabels;
         colorLabels = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 
