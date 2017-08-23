@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>D3.EZ : Test</title>
+  <script src="../../d3/d3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+</head>
+<body>
+  <div id="chartholder"></div>
+  <br />
+  <div>Value: <span id="message"></span></div>
+
+  <script type="text/javascript">
+  // Generate some data
+	var data = [
+		{
+			"key": "Jim",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 4
+				},
+				{
+					"key": "Oranges",
+					"value": 3
+				},
+				{
+					"key": "Pears",
+					"value": 1
+				},
+				{
+					"key": "Bananas",
+					"value": 0
+				}
+			]
+		},
+		{
+			"key": "Claire",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 3
+				},
+				{
+					"key": "Oranges",
+					"value": 1
+				},
+				{
+					"key": "Pears",
+					"value": 2
+				},
+				{
+					"key": "Bananas",
+					"value": 2
+				}
+			]
+		},
+		{
+			"key": "Beth",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 5
+				},
+				{
+					"key": "Oranges",
+					"value": 2
+				},
+				{
+					"key": "Pears",
+					"value": 4
+				},
+				{
+					"key": "Bananas",
+					"value": 1
+				}
+			]
+		},
+		{
+			"key": "Grace",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 1
+				},
+				{
+					"key": "Oranges",
+					"value": 4
+				},
+				{
+					"key": "Pears",
+					"value": 2
+				},
+				{
+					"key": "Bananas",
+					"value": 3
+				}
+			]
+		}
+	];
+
+  var colors = d3.ez.colors.diverging(2);
+  var chart = d3.ez.groupedBarChart().yAxisLabel("Number").groupType('stacked');
+  var legend = d3.ez.legend().title('Top 10');
+
+  // Create Column Chart object
+  var myChart = d3.ez.chart()
+    .width(750)
+    .height(400)
+    .colors(colors)
+    .chart(chart)
+    .legend(legend)
+    .title("Family Fruit Survey")
+    .description("Who Likes Fruit?")
+    .on("customHover", function(d, i) {
+      d3.select("#message").text(d.value);
+    });
+
+  // Add to page
+  d3.select("#chartholder")
+    .datum(data)
+    .call(myChart);
+
+  </script>
+</body>
+</html>
