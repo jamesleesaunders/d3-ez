@@ -13,12 +13,12 @@
  */
 d3.ez.groupedBarChart = function module() {
     // SVG container (Populated by 'my' function)
-    var svg;
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 50, right: 160, bottom: 50, left: 40};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 40};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "groupedBarChart";
     var colors             = d3.ez.colors.categorical(4);
@@ -101,51 +101,35 @@ d3.ez.groupedBarChart = function module() {
             // Initialise Data
             init(data);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                    .append("svg")
-                    .classed("d3ez", true)
-                    .classed(classed, true);
-
-                var container = svg.append("g")
-                    .classed("container", true);
-
-                container.append("g")
-                    .classed("chart", true);
-
-                container.append("g")
-                    .classed("x-axis axis", true);
-
-                container.append("g")
-                    .classed("y-axis axis", true)
-                    .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", -35)
-                    .attr("dy", ".71em")
-                    .style("text-anchor", "end")
-                    .text(yAxisLabel);
+            // Create chart element (if it does not exist already)
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true)
+                  .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", -35)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text(yAxisLabel);
             }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.attr({width: width, height: height});
-
-
-            // Update the inner dimensions
-            svg.select(".container")
+            chart.attr({width: width, height: height})
                 .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
             // Add X & Y axis to the chart
-            svg.select(".x-axis")
+            chart.select(".x-axis")
                 .attr({transform: "translate(0," + chartH + ")"})
                 .call(xAxis);
 
-            svg.select(".y-axis")
+            chart.select(".y-axis")
                 .call(yAxis);
 
             // Create Bar Group
-            var barGroup = svg.select(".chart")
-                .selectAll(".barGroup")
+            var barGroup = chart.selectAll(".barGroup")
                 .data(data);
 
             barGroup.enter()
@@ -278,7 +262,7 @@ d3.ez.groupedBarChart = function module() {
         colors = _;
         return this;
     };
-    
+
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;

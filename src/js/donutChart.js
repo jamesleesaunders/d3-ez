@@ -13,7 +13,7 @@
  */
 d3.ez.donutChart = function module() {
     // SVG container (Populated by 'my' function)
-    var container;
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;

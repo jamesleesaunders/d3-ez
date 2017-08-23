@@ -154,6 +154,12 @@ d3.ez.chart = function module() {
         return this;
     };
 
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
+        return this;
+    };
+
     my.colors = function(_) {
         if (!arguments.length) return colors;
         colors = _;

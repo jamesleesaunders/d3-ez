@@ -13,7 +13,7 @@
  */
 d3.ez.discreteBarChart = function module() {
     // SVG container (Populated by 'my' function)
-    var container;
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;
