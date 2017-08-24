@@ -10,13 +10,13 @@
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.circularHeatChart = function module() {
-    // SVG container (Populated by 'my' function) 
-    var svg;
+    // SVG container (Populated by 'my' function)
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 200, bottom: 20, left: 20};
+    var margin             = {top: 20, right: 20, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "circularHeatChart";
     var colors             = ["white", "orange"];
@@ -63,31 +63,21 @@ d3.ez.circularHeatChart = function module() {
             // Initialise Data
             init(data);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                .append("svg")
-                .classed("d3ez", true)
-                .classed(classed, true);
-
-                var container = svg.append("g").classed("container", true);
-                container.append("g").classed("rings", true);
-                container.append("g").classed("radialLabels", true)
-                container.append("g").classed("segmentLabels", true);
+            // Create chart element (if it does not exist already)
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
+                chart.append("g").classed("rings", true);
+                chart.append("g").classed("radialLabels", true)
+                chart.append("g").classed("segmentLabels", true);
             }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.attr({width: width, height: height});
-
-            var title = d3.ez.title();
-            svg.call(title);
-
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);
+            chart.attr({width: width, height: height});
 
             // Locate the center point
-            svg.select(".container")
-                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
+            chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
             // Arc Generator
             var arc = d3.svg.arc()
@@ -210,6 +200,13 @@ d3.ez.circularHeatChart = function module() {
         return this;
     };
 
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        colors = colorScale.range();
+        return my;
+    };
+
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
@@ -219,6 +216,12 @@ d3.ez.circularHeatChart = function module() {
     my.accessor = function(_) {
         if (!arguments.length) return accessor;
         accessor = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 

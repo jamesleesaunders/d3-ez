@@ -94,8 +94,10 @@ d3.ez.radialBarChart = function module() {
             chart.classed(classed, true);
 
             // Update the outer dimensions
-            chart.attr({width: width, height: height})
-                .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
+            chart.attr({width: width, height: height});
+
+            // Locate the center point
+            chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
             // Concentric tick circles
             tickCircles = d3.select(".tickCircles")

@@ -86,27 +86,21 @@ d3.ez.tabularHeatChart = function module() {
             // Initialise Data
             init(data);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                    .append("svg")
-                    .classed("d3ez", true)
-                    .classed(classed, true);
-
-                var container = svg.append("g").classed("container", true);
-                container.append("g").classed("x-axis axis", true);
-                container.append("g").classed("y-axis axis", true);
-                container.append("g").classed("cards", true);
+            // Create chart element (if it does not exist already)
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true);
+                chart.append("g").classed("cards", true);
             }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.transition().attr({width: width, height: height});
-
-            // Update the inner dimensions
-            svg.select(".container")
+            chart.transition().attr({width: width, height: height})
                 .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
-            var deck = svg.select(".cards").selectAll(".deck")
+            var deck = chart.select(".cards").selectAll(".deck")
                 .data(data);
 
             deck.enter().append("g")
@@ -143,7 +137,7 @@ d3.ez.tabularHeatChart = function module() {
 
             cards.exit().remove();
 
-            var colLabels = svg.select(".x-axis").selectAll(".colLabel")
+            var colLabels = chart.select(".x-axis").selectAll(".colLabel")
                 .data(colNames)
                 .enter().append("text")
                 .text(function (d) { return d; })
@@ -153,7 +147,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("transform", "translate(-6," + gridSize / 2 + ")")
                 .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "colLabel mono axis axis-workweek" : "colLabel mono axis"); });
 
-            var rowLabels = svg.select(".y-axis").selectAll(".rowLabel")
+            var rowLabels = chart.select(".y-axis").selectAll(".rowLabel")
                 .data(rowNames)
                 .enter()
                 .append("g")
@@ -195,6 +189,13 @@ d3.ez.tabularHeatChart = function module() {
         return this;
     };
 
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        colors = colorScale.range();
+        return my;
+    };
+
     my.domain = function(_) {
         if (!arguments.length) return domain;
         domain = _;
@@ -204,6 +205,12 @@ d3.ez.tabularHeatChart = function module() {
     my.accessor = function(_) {
         if (!arguments.length) return accessor;
         accessor = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 

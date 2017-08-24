@@ -25,7 +25,7 @@ d3.ez.chart = function module() {
     var title              = d3.ez.title();
 
     // Chart
-    var chart              = d3.ez.discreteBarChart();
+    var chart              = undefined;
 
     // Legend
     var legend             = d3.ez.legend();
