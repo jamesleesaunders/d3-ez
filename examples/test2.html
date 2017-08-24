@@ -100,7 +100,7 @@
 		}
 	];
 
-  var colors = d3.ez.colors.diverging(2);
+  var colors = d3.ez.colors.categorical(1);
   //var chart = d3.ez.groupedBarChart().yAxisLabel("Number").groupType('stacked');
   var chart = d3.ez.groupedBarChart().yAxisLabel("Number").groupType('clustered');
   var legend = d3.ez.legend().title('Top 10');
