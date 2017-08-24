@@ -1,6 +1,6 @@
 /**
  * Punchcard
- * 
+ *
  * @example
  * var myChart = d3.ez.punchCard()
  *     .width(600)
@@ -20,10 +20,10 @@ d3.ez.punchCard = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 60, right: 80, bottom: 40, left: 40};
+    var margin             = {top: 20, right: 120, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "punchCard";
-    var color              = "steelblue";	
+    var color              = "steelblue";
     var maxRadius          = 9;
     var minRadius          = 2;
     var formatTick         = d3.format("0000");
@@ -38,8 +38,8 @@ d3.ez.punchCard = function module() {
 
     function init(data) {
         chartW = width - margin.left - margin.right;
-        chartH = height - margin.top - margin.bottom;		
-    }	
+        chartH = height - margin.top - margin.bottom;
+    }
 
     function mouseover(d) {
         var g = d3.select(this).node().parentNode;
@@ -52,15 +52,15 @@ d3.ez.punchCard = function module() {
         var g = d3.select(this).node().parentNode;
         d3.select(g).selectAll("circle").style("display","block");
         d3.select(g).selectAll("text.value").style("display","none");
-    }	
+    }
 
     function my(selection) {
         selection.each(function(data) {
             // If it is a single object, wrap it in an array
-            if (data.constructor !== Array) data = [data];	
+            if (data.constructor !== Array) data = [data];
 
             // Initialise Data
-            init(data);			
+            init(data);
 
             // Cut the data in different ways....
             var allValues = [];
@@ -77,11 +77,11 @@ d3.ez.punchCard = function module() {
 
             data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
                 categoryNames[i] = d.key;
-            });	
+            });
 
             var rowHeight = chartH / rowCount;
             // var rowHeight = (maxRadius * 2) + 2;
-            var valDomain = d3.extent(allValues, function(d) { return d['value']; });			
+            var valDomain = d3.extent(allValues, function(d) { return d['value']; });
 
             // X (& Y) Scales
             var xScale = d3.scale.ordinal()
@@ -105,7 +105,7 @@ d3.ez.punchCard = function module() {
                 svg = d3.select(this)
                     .append("svg")
                     .classed("d3ez", true)
-                    .classed(classed, true);	
+                    .classed(classed, true);
 
                 var container = svg.append("g").classed("container", true);
                 container.append("g").classed("chart", true);
@@ -113,17 +113,12 @@ d3.ez.punchCard = function module() {
             }
 
             // Update the outer dimensions
-            svg.attr({width: width, height: height});			
+            svg.attr({width: width, height: height});
 
-            var title = d3.ez.title();
-            svg.call(title);
-            
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);
-            
+
             // Update the inner dimensions
             svg.select(".container")
-                .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});			
+                .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
             // Add X (& Y) axis to the chart
             svg.select(".x-axis")
@@ -145,7 +140,7 @@ d3.ez.punchCard = function module() {
                     .attr("cx", function(d, i) { return xScale(d['key']); })
                     .attr("cy", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
                     .attr("r", function(d) { return rScale(d['value']); })
-                    .style("fill", function(d) { return colorScale(d['value']) });				
+                    .style("fill", function(d) { return colorScale(d['value']) });
 
                 var text = g.selectAll("text")
                     .data(data[j]['values'])
@@ -210,9 +205,22 @@ d3.ez.punchCard = function module() {
         return this;
     };
 
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        colors = colorScale.range();
+        return my;
+    };
+
     my.useGlobalScale = function(_) {
         if (!arguments.length) return useGlobalScale;
         useGlobalScale = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 
