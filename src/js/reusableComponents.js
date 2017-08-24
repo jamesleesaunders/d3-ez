@@ -13,6 +13,7 @@ d3.ez.title = function module() {
     var mainText           = "Title";
     var subText            = "Sub Title";
     var height             = 40;
+    var width              = 200;
 
     function my() {
         var titleGroup = this.selectAll("#titleGroup")
@@ -24,6 +25,7 @@ d3.ez.title = function module() {
         var title = titleGroup.append("text")
             .text(mainText)
             .classed("title", true);
+
         var subTitle = titleGroup.append("text")
             .text(subText)
             .classed("subTitle", true);
@@ -51,6 +53,12 @@ d3.ez.title = function module() {
     my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
+        return this;
+    };
+
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
         return this;
     };
 
@@ -327,9 +335,6 @@ d3.ez.legend = function module() {
         height = (height ? height : this.attr("height"));
         width = (width ? width : this.attr("width"));
 
-        numElements = colorScale.range().length;
-        elementHeight = ((height - 30) / numElements) - 5;
-
         // Legend Box
         var legendBox = this.selectAll("#legendBox")
             .data([0])
@@ -345,15 +350,21 @@ d3.ez.legend = function module() {
             .attr("stroke", stroke);
 
         legendTitle = legendBox.append('g')
-            .attr('transform', 'translate(5,15)');
+            .attr('transform', 'translate(5, 15)');
         legendTitle.append('text')
             .style('font-weight', 'bold')
             .text(title);
 
         // Size Key
         if(typeof sizeScale != "undefined") {
+            numElements = sizeScale.domain().length;
+            elementHeight = ((height - 40) / numElements) - 5;
+
+            sizeKey = legendBox.append('g')
+              .attr('transform', 'translate(5, 20)');
+
             var i = 10;
-            for(index = 0; index < sizeScale.range().length; index++) {
+            for(index = 0; index < numElements; index++) {
                 sizeKey.append('circle')
                     .attr('cx', 17)
                     .attr('cy', i)
@@ -367,16 +378,19 @@ d3.ez.legend = function module() {
                     .attr('y', i + 5)
                     .text(keyScaleRange('size', index));
 
-                i = i + 20;
+                i = i + (elementHeight + spacing);
             }
         }
 
         // Colour Key
         if(typeof colorScale != 'undefined') {
+            numElements = colorScale.domain().length;
+            elementHeight = ((height - 40) / numElements) - 5;
+
             colorKey = legendBox.append('g')
-                .attr('transform', 'translate(5,15)');
+                .attr('transform', 'translate(5, 20)');
             var i = 10;
-            for(index = 0; index < colorScale.domain().length; index++) {
+            for(index = 0; index < numElements; index++) {
                 colorKey.append('rect')
                     .attr('x', 10)
                     .attr('y', i)

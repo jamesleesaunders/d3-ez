@@ -12,32 +12,25 @@ d3.ez.chart = function module() {
     var width              = 600;
     var height             = 400;
     var margin             = {top: 10, right: 10, bottom: 10, left: 10};
+    var containerW         = 580;
+    var containerH         = 380;
     var classed            = "d3ez";
 
-    // Data
-    var categoryNames       = [];
+    var chart              = undefined;
+    var legend             = undefined;
+    var title              = undefined;
+    var creditTag          = d3.ez.creditTag();
+    var description        = "";
+    var yAxisLabel         = "";
 
     // Colours
     var colors             = d3.ez.colors.categorical(4);
     var colorScale         = d3.scale.ordinal();
 
-    // Title
-    var title              = d3.ez.title();
-
-    // Chart
-    var chart              = undefined;
-
-    // Legend
-    var legend             = d3.ez.legend();
-
-    // Credit Tag
-    var creditTag          = d3.ez.creditTag();
-
-    // Dispatch (Custom events)
+    // Dispatch (custom events)
     var dispatch           = d3.dispatch("customHover");
 
     function init(data) {
-      // Init Container
       containerW = width  - (margin.left + margin.right);
       containerH = height - (margin.top + margin.bottom);
 
@@ -51,27 +44,21 @@ d3.ez.chart = function module() {
       }
       categoryNames = categories.map(function(d) { return d.key; });
 
-      // Init Colours
-      colorScale.domain(categoryNames).range(colors);
-
       // Init Legend
-      legend.colorScale(colorScale)
-        .width(150)
-        .height(200);
+      legend.width(150).height(200);
 
       // Init Chart
       chart.dispatch(dispatch)
         .width(containerW - legend.width())
         .height(containerH - title.height())
-        .colorScale(colorScale);
+        .colors(colors);
 
-      // Init creditTag
+      // Init Credit Tag
       creditTag.text("d3ez.org").href("http://d3ez.org");
     }
 
     function my(selection) {
       selection.each(function(data) {
-          // Initialise Data
           init(data);
 
           // Create SVG element (if it does not exist already)
@@ -81,10 +68,10 @@ d3.ez.chart = function module() {
                   .classed(classed, true);
 
               var container = svg.append("g").classed("container", true);
-              container.append("g").classed("chartlayer", true);
-              container.append("g").classed("legendlayer", true);
-              container.append("g").classed("titlelayer", true);
-              container.append("g").classed("creditlayer", true);
+              container.append("g").classed("chartbox", true);
+              container.append("g").classed("legendbox", true);
+              container.append("g").classed("titlebox", true);
+              container.append("g").classed("creditbox", true);
           }
 
           // Update Container Dimensions
@@ -94,23 +81,29 @@ d3.ez.chart = function module() {
               .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
           // Add Chart
-          container.select(".chartlayer")
+          container.select(".chartbox")
               .datum(data)
               .attr({transform: "translate(" + 0 + "," + title.height() + ")"})
               .call(chart);
 
           // Add Legend
-          container.select(".legendlayer")
+          if(typeof chart.colorScale === "function") {
+            legend.colorScale(chart.colorScale());
+          }
+          if(typeof chart.sizeScale === "function") {
+            legend.sizeScale(chart.sizeScale());
+          }
+          container.select(".legendbox")
               .attr({transform: "translate(" + (containerW - legend.width()) + "," + title.height() + ")"})
               .call(legend);
 
           // Add Title
-          container.select(".titlelayer")
+          container.select(".titlebox")
               .attr({transform: "translate(" + width / 2 + "," + 0 + ")"})
               .call(title);
 
           // Add Credit Tag
-          container.select(".creditlayer")
+          container.select(".creditbox")
               .attr({transform: "translate(" + (width - 20) + "," + (height - 20) + ")"})
               .call(creditTag);
         }
@@ -118,12 +111,6 @@ d3.ez.chart = function module() {
     }
 
     // Configuration Getters & Setters
-    my.chart = function(_) {
-        if (!arguments.length) return chart;
-        chart = _;
-        return this;
-    };
-
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
@@ -136,27 +123,15 @@ d3.ez.chart = function module() {
         return this;
     };
 
-    my.classed = function(_) {
-        if (!arguments.length) return classed;
-        classed = _;
+    my.chart = function(_) {
+        if (!arguments.length) return chart;
+        chart = _;
         return this;
     };
 
-    my.title = function(_) {
-        if (!arguments.length) return title.mainText();
-        title.mainText(_)
-        return this;
-    };
-
-    my.description = function(_) {
-        if (!arguments.length) return title.subText();
-        title.subText(_)
-        return this;
-    };
-
-    my.yAxisLabel = function(_) {
-        if (!arguments.length) return yAxisLabel;
-        yAxisLabel = _;
+    my.legend = function(_) {
+        if (!arguments.length) return legend;
+        legend = _;
         return this;
     };
 
@@ -166,9 +141,21 @@ d3.ez.chart = function module() {
         return this;
     };
 
-    my.legend = function(_) {
-        if (!arguments.length) return legend();
-        legend = _;
+    my.title = function(_) {
+        if (!arguments.length) return title;
+        title = _;
+        return this;
+    };
+
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
+        return this;
+    };
+
+    my.classed = function(_) {
+        if (!arguments.length) return classed;
+        classed = _;
         return this;
     };
 

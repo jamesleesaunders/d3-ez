@@ -23,8 +23,11 @@ d3.ez.punchCard = function module() {
     var margin             = {top: 20, right: 120, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "punchCard";
-    var color              = "steelblue";
-    var maxRadius          = 9;
+    var colors             = ["steelblue"];
+    var colorScale         = undefined;
+    var sizeScale          = undefined;
+    var sizeDomain         = [];
+    var maxRadius          = 18;
     var minRadius          = 2;
     var formatTick         = d3.format("0000");
     var useGlobalScale     = true;
@@ -76,7 +79,7 @@ d3.ez.punchCard = function module() {
             var maxValue = 0;
 
             data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-                categoryNames[i] = d.key;
+              categoryNames[i] = d.key;
             });
 
             var rowHeight = chartH / rowCount;
@@ -93,12 +96,11 @@ d3.ez.punchCard = function module() {
                 .scale(xScale)
                 .orient("bottom")
                 .ticks(data[0].values.length);
-                //.tickFormat(formatTick);
 
             // Colour Scale
             var colorScale = d3.scale.linear()
                 .domain(d3.extent(allValues, function(d) {return d['value'];}))
-                .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+                .range(colors);
 
             // Create SVG element (if it does not exist already)
             if (!svg) {
@@ -115,7 +117,6 @@ d3.ez.punchCard = function module() {
             // Update the outer dimensions
             svg.attr({width: width, height: height});
 
-
             // Update the inner dimensions
             svg.select(".container")
                 .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
@@ -126,9 +127,9 @@ d3.ez.punchCard = function module() {
                 .call(xAxis);
 
             for (var j = 0; j < data.length; j++) {
-                var rDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) { return d['value']; })];
-                var rScale = d3.scale.linear()
-                    .domain(rDomain)
+                sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) { return d['value']; })];
+                sizeScale = d3.scale.linear()
+                    .domain(sizeDomain)
                     .range([minRadius, maxRadius]);
 
                 var g = svg.select(".chart").append("g");
@@ -139,7 +140,7 @@ d3.ez.punchCard = function module() {
                     .append("circle")
                     .attr("cx", function(d, i) { return xScale(d['key']); })
                     .attr("cy", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
-                    .attr("r", function(d) { return rScale(d['value']); })
+                    .attr("r", function(d) { return sizeScale(d['value']); })
                     .style("fill", function(d) { return colorScale(d['value']) });
 
                 var text = g.selectAll("text")
@@ -158,7 +159,6 @@ d3.ez.punchCard = function module() {
                     .attr("x", chartW + rowHeight)
                     .attr("class", "label")
                     .text(data[j]['key'])
-                    .style("fill", function(d) { return color })
                     .style("text-anchor", "end")
                     .on("mouseover", mouseover)
                     .on("mouseout", mouseout);
@@ -199,17 +199,22 @@ d3.ez.punchCard = function module() {
         return this;
     };
 
-    my.color = function(_) {
-        if (!arguments.length) return color;
-        color = _;
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
         return this;
     };
 
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
-        colors = colorScale.range();
-        return my;
+        return this;
+    };
+
+    my.sizeScale = function(_) {
+        if (!arguments.length) return sizeScale;
+        sizeScale = _;
+        return this;
     };
 
     my.useGlobalScale = function(_) {

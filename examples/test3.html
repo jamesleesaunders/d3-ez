@@ -8,6 +8,8 @@
 </head>
 <body>
 	<div id="chartholder"></div>
+	<br />
+  <div>Value: <span id="message"></span></div>
 
 	<script type="text/javascript">
 	// Generate some data
@@ -68,18 +70,22 @@
 	}
 
   var colors = d3.ez.colors.diverging(2);
-  var chart = d3.ez.punchCard();
-  //var chart = d3.ez.circularHeatChart();
+  var chart = d3.ez.circularHeatChart();
   //var chart = d3.ez.tabularHeatChart();
+	var legend = d3.ez.legend().title('How hot?');
+  var title  = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");
 
 	// Create Tabular Heat Chart object
 	var myChart = d3.ez.chart()
-		.width(600)
-		.height(600)
+		.width(750)
+		.height(400)
     .chart(chart)
+		.legend(legend)
+		.colors(colors)
+		.title(title)
 		.on("customHover", function(d, i) {
-			console.log(d);
-		});
+      d3.select("#message").text(d.value);
+    });
 
 	d3.select('#chartholder')
 		.datum(randomDataset())

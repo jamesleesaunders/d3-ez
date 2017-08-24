@@ -60,7 +60,7 @@ d3.ez.tabularHeatChart = function module() {
         }));
         numRows = rowNames.length;
 
-        gridSize = Math.floor((width - (margin.left + margin.right)) / d3.max([numCols, numRows]));
+        gridSize = Math.floor((d3.min([width, height]) - (margin.left + margin.right)) / d3.max([numCols, numRows]));
 
         // Calculate the Max Value
         var values = [];
@@ -97,10 +97,11 @@ d3.ez.tabularHeatChart = function module() {
             chart.classed(classed, true);
 
             // Update the outer dimensions
-            chart.transition().attr({width: width, height: height})
+            chart.attr({width: width, height: height})
                 .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
-            var deck = chart.select(".cards").selectAll(".deck")
+            var deck = chart.select(".cards")
+                .selectAll(".deck")
                 .data(data);
 
             deck.enter().append("g")
@@ -108,6 +109,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("transform", function(d, i) {
                     return "translate(0, " +  ((colNames.indexOf(d.key)) * gridSize) + ")";
                 });
+
             deck.transition()
                 .attr("class", "deck");
 
@@ -127,7 +129,8 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("class", "card")
                 .attr("width", gridSize)
                 .attr("height", gridSize)
-                .on("click", dispatch.customHover);
+                .on("click", dispatch.customClick)
+                .on("mouseover", dispatch.customHover);
 
             cards.transition()
                 .duration(1000)
@@ -192,8 +195,7 @@ d3.ez.tabularHeatChart = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
-        colors = colorScale.range();
-        return my;
+        return this;
     };
 
     my.domain = function(_) {

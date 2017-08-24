@@ -266,8 +266,7 @@ d3.ez.groupedBarChart = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
-        colors = colorScale.range();
-        return my;
+        return this;
     };
 
     my.dispatch = function(_) {

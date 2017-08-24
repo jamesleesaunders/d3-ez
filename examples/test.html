@@ -36,19 +36,19 @@
 
   var colors = d3.ez.colors.diverging(2);
   //var chart = d3.ez.discreteBarChart();
-  //var chart = d3.ez.donutChart();
-  var chart = d3.ez.radialBarChart();
+  var chart  = d3.ez.donutChart();
+  //var chart = d3.ez.radialBarChart();
   var legend = d3.ez.legend().title('Top 10');
+  var title  = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
 
   // Create Column Chart object
   var myChart = d3.ez.chart()
     .width(750)
     .height(400)
-    .colors(colors)
     .chart(chart)
+    .colors(colors)
     .legend(legend)
-    .title("Programming Languages")
-    .description("Top 10 Languages Used By Developers")
+    .title(title)
     .on("customHover", function(d, i) {
       d3.select("#message").text(d.value);
     });

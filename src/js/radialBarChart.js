@@ -224,8 +224,7 @@ d3.ez.radialBarChart = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
-        colors = colorScale.range();
-        return my;
+        return this;
     };
 
     my.transition = function(_) {
