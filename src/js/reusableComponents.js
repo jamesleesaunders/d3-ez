@@ -357,8 +357,20 @@ d3.ez.legend = function module() {
 
         // Size Key
         if(typeof sizeScale != "undefined") {
-            numElements = sizeScale.domain().length;
-            elementHeight = ((height - 40) / numElements) - 5;
+            // Calcualate a range of 5 numbers between min and max of range
+            min = d3.min(sizeScale.range());
+            max = d3.max(sizeScale.range());
+            diff = max - min;
+            step = diff / 4;
+            var range = [];
+            range[0] = min;
+            for(j = 1; j < 5; j++) {
+              range[j] = range[j-1] + step;
+            }
+            sizeScale.range(range);
+
+            numElements = sizeScale.range().length;
+            elementHeight = ((height - 45) / numElements);
 
             sizeKey = legendBox.append('g')
               .attr('transform', 'translate(5, 20)');
@@ -385,7 +397,7 @@ d3.ez.legend = function module() {
         // Colour Key
         if(typeof colorScale != 'undefined') {
             numElements = colorScale.domain().length;
-            elementHeight = ((height - 40) / numElements) - 5;
+            elementHeight = ((height - 45) / numElements) - 5;
 
             colorKey = legendBox.append('g')
                 .attr('transform', 'translate(5, 20)');

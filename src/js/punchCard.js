@@ -23,8 +23,7 @@ d3.ez.punchCard = function module() {
     var margin             = {top: 20, right: 120, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "punchCard";
-    var colors             = ["steelblue"];
-    var colorScale         = undefined;
+    var color              = "steelblue";
     var sizeScale          = undefined;
     var sizeDomain         = [];
     var maxRadius          = 18;
@@ -100,29 +99,22 @@ d3.ez.punchCard = function module() {
             // Colour Scale
             var colorScale = d3.scale.linear()
                 .domain(d3.extent(allValues, function(d) {return d['value'];}))
-                .range(colors);
+                .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                    .append("svg")
-                    .classed("d3ez", true)
-                    .classed(classed, true);
-
-                var container = svg.append("g").classed("container", true);
-                container.append("g").classed("chart", true);
-                container.append("g").classed("x-axis axis", true);
+            // Create chart element (if it does not exist already)
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
             }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.attr({width: width, height: height});
-
-            // Update the inner dimensions
-            svg.select(".container")
-                .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
+            chart.attr({width: width, height: height})
+              .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
             // Add X (& Y) axis to the chart
-            svg.select(".x-axis")
+            chart.select(".x-axis")
                 .attr({transform: "translate(0," + chartH + ")"})
                 .call(xAxis);
 
@@ -132,14 +124,14 @@ d3.ez.punchCard = function module() {
                     .domain(sizeDomain)
                     .range([minRadius, maxRadius]);
 
-                var g = svg.select(".chart").append("g");
+                var g = chart.append("g");
 
                 var circles = g.selectAll("circle")
                     .data(data[j]['values'])
                     .enter()
                     .append("circle")
-                    .attr("cx", function(d, i) { return xScale(d['key']); })
                     .attr("cy", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
+                    .attr("cx", function(d, i) { return xScale(d['key']); })
                     .attr("r", function(d) { return sizeScale(d['value']); })
                     .style("fill", function(d) { return colorScale(d['value']) });
 
@@ -148,7 +140,7 @@ d3.ez.punchCard = function module() {
                     .enter()
                     .append("text")
                     .attr("y", (chartH - rowHeight * 2) - (j * rowHeight) + (rowHeight + 5))
-                    .attr("x", function(d, i) { return xScale(d['key']) - 4; })
+                    .attr("x", function(d, i) { return xScale(d['key']) - 5; })
                     .attr("class", "value")
                     .text(function(d) { return d['value']; })
                     .style("fill", function(d) { return colorScale(d['value']) })
@@ -199,15 +191,9 @@ d3.ez.punchCard = function module() {
         return this;
     };
 
-    my.colors = function(_) {
-        if (!arguments.length) return colors;
-        colors = _;
-        return this;
-    };
-
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
+    my.color = function(_) {
+        if (!arguments.length) return color;
+        color = _;
         return this;
     };
 

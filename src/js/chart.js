@@ -50,8 +50,11 @@ d3.ez.chart = function module() {
       // Init Chart
       chart.dispatch(dispatch)
         .width(containerW - legend.width())
-        .height(containerH - title.height())
-        .colors(colors);
+        .height(containerH - title.height());
+
+      if(typeof chart.colors === "function") {
+        chart.colors(colors);
+      }
 
       // Init Credit Tag
       creditTag.text("d3ez.org").href("http://d3ez.org");

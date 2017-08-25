@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>D3.EZ : Radial Bar Chart Example</title>
-	<script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../../d3/d3.min.js"></script>
 	<script src="../src/d3.ez.js"></script>
 	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
@@ -53,29 +53,34 @@
 		return data2;
 	}
 
-	// Create Radial Bar Chart object
-	var myChart = d3.ez.radialBarChart()
-		.width(600)
-		.height(450)
-		//.radius(150)
-		.capitalizeLabels(true)
-		.colorLabels(true)
-		.on("customHover", function(d, i) {
-			console.log(d);
-		});
+	var colors = d3.ez.colors.diverging(2);
+  var chart = d3.ez.radialBarChart();
+  var legend = d3.ez.legend().title('Top 10');
+  var title  = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
 
-	// Add to page
-	function update() {
-		var data = randomDataset();
+  // Create Column Chart object
+  var myChart = d3.ez.chart()
+    .width(750)
+    .height(400)
+    .chart(chart)
+    .colors(colors)
+    .legend(legend)
+    .title(title)
+    .on("customHover", function(d, i) {
+      d3.select("#message").text(d.value);
+    });
 
-		d3.select("#chartholder")
-			.datum(data)
-			.call(myChart);
-	}
+  // Add to page
+  function update() {
+    var data = randomDataset();
+    d3.select("#chartholder")
+      .datum(data)
+      .call(myChart);
+  }
 
-	update();
-	setInterval(update, 2000);
+  update();
+  setInterval(update, 2000);
 
-	</script>
+  </script>
 </body>
 </html>

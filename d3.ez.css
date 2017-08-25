@@ -32,7 +32,7 @@
 }
 /* === Credit Label === */
 .d3ez #creditTag text {
-	cursor: pointer; 
+	cursor: pointer;
 	fill: #cccccc;
 }
 
@@ -192,3 +192,8 @@ table.htmlTable {
 	background-color: #eeeeee;
 }
 
+/* === Punch Card Styles === */
+.punchCard .value {
+	font-size: 20px;
+	font-weight: bold;
+}
