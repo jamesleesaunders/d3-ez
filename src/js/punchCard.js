@@ -46,14 +46,14 @@ d3.ez.punchCard = function module() {
     function mouseover(d) {
         var g = d3.select(this).node().parentNode;
         d3.select(g).selectAll("circle").style("display", "none");
-        d3.select(g).selectAll("text.value").style("display", "block");
+        d3.select(g).selectAll("text.punchValue").style("display", "block");
         dispatch.customHover(d);
     }
 
     function mouseout(d) {
         var g = d3.select(this).node().parentNode;
         d3.select(g).selectAll("circle").style("display","block");
-        d3.select(g).selectAll("text.value").style("display","none");
+        d3.select(g).selectAll("text.punchValue").style("display", "none");
     }
 
     function my(selection) {
@@ -133,15 +133,18 @@ d3.ez.punchCard = function module() {
                     .attr("cy", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
                     .attr("cx", function(d, i) { return xScale(d['key']); })
                     .attr("r", function(d) { return sizeScale(d['value']); })
+                    .attr("class", "punchSpot")
                     .style("fill", function(d) { return colorScale(d['value']) });
 
                 var text = g.selectAll("text")
                     .data(data[j]['values'])
                     .enter()
                     .append("text")
-                    .attr("y", (chartH - rowHeight * 2) - (j * rowHeight) + (rowHeight + 5))
-                    .attr("x", function(d, i) { return xScale(d['key']) - 5; })
-                    .attr("class", "value")
+                    .attr("y", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
+                    .attr("x", function(d, i) { return xScale(d['key']); })
+                    .attr("text-anchor", "middle")
+                    .attr("dominant-baseline", "middle")
+                    .attr("class", "punchValue")
                     .text(function(d) { return d['value']; })
                     .style("fill", function(d) { return colorScale(d['value']) })
                     .style("display", "none");

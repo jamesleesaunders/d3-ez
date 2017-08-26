@@ -193,7 +193,7 @@ table.htmlTable {
 }
 
 /* === Punch Card Styles === */
-.punchCard .value {
+.punchCard .punchValue {
 	font-size: 20px;
 	font-weight: bold;
 }
