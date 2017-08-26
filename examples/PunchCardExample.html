@@ -10,55 +10,57 @@
 	<div id="chartholder"></div>
 
 	<script type="text/javascript">
-
+	var _randomNum = function() {
+		return Math.floor(Math.random() * 20);
+	};
 	// Generate some data
 	var data = [
 		{
-			key: "data-1",
+			key: "Apples",
 			values: [
-				{key: "2004", value: 8},
-				{key: "2005", value: 4},
-				{key: "2006", value: 10},
-				{key: "2007", value: 11},
-				{key: "2008", value: 6},
-				{key: "2009", value: 10},
-				{key: "2010", value: 16}
+				{key: "2004", value: _randomNum()},
+				{key: "2005", value: _randomNum()},
+				{key: "2006", value: _randomNum()},
+				{key: "2007", value: _randomNum()},
+				{key: "2008", value: _randomNum()},
+				{key: "2009", value: _randomNum()},
+				{key: "2010", value: _randomNum()}
 			]
 		},
 		{
-			key: "data-2",
+			key: "Oranges",
 			values: [
-				{key: "2004", value: 2},
-				{key: "2005", value: 4},
-				{key: "2006", value: 10},
-				{key: "2007", value: 7},
-				{key: "2008", value: 20},
-				{key: "2009", value: 6},
-				{key: "2010", value: 18}
+				{key: "2004", value: _randomNum()},
+				{key: "2005", value: _randomNum()},
+				{key: "2006", value: _randomNum()},
+				{key: "2007", value: _randomNum()},
+				{key: "2008", value: _randomNum()},
+				{key: "2009", value: _randomNum()},
+				{key: "2010", value: _randomNum()}
 			]
 		},
 		{
-			key: "data-3",
+			key: "Pears",
 			values: [
-				{key: "2004", value: 1},
-				{key: "2005", value: 2},
-				{key: "2006", value: 3},
-				{key: "2007", value: 4},
-				{key: "2008", value: 6},
-				{key: "2009", value: 10},
-				{key: "2010", value: 4}
+				{key: "2004", value: _randomNum()},
+				{key: "2005", value: _randomNum()},
+				{key: "2006", value: _randomNum()},
+				{key: "2007", value: _randomNum()},
+				{key: "2008", value: _randomNum()},
+				{key: "2009", value: _randomNum()},
+				{key: "2010", value: _randomNum()}
 			]
 		},
 		{
-			key: "data-4",
+			key: "Kiwis",
 			values: [
-				{key: "2004", value: 7},
-				{key: "2005", value: 5},
-				{key: "2006", value: 3},
-				{key: "2007", value: 1},
-				{key: "2008", value: 28},
-				{key: "2009", value: 9},
-				{key: "2010", value: 2}
+				{key: "2004", value: _randomNum()},
+				{key: "2005", value: _randomNum()},
+				{key: "2006", value: _randomNum()},
+				{key: "2007", value: _randomNum()},
+				{key: "2008", value: _randomNum()},
+				{key: "2009", value: _randomNum()},
+				{key: "2010", value: _randomNum()}
 			]
 		}
 	];

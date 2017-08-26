@@ -20,7 +20,7 @@ d3.ez.punchCard = function module() {
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
-    var margin             = {top: 20, right: 120, bottom: 20, left: 20};
+    var margin             = {top: 40, right: 80, bottom: 20, left: 20};
     var transition         = {ease: "bounce", duration: 500};
     var classed            = "punchCard";
     var color              = "steelblue";
@@ -150,11 +150,12 @@ d3.ez.punchCard = function module() {
                     .style("display", "none");
 
                 g.append("text")
-                    .attr("y", (chartH - rowHeight * 2) - ( j * rowHeight) + (rowHeight + 5))
-                    .attr("x", chartW + rowHeight)
+                    .attr("y", (chartH - rowHeight * 2) - ( j * rowHeight) + rowHeight)
+                    .attr("x", chartW)
+                    .attr("text-anchor", "start")
+                    .attr("dominant-baseline", "start")
                     .attr("class", "label")
                     .text(data[j]['key'])
-                    .style("text-anchor", "end")
                     .on("mouseover", mouseover)
                     .on("mouseout", mouseout);
             }
