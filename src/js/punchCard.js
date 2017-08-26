@@ -15,7 +15,7 @@
  */
 d3.ez.punchCard = function module() {
     // SVG container (Populated by 'my' function)
-    var svg;
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;
@@ -35,25 +35,57 @@ d3.ez.punchCard = function module() {
     var chartW             = 0;
     var chartH             = 0;
 
+    // Data Options (Populated by 'init' function)
+    var xAxis              = undefined;
+    var xScale             = undefined;
+    var colorScale         = undefined;
+    var valDomain;
+    var rowHeight;
+
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
 
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
-    }
 
-    function mouseover(d) {
-        var g = d3.select(this).node().parentNode;
-        d3.select(g).selectAll("circle").style("display", "none");
-        d3.select(g).selectAll("text.punchValue").style("display", "block");
-        dispatch.customHover(d);
-    }
+        // Cut the data in different ways....
+        var allValues = [];
+        var rowCount = 0;
+        data.forEach(function(d) {
+            allValues = allValues.concat(d.values);
+            rowCount++;
+        });
 
-    function mouseout(d) {
-        var g = d3.select(this).node().parentNode;
-        d3.select(g).selectAll("circle").style("display","block");
-        d3.select(g).selectAll("text.punchValue").style("display", "none");
+        //var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
+        var categoryNames = [];
+        var categoryTotals = [];
+        var maxValue = 0;
+
+        data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
+          categoryNames[i] = d.key;
+        });
+
+        rowHeight = chartH / rowCount;
+        // var rowHeight = (maxRadius * 2) + 2;
+        valDomain = d3.extent(allValues, function(d) { return d['value']; });
+
+        // X (& Y) Scales
+        xScale = d3.scale.ordinal()
+            .domain(categoryNames)
+            .rangeRoundBands([0, chartW], 1);
+
+        // X (& Y) Axis
+        xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom")
+            .ticks(data[0].values.length);
+
+        // Colour Scale
+        colorScale = d3.scale.linear()
+            .domain(d3.extent(allValues, function(d) {return d['value'];}))
+            .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+
     }
 
     function my(selection) {
@@ -63,43 +95,6 @@ d3.ez.punchCard = function module() {
 
             // Initialise Data
             init(data);
-
-            // Cut the data in different ways....
-            var allValues = [];
-            var rowCount = 0;
-            data.forEach(function(d) {
-                allValues = allValues.concat(d.values);
-                rowCount++;
-            });
-
-            //var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
-            var categoryNames = [];
-            var categoryTotals = [];
-            var maxValue = 0;
-
-            data.map(function(d) { return d.values; })[0].forEach(function(d, i) {
-              categoryNames[i] = d.key;
-            });
-
-            var rowHeight = chartH / rowCount;
-            // var rowHeight = (maxRadius * 2) + 2;
-            var valDomain = d3.extent(allValues, function(d) { return d['value']; });
-
-            // X (& Y) Scales
-            var xScale = d3.scale.ordinal()
-                .domain(categoryNames)
-                .rangeRoundBands([0, chartW], 1);
-
-            // X (& Y) Axis
-            var xAxis = d3.svg.axis()
-                .scale(xScale)
-                .orient("bottom")
-                .ticks(data[0].values.length);
-
-            // Colour Scale
-            var colorScale = d3.scale.linear()
-                .domain(d3.extent(allValues, function(d) {return d['value'];}))
-                .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 
             // Create chart element (if it does not exist already)
             if (!chart) {
@@ -143,7 +138,7 @@ d3.ez.punchCard = function module() {
                     .attr("y", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
                     .attr("x", function(d, i) { return xScale(d['key']); })
                     .attr("text-anchor", "middle")
-                    .attr("dominant-baseline", "middle")
+                    .attr("dominant-baseline", "central")
                     .attr("class", "punchValue")
                     .text(function(d) { return d['value']; })
                     .style("fill", function(d) { return colorScale(d['value']) })
@@ -161,6 +156,19 @@ d3.ez.punchCard = function module() {
             }
 
         });
+    }
+
+    function mouseover(d) {
+        var g = d3.select(this).node().parentNode;
+        d3.select(g).selectAll("circle").style("display", "none");
+        d3.select(g).selectAll("text.punchValue").style("display", "block");
+        dispatch.customHover(d);
+    }
+
+    function mouseout(d) {
+        var g = d3.select(this).node().parentNode;
+        d3.select(g).selectAll("circle").style("display","block");
+        d3.select(g).selectAll("text.punchValue").style("display", "none");
     }
 
     // Configuration Getters & Setters
