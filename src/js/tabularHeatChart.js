@@ -12,27 +12,27 @@ d3.ez.tabularHeatChart = function module() {
     var svg;
 
     // Default Options (Configurable via setters)
-    var width = 600;
-    var height = 600;
-    var margin = {top: 40, right: 40, bottom: 40, left: 40};
-    var transition = {ease: "bounce", duration: 500};
-    var classed = "tabularHeatChart";
-    var colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"];
+    var width              = 600;
+    var height             = 600;
+    var margin             = {top: 40, right: 40, bottom: 40, left: 40};
+    var transition         = {ease: "bounce", duration: 500};
+    var classed            = "tabularHeatChart";
+    var colors             = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
 
     // Data Options (Populated by 'init' function)
-    var domain = null;
-    var minValue = 0;
-    var maxValue = 0;
-    var numCols = 0;
-    var numRows = 0;
-    var gridSize = 0;
-    var colNames = [];
+    var domain             = null;
+    var minValue           = 0;
+    var maxValue           = 0;
+    var numCols            = 0;
+    var numRows            = 0;
+    var gridSize           = 0;
+    var colNames           = [];
 
-    var rowNames = [];
-    var colorScale = undefined;
+    var rowNames           = [];
+    var colorScale         = undefined;
 
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch           = d3.dispatch("customHover");
 
     function init(data) {
         // Group and Category Names
@@ -60,7 +60,7 @@ d3.ez.tabularHeatChart = function module() {
         }));
         numRows = rowNames.length;
 
-        gridSize = Math.floor((width - (margin.left + margin.right)) / d3.max([numCols, numRows]));
+        gridSize = Math.floor((d3.min([width, height]) - (margin.left + margin.right)) / d3.max([numCols, numRows]));
 
         // Calculate the Max Value
         var values = [];
@@ -86,27 +86,22 @@ d3.ez.tabularHeatChart = function module() {
             // Initialise Data
             init(data);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                    .append("svg")
-                    .classed("d3ez", true)
-                    .classed(classed, true);
-
-                var container = svg.append("g").classed("container", true);
-                container.append("g").classed("x-axis axis", true);
-                container.append("g").classed("y-axis axis", true);
-                container.append("g").classed("cards", true);
+            // Create chart element (if it does not exist already)
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true);
+                chart.append("g").classed("cards", true);
             }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.transition().attr({width: width, height: height});
-
-            // Update the inner dimensions
-            svg.select(".container")
+            chart.attr({width: width, height: height})
                 .attr({transform: "translate(" + margin.left + "," + margin.top + ")"});
 
-            var deck = svg.select(".cards").selectAll(".deck")
+            var deck = chart.select(".cards")
+                .selectAll(".deck")
                 .data(data);
 
             deck.enter().append("g")
@@ -114,6 +109,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("transform", function(d, i) {
                     return "translate(0, " +  ((colNames.indexOf(d.key)) * gridSize) + ")";
                 });
+
             deck.transition()
                 .attr("class", "deck");
 
@@ -133,7 +129,8 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("class", "card")
                 .attr("width", gridSize)
                 .attr("height", gridSize)
-                .on("click", dispatch.customHover);
+                .on("click", dispatch.customClick)
+                .on("mouseover", dispatch.customHover);
 
             cards.transition()
                 .duration(1000)
@@ -143,7 +140,7 @@ d3.ez.tabularHeatChart = function module() {
 
             cards.exit().remove();
 
-            var colLabels = svg.select(".x-axis").selectAll(".colLabel")
+            var colLabels = chart.select(".x-axis").selectAll(".colLabel")
                 .data(colNames)
                 .enter().append("text")
                 .text(function (d) { return d; })
@@ -153,7 +150,7 @@ d3.ez.tabularHeatChart = function module() {
                 .attr("transform", "translate(-6," + gridSize / 2 + ")")
                 .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "colLabel mono axis axis-workweek" : "colLabel mono axis"); });
 
-            var rowLabels = svg.select(".y-axis").selectAll(".rowLabel")
+            var rowLabels = chart.select(".y-axis").selectAll(".rowLabel")
                 .data(rowNames)
                 .enter()
                 .append("g")
@@ -195,6 +192,12 @@ d3.ez.tabularHeatChart = function module() {
         return this;
     };
 
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+
     my.domain = function(_) {
         if (!arguments.length) return domain;
         domain = _;
@@ -204,6 +207,12 @@ d3.ez.tabularHeatChart = function module() {
     my.accessor = function(_) {
         if (!arguments.length) return accessor;
         accessor = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 

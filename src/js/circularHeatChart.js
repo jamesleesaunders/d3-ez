@@ -1,23 +1,23 @@
 /**
  * Circular Heat Chart
- * 
+ *
  * @example
  * var myChart = d3.ez.circularHeatChart();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);
- * 
+ *
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.circularHeatChart = function module() {
-    // SVG container (Populated by 'my' function) 
-    var svg;
+    // SVG container (Populated by 'my' function)
+    var chart;
 
     // Default Options (Configurable via setters)
     var width              = 400;
     var height             = 300;
     var margin             = {top: 20, right: 20, bottom: 20, left: 20};
-    var transition         = {ease: "bounce", duration: 500};	
+    var transition         = {ease: "bounce", duration: 500};
     var classed            = "circularHeatChart";
     var colors             = ["white", "orange"];
     var radius             = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -30,7 +30,8 @@ d3.ez.circularHeatChart = function module() {
     var segmentLabels      = [];
     var numSegments        = 24;
     var segmentHeight      = 0;
-    var maxValue           = 0
+    var maxValue           = 0;
+    var colorScale         = undefined;
 
     // Dispatch (Custom events)
     var dispatch           = d3.dispatch("customHover");
@@ -51,46 +52,39 @@ d3.ez.circularHeatChart = function module() {
         });
 
         domain = [0, maxValue];
-    }	
+
+        colorScale = d3.scale.linear()
+            .domain(domain)
+            .range(colors);
+    }
 
     function my(selection) {
         selection.each(function(data) {
             // Initialise Data
             init(data);
 
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this)
-                .append("svg")
-                .classed("d3ez", true)
-                .classed(classed, true);
-
-                var container = svg.append("g").classed("container", true);
-                container.append("g").classed("rings", true);
-                container.append("g").classed("radialLabels", true)
-                container.append("g").classed("segmentLabels", true);
-            }	
+            // Create chart element (if it does not exist already)
+            if (!chart) {
+                var chart = selection.append("g").classed("chart", true);
+                chart.append("g").classed("rings", true);
+                chart.append("g").classed("radialLabels", true)
+                chart.append("g").classed("segmentLabels", true);
+            }
+            chart = selection.select(".chart");
+            chart.classed(classed, true);
 
             // Update the outer dimensions
-            svg.attr({width: width, height: height});
-            
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);   
-            
-            // Update the inner dimensions
-            svg.select(".container")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            chart.attr({width: width, height: height});
 
-            var color = d3.scale.linear()
-                .domain(domain)
-                .range(colors);
+            // Locate the center point
+            chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
 
             // Arc Generator
             var arc = d3.svg.arc()
                 .innerRadius(function(d, i) { return innerRadius + d.ring * segmentHeight; })
                 .outerRadius(function(d, i) { return innerRadius + segmentHeight + d.ring * segmentHeight; })
                 .startAngle(function(d, i) { return (i * 2 * Math.PI) / numSegments; })
-                .endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });			
+                .endAngle(function(d, i) { return ((i + 1) * 2 * Math.PI) / numSegments; });
 
             // Rings
             d3.select(".rings").selectAll("g")
@@ -107,12 +101,12 @@ d3.ez.circularHeatChart = function module() {
                     for(j = 0; j < numSegments; j++) {
                         d.values[j].ring = i;
                     }
-                    return d.values; 
+                    return d.values;
                 })
                 .enter()
                 .append("path")
                 .attr("d", arc)
-                .attr("fill", function(d) { return color(accessor(d.value)); })
+                .attr("fill", function(d) { return colorScale(accessor(d.value)); })
                 .classed("segment", true);
 
             // Unique id so that the text path defs are unique - is there a better way to do this?
@@ -186,7 +180,7 @@ d3.ez.circularHeatChart = function module() {
         margin = _;
         radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
         return this;
-    };	
+    };
 
     my.radius = function(_) {
         if (!arguments.length) return radius;
@@ -205,16 +199,28 @@ d3.ez.circularHeatChart = function module() {
         colors = _;
         return this;
     };
-    
+
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
-        return this;   
-    };    
+        return this;
+    };
 
     my.accessor = function(_) {
         if (!arguments.length) return accessor;
         accessor = _;
+        return this;
+    };
+
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
         return this;
     };
 

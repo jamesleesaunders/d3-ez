@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3.EZ : Radial Bar Chart Example</title>
+  <script src="../../d3/d3.min.js"></script>
+	<script src="../src/d3.ez.js"></script>
+	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
+</head>
+<body>
+	<div id="chartholder"></div>
+
+	<script type="text/javascript">
+
+	function randomDataset() {
+		var _randomNum = function() {
+			return Math.floor(Math.random() * 10);
+		};
+		var data = [
+			{
+				"key": 2012,
+				"values": [
+					{"key": "Measure 1", "value": _randomNum()},
+					{"key": "Measure 2", "value": _randomNum()},
+					{"key": "Measure 3", "value": _randomNum()},
+					{"key": "Measure 4", "value": _randomNum()},
+					{"key": "Measure 5", "value": _randomNum()},
+					{"key": "Measure 6", "value": _randomNum()}
+				]
+			}, {
+				"key": 2013,
+				"values": [
+					{"key": "Measure 1", "value": _randomNum()},
+					{"key": "Measure 2", "value": _randomNum()},
+					{"key": "Measure 3", "value": _randomNum()},
+					{"key": "Measure 4", "value": _randomNum()},
+					{"key": "Measure 5", "value": _randomNum()},
+					{"key": "Measure 6", "value": _randomNum()}
+				]
+			}
+		];
+		var data2 = {
+			"key": 2012,
+			"values": [
+				{"key": "Measure 1", "value": _randomNum()},
+				{"key": "Measure 2", "value": _randomNum()},
+				{"key": "Measure 3", "value": _randomNum()},
+				{"key": "Measure 4", "value": _randomNum()},
+				{"key": "Measure 5", "value": _randomNum()},
+				{"key": "Measure 6", "value": _randomNum()}
+			]
+		};
+
+		return data2;
+	}
+
+	var colors = d3.ez.colors.diverging(2);
+  var chart = d3.ez.radialBarChart();
+  var legend = d3.ez.legend().title('Top 10');
+  var title  = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
+
+  // Create Column Chart object
+  var myChart = d3.ez.chart()
+    .width(750)
+    .height(400)
+    .chart(chart)
+    .colors(colors)
+    .legend(legend)
+    .title(title)
+    .on("customHover", function(d, i) {
+      d3.select("#message").text(d.value);
+    });
+
+  // Add to page
+  function update() {
+    var data = randomDataset();
+    d3.select("#chartholder")
+      .datum(data)
+      .call(myChart);
+  }
+
+  update();
+  setInterval(update, 2000);
+
+  </script>
+</body>
+</html>

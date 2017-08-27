@@ -12,13 +12,14 @@ JS_FILES :=        src/js/header.js \
                    src/js/htmlTable.js \
                    src/js/htmlList.js \
                    src/js/reusableComponents.js
-	
+
 CSS_FILES :=       src/css/global.css \
                    src/css/groupedBarChart.css \
                    src/css/radialBarChart.css \
                    src/css/circularHeatChart.css \
                    src/css/tabularHeatChart.css \
                    src/css/donutChart.css \
+									 src/css/punchCard.css \
                    src/css/htmlList.css \
                    src/css/htmlTable.css
 

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3.EZ : Showcase</title>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="../src/d3.ez.js"></script>
+	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
+	<style type="text/css">
+	body {
+		font: 10px sans-serif;
+	}
+	.axis path, .axis line {
+		fill: none;
+		stroke: #B6B6B6;
+		shape-rendering: crispEdges;
+	}
+	.tick text {
+		fill: #000000;
+	}
+	table {
+		border-collapse: collapse;
+	}
+	table, td, th {
+		border: 1px solid black;
+	}
+	rect.barGroup:hover {
+		opacity: 0.4;
+	}
+	rect.bar {
+		stroke: #B6B6B6;
+		stroke-width: 1px;
+	}
+	polyline {
+		opacity: .3;
+		stroke: black;
+		stroke-width: 2px;
+		fill: none;
+	}
+	</style>
+</head>
+<body>
+	<div id="chartholder1"></div>
+	<div id="chartholder2"></div>
+	<div id="chartholder3"></div>
+	<div id="chartholder4"></div>
+	<div id="chartholder5"></div>
+
+	<script type="text/javascript">
+
+	// Generate some data
+	var data = [
+		{
+			"key": "Jim",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 4
+				},
+				{
+					"key": "Oranges",
+					"value": 3
+				},
+				{
+					"key": "Pears",
+					"value": 1
+				},
+				{
+					"key": "Bananas",
+					"value": 0
+				}
+			]
+		},
+		{
+			"key": "Claire",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 3
+				},
+				{
+					"key": "Oranges",
+					"value": 1
+				},
+				{
+					"key": "Pears",
+					"value": 2
+				},
+				{
+					"key": "Bananas",
+					"value": 2
+				}
+			]
+		},
+		{
+			"key": "Beth",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 5
+				},
+				{
+					"key": "Oranges",
+					"value": 2
+				},
+				{
+					"key": "Pears",
+					"value": 4
+				},
+				{
+					"key": "Bananas",
+					"value": 1
+				}
+			]
+		},
+		{
+			"key": "Grace",
+			"values": [
+				{
+					"key": "Apples",
+					"value": 1
+				},
+				{
+					"key": "Oranges",
+					"value": 4
+				},
+				{
+					"key": "Pears",
+					"value": 2
+				},
+				{
+					"key": "Bananas",
+					"value": 3
+				}
+			]
+		}
+	];
+
+	myChart1 = d3.ez.groupedBarChart()
+		.width(300)
+		.height(180)
+		.yAxisLabel('Fruit')
+		.colors(d3.scale.category10().range())
+		.on("customHover", function(d, i) {
+			update2(d);
+			update3(d);
+		})
+		.groupType('stacked');
+
+	myChart2 = d3.ez.discreteBarChart()
+		.width(300)
+		.height(180)
+		.colors(d3.scale.category10().range())
+		.on("customHover", function(d, i) {
+			groupType = (myChart1.groupType() == 'clustered' ? 'stacked' : 'clustered');
+			myChart1.groupType(groupType);
+			update1(data);
+			//d3.selectAll(".Apples").attr("opacity", 0.5);
+		});
+
+	myChart3 = d3.ez.donutChart()
+		.width(300)
+		.height(180)
+		.colors(d3.scale.category10().range())
+		.innerRadius(10);
+
+	myChart4 = d3.ez.punchCard()
+		.width(300)
+		.height(180)
+		.color("green")
+		.minRadius(5)
+		.useGlobalScale(true)
+		.maxRadius(19)
+		.on("customHover", function(d, i) {
+			console.log(d);
+			//update2(d);
+		});
+
+	myChart5 = d3.ez.htmlTable()
+		.width(300)
+		.classed("sortable")
+		.on("customHover", function(d, i) {
+			update2(d);
+			update3(d);
+		});
+
+	// Add to page
+	function update1(data) {
+		d3.select("#chartholder1")
+			.datum(data)
+			.call(myChart1);
+	}
+
+	function update2(data) {
+		d3.select("#chartholder2")
+			.datum(data)
+			.call(myChart2);
+	}
+
+	function update3(data) {
+		d3.select("#chartholder3")
+			.datum(data)
+			.call(myChart3);
+	}
+
+	function update4(data) {
+		d3.select("#chartholder4")
+			.datum(data)
+			.call(myChart4);
+	}
+
+	function update5(data) {
+		d3.select("#chartholder5")
+			.datum(data)
+			.call(myChart5);
+	}
+
+	update1(data);
+	update2(data[0]);
+	update3(data[0]);
+	update4(data);
+	update5(data);
+
+	</script>
+</body>
+</html>
