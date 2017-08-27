@@ -1,91 +1,172 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>D3.EZ : Reusable Punchcard Example</title>
-  <script src="../../d3/d3.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="../src/d3.ez.js"></script>
 	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
+
 <body>
 	<div id="chartholder"></div>
 
 	<script type="text/javascript">
-	var _randomNum = function() {
-		return Math.floor(Math.random() * 20);
-	};
-	// Generate some data
-	var data = [
-		{
-			key: "Apples",
-			values: [
-				{key: "2004", value: _randomNum()},
-				{key: "2005", value: _randomNum()},
-				{key: "2006", value: _randomNum()},
-				{key: "2007", value: _randomNum()},
-				{key: "2008", value: _randomNum()},
-				{key: "2009", value: _randomNum()},
-				{key: "2010", value: _randomNum()}
-			]
-		},
-		{
-			key: "Oranges",
-			values: [
-				{key: "2004", value: _randomNum()},
-				{key: "2005", value: _randomNum()},
-				{key: "2006", value: _randomNum()},
-				{key: "2007", value: _randomNum()},
-				{key: "2008", value: _randomNum()},
-				{key: "2009", value: _randomNum()},
-				{key: "2010", value: _randomNum()}
-			]
-		},
-		{
-			key: "Pears",
-			values: [
-				{key: "2004", value: _randomNum()},
-				{key: "2005", value: _randomNum()},
-				{key: "2006", value: _randomNum()},
-				{key: "2007", value: _randomNum()},
-				{key: "2008", value: _randomNum()},
-				{key: "2009", value: _randomNum()},
-				{key: "2010", value: _randomNum()}
-			]
-		},
-		{
-			key: "Kiwis",
-			values: [
-				{key: "2004", value: _randomNum()},
-				{key: "2005", value: _randomNum()},
-				{key: "2006", value: _randomNum()},
-				{key: "2007", value: _randomNum()},
-				{key: "2008", value: _randomNum()},
-				{key: "2009", value: _randomNum()},
-				{key: "2010", value: _randomNum()}
-			]
-		}
-	];
+		var _randomNum = function() {
+			return Math.floor(Math.random() * 20);
+		};
+		// Generate some data
+		var data = [{
+				key: "Apples",
+				values: [{
+						key: "2004",
+						value: _randomNum()
+					},
+					{
+						key: "2005",
+						value: _randomNum()
+					},
+					{
+						key: "2006",
+						value: _randomNum()
+					},
+					{
+						key: "2007",
+						value: _randomNum()
+					},
+					{
+						key: "2008",
+						value: _randomNum()
+					},
+					{
+						key: "2009",
+						value: _randomNum()
+					},
+					{
+						key: "2010",
+						value: _randomNum()
+					}
+				]
+			},
+			{
+				key: "Oranges",
+				values: [{
+						key: "2004",
+						value: _randomNum()
+					},
+					{
+						key: "2005",
+						value: _randomNum()
+					},
+					{
+						key: "2006",
+						value: _randomNum()
+					},
+					{
+						key: "2007",
+						value: _randomNum()
+					},
+					{
+						key: "2008",
+						value: _randomNum()
+					},
+					{
+						key: "2009",
+						value: _randomNum()
+					},
+					{
+						key: "2010",
+						value: _randomNum()
+					}
+				]
+			},
+			{
+				key: "Pears",
+				values: [{
+						key: "2004",
+						value: _randomNum()
+					},
+					{
+						key: "2005",
+						value: _randomNum()
+					},
+					{
+						key: "2006",
+						value: _randomNum()
+					},
+					{
+						key: "2007",
+						value: _randomNum()
+					},
+					{
+						key: "2008",
+						value: _randomNum()
+					},
+					{
+						key: "2009",
+						value: _randomNum()
+					},
+					{
+						key: "2010",
+						value: _randomNum()
+					}
+				]
+			},
+			{
+				key: "Kiwis",
+				values: [{
+						key: "2004",
+						value: _randomNum()
+					},
+					{
+						key: "2005",
+						value: _randomNum()
+					},
+					{
+						key: "2006",
+						value: _randomNum()
+					},
+					{
+						key: "2007",
+						value: _randomNum()
+					},
+					{
+						key: "2008",
+						value: _randomNum()
+					},
+					{
+						key: "2009",
+						value: _randomNum()
+					},
+					{
+						key: "2010",
+						value: _randomNum()
+					}
+				]
+			}
+		];
 
-	var colors = d3.ez.colors.diverging(2);
-  var chart = d3.ez.punchCard();
-	var legend = d3.ez.legend().title('How small?');
-  var title  = d3.ez.title().mainText("Punch Example").subText("Punchcard example sub-title");
+		var colors = d3.ez.colors.diverging(2);
+		var chart = d3.ez.punchCard();
+		var legend = d3.ez.legend().title('How small?');
+		var title = d3.ez.title().mainText("Punch Example").subText("Punchcard example sub-title");
 
-	// Create Tabular Heat Chart object
-	var myChart = d3.ez.chart()
-		.width(750)
-		.height(400)
-    .chart(chart)
-		.legend(legend)
-		.colors(colors)
-		.title(title)
-		.on("customHover", function(d, i) {
-      d3.select("#message").text(d.value);
-    });
+		// Create Tabular Heat Chart object
+		var myChart = d3.ez.chart()
+			.width(750)
+			.height(400)
+			.chart(chart)
+			.legend(legend)
+			.colors(colors)
+			.title(title)
+			.on("customHover", function(d, i) {
+				d3.select("#message").text(d.value);
+			});
 
-	d3.select('#chartholder')
-		.datum(data)
-		.call(myChart);
-
+		d3.select('#chartholder')
+			.datum(data)
+			.call(myChart);
 	</script>
 </body>
+
 </html>

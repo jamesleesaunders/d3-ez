@@ -853,13 +853,13 @@ d3.ez.tabularHeatChart = function module() {
         });
         numCols = colNames.length;
         /*
-         The following bit of code is a little dirty! Its purpose is to identify the complete list of row names.
-         In some cases the first (index 0) set of values may not contain the complete list of key names.
-         This typically this happens in 'matrix' (site A to site B) type scenario, for example where no data
-         would exist where both site A is the same as site B.
-         The code therefore takes the list of keys from the first (index 0) set of values and then concatenates
-         it with the last (index max) set of values, finally removing duplicates.
-         */
+     The following bit of code is a little dirty! Its purpose is to identify the complete list of row names.
+     In some cases the first (index 0) set of values may not contain the complete list of key names.
+     This typically this happens in 'matrix' (site A to site B) type scenario, for example where no data
+     would exist where both site A is the same as site B.
+     The code therefore takes the list of keys from the first (index 0) set of values and then concatenates
+     it with the last (index max) set of values, finally removing duplicates.
+     */
         var a = [];
         var b = [];
         data.map(function(d) {
@@ -1388,9 +1388,9 @@ d3.ez.punchCard = function module() {
     return my;
 };
 
-/** 
+/**
  * Time Series Chart
- * 
+ *
  * @example
  * var formatDate = d3.time.format("%b %Y");
  * var myChart = d3.ez.timeSeriesChart()
@@ -1403,7 +1403,7 @@ d3.ez.punchCard = function module() {
  * 	.call(myChart);
  */
 d3.ez.timeSeriesChart = function module() {
-    // SVG container (Populated by 'my' function) 
+    // SVG container (Populated by 'my' function)
     var svg;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -1426,7 +1426,7 @@ d3.ez.timeSeriesChart = function module() {
     var yValue = function(d) {
         return d[1];
     };
-    // Data Options (Populated by 'init' function)	
+    // Data Options (Populated by 'init' function)
     var chartW = 0;
     var chartH = 0;
     // Dispatch (Custom events)
@@ -1529,9 +1529,9 @@ d3.ez.timeSeriesChart = function module() {
     return my;
 };
 
-/** 
+/**
  * Simple HTML Table
- * 
+ *
  * @example
  * var myTable = d3.ez.htmlTable()
  *     .classed("myClass")
@@ -1585,7 +1585,7 @@ d3.ez.htmlTable = function module() {
             }).enter().append("th").html(function(d) {
                 return d;
             });
-            // Add table body 
+            // Add table body
             rows = body.selectAll("tr").data(data).enter().append("tr").attr("class", function(d) {
                 return d.key;
             }).on("mouseover", dispatch.customHover);
@@ -1618,9 +1618,9 @@ d3.ez.htmlTable = function module() {
     return my;
 };
 
-/** 
+/**
  * Simple HTML List
- * 
+ *
  * @example
  * var myList = d3.ez.htmlList()
  *      .classed("myClass");

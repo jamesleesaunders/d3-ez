@@ -1,95 +1,150 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>D3.EZ : Circular Heat Chart Example</title>
-  <script src="../../d3/d3.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="../src/d3.ez.js"></script>
 	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
+
 <body>
 	<div id="chartholder"></div>
 	<br />
-  <div>Value: <span id="message"></span></div>
+	<div>Value: <span id="message"></span></div>
 
 	<script type="text/javascript">
-	// Generate some data
-	function randomDataset() {
-		var j=1;
-		var _randomNum = function() {
-			return Math.floor(Math.random() * 10);
-		};
+		// Generate some data
+		function randomDataset() {
+			var _randomNum = function() {
+				return Math.floor(Math.random() * 10);
+			};
 
-		var data = [
-			{
-				key: "asfd",
-				values: [
-					{key: "brig", value: _randomNum()},
-					{key: "cosh", value: _randomNum()},
-					{key: "popl", value: _randomNum()},
-					{key: "winn", value: _randomNum()}
-				]
-			},
-			{
-				key: "brig",
-				values: [
-					{key: "asfd", value: _randomNum()},
-					{key: "cosh", value: _randomNum()},
-					{key: "popl", value: _randomNum()},
-					{key: "winn", value: _randomNum()}
-				]
-			},
-			{
-				key: "cosh",
-				values: [
-					{key: "asfd", value: _randomNum()},
-					{key: "brig", value: _randomNum()},
-					{key: "popl", value: _randomNum()},
-					{key: "winn", value: _randomNum()}
-				]
-			},
-			{
-				key: "popl",
-				values: [
-					{key: "asfd", value: _randomNum()},
-					{key: "brig", value: _randomNum()},
-					{key: "cosh", value: _randomNum()},
-					{key: "winn", value: _randomNum()}
-				]
-			},
-			{
-				key: "winn",
-				values: [
-					{key: "asfd", value: _randomNum()},
-					{key: "brig", value: _randomNum()},
-					{key: "cosh", value: _randomNum()},
-					{key: "popl", value: _randomNum()}
-				]
-			}
-		];
-		return data;
-	}
+			var data = [{
+					key: "asfd",
+					values: [{
+							key: "brig",
+							value: _randomNum()
+						},
+						{
+							key: "cosh",
+							value: _randomNum()
+						},
+						{
+							key: "popl",
+							value: _randomNum()
+						},
+						{
+							key: "winn",
+							value: _randomNum()
+						}
+					]
+				},
+				{
+					key: "brig",
+					values: [{
+							key: "asfd",
+							value: _randomNum()
+						},
+						{
+							key: "cosh",
+							value: _randomNum()
+						},
+						{
+							key: "popl",
+							value: _randomNum()
+						},
+						{
+							key: "winn",
+							value: _randomNum()
+						}
+					]
+				},
+				{
+					key: "cosh",
+					values: [{
+							key: "asfd",
+							value: _randomNum()
+						},
+						{
+							key: "brig",
+							value: _randomNum()
+						},
+						{
+							key: "popl",
+							value: _randomNum()
+						},
+						{
+							key: "winn",
+							value: _randomNum()
+						}
+					]
+				},
+				{
+					key: "popl",
+					values: [{
+							key: "asfd",
+							value: _randomNum()
+						},
+						{
+							key: "brig",
+							value: _randomNum()
+						},
+						{
+							key: "cosh",
+							value: _randomNum()
+						},
+						{
+							key: "winn",
+							value: _randomNum()
+						}
+					]
+				},
+				{
+					key: "winn",
+					values: [{
+							key: "asfd",
+							value: _randomNum()
+						},
+						{
+							key: "brig",
+							value: _randomNum()
+						},
+						{
+							key: "cosh",
+							value: _randomNum()
+						},
+						{
+							key: "popl",
+							value: _randomNum()
+						}
+					]
+				}
+			];
+			return data;
+		}
 
-  var colors = ["white", "blue"];
-  var chart = d3.ez.circularHeatChart();
-	var legend = d3.ez.legend().title('How hot?');
-  var title  = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");
+		var colors = ["white", "blue"];
+		var chart = d3.ez.circularHeatChart();
+		var legend = d3.ez.legend().title('How hot?');
+		var title = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");
 
-	// Create Tabular Heat Chart object
-	var myChart = d3.ez.chart()
-		.width(750)
-		.height(400)
-    .chart(chart)
-		.legend(legend)
-		.colors(colors)
-		.title(title)
-		.on("customHover", function(d, i) {
-      d3.select("#message").text(d.value);
-    });
+		// Create Tabular Heat Chart object
+		var myChart = d3.ez.chart()
+			.width(750)
+			.height(400)
+			.chart(chart)
+			.legend(legend)
+			.colors(colors)
+			.title(title)
+			.on("customHover", function(d, i) {
+				d3.select("#message").text(d.value);
+			});
 
-	d3.select('#chartholder')
-		.datum(randomDataset())
-		.call(myChart);
-
+		d3.select('#chartholder')
+			.datum(randomDataset())
+			.call(myChart);
 	</script>
 </body>
+
 </html>

@@ -1,29 +1,29 @@
 /* === Radial Bar Chart Styles === */
 .radialBarChart path {
-	fill: none;
+  fill: none;
 }
 .radialBarChart path.segment {
-	fill: steelblue;
-	stroke-width: 1px;
-	stroke: #333333;
+  fill: steelblue;
+  stroke-width: 1px;
+  stroke: #333333;
 }
 .radialBarChart path.segment:hover {
-	opacity: 0.7;
+  opacity: 0.7;
 }
 .radialBarChart circle.outerCircle {
-	stroke: #aaa;
-	stroke-dasharray: 4, 4;
+  stroke: #aaa;
+  stroke-dasharray: 4, 4;
 }
 .radialBarChart .tickCircles circle {
-	stroke: #ddd;
-	stroke-dasharray: 2, 2;
+  stroke: #ddd;
+  stroke-dasharray: 2, 2;
 }
 .radialBarChart .spokes line {
-	stroke: #666;
-	stroke-width: 0.2;
+  stroke: #666;
+  stroke-width: 0.2;
 }
 .radialBarChart .labels text {
-	fill: #333;
-	font-size: 10px;
-	font-weight: bold;
+  fill: #333;
+  font-size: 10px;
+  font-weight: bold;
 }
