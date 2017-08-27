@@ -20,7 +20,7 @@
 	fill: #000000;
 }
 /* === Title === */
-.d3ez #titleBox text {
+.d3ez #titleGroup text {
 	fill: ##909090;
 }
 .d3ez text.title {
@@ -32,7 +32,7 @@
 }
 /* === Credit Label === */
 .d3ez #creditTag text {
-	cursor: pointer;
+	cursor: pointer; 
 	fill: #cccccc;
 }
 
@@ -121,6 +121,13 @@
 	opacity: 0.7;
 }
 
+/* === Punch Card Styles === */
+.punchCard .punchValue {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+
 /* === HTML List Styles === */
 .htmlList, .htmlList ul {
 	margin: 0;
@@ -192,8 +199,3 @@ table.htmlTable {
 	background-color: #eeeeee;
 }
 
-/* === Punch Card Styles === */
-.punchCard .punchValue {
-	font-size: 20px;
-	font-weight: bold;
-}
