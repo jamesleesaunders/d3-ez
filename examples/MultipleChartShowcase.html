@@ -51,11 +51,13 @@
 </head>
 
 <body>
-	<div id="chartholder1"></div>
-	<div id="chartholder2"></div>
-	<div id="chartholder3"></div>
-	<div id="chartholder4"></div>
-	<div id="chartholder5"></div>
+	<svg id="chartholder1" width="400" height="300"></svg>
+	<svg id="chartholder2" width="400" height="300"></svg>
+	<br />
+	<svg id="chartholder3" width="400" height="300"></svg>
+	<svg id="chartholder4" width="400" height="300"></svg>
+	<br />
+	<div id="chartholder5" width="400" height="300"></svg>
 
 	<script type="text/javascript">
 		// Generate some data
@@ -167,15 +169,15 @@
 			.width(300)
 			.height(180)
 			.colors(d3.scale.category10().range())
-			.innerRadius(10);
+			.innerRadius(40);
 
 		myChart4 = d3.ez.punchCard()
 			.width(300)
 			.height(180)
 			.color("green")
-			.minRadius(5)
+			.minRadius(2)
 			.useGlobalScale(true)
-			.maxRadius(19)
+			.maxRadius(18)
 			.on("customHover", function(d, i) {
 				console.log(d);
 				//update2(d);
