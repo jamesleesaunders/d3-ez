@@ -12,13 +12,14 @@ d3.ez.chart = function module() {
   var width = 600;
   var height = 400;
   var margin = {
-    top: 10,
-    right: 10,
-    bottom: 10,
-    left: 10
+    top: 15,
+    right: 15,
+    bottom: 15,
+    left: 15
   };
   var containerW = 580;
   var containerH = 380;
+  var top = 0;
   var classed = "d3ez";
 
   var chart = undefined;
@@ -53,13 +54,22 @@ d3.ez.chart = function module() {
       return d.key;
     });
 
-    // Init Legend
-    legend.width(150).height(200);
-
     // Init Chart
     chart.dispatch(dispatch)
-      .width(containerW - legend.width())
-      .height(containerH - title.height());
+      .width(containerW)
+      .height(containerH);
+
+    // Init Legend
+    if (legend) {
+      legend.width(150).height(200);
+      chart.width(chart.width() - legend.width());
+    }
+
+    // Init Title
+    if (title) {
+      top = top + title.height();
+      chart.height(chart.height() - title.height());
+    }
 
     if (typeof chart.colors === "function") {
       chart.colors(colors);
@@ -104,29 +114,33 @@ d3.ez.chart = function module() {
       container.select(".chartbox")
         .datum(data)
         .attr({
-          transform: "translate(" + 0 + "," + title.height() + ")"
+          transform: "translate(" + 0 + "," + top + ")"
         })
         .call(chart);
 
       // Add Legend
-      if (typeof chart.colorScale === "function") {
-        legend.colorScale(chart.colorScale());
+      if (legend) {
+        if (typeof chart.colorScale === "function") {
+          legend.colorScale(chart.colorScale());
+        }
+        if (typeof chart.sizeScale === "function") {
+          legend.sizeScale(chart.sizeScale());
+        }
+        container.select(".legendbox")
+          .attr({
+            transform: "translate(" + (containerW - legend.width()) + "," + title.height() + ")"
+          })
+          .call(legend);
       }
-      if (typeof chart.sizeScale === "function") {
-        legend.sizeScale(chart.sizeScale());
-      }
-      container.select(".legendbox")
-        .attr({
-          transform: "translate(" + (containerW - legend.width()) + "," + title.height() + ")"
-        })
-        .call(legend);
 
       // Add Title
-      container.select(".titlebox")
-        .attr({
-          transform: "translate(" + width / 2 + "," + 0 + ")"
-        })
-        .call(title);
+      if (title) {
+        container.select(".titlebox")
+          .attr({
+            transform: "translate(" + width / 2 + "," + 0 + ")"
+          })
+          .call(title);
+      }
 
       // Add Credit Tag
       container.select(".creditbox")

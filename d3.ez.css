@@ -1,7 +1,7 @@
 /*
 - D3.EZ
 - Author:     James Saunders
-- Copyright:  Copyright (C) 2015 James Saunders
+- Copyright:  Copyright (C) 2017 James Saunders
 - License:    GPL-3.0
 */
 
@@ -131,7 +131,7 @@
 
 
 /* === Punch Card Styles === */
-.punchCard .punchValue {
+.punchCard text.punchValue {
   font-size: 20px;
   font-weight: bold;
 }
@@ -216,5 +216,3 @@ table.htmlTable {
 .htmlTable tbody tr:hover {
   background-color: #eeeeee;
 }
-
-
