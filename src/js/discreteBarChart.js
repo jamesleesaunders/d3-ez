@@ -84,7 +84,6 @@ d3.ez.discreteBarChart = function module() {
         .range(colors)
         .domain(categoryNames);
     }
-
   }
 
   function my(selection) {

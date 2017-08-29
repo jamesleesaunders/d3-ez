@@ -19,7 +19,7 @@ d3.ez.chart = function module() {
   };
   var containerW = 580;
   var containerH = 380;
-  var top = 0;
+  var chartTop = 0;
   var classed = "d3ez";
 
   var chart = undefined;
@@ -67,7 +67,7 @@ d3.ez.chart = function module() {
 
     // Init Title
     if (title) {
-      top = top + title.height();
+      chartTop = title.height();
       chart.height(chart.height() - title.height());
     }
 
@@ -77,6 +77,12 @@ d3.ez.chart = function module() {
 
     // Init Credit Tag
     creditTag.text("d3ez.org").href("http://d3ez.org");
+  }
+
+  function isSVG(selection) {
+    if(!selection) return false
+    el = selection[0][0]
+    return !! el.ownerSVGElement || el.tagName === "svg";
   }
 
   function my(selection) {
@@ -114,7 +120,7 @@ d3.ez.chart = function module() {
       container.select(".chartbox")
         .datum(data)
         .attr({
-          transform: "translate(" + 0 + "," + top + ")"
+          transform: "translate(" + 0 + "," + chartTop + ")"
         })
         .call(chart);
 
