@@ -22,6 +22,7 @@ What type of chart is best for different types of data?
 * Pie charts for good to represent parts of a whole.
 
 For reference there are a few other reusable D3 chart libraries similar to D3.JS indluding:
+* [Britecharts](http://eventbrite.github.io/britecharts/)
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
 * [C3](http://c3js.org)
