@@ -1,6 +1,6 @@
 ## D3 Easy Reusable Graphs, Charts and Components
 
-**D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifing the process of creating graphs and charts making D3. **D3.EZ** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualisations with mimimal code.
+**D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating graphs and charts making D3. **D3.EZ** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualizations with minimal code.
 
 Gist (bl.ocks) Examples:
 * [Discrete Bar Chart](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
@@ -15,13 +15,13 @@ Gist (bl.ocks) Examples:
 * [HTML Expanding List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [D3.EZ Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
-**D3.EZ** also aims to make it easier to create interactive visulisations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase above for examples.
+**D3.EZ** also aims to make it easier to create interactive visualizations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase above for examples.
 
 What type of chart is best for different types of data?
-* Bar Charts are good for quantative data.
+* Bar Charts are good for quantitive data.
 * Pie charts for good to represent parts of a whole.
 
-For reference there are a few other reusable D3 chart libraries similar to D3.JS indluding:
+For reference there are a few other reusable D3 chart libraries similar to D3.JS including:
 * [Britecharts](http://eventbrite.github.io/britecharts/)
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
