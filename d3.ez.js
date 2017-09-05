@@ -94,20 +94,18 @@ d3.ez.discreteBarChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
                 chart.append("g").classed("y-axis axis", true);
             } else {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: chartW,
                 height: chartH
             }).attr({
@@ -294,20 +292,18 @@ d3.ez.groupedBarChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
                 chart.append("g").classed("y-axis axis", true).append("text").attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end").text(yAxisLabel);
             } else {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: width,
                 height: height
             }).attr({
@@ -541,7 +537,6 @@ d3.ez.radialBarChart = function module() {
                 });
                 svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").classed("tickCircles", true);
                 chart.append("g").classed("segments", true);
                 chart.append("g").classed("spokes", true);
@@ -552,12 +547,12 @@ d3.ez.radialBarChart = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: width,
                 height: height
+            }).attr({
+                transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"
             });
-            // Locate the center point
-            chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
             // Concentric tick circles
             tickCircles = d3.select(".tickCircles").selectAll("circle").data(tickCircleValues);
             tickCircles.enter().append("circle").style("fill", "none");
@@ -737,14 +732,11 @@ d3.ez.circularHeatChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.classed("d3ez", true);
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").classed("rings", true);
                 chart.append("g").classed("radialLabels", true);
                 chart.append("g").classed("segmentLabels", true);
@@ -752,12 +744,12 @@ d3.ez.circularHeatChart = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: width,
                 height: height
+            }).attr({
+                transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"
             });
-            // Locate the center point
-            chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
             // Arc Generator
             var arc = d3.svg.arc().innerRadius(function(d, i) {
                 return innerRadius + d.ring * segmentHeight;
@@ -969,13 +961,11 @@ d3.ez.tabularHeatChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
                 chart.append("g").classed("y-axis axis", true);
                 chart.append("g").classed("cards", true);
@@ -983,7 +973,7 @@ d3.ez.tabularHeatChart = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: width,
                 height: height
             }).attr({
@@ -1166,13 +1156,11 @@ d3.ez.donutChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").attr("class", "slices");
                 chart.append("g").attr("class", "labels");
                 chart.append("g").attr("class", "lines");
@@ -1180,12 +1168,12 @@ d3.ez.donutChart = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: width,
                 height: height
+            }).attr({
+                transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"
             });
-            // Locate the center point
-            chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
             // Slices
             var slices = d3.select(".slices").selectAll("path.slice").data(pie(values));
             slices.enter().append("path").attr("class", "slice").attr("fill", function(d, i) {
@@ -1390,19 +1378,17 @@ d3.ez.punchCard = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
             } else {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr({
+            chart.classed(classed, true).attr({
                 width: width,
                 height: height
             }).attr({
@@ -1586,13 +1572,11 @@ d3.ez.timeSeriesChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 var chart = svg.append("g").classed("chart", true);
-                chart.classed(classed, true);
                 chart.append("path").classed("chart-area-path", true);
                 chart.append("path").classed("chart-line-path", true);
                 chart.append("g").classed("x-axis-group axis", true);
@@ -1601,9 +1585,16 @@ d3.ez.timeSeriesChart = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            chart.classed(classed, true).attr({
+                width: chartW,
+                height: chartH
+            }).attr({
+                transform: "translate(" + margin.left + "," + margin.top + ")"
+            });
             // Add axis to chart
-            chart.select(".x-axis-group.axis").attr("transform", "translate(0," + yScale.range()[0] + ")").call(xAxis);
+            chart.select(".x-axis-group.axis").attr({
+                transform: "translate(0," + yScale.range()[0] + ")"
+            }).call(xAxis);
             chart.select(".y-axis-group.axis").call(yAxis);
             // Update the area path
             chart.select(".chart-area-path").data([ data ]).attr("d", area.y0(yScale.range()[0])).attr("fill", color);

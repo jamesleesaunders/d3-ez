@@ -19,16 +19,8 @@ d3.ez.groupedBarChart = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = {
-    top: 20,
-    right: 20,
-    bottom: 20,
-    left: 40
-  };
-  var transition = {
-    ease: "bounce",
-    duration: 500
-  };
+  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var transition = { ease: "bounce", duration: 500 };
   var classed = "groupedBarChart";
   var colors = d3.ez.colors.categorical(4);
   var gap = 0;
@@ -118,21 +110,17 @@ d3.ez.groupedBarChart = function module() {
       if (!svg) {
         svg = (function(selection) {
           var el = selection[0][0];
-          if (!! el.ownerSVGElement || el.tagName === "svg") {
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
             return selection.append("svg");
           }
         })(d3.select(this));
 
-        svg.attr({
-          width: width,
-          height: height
-        });
-        svg.classed("d3ez", true);
+        svg.classed("d3ez", true)
+          .attr({ width: width, height: height });
 
         chart = svg.append("g").classed("chart", true);
-        chart.classed(classed, true);
         chart.append("g").classed("x-axis axis", true);
         chart.append("g").classed("y-axis axis", true)
           .append("text")
@@ -146,19 +134,13 @@ d3.ez.groupedBarChart = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr({
-          width: width,
-          height: height
-        })
-        .attr({
-          transform: "translate(" + margin.left + "," + margin.top + ")"
-        });
+      chart.classed(classed, true)
+        .attr({ width: width, height: height })
+        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       // Add axis to chart
       chart.select(".x-axis")
-        .attr({
-          transform: "translate(0," + chartH + ")"
-        })
+        .attr({ transform: "translate(0," + chartH + ")" })
         .call(xAxis);
 
       chart.select(".y-axis")

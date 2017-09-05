@@ -21,16 +21,8 @@ d3.ez.punchCard = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = {
-    top: 40,
-    right: 80,
-    bottom: 20,
-    left: 20
-  };
-  var transition = {
-    ease: "bounce",
-    duration: 500
-  };
+  var margin = { top: 40, right: 80, bottom: 20, left: 20 };
+  var transition = { ease: "bounce", duration: 500 };
   var classed = "punchCard";
   var color = "steelblue";
   var sizeScale = undefined;
@@ -115,40 +107,30 @@ d3.ez.punchCard = function module() {
       if (!svg) {
         svg = (function(selection) {
           var el = selection[0][0];
-          if (!! el.ownerSVGElement || el.tagName === "svg") {
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
             return selection.append("svg");
           }
         })(d3.select(this));
 
-        svg.attr({
-          width: width,
-          height: height
-        });
-        svg.classed("d3ez", true);
+        svg.classed("d3ez", true)
+          .attr({ width: width, height: height });
 
         chart = svg.append("g").classed("chart", true);
-        chart.classed(classed, true);
         chart.append("g").classed("x-axis axis", true);
       } else {
         chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
-      chart.attr({
-          width: width,
-          height: height
-        })
-        .attr({
-          transform: "translate(" + margin.left + "," + margin.top + ")"
-        });
+      chart.classed(classed, true)
+        .attr({ width: width, height: height })
+        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       // Add axis to chart
       chart.select(".x-axis")
-        .attr({
-          transform: "translate(0," + chartH + ")"
-        })
+        .attr({ transform: "translate(0," + chartH + ")" })
         .call(xAxis);
 
       for (var j = 0; j < data.length; j++) {

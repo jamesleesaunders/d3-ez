@@ -20,16 +20,8 @@ d3.ez.timeSeriesChart = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = {
-    top: 50,
-    right: 40,
-    bottom: 50,
-    left: 40
-  };
-  var transition = {
-    ease: "bounce",
-    duration: 500
-  };
+  var margin = { top: 50, right: 40, bottom: 50, left: 40 };
+  var transition = { ease: "bounce", duration: 500 };
   var classed = "timeSeriesChart";
   var color = "steelblue";
   var xValue = function(d) {
@@ -107,21 +99,17 @@ d3.ez.timeSeriesChart = function module() {
       if (!svg) {
         svg = (function(selection) {
           var el = selection[0][0];
-          if (!! el.ownerSVGElement || el.tagName === "svg") {
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
             return selection.append("svg");
           }
         })(d3.select(this));
 
-        svg.attr({
-          width: width,
-          height: height
-        });
-        svg.classed("d3ez", true);
+        svg.classed("d3ez", true)
+          .attr({ width: width, height: height });
 
         var chart = svg.append("g").classed("chart", true);
-        chart.classed(classed, true);
         chart.append("path").classed("chart-area-path", true);
         chart.append("path").classed("chart-line-path", true);
         chart.append("g").classed("x-axis-group axis", true);
@@ -131,11 +119,13 @@ d3.ez.timeSeriesChart = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      chart.classed(classed, true)
+        .attr({ width: chartW, height: chartH })
+        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       // Add axis to chart
       chart.select(".x-axis-group.axis")
-        .attr("transform", "translate(0," + yScale.range()[0] + ")")
+        .attr({ transform: "translate(0," + yScale.range()[0] + ")" })
         .call(xAxis);
 
       chart.select(".y-axis-group.axis")

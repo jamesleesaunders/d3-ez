@@ -15,16 +15,8 @@ d3.ez.tabularHeatChart = function module() {
   // Default Options (Configurable via setters)
   var width = 600;
   var height = 600;
-  var margin = {
-    top: 40,
-    right: 40,
-    bottom: 40,
-    left: 40
-  };
-  var transition = {
-    ease: "bounce",
-    duration: 500
-  };
+  var margin = { top: 40, right: 40, bottom: 40, left: 40 };
+  var transition = { ease: "bounce", duration: 500 };
   var classed = "tabularHeatChart";
   var colors = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
 
@@ -112,14 +104,10 @@ d3.ez.tabularHeatChart = function module() {
           }
         })(d3.select(this));
 
-        svg.attr({
-          width: width,
-          height: height
-        });
-        svg.classed("d3ez", true);
+        svg.classed("d3ez", true)
+          .attr({ width: width, height: height });
 
         chart = svg.append("g").classed("chart", true);
-        chart.classed(classed, true);
         chart.append("g").classed("x-axis axis", true);
         chart.append("g").classed("y-axis axis", true);
         chart.append("g").classed("cards", true);
@@ -128,13 +116,9 @@ d3.ez.tabularHeatChart = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr({
-          width: width,
-          height: height
-        })
-        .attr({
-          transform: "translate(" + margin.left + "," + margin.top + ")"
-        });
+      chart.classed(classed, true)
+        .attr({ width: width, height: height})
+        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       var deck = chart.select(".cards")
         .selectAll(".deck")

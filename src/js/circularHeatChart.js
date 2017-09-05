@@ -17,16 +17,8 @@ d3.ez.circularHeatChart = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = {
-    top: 20,
-    right: 20,
-    bottom: 20,
-    left: 20
-  };
-  var transition = {
-    ease: "bounce",
-    duration: 500
-  };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  var transition = { ease: "bounce", duration: 500 };
   var classed = "circularHeatChart";
   var colors = ["white", "orange"];
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -80,22 +72,17 @@ d3.ez.circularHeatChart = function module() {
       if (!svg) {
         svg = (function(selection) {
           var el = selection[0][0];
-          if (!! el.ownerSVGElement || el.tagName === "svg") {
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
             return selection.append("svg");
           }
         })(d3.select(this));
-        svg.classed("d3ez", true);
 
-        svg.attr({
-          width: width,
-          height: height
-        });
-        svg.classed("d3ez", true);
+        svg.classed("d3ez", true)
+          .attr({ width: width, height: height });
 
         chart = svg.append("g").classed("chart", true);
-        chart.classed(classed, true);
         chart.append("g").classed("rings", true);
         chart.append("g").classed("radialLabels", true);
         chart.append("g").classed("segmentLabels", true);
@@ -104,13 +91,9 @@ d3.ez.circularHeatChart = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr({
-        width: width,
-        height: height
-      });
-
-      // Locate the center point
-      chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
+      chart.classed(classed, true)
+        .attr({ width: width, height: height })
+        .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
 
       // Arc Generator
       var arc = d3.svg.arc()

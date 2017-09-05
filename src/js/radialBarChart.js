@@ -17,16 +17,8 @@ d3.ez.radialBarChart = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = {
-    top: 20,
-    right: 20,
-    bottom: 20,
-    left: 20
-  };
-  var transition = {
-    ease: "bounce",
-    duration: 500
-  };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  var transition = { ease: "bounce", duration: 500 };
   var classed = "radialBarChart";
   var colors = d3.ez.colors.categorical(4);
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -97,7 +89,7 @@ d3.ez.radialBarChart = function module() {
       if (!svg) {
         svg = (function(selection) {
           var el = selection[0][0];
-          if (!! el.ownerSVGElement || el.tagName === "svg") {
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
             return selection.append("svg");
@@ -111,7 +103,6 @@ d3.ez.radialBarChart = function module() {
         svg.classed("d3ez", true);
 
         chart = svg.append("g").classed("chart", true);
-        chart.classed(classed, true);
         chart.append("g").classed("tickCircles", true);
         chart.append("g").classed("segments", true);
         chart.append("g").classed("spokes", true);
@@ -123,13 +114,9 @@ d3.ez.radialBarChart = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr({
-        width: width,
-        height: height
-      });
-
-      // Locate the center point
-      chart.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")");
+      chart.classed(classed, true)
+        .attr({ width: width, height: height })
+        .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
 
       // Concentric tick circles
       tickCircles = d3.select(".tickCircles")
