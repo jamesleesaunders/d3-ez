@@ -12,7 +12,8 @@
  *     .call(myChart);
  */
 d3.ez.groupedBarChart = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Chart containers (Populated by 'my' function)
+  var svg;
   var chart;
 
   // Default Options (Configurable via setters)
@@ -113,9 +114,25 @@ d3.ez.groupedBarChart = function module() {
       // Initialise Data
       init(data);
 
-      // Create chart element (if it does not exist already)
-      if (!chart) {
-        var chart = selection.append("g").classed("chart", true);
+      // Create SVG and Chart containers (if they do not already exist)
+      if (!svg) {
+        svg = (function(selection) {
+          var el = selection[0][0];
+          if (!! el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
+
+        svg.attr({
+          width: width,
+          height: height
+        });
+        svg.classed("d3ez", true);
+
+        chart = svg.append("g").classed("chart", true);
+        chart.classed(classed, true);
         chart.append("g").classed("x-axis axis", true);
         chart.append("g").classed("y-axis axis", true)
           .append("text")
@@ -124,11 +141,11 @@ d3.ez.groupedBarChart = function module() {
           .attr("dy", ".71em")
           .style("text-anchor", "end")
           .text(yAxisLabel);
+      } else {
+        chart = selection.select(".chart");
       }
-      chart = selection.select(".chart");
-      chart.classed(classed, true);
 
-      // Update the outer dimensions
+      // Update the chart dimensions
       chart.attr({
           width: width,
           height: height
@@ -137,7 +154,7 @@ d3.ez.groupedBarChart = function module() {
           transform: "translate(" + margin.left + "," + margin.top + ")"
         });
 
-      // Add X & Y axis to the chart
+      // Add axis to chart
       chart.select(".x-axis")
         .attr({
           transform: "translate(0," + chartH + ")"
@@ -147,7 +164,7 @@ d3.ez.groupedBarChart = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      // Create Bar Group
+      // Create gar group
       var barGroup = chart.selectAll(".barGroup")
         .data(data);
 
@@ -159,7 +176,7 @@ d3.ez.groupedBarChart = function module() {
         })
         .on("mouseover", dispatch.customHover);
 
-      // Add Bars to Group
+      // Add bars to group
       var bars = barGroup.selectAll(".bar")
         .data(function(d) {
           series = [];

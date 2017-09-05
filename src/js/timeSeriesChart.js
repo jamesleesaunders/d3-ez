@@ -13,8 +13,9 @@
  * 	.call(myChart);
  */
 d3.ez.timeSeriesChart = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Chart containers (Populated by 'my' function)
   var svg;
+  var chart;
 
   // Default Options (Configurable via setters)
   var width = 400;
@@ -104,50 +105,50 @@ d3.ez.timeSeriesChart = function module() {
 
       // Create SVG element (if it does not exist already)
       if (!svg) {
-        svg = d3.select(this)
-          .append("svg")
-          .classed("d3ez", true)
-          .classed(classed, true);
+        svg = (function(selection) {
+          var el = selection[0][0];
+          if (!! el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
 
-        var container = svg.append("g").classed("container-group", true);
-        container.append("path").classed("chart-area-path", true);
-        container.append("path").classed("chart-line-path", true);
-        container.append("g").classed("x-axis-group axis", true);
-        container.append("g").classed("y-axis-group axis", true);
+        svg.attr({
+          width: width,
+          height: height
+        });
+        svg.classed("d3ez", true);
+
+        var chart = svg.append("g").classed("chart", true);
+        chart.classed(classed, true);
+        chart.append("path").classed("chart-area-path", true);
+        chart.append("path").classed("chart-line-path", true);
+        chart.append("g").classed("x-axis-group axis", true);
+        chart.append("g").classed("y-axis-group axis", true);
+      } else {
+        chart = svg.select(".chart");
       }
 
-      // Update the outer dimensions
-      svg.attr({
-        width: width,
-        height: height
-      });
+      // Update the chart dimensions
+      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var title = d3.ez.title();
-      svg.call(title);
-
-      var creditTag = d3.ez.creditTag();
-      svg.call(creditTag);
-
-      // Update the inner dimensions
-      var g = svg.select("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      // Add X & Y axis to the chart
-      g.select(".x-axis-group.axis")
+      // Add axis to chart
+      chart.select(".x-axis-group.axis")
         .attr("transform", "translate(0," + yScale.range()[0] + ")")
         .call(xAxis);
 
-      g.select(".y-axis-group.axis")
+      chart.select(".y-axis-group.axis")
         .call(yAxis);
 
       // Update the area path
-      g.select(".chart-area-path")
+      chart.select(".chart-area-path")
         .data([data])
         .attr("d", area.y0(yScale.range()[0]))
         .attr("fill", color);
 
       // Update the line path
-      g.select(".chart-line-path")
+      chart.select(".chart-line-path")
         .data([data])
         .attr("d", line)
         .attr("fill", "none");

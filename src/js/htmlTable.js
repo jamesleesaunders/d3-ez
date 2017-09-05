@@ -10,8 +10,8 @@
  *     .call(myTable);
  */
 d3.ez.htmlTable = function module() {
-  // HTML container (Populated by 'my' function)
-  var table;
+  // HTML Table Element (Populated by 'my' function)
+  var tableEl;
 
   // Default Options (Configurable via setters)
   var classed = "htmlTable";
@@ -43,23 +43,23 @@ d3.ez.htmlTable = function module() {
       // Initialise Data
       init(data);
 
-      // Create HTML Table element (if it does not exist already)
-      if (!table) {
-        table = d3.select(this)
+      // Create HTML Table 'table' element (if it does not exist already)
+      if (!tableEl) {
+        tableEl = d3.select(this)
           .append("table")
           .classed("d3ez", true)
           .classed(classed, true)
           .attr("width", width);
       } else {
-        table.selectAll("*")
+        tableEl.selectAll("*")
           .remove();
       }
-      var head = table.append("thead");
-      var foot = table.append("tfoot");
-      var body = table.append("tbody");
+      var head = tableEl.append("thead");
+      var foot = tableEl.append("tfoot");
+      var body = tableEl.append("tbody");
 
       // Add table headings
-      hdr = head.append("tr")
+      hdr = head.append("tr");
 
       hdr.selectAll("th")
         .data(function() {

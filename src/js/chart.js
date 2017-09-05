@@ -5,8 +5,9 @@
  * @todo
  */
 d3.ez.chart = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Canvas containers (Populated by 'my' function)
   var svg;
+  var canvas;
 
   // Default Options (Configurable via setters)
   var width = 600;
@@ -17,8 +18,8 @@ d3.ez.chart = function module() {
     bottom: 15,
     left: 15
   };
-  var containerW = 580;
-  var containerH = 380;
+  var canvasW = 580;
+  var canvasH = 380;
   var chartTop = 0;
   var classed = "d3ez";
 
@@ -37,8 +38,8 @@ d3.ez.chart = function module() {
   var dispatch = d3.dispatch("customHover");
 
   function init(data) {
-    containerW = width - (margin.left + margin.right);
-    containerH = height - (margin.top + margin.bottom);
+    canvasW = width - (margin.left + margin.right);
+    canvasH = height - (margin.top + margin.bottom);
 
     // Init Data
     if (!data[0]) { // TODO: Can this be done better?
@@ -56,8 +57,8 @@ d3.ez.chart = function module() {
 
     // Init Chart
     chart.dispatch(dispatch)
-      .width(containerW)
-      .height(containerH);
+      .width(canvasW)
+      .height(canvasH);
 
     // Init Legend
     if (legend) {
@@ -79,12 +80,6 @@ d3.ez.chart = function module() {
     creditTag.text("d3ez.org").href("http://d3ez.org");
   }
 
-  function isSVG(selection) {
-    if(!selection) return false
-    el = selection[0][0]
-    return !! el.ownerSVGElement || el.tagName === "svg";
-  }
-
   function my(selection) {
     selection.each(function(data) {
       init(data);
@@ -95,29 +90,31 @@ d3.ez.chart = function module() {
           .append("svg")
           .classed(classed, true);
 
-        var container = svg.append("g").classed("container", true);
-        container.append("g").classed("chartbox", true);
-        container.append("g").classed("legendbox", true);
-        container.append("g").classed("titlebox", true);
-        container.append("g").classed("creditbox", true);
+        svg.attr({
+          width: width,
+          height: height
+        });
+
+        canvas = svg.append("g").classed("canvas", true);
+        canvas.append("g").classed("chartbox", true);
+        canvas.append("g").classed("legendbox", true);
+        canvas.append("g").classed("titlebox", true);
+        canvas.append("g").classed("creditbox", true);
+      } else {
+        canvas = svg.select(".canvas")
       }
 
-      // Update Container Dimensions
-      svg.attr({
-        width: width,
-        height: height
-      });
-      var container = svg.select(".container")
-        .attr({
-          width: containerW,
-          height: containerH
+      // Update the canvas dimensions
+      canvas.attr({
+          width: canvasW,
+          height: canvasH
         })
         .attr({
           transform: "translate(" + margin.left + "," + margin.top + ")"
         });
 
       // Add Chart
-      container.select(".chartbox")
+      canvas.select(".chartbox")
         .datum(data)
         .attr({
           transform: "translate(" + 0 + "," + chartTop + ")"
@@ -132,16 +129,16 @@ d3.ez.chart = function module() {
         if (typeof chart.sizeScale === "function") {
           legend.sizeScale(chart.sizeScale());
         }
-        container.select(".legendbox")
+        canvas.select(".legendbox")
           .attr({
-            transform: "translate(" + (containerW - legend.width()) + "," + title.height() + ")"
+            transform: "translate(" + (canvasW - legend.width()) + "," + title.height() + ")"
           })
           .call(legend);
       }
 
       // Add Title
       if (title) {
-        container.select(".titlebox")
+        canvas.select(".titlebox")
           .attr({
             transform: "translate(" + width / 2 + "," + 0 + ")"
           })
@@ -149,7 +146,7 @@ d3.ez.chart = function module() {
       }
 
       // Add Credit Tag
-      container.select(".creditbox")
+      canvas.select(".creditbox")
         .attr({
           transform: "translate(" + (width - 20) + "," + (height - 20) + ")"
         })
@@ -197,12 +194,6 @@ d3.ez.chart = function module() {
   my.yAxisLabel = function(_) {
     if (!arguments.length) return yAxisLabel;
     yAxisLabel = _;
-    return this;
-  };
-
-  my.classed = function(_) {
-    if (!arguments.length) return classed;
-    classed = _;
     return this;
   };
 

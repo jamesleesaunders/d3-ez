@@ -14,7 +14,8 @@
  *     .call(myChart);
  */
 d3.ez.punchCard = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Chart containers (Populated by 'my' function)
+  var svg;
   var chart;
 
   // Default Options (Configurable via setters)
@@ -110,15 +111,31 @@ d3.ez.punchCard = function module() {
       // Initialise Data
       init(data);
 
-      // Create chart element (if it does not exist already)
-      if (!chart) {
-        var chart = selection.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-      }
-      chart = selection.select(".chart");
-      chart.classed(classed, true);
+      // Create SVG and Chart containers (if they do not already exist)
+      if (!svg) {
+        svg = (function(selection) {
+          var el = selection[0][0];
+          if (!! el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
 
-      // Update the outer dimensions
+        svg.attr({
+          width: width,
+          height: height
+        });
+        svg.classed("d3ez", true);
+
+        chart = svg.append("g").classed("chart", true);
+        chart.classed(classed, true);
+        chart.append("g").classed("x-axis axis", true);
+      } else {
+        chart = selection.select(".chart");
+      }
+
+      // Update the chart dimensions
       chart.attr({
           width: width,
           height: height
@@ -127,7 +144,7 @@ d3.ez.punchCard = function module() {
           transform: "translate(" + margin.left + "," + margin.top + ")"
         });
 
-      // Add X (& Y) axis to the chart
+      // Add axis to chart
       chart.select(".x-axis")
         .attr({
           transform: "translate(0," + chartH + ")"

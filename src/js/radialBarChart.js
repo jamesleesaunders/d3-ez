@@ -10,7 +10,8 @@
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.radialBarChart = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Chart containers (Populated by 'my' function)
+  var svg;
   var chart;
 
   // Default Options (Configurable via setters)
@@ -89,23 +90,39 @@ d3.ez.radialBarChart = function module() {
 
   function my(selection) {
     selection.each(function(data) {
+      // Initialise Data
       init(data);
 
       // Create SVG element (if it does not exist already)
-      if (!chart) {
-        var chart = selection.append("g").classed("chart", true);
+      if (!svg) {
+        svg = (function(selection) {
+          var el = selection[0][0];
+          if (!! el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
 
+        svg.attr({
+          width: width,
+          height: height
+        });
+        svg.classed("d3ez", true);
+
+        chart = svg.append("g").classed("chart", true);
+        chart.classed(classed, true);
         chart.append("g").classed("tickCircles", true);
         chart.append("g").classed("segments", true);
         chart.append("g").classed("spokes", true);
-        chart.append("g").classed("axis", true)
-        chart.append("circle").classed("outerCircle", true)
+        chart.append("g").classed("axis", true);
+        chart.append("circle").classed("outerCircle", true);
         chart.append("g").classed("labels", true);
+      } else {
+        chart = selection.select(".chart");
       }
-      chart = selection.select(".chart");
-      chart.classed(classed, true);
 
-      // Update the outer dimensions
+      // Update the chart dimensions
       chart.attr({
         width: width,
         height: height

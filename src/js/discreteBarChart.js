@@ -12,7 +12,8 @@
  *     .call(myChart);
  */
 d3.ez.discreteBarChart = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Chart containers (Populated by 'my' function)
+  var svg;
   var chart;
 
   // Default Options (Configurable via setters)
@@ -91,16 +92,32 @@ d3.ez.discreteBarChart = function module() {
       // Initialise Data
       init(data);
 
-      // Create chart element (if it does not exist already)
-      if (!chart) {
-        var chart = selection.append("g").classed("chart", true);
+      // Create SVG and Chart containers (if they do not already exist)
+      if (!svg) {
+        svg = (function(selection) {
+          var el = selection[0][0];
+          if (!! el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
+
+        svg.attr({
+          width: width,
+          height: height
+        });
+        svg.classed("d3ez", true);
+
+        chart = svg.append("g").classed('chart', true);
+        chart.classed(classed, true);
         chart.append("g").classed("x-axis axis", true);
         chart.append("g").classed("y-axis axis", true);
+      } else {
+        chart = svg.select(".chart");
       }
-      chart = selection.select(".chart");
-      chart.classed(classed, true);
 
-      // Update the outer dimensions
+      // Update the chart dimensions
       chart.attr({
           width: chartW,
           height: chartH
@@ -109,15 +126,17 @@ d3.ez.discreteBarChart = function module() {
           transform: "translate(" + margin.left + "," + margin.top + ")"
         });
 
+      // Add axis to chart
       chart.select(".x-axis")
         .attr({
           transform: "translate(0," + chartH + ")"
         })
         .call(xAxis);
+
       chart.select(".y-axis")
         .call(yAxis);
 
-      // Add Y-Axis Label
+      // Add labels to chart
       ylabel = chart.select(".y-axis")
         .selectAll(".y-label")
         .data([data.key]);
@@ -135,7 +154,7 @@ d3.ez.discreteBarChart = function module() {
           return (d);
         });
 
-      // Add columns to the chart
+      // Add bars to the chart
       var gapSize = xScale.rangeBand() / 100 * gap;
       var barW = xScale.rangeBand() - gapSize;
 

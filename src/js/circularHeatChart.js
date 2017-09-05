@@ -10,7 +10,8 @@
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.circularHeatChart = function module() {
-  // SVG container (Populated by 'my' function)
+  // SVG and Chart containers (Populated by 'my' function)
+  var svg;
   var chart;
 
   // Default Options (Configurable via setters)
@@ -76,16 +77,33 @@ d3.ez.circularHeatChart = function module() {
       init(data);
 
       // Create chart element (if it does not exist already)
-      if (!chart) {
-        var chart = selection.append("g").classed("chart", true);
-        chart.append("g").classed("rings", true);
-        chart.append("g").classed("radialLabels", true)
-        chart.append("g").classed("segmentLabels", true);
-      }
-      chart = selection.select(".chart");
-      chart.classed(classed, true);
+      if (!svg) {
+        svg = (function(selection) {
+          var el = selection[0][0];
+          if (!! el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
+        svg.classed("d3ez", true);
 
-      // Update the outer dimensions
+        svg.attr({
+          width: width,
+          height: height
+        });
+        svg.classed("d3ez", true);
+
+        chart = svg.append("g").classed("chart", true);
+        chart.classed(classed, true);
+        chart.append("g").classed("rings", true);
+        chart.append("g").classed("radialLabels", true);
+        chart.append("g").classed("segmentLabels", true);
+      } else {
+        chart = svg.select(".chart");
+      }
+
+      // Update the chart dimensions
       chart.attr({
         width: width,
         height: height

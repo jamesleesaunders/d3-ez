@@ -6,58 +6,17 @@
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<script src="../src/d3.ez.js"></script>
 	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
-	<style type="text/css">
-		body {
-			font: 10px sans-serif;
-		}
-
-		.axis path,
-		.axis line {
-			fill: none;
-			stroke: #B6B6B6;
-			shape-rendering: crispEdges;
-		}
-
-		.tick text {
-			fill: #000000;
-		}
-
-		table {
-			border-collapse: collapse;
-		}
-
-		table,
-		td,
-		th {
-			border: 1px solid black;
-		}
-
-		rect.barGroup:hover {
-			opacity: 0.4;
-		}
-
-		rect.bar {
-			stroke: #B6B6B6;
-			stroke-width: 1px;
-		}
-
-		polyline {
-			opacity: .3;
-			stroke: black;
-			stroke-width: 2px;
-			fill: none;
-		}
-	</style>
 </head>
 
 <body>
-	<svg id="chartholder1" width="400" height="300"></svg>
-	<svg id="chartholder2" width="400" height="300"></svg>
-	<br />
-	<svg id="chartholder3" width="400" height="300"></svg>
-	<svg id="chartholder4" width="400" height="300"></svg>
-	<br />
-	<div id="chartholder5" width="400" height="300"></svg>
+	<div id="chartholder1" width="400" height="300"></div>
+	<div id="chartholder2" width="400" height="300"></div>
+	<div id="chartholder3" width="400" height="300"></div>
+	<div id="chartholder4" width="400" height="300"></div>
+	<div id="chartholder5" width="400" height="300"></div>
+	<div id="chartholder6" width="400" height="300"></div>
+	<div id="chartholder7" width="400" height="300"></div>
+	<div id="chartholder8" width="400" height="300"></div>
 
 	<script type="text/javascript">
 		// Generate some data
@@ -143,6 +102,8 @@
 			}
 		];
 
+
+		// Setup charts
 		myChart1 = d3.ez.groupedBarChart()
 			.width(300)
 			.height(180)
@@ -162,7 +123,6 @@
 				groupType = (myChart1.groupType() == 'clustered' ? 'stacked' : 'clustered');
 				myChart1.groupType(groupType);
 				update1(data);
-				//d3.selectAll(".Apples").attr("opacity", 0.5);
 			});
 
 		myChart3 = d3.ez.donutChart()
@@ -171,7 +131,20 @@
 			.colors(d3.scale.category10().range())
 			.innerRadius(40);
 
-		myChart4 = d3.ez.punchCard()
+        myChart4 = d3.ez.circularHeatChart()
+          .width(300)
+          .height(180)
+		  .innerRadius(5);
+
+        myChart5 = d3.ez.radialBarChart()
+          .width(300)
+          .height(180);
+
+        myChart6 = d3.ez.tabularHeatChart()
+          .width(300)
+          .height(180);
+
+		myChart7 = d3.ez.punchCard()
 			.width(300)
 			.height(180)
 			.color("green")
@@ -180,18 +153,16 @@
 			.maxRadius(18)
 			.on("customHover", function(d, i) {
 				console.log(d);
-				//update2(d);
 			});
 
-		myChart5 = d3.ez.htmlTable()
+		myChart8 = d3.ez.htmlTable()
 			.width(300)
-			.classed("sortable")
 			.on("customHover", function(d, i) {
 				update2(d);
 				update3(d);
 			});
 
-		// Add to page
+		// Add charts to page
 		function update1(data) {
 			d3.select("#chartholder1")
 				.datum(data)
@@ -222,11 +193,32 @@
 				.call(myChart5);
 		}
 
+        function update6(data) {
+          d3.select("#chartholder6")
+            .datum(data)
+            .call(myChart6);
+        }
+
+        function update7(data) {
+          d3.select("#chartholder7")
+            .datum(data)
+            .call(myChart7);
+        }
+
+        function update8(data) {
+          d3.select("#chartholder8")
+            .datum(data)
+            .call(myChart8);
+        }
+
 		update1(data);
 		update2(data[0]);
 		update3(data[0]);
 		update4(data);
-		update5(data);
+		update5(data[0]);
+        update6(data);
+        update7(data);
+        update8(data);
 	</script>
 </body>
 

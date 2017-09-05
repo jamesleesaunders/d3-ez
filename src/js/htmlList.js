@@ -9,8 +9,8 @@
  *     .call(myList);
  */
 d3.ez.htmlList = function module() {
-  // HTML container (Populated by 'my' function)
-  var list;
+  // HTML List Element (Populated by 'my' function)
+  var listEl;
 
   // Default Options (Configurable via setters)
   var classed = "htmlList";
@@ -20,18 +20,18 @@ d3.ez.htmlList = function module() {
 
   function my(selection) {
     selection.each(function(data) {
-      // Create HTML UL List element (if it does not exist already)
-      if (!list) {
-        list = d3.select(this)
+      // Create HTML List 'ul' element (if it does not exist already)
+      if (!listEl) {
+        listEl = d3.select(this)
           .append("ul")
           .classed("d3ez", true)
           .classed(classed, true);
       } else {
-        list.selectAll("*")
+        listEl.selectAll("*")
           .remove();
       }
 
-      list.selectAll("li")
+      listEl.selectAll("li")
         .data(data)
         .enter()
         .append("li")

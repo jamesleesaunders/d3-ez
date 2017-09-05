@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.6.0",
+    version: "1.6.2",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -26,7 +26,8 @@ d3.ez = {
  *     .call(myChart);
  */
 d3.ez.discreteBarChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
     var chart;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -83,32 +84,47 @@ d3.ez.discreteBarChart = function module() {
         selection.each(function(data) {
             // Initialise Data
             init(data);
-            // Create chart element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed("chart", true);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
                 chart.append("g").classed("y-axis axis", true);
+            } else {
+                chart = svg.select(".chart");
             }
-            chart = selection.select(".chart");
-            chart.classed(classed, true);
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: chartW,
                 height: chartH
             }).attr({
                 transform: "translate(" + margin.left + "," + margin.top + ")"
             });
+            // Add axis to chart
             chart.select(".x-axis").attr({
                 transform: "translate(0," + chartH + ")"
             }).call(xAxis);
             chart.select(".y-axis").call(yAxis);
-            // Add Y-Axis Label
+            // Add labels to chart
             ylabel = chart.select(".y-axis").selectAll(".y-label").data([ data.key ]);
             ylabel.enter().append("text").classed("y-label", true).attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end");
             ylabel.transition().text(function(d) {
                 return d;
             });
-            // Add columns to the chart
+            // Add bars to the chart
             var gapSize = xScale.rangeBand() / 100 * gap;
             var barW = xScale.rangeBand() - gapSize;
             var bars = chart.selectAll(".bar").data(data.values);
@@ -190,7 +206,8 @@ d3.ez.discreteBarChart = function module() {
  *     .call(myChart);
  */
 d3.ez.groupedBarChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
     var chart;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -267,32 +284,46 @@ d3.ez.groupedBarChart = function module() {
         selection.each(function(data) {
             // Initialise Data
             init(data);
-            // Create chart element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed("chart", true);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
                 chart.append("g").classed("y-axis axis", true).append("text").attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end").text(yAxisLabel);
+            } else {
+                chart = selection.select(".chart");
             }
-            chart = selection.select(".chart");
-            chart.classed(classed, true);
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: width,
                 height: height
             }).attr({
                 transform: "translate(" + margin.left + "," + margin.top + ")"
             });
-            // Add X & Y axis to the chart
+            // Add axis to chart
             chart.select(".x-axis").attr({
                 transform: "translate(0," + chartH + ")"
             }).call(xAxis);
             chart.select(".y-axis").call(yAxis);
-            // Create Bar Group
+            // Create gar group
             var barGroup = chart.selectAll(".barGroup").data(data);
             barGroup.enter().append("g").attr("class", "barGroup").attr("transform", function(d, i) {
                 return "translate(" + xScale(d.key) + ", 0)";
             }).on("mouseover", dispatch.customHover);
-            // Add Bars to Group
+            // Add bars to group
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 series = [];
                 var y0 = 0;
@@ -429,7 +460,8 @@ d3.ez.groupedBarChart = function module() {
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.radialBarChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
     var chart;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -491,20 +523,35 @@ d3.ez.radialBarChart = function module() {
     }
     function my(selection) {
         selection.each(function(data) {
+            // Initialise Data
             init(data);
             // Create SVG element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed("chart", true);
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").classed("tickCircles", true);
                 chart.append("g").classed("segments", true);
                 chart.append("g").classed("spokes", true);
                 chart.append("g").classed("axis", true);
                 chart.append("circle").classed("outerCircle", true);
                 chart.append("g").classed("labels", true);
+            } else {
+                chart = selection.select(".chart");
             }
-            chart = selection.select(".chart");
-            chart.classed(classed, true);
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: width,
                 height: height
@@ -627,7 +674,8 @@ d3.ez.radialBarChart = function module() {
  * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.circularHeatChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
     var chart;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -680,15 +728,30 @@ d3.ez.circularHeatChart = function module() {
             // Initialise Data
             init(data);
             // Create chart element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed("chart", true);
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true);
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").classed("rings", true);
                 chart.append("g").classed("radialLabels", true);
                 chart.append("g").classed("segmentLabels", true);
+            } else {
+                chart = svg.select(".chart");
             }
-            chart = selection.select(".chart");
-            chart.classed(classed, true);
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: width,
                 height: height
@@ -817,8 +880,9 @@ d3.ez.circularHeatChart = function module() {
  *     .call(myChart);
  */
 d3.ez.tabularHeatChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
     var svg;
+    var chart;
     // Default Options (Configurable via setters)
     var width = 600;
     var height = 600;
@@ -895,16 +959,30 @@ d3.ez.tabularHeatChart = function module() {
         selection.each(function(data) {
             // Initialise Data
             init(data);
-            // Create chart element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed("chart", true);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
                 chart.append("g").classed("y-axis axis", true);
                 chart.append("g").classed("cards", true);
+            } else {
+                chart = selection.select(".chart");
             }
-            chart = selection.select(".chart");
-            chart.classed(classed, true);
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: width,
                 height: height
@@ -1015,7 +1093,8 @@ d3.ez.tabularHeatChart = function module() {
  *     .call(myChart);
  */
 d3.ez.donutChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
     var chart;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -1077,14 +1156,30 @@ d3.ez.donutChart = function module() {
         selection.each(function(data) {
             // Initialise Data
             init(data);
-            // Create chart element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed(classed, true);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").attr("class", "slices");
                 chart.append("g").attr("class", "labels");
                 chart.append("g").attr("class", "lines");
+            } else {
+                chart = svg.select(".chart");
             }
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: width,
                 height: height
@@ -1211,7 +1306,8 @@ d3.ez.donutChart = function module() {
  *     .call(myChart);
  */
 d3.ez.punchCard = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
     var chart;
     // Default Options (Configurable via setters)
     var width = 400;
@@ -1284,21 +1380,35 @@ d3.ez.punchCard = function module() {
             if (data.constructor !== Array) data = [ data ];
             // Initialise Data
             init(data);
-            // Create chart element (if it does not exist already)
-            if (!chart) {
-                var chart = selection.append("g").classed("chart", true);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
                 chart.append("g").classed("x-axis axis", true);
+            } else {
+                chart = selection.select(".chart");
             }
-            chart = selection.select(".chart");
-            chart.classed(classed, true);
-            // Update the outer dimensions
+            // Update the chart dimensions
             chart.attr({
                 width: width,
                 height: height
             }).attr({
                 transform: "translate(" + margin.left + "," + margin.top + ")"
             });
-            // Add X (& Y) axis to the chart
+            // Add axis to chart
             chart.select(".x-axis").attr({
                 transform: "translate(0," + chartH + ")"
             }).call(xAxis);
@@ -1403,8 +1513,9 @@ d3.ez.punchCard = function module() {
  * 	.call(myChart);
  */
 d3.ez.timeSeriesChart = function module() {
-    // SVG container (Populated by 'my' function)
+    // SVG and Chart containers (Populated by 'my' function)
     var svg;
+    var chart;
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 300;
@@ -1467,31 +1578,37 @@ d3.ez.timeSeriesChart = function module() {
             });
             // Create SVG element (if it does not exist already)
             if (!svg) {
-                svg = d3.select(this).append("svg").classed("d3ez", true).classed(classed, true);
-                var container = svg.append("g").classed("container-group", true);
-                container.append("path").classed("chart-area-path", true);
-                container.append("path").classed("chart-line-path", true);
-                container.append("g").classed("x-axis-group axis", true);
-                container.append("g").classed("y-axis-group axis", true);
+                svg = function(selection) {
+                    var el = selection[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.attr({
+                    width: width,
+                    height: height
+                });
+                svg.classed("d3ez", true);
+                var chart = svg.append("g").classed("chart", true);
+                chart.classed(classed, true);
+                chart.append("path").classed("chart-area-path", true);
+                chart.append("path").classed("chart-line-path", true);
+                chart.append("g").classed("x-axis-group axis", true);
+                chart.append("g").classed("y-axis-group axis", true);
+            } else {
+                chart = svg.select(".chart");
             }
-            // Update the outer dimensions
-            svg.attr({
-                width: width,
-                height: height
-            });
-            var title = d3.ez.title();
-            svg.call(title);
-            var creditTag = d3.ez.creditTag();
-            svg.call(creditTag);
-            // Update the inner dimensions
-            var g = svg.select("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            // Add X & Y axis to the chart
-            g.select(".x-axis-group.axis").attr("transform", "translate(0," + yScale.range()[0] + ")").call(xAxis);
-            g.select(".y-axis-group.axis").call(yAxis);
+            // Update the chart dimensions
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            // Add axis to chart
+            chart.select(".x-axis-group.axis").attr("transform", "translate(0," + yScale.range()[0] + ")").call(xAxis);
+            chart.select(".y-axis-group.axis").call(yAxis);
             // Update the area path
-            g.select(".chart-area-path").data([ data ]).attr("d", area.y0(yScale.range()[0])).attr("fill", color);
+            chart.select(".chart-area-path").data([ data ]).attr("d", area.y0(yScale.range()[0])).attr("fill", color);
             // Update the line path
-            g.select(".chart-line-path").data([ data ]).attr("d", line).attr("fill", "none");
+            chart.select(".chart-line-path").data([ data ]).attr("d", line).attr("fill", "none");
         });
     }
     // Configuration Getters & Setters
@@ -1541,8 +1658,8 @@ d3.ez.timeSeriesChart = function module() {
  *     .call(myTable);
  */
 d3.ez.htmlTable = function module() {
-    // HTML container (Populated by 'my' function)
-    var table;
+    // HTML Table Element (Populated by 'my' function)
+    var tableEl;
     // Default Options (Configurable via setters)
     var classed = "htmlTable";
     var width = 800;
@@ -1567,15 +1684,15 @@ d3.ez.htmlTable = function module() {
         selection.each(function(data) {
             // Initialise Data
             init(data);
-            // Create HTML Table element (if it does not exist already)
-            if (!table) {
-                table = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
+            // Create HTML Table 'table' element (if it does not exist already)
+            if (!tableEl) {
+                tableEl = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
             } else {
-                table.selectAll("*").remove();
+                tableEl.selectAll("*").remove();
             }
-            var head = table.append("thead");
-            var foot = table.append("tfoot");
-            var body = table.append("tbody");
+            var head = tableEl.append("thead");
+            var foot = tableEl.append("tfoot");
+            var body = tableEl.append("tbody");
             // Add table headings
             hdr = head.append("tr");
             hdr.selectAll("th").data(function() {
@@ -1629,21 +1746,21 @@ d3.ez.htmlTable = function module() {
  *     .call(myList);
  */
 d3.ez.htmlList = function module() {
-    // HTML container (Populated by 'my' function)
-    var list;
+    // HTML List Element (Populated by 'my' function)
+    var listEl;
     // Default Options (Configurable via setters)
     var classed = "htmlList";
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customHover");
     function my(selection) {
         selection.each(function(data) {
-            // Create HTML UL List element (if it does not exist already)
-            if (!list) {
-                list = d3.select(this).append("ul").classed("d3ez", true).classed(classed, true);
+            // Create HTML List 'ul' element (if it does not exist already)
+            if (!listEl) {
+                listEl = d3.select(this).append("ul").classed("d3ez", true).classed(classed, true);
             } else {
-                list.selectAll("*").remove();
+                listEl.selectAll("*").remove();
             }
-            list.selectAll("li").data(data).enter().append("li").text(function(d) {
+            listEl.selectAll("li").data(data).enter().append("li").text(function(d) {
                 return d.key;
             }).on("click", expand);
             function expand(d) {
