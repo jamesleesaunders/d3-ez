@@ -115,7 +115,7 @@ d3.ez.donutChart = function module() {
         .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
 
       // Slices
-      var slices = d3.select(".slices")
+      var slices = chart.select(".slices")
         .selectAll("path.slice")
         .data(pie(values));
 
@@ -140,7 +140,7 @@ d3.ez.donutChart = function module() {
         .remove();
 
       // Labels
-      var labels = d3.select(".labels")
+      var labels = chart.select(".labels")
         .selectAll("text.label")
         .data(pie(values), key);
 
@@ -179,7 +179,7 @@ d3.ez.donutChart = function module() {
         .remove();
 
       // Slice to Label Lines
-      var lines = d3.select(".lines")
+      var lines = chart.select(".lines")
         .selectAll("polyline.line")
         .data(pie(values));
 

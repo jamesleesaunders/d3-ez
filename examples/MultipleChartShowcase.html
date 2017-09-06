@@ -9,216 +9,151 @@
 </head>
 
 <body>
-	<div id="chartholder1" width="400" height="300"></div>
-	<div id="chartholder2" width="400" height="300"></div>
-	<div id="chartholder3" width="400" height="300"></div>
-	<div id="chartholder4" width="400" height="300"></div>
-	<div id="chartholder5" width="400" height="300"></div>
-	<div id="chartholder6" width="400" height="300"></div>
-	<div id="chartholder7" width="400" height="300"></div>
-	<div id="chartholder8" width="400" height="300"></div>
+	<div id="chartholder1"></div>
+	<div id="chartholder2"></div>
+	<div id="chartholder3"></div>
+	<div id="chartholder4"></div>
+	<div id="chartholder5"></div>
+	<div id="chartholder6"></div>
+	<div id="chartholder7"></div>
+	<div id="chartholder8"></div>
 
 	<script type="text/javascript">
-		// Generate some data
-		var data = [{
-				"key": "Jim",
-				"values": [{
-						"key": "Apples",
-						"value": 4
-					},
-					{
-						"key": "Oranges",
-						"value": 3
-					},
-					{
-						"key": "Pears",
-						"value": 1
-					},
-					{
-						"key": "Bananas",
-						"value": 0
-					}
-				]
-			},
-			{
-				"key": "Claire",
-				"values": [{
-						"key": "Apples",
-						"value": 3
-					},
-					{
-						"key": "Oranges",
-						"value": 1
-					},
-					{
-						"key": "Pears",
-						"value": 2
-					},
-					{
-						"key": "Bananas",
-						"value": 2
-					}
-				]
-			},
-			{
-				"key": "Beth",
-				"values": [{
-						"key": "Apples",
-						"value": 5
-					},
-					{
-						"key": "Oranges",
-						"value": 2
-					},
-					{
-						"key": "Pears",
-						"value": 4
-					},
-					{
-						"key": "Bananas",
-						"value": 1
-					}
-				]
-			},
-			{
-				"key": "Grace",
-				"values": [{
-						"key": "Apples",
-						"value": 1
-					},
-					{
-						"key": "Oranges",
-						"value": 4
-					},
-					{
-						"key": "Pears",
-						"value": 2
-					},
-					{
-						"key": "Bananas",
-						"value": 3
-					}
-				]
-			}
-		];
+		// Generate some sample data
+        var request = new XMLHttpRequest();
+        request.open("GET", "data/fruit.json", false);
+        request.send(null);
+        var data = JSON.parse(request.responseText);
+		console.log(data);
 
-
-		// Setup charts
-		myChart1 = d3.ez.groupedBarChart()
-			.width(300)
-			.height(180)
-			.yAxisLabel('Fruit')
-			.colors(d3.scale.category10().range())
-			.on("customHover", function(d, i) {
-				update2(d);
-				update3(d);
-			})
-			.groupType('stacked');
+		// Setup charts components
+        myChart1 = d3.ez.htmlTable()
+          .width(400)
+          .on("customHover", function(d, i) {
+            groupType = (myChart5.groupType() === 'clustered' ? 'stacked' : 'clustered');
+            myChart5.groupType(groupType);
+            update5(data);
+            update2(d);
+            update3(d);
+            update4(d);
+          });
 
 		myChart2 = d3.ez.discreteBarChart()
-			.width(300)
-			.height(180)
-			.colors(d3.scale.category10().range())
-			.on("customHover", function(d, i) {
-				groupType = (myChart1.groupType() == 'clustered' ? 'stacked' : 'clustered');
-				myChart1.groupType(groupType);
-				update1(data);
-			});
+          .width(400)
+          .height(200)
+          .colors(d3.scale.category10().range())
+          .on("customHover", function(d, i) {
+            console.log(d);
+          });
 
 		myChart3 = d3.ez.donutChart()
-			.width(300)
-			.height(180)
-			.colors(d3.scale.category10().range())
-			.innerRadius(40);
+          .width(400)
+          .height(200)
+          .colors(d3.scale.category10().range())
+          .innerRadius(40);
 
-        myChart4 = d3.ez.circularHeatChart()
-          .width(300)
-          .height(180)
+        myChart4 = d3.ez.radialBarChart()
+          .width(400)
+          .height(200);
+
+        myChart5 = d3.ez.groupedBarChart()
+          .width(400)
+          .height(200)
+          .yAxisLabel('Fruit')
+          .colors(d3.scale.category10().range())
+          .on("customHover", function(d, i) {
+            update2(d);
+            update3(d);
+            update4(d);
+          })
+          .groupType('stacked');
+
+        myChart6 = d3.ez.circularHeatChart()
+          .width(400)
+          .height(200)
 		  .innerRadius(5);
 
-        myChart5 = d3.ez.radialBarChart()
-          .width(300)
-          .height(180);
+        myChart7 = d3.ez.tabularHeatChart()
+          .width(400)
+          .height(200);
 
-        myChart6 = d3.ez.tabularHeatChart()
-          .width(300)
-          .height(180);
+		myChart8 = d3.ez.punchCard()
+          .width(400)
+          .height(200)
+          .color("green")
+          .minRadius(2)
+          .useGlobalScale(true)
+          .maxRadius(18)
+          .on("customHover", function(d, i) {
+            console.log(d);
+          });
 
-		myChart7 = d3.ez.punchCard()
-			.width(300)
-			.height(180)
-			.color("green")
-			.minRadius(2)
-			.useGlobalScale(true)
-			.maxRadius(18)
-			.on("customHover", function(d, i) {
-				console.log(d);
-			});
-
-		myChart8 = d3.ez.htmlTable()
-			.width(300)
-			.on("customHover", function(d, i) {
-				update2(d);
-				update3(d);
-			});
-
-		// Add charts to page
+		// Functions to add charts to page and update charts
 		function update1(data) {
-			d3.select("#chartholder1")
-				.datum(data)
-				.call(myChart1);
+		  // htmlTable
+          d3.select("#chartholder1")
+            .datum(data)
+            .call(myChart1);
 		}
 
 		function update2(data) {
-			d3.select("#chartholder2")
-				.datum(data)
-				.call(myChart2);
+          // groupedBarChart
+		  d3.select("#chartholder2")
+            .datum(data)
+            .call(myChart2);
 		}
 
 		function update3(data) {
-			d3.select("#chartholder3")
-				.datum(data)
-				.call(myChart3);
+          // discreteBarChart
+          d3.select("#chartholder3")
+            .datum(data)
+            .call(myChart3);
 		}
 
 		function update4(data) {
-			d3.select("#chartholder4")
-				.datum(data)
-				.call(myChart4);
+          // donutChart
+		  d3.select("#chartholder4")
+            .datum(data)
+            .call(myChart4);
 		}
 
 		function update5(data) {
-			d3.select("#chartholder5")
-				.datum(data)
-				.call(myChart5);
+          // radialBarChart
+          d3.select("#chartholder5")
+            .datum(data)
+            .call(myChart5);
 		}
 
         function update6(data) {
+          // circularHeatChart
           d3.select("#chartholder6")
             .datum(data)
             .call(myChart6);
         }
 
         function update7(data) {
+          // tabularHeatChart
           d3.select("#chartholder7")
             .datum(data)
             .call(myChart7);
         }
 
         function update8(data) {
+          // punchCard
           d3.select("#chartholder8")
             .datum(data)
             .call(myChart8);
         }
 
-		update1(data);
-		update2(data[0]);
-		update3(data[0]);
-		update4(data);
-		update5(data[0]);
-        update6(data);
-        update7(data);
-        update8(data);
+		update1(data);     // htmlTable
+		update2(data[0]);  // discreteBarChart
+		update3(data[0]);  // donutChart
+		update4(data[0]);  // radialBarChart
+        update5(data);     // groupedBarChart
+        update6(data);     // circularHeatChart
+        update7(data);     // tabularHeatChart
+        update8(data);     // punchCard
+
 	</script>
 </body>
 
