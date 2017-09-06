@@ -18,7 +18,7 @@
 		function randomDataset() {
 			var j = 1;
 			var _randomNum = function() {
-				return Math.floor(Math.random() * 10);
+				return Math.floor(Math.random() * 100);
 			};
 
 			var data = [{
@@ -125,7 +125,7 @@
 			return data;
 		}
 
-		var colors = d3.ez.colors.diverging(2);
+		var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
 		var chart = d3.ez.tabularHeatChart();
 		var legend = d3.ez.legend().title('How hot?');
 		var title = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");

@@ -18,10 +18,10 @@ d3.ez.tabularHeatChart = function module() {
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
   var transition = { ease: "bounce", duration: 500 };
   var classed = "tabularHeatChart";
-  var colors = ["#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
+  var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
 
   // Data Options (Populated by 'init' function)
-  var domain = null;
+  var thresholds = undefined;
   var minValue = 0;
   var maxValue = 0;
   var numCols = 0;
@@ -33,7 +33,7 @@ d3.ez.tabularHeatChart = function module() {
   var colorScale = undefined;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+  var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     // Group and Category Names
@@ -76,15 +76,17 @@ d3.ez.tabularHeatChart = function module() {
         values.push(d.value);
       });
     });
-    // maxValue = d3.quantile(values, 0.95) + 5;
-    minValue = d3.min(values);
-    maxValue = d3.max(values);
 
-    domain = [minValue, maxValue];
+    // If thresholds values are not already set attempt to auto-calculate some thresholds
+    if (!thresholds) {
+      minValue = d3.min(values);
+      maxValue = d3.max(values);
+      thresholds = [(maxValue*0.25), (maxValue*0.50), (maxValue*0.75)];
+    }
 
     // Colour Scale
-    colorScale = d3.scale.quantile()
-      .domain(domain)
+    colorScale = d3.scale.threshold()
+      .domain(thresholds)
       .range(colors);
   }
 
@@ -241,9 +243,9 @@ d3.ez.tabularHeatChart = function module() {
     return this;
   };
 
-  my.domain = function(_) {
-    if (!arguments.length) return domain;
-    domain = _;
+  my.thresholds = function(_) {
+    if (!arguments.length) return thresholds;
+    thresholds = _;
     return this;
   };
 

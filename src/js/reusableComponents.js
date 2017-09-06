@@ -229,15 +229,15 @@ d3.ez.colors = {
     switch (scheme) {
       case 1:
         // Stephen Few - Show Me the Numbers Book
-        //    Blue        Orange    Green      Pink        L Brown    Purple   Dir Yello   Red         Black
+        //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
         return ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
       case 2:
         // Color Brewer - http://colorbrewer2.com/
-        //        Red       L.Blue     Green      Purple     Orange      Yellow    Brown      Pink         Grey
+        //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
         return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
       case 3:
         // Google Design - http://www.google.com/design/spec/style/color.html
-        //       D. Blue    Orange     L.Green     Purple     Yello       L.Blue       Red     D.Green     Brown
+        //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
         return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
       case 4:
         return (d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));

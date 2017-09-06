@@ -22,9 +22,9 @@
                     <th>Value</th>
                 </tr>
                 <tr>
-                    <td id="siteA"></td>
-                    <td id="siteB"></td>
-                    <td id="siteValue"></td>
+                    <td id="siteA">-</td>
+                    <td id="siteB">-</td>
+                    <td id="siteValue">-</td>
                 </tr>
             </table>
         </td>
@@ -37,9 +37,9 @@
                     <th>Value</th>
                 </tr>
                 <tr>
-                    <td id="date"></td>
-                    <td id="hour"></td>
-                    <td id="monthValue"></td>
+                    <td id="date">-</td>
+                    <td id="hour">-</td>
+                    <td id="monthValue">-</td>
                 </tr>
             </table>
         </td>
@@ -50,11 +50,13 @@
     var heatChart = [];
     heatChart['siteChart'] = d3.ez.tabularHeatChart()
       .width(600)
-      .height(600);
+      .height(600)
+      .thresholds([1, 10, 100, 500]);
 
     heatChart['monthChart'] = d3.ez.tabularHeatChart()
       .width(600)
-      .height(600);
+      .height(600)
+      .thresholds([1, 10, 100, 500]);
 
     // POP to POP Heatmap
     $.ajax({

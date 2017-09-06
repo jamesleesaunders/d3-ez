@@ -35,7 +35,7 @@ d3.ez.chart = function module() {
   var colorScale = d3.scale.ordinal();
 
   // Dispatch (custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     canvasW = width - (margin.left + margin.right);
