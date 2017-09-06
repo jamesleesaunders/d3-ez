@@ -9,42 +9,42 @@
     {
       "ControllerSite": "aztw",
       "ResponderSite": "bagu",
-      "PacketLoss": "1"
+      "PacketLoss": "6"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "basl",
-      "PacketLoss": "2"
+      "PacketLoss": "6"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "belf",
-      "PacketLoss": "10"
+      "PacketLoss": "12"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "bmly",
-      "PacketLoss": "100"
+      "PacketLoss": "12"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brad",
-      "PacketLoss": "500"
+      "PacketLoss": "24"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brhm",
-      "PacketLoss": "2000"
+      "PacketLoss": "24"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brig",
-      "PacketLoss": "60000"
+      "PacketLoss": "48"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brnt",
-      "PacketLoss": "0"
+      "PacketLoss": "48"
     },
     {
       "ControllerSite": "aztw",
@@ -239,7 +239,7 @@
     {
       "ControllerSite": "bagu",
       "ResponderSite": "cosh",
-      "PacketLoss": "60"
+      "PacketLoss": "0"
     },
     {
       "ControllerSite": "bagu",
@@ -6589,7 +6589,7 @@
     {
       "ControllerSite": "uddi",
       "ResponderSite": "lutn",
-      "PacketLoss": "1000"
+      "PacketLoss": "0"
     },
     {
       "ControllerSite": "uddi",
@@ -6674,7 +6674,7 @@
     {
       "ControllerSite": "winn",
       "ResponderSite": "bagu",
-      "PacketLoss": "20"
+      "PacketLoss": "0"
     },
     {
       "ControllerSite": "winn",

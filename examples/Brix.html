@@ -51,12 +51,12 @@
     heatChart['siteChart'] = d3.ez.tabularHeatChart()
       .width(600)
       .height(600)
-      .thresholds([1, 10, 100, 500]);
+      .thresholds([6, 12, 24, 48]);
 
     heatChart['monthChart'] = d3.ez.tabularHeatChart()
       .width(600)
       .height(600)
-      .thresholds([1, 10, 100, 500]);
+      .thresholds([6, 12, 24, 48]);
 
     // POP to POP Heatmap
     $.ajax({

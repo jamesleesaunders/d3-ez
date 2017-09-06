@@ -18,7 +18,7 @@ d3.ez.tabularHeatChart = function module() {
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
   var transition = { ease: "bounce", duration: 500 };
   var classed = "tabularHeatChart";
-  var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
+  var colors = [ "#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007" ];
 
   // Data Options (Populated by 'init' function)
   var thresholds = undefined;
