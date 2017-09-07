@@ -14,136 +14,40 @@
 	<div>Value: <span id="message"></span></div>
 
 	<script type="text/javascript">
-		// Generate some data
-		function randomDataset() {
-			var j = 1;
-			var _randomNum = function() {
-				return Math.floor(Math.random() * 100);
-			};
+        d3.json("data/pop2pop.json", function(error, data) {
 
-			var data = [{
-					key: "asfd",
-					values: [{
-							key: "brig",
-							value: _randomNum()
-						},
-						{
-							key: "cosh",
-							value: _randomNum()
-						},
-						{
-							key: "popl",
-							value: _randomNum()
-						},
-						{
-							key: "winn",
-							value: _randomNum()
-						}
-					]
-				},
-				{
-					key: "brig",
-					values: [{
-							key: "asfd",
-							value: _randomNum()
-						},
-						{
-							key: "cosh",
-							value: _randomNum()
-						},
-						{
-							key: "popl",
-							value: _randomNum()
-						},
-						{
-							key: "winn",
-							value: _randomNum()
-						}
-					]
-				},
-				{
-					key: "cosh",
-					values: [{
-							key: "asfd",
-							value: _randomNum()
-						},
-						{
-							key: "brig",
-							value: _randomNum()
-						},
-						{
-							key: "popl",
-							value: _randomNum()
-						},
-						{
-							key: "winn",
-							value: _randomNum()
-						}
-					]
-				},
-				{
-					key: "popl",
-					values: [{
-							key: "asfd",
-							value: _randomNum()
-						},
-						{
-							key: "brig",
-							value: _randomNum()
-						},
-						{
-							key: "cosh",
-							value: _randomNum()
-						},
-						{
-							key: "winn",
-							value: _randomNum()
-						}
-					]
-				},
-				{
-					key: "winn",
-					values: [{
-							key: "asfd",
-							value: _randomNum()
-						},
-						{
-							key: "brig",
-							value: _randomNum()
-						},
-						{
-							key: "cosh",
-							value: _randomNum()
-						},
-						{
-							key: "popl",
-							value: _randomNum()
-						}
-					]
-				}
-			];
-			return data;
-		}
+          var graphData = d3.nest().key(function(d) {
+            return d.ControllerSite;
+          }).entries(data.Data).map(function(obj) {
+            obj.values = obj.values.map(function(values) {
+              return {
+                key: values.ResponderSite,
+                value: values.PacketLoss
+              };
+            });
+            return obj;
+          });
 
-		var colors = [ "#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007" ];
-		var chart = d3.ez.tabularHeatChart().colors(colors);
-		var legend = d3.ez.legend().title('How hot?');
-		var title = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");
+          var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
+          var chart = d3.ez.tabularHeatChart().colors(colors);
+          var legend = d3.ez.legend().title('How hot?');
+          var title = d3.ez.title().mainText(data.Metadata.Title).subText(data.Metadata.Detail);
 
-		// Create Tabular Heat Chart object
-		var myChart = d3.ez.base()
-			.width(750)
-			.height(400)
-			.chart(chart)
-			.legend(legend)
-			.title(title)
-			.on("customHover", function(d, i) {
-				d3.select("#message").text(d.value);
-			});
+          // Create Tabular Heat Chart object
+          var myChart = d3.ez.base()
+            .width(600)
+            .height(600)
+            .chart(chart)
+            .legend(legend)
+            .title(title)
+            .on("customHover", function(d, i) {
+              d3.select("#message").text(d.value);
+            });
 
-		d3.select('#chartholder')
-			.datum(randomDataset())
-			.call(myChart);
+          d3.select('#chartholder')
+            .datum(graphData)
+            .call(myChart);
+        });
 	</script>
 </body>
 
