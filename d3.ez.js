@@ -1101,7 +1101,7 @@ d3.ez.tabularHeatChart = function module() {
         if (!thresholds) {
             minValue = d3.min(values);
             maxValue = d3.max(values);
-            thresholds = [ maxValue * .25, maxValue * .5, maxValue * .75, maxValue + 1 ];
+            thresholds = [ Math.floor(maxValue * .25), Math.floor(maxValue * .5), Math.floor(maxValue * .75), Math.floor(maxValue + 1) ];
         }
         // Colour Scale
         colorScale = d3.scale.threshold().domain(thresholds).range(colors);
@@ -2219,6 +2219,7 @@ d3.ez.legend = function module() {
     var sizeScale = undefined;
     var sizeLabel = null;
     var colorScale = undefined;
+    var colorLabel = null;
     var title = null;
     var width = 100;
     var height = 150;
@@ -2235,8 +2236,9 @@ d3.ez.legend = function module() {
         legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", fill).attr("stroke-width", strokewidth).attr("stroke", stroke);
         legendTitle = legendBox.append("g").attr("transform", "translate(5, 15)");
         legendTitle.append("text").style("font-weight", "bold").text(title);
+        var y = 10;
         // Size Key
-        if (typeof sizeScale != "undefined") {
+        if (typeof sizeScale !== "undefined") {
             // Calcualate a range of 5 numbers between min and max of range
             min = d3.min(sizeScale.range());
             max = d3.max(sizeScale.range());
@@ -2244,30 +2246,35 @@ d3.ez.legend = function module() {
             step = diff / 4;
             var range = [];
             range[0] = min;
-            for (j = 1; j < 5; j++) {
-                range[j] = range[j - 1] + step;
+            for (var s = 1; s < 5; s++) {
+                range[s] = range[s - 1] + step;
             }
             sizeScale.range(range);
             numElements = sizeScale.range().length;
             elementHeight = (height - 45) / numElements;
             sizeKey = legendBox.append("g").attr("transform", "translate(5, 20)");
-            var i = 10;
-            for (index = 0; index < numElements; index++) {
-                sizeKey.append("circle").attr("cx", 17).attr("cy", i).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("r", sizeScale.range()[index]);
-                sizeKey.append("text").attr("x", 40).attr("y", i + 5).text(keyScaleRange("size", index));
-                i = i + (elementHeight + spacing);
+            for (var index = 0; index < numElements; index++) {
+                sizeKey.append("circle").attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("r", sizeScale.range()[index]);
+                text = keyScaleRange("size", index);
+                sizeKey.append("text").attr("x", 40).attr("y", y + 5).text(text);
+                y = y + (elementHeight + spacing);
             }
         }
         // Colour Key
-        if (typeof colorScale != "undefined") {
+        if (typeof colorScale !== "undefined") {
             numElements = colorScale.domain().length;
             elementHeight = (height - 45) / numElements - 5;
             colorKey = legendBox.append("g").attr("transform", "translate(5, 20)");
-            var i = 10;
-            for (index = 0; index < numElements; index++) {
-                colorKey.append("rect").attr("x", 10).attr("y", i).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("width", 20).attr("height", elementHeight);
-                colorKey.append("text").attr("x", 40).attr("y", i + 10).text(colorScale.domain()[index]);
-                i = i + (elementHeight + spacing);
+            for (var index = 0; index < numElements; index++) {
+                colorKey.append("rect").attr("x", 10).attr("y", y).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("width", 20).attr("height", elementHeight);
+                if (!isNaN(colorScale.domain()[index])) {
+                    // If the scale is a threshold scale.
+                    text = keyScaleRange("threshold", index);
+                } else {
+                    text = colorScale.domain()[index];
+                }
+                colorKey.append("text").attr("x", 40).attr("y", y + 10).text(text);
+                y = y + (elementHeight + spacing);
             }
         }
     }
@@ -2286,6 +2293,13 @@ d3.ez.legend = function module() {
             var domainMax = Math.max.apply(Math, colorScale.domain());
             var domainSize = domainMax - domainMin;
             var rangeLength = colorScale.range().length;
+            break;
+
+          case "threshold":
+            min = colorScale.domain()[position];
+            max = colorScale.domain()[position + 1] - 1;
+            rangeStr = isNaN(max) ? "> " + min : min + " - " + max;
+            return rangeStr;
             break;
         }
         var rangeIncrement = domainSize / rangeLength;
@@ -2316,6 +2330,11 @@ d3.ez.legend = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.colorLabel = function(_) {
+        if (!arguments.length) return colorLabel;
+        colorLabel = _;
         return my;
     };
     my.title = function(_) {
