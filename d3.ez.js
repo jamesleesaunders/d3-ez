@@ -6,10 +6,168 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.6.2",
+    version: "1.6.3",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
+};
+
+/**
+ * Chart Base
+ *
+ * @example
+ * @todo
+ */
+d3.ez.base = function module() {
+    // SVG and Canvas containers (Populated by 'my' function)
+    var svg;
+    var canvas;
+    // Default Options (Configurable via setters)
+    var width = 600;
+    var height = 400;
+    var margin = {
+        top: 15,
+        right: 15,
+        bottom: 15,
+        left: 15
+    };
+    var canvasW = 580;
+    var canvasH = 380;
+    var chartTop = 0;
+    var classed = "d3ez";
+    var chart = undefined;
+    var legend = undefined;
+    var title = undefined;
+    var creditTag = d3.ez.creditTag();
+    var description = "";
+    var yAxisLabel = "";
+    // Colours
+    var colorScale = undefined;
+    // Dispatch (custom events)
+    var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
+    function init(data) {
+        canvasW = width - (margin.left + margin.right);
+        canvasH = height - (margin.top + margin.bottom);
+        // Init Data
+        if (!data[0]) {
+            // TODO: Can this be done better?
+            // If 1 dimensional data
+            categories = d3.values(data)[1];
+        } else {
+            // If 2 dimensional data
+            categories = data.map(function(d) {
+                return d.values;
+            })[0];
+        }
+        categoryNames = categories.map(function(d) {
+            return d.key;
+        });
+        // Init Chart
+        chart.dispatch(dispatch).width(canvasW).height(canvasH);
+        // Init Legend
+        if (legend) {
+            legend.width(150).height(200);
+            chart.width(chart.width() - legend.width());
+        }
+        // Init Title
+        if (title) {
+            chartTop = title.height();
+            chart.height(chart.height() - title.height());
+        }
+        // Init Credit Tag
+        creditTag.text("d3ez.org").href("http://d3ez.org");
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            init(data);
+            // Create SVG element (if it does not exist already)
+            if (!svg) {
+                svg = d3.select(this).append("svg").classed(classed, true).attr({
+                    width: width,
+                    height: height
+                });
+                canvas = svg.append("g").classed("canvas", true);
+                canvas.append("g").classed("chartbox", true);
+                canvas.append("g").classed("legendbox", true);
+                canvas.append("g").classed("titlebox", true);
+                canvas.append("g").classed("creditbox", true);
+            } else {
+                canvas = svg.select(".canvas");
+            }
+            // Update the canvas dimensions
+            canvas.attr({
+                width: canvasW,
+                height: canvasH
+            }).attr({
+                transform: "translate(" + margin.left + "," + margin.top + ")"
+            });
+            // Add Chart
+            canvas.select(".chartbox").datum(data).attr({
+                transform: "translate(" + 0 + "," + chartTop + ")"
+            }).call(chart);
+            // Add Legend
+            if (legend && (typeof chart.colorScale === "function" || typeof chart.sizeScale === "function")) {
+                if (typeof chart.colorScale === "function") {
+                    legend.colorScale(chart.colorScale());
+                }
+                if (typeof chart.sizeScale === "function") {
+                    legend.sizeScale(chart.sizeScale());
+                }
+                canvas.select(".legendbox").attr({
+                    transform: "translate(" + (canvasW - legend.width()) + "," + title.height() + ")"
+                }).call(legend);
+            }
+            // Add Title
+            if (title) {
+                canvas.select(".titlebox").attr({
+                    transform: "translate(" + width / 2 + "," + 0 + ")"
+                }).call(title);
+            }
+            // Add Credit Tag
+            canvas.select(".creditbox").attr({
+                transform: "translate(" + (width - 20) + "," + (height - 20) + ")"
+            }).call(creditTag);
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.chart = function(_) {
+        if (!arguments.length) return chart;
+        chart = _;
+        return this;
+    };
+    my.legend = function(_) {
+        if (!arguments.length) return legend;
+        legend = _;
+        return this;
+    };
+    my.title = function(_) {
+        if (!arguments.length) return title;
+        if (typeof _ === "string") {
+            console.log(_);
+            // If the caller has passed a plain string convert it to a title object.
+            title = d3.ez.title().mainText(_).subText("");
+        } else {
+            title = _;
+        }
+        return this;
+    };
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
+        return this;
+    };
+    d3.rebind(my, dispatch, "on");
+    return my;
 };
 
 /**
@@ -334,7 +492,7 @@ d3.ez.groupedBarChart = function module() {
                 });
                 return series;
             });
-            if (groupType == "stacked") {
+            if (groupType === "stacked") {
                 var gapSize = xScale.rangeBand() / 100 * gap;
                 var barW = xScale.rangeBand() - gapSize;
                 bars.enter().append("rect").classed("bar", true).attr("class", function(d) {
@@ -362,7 +520,7 @@ d3.ez.groupedBarChart = function module() {
                 bars.exit().transition().style({
                     opacity: 0
                 }).remove();
-            } else if (groupType == "clustered") {
+            } else if (groupType === "clustered") {
                 var x1 = d3.scale.ordinal().rangeRoundBands([ 0, xScale.rangeBand() ]).domain(categoryNames);
                 bars.enter().append("rect").classed("bar", true).attr({
                     width: x1.rangeBand(),
@@ -507,7 +665,7 @@ d3.ez.radialBarChart = function module() {
         for (var i = 0; i <= maxValue; i++) {
             tickCircleValues.push(i);
         }
-        // tickCircleValues (dont know the difference really?)
+        // tickCircleValues (don't know the difference really?)
         tickValues = tickCircleValues;
         tickValues.push(maxValue + 1);
         // Domain
@@ -531,11 +689,10 @@ d3.ez.radialBarChart = function module() {
                         return selection.append("svg");
                     }
                 }(d3.select(this));
-                svg.attr({
+                svg.classed("d3ez", true).attr({
                     width: width,
                     height: height
                 });
-                svg.classed("d3ez", true);
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("tickCircles", true);
                 chart.append("g").classed("segments", true);
@@ -554,7 +711,7 @@ d3.ez.radialBarChart = function module() {
                 transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"
             });
             // Concentric tick circles
-            tickCircles = d3.select(".tickCircles").selectAll("circle").data(tickCircleValues);
+            tickCircles = chart.select(".tickCircles").selectAll("circle").data(tickCircleValues);
             tickCircles.enter().append("circle").style("fill", "none");
             tickCircles.transition().attr("r", function(d) {
                 return barScale(d);
@@ -569,7 +726,7 @@ d3.ez.radialBarChart = function module() {
                 return (i + 1) * 2 * Math.PI / numBars;
             });
             // Segment enter/exit/update
-            var segments = d3.select(".segments").selectAll("path").data(data.values);
+            var segments = chart.select(".segments").selectAll("path").data(data.values);
             segments.enter().append("path").style("fill", function(d, i) {
                 if (!colors) return;
                 return colors[i % colors.length];
@@ -577,18 +734,18 @@ d3.ez.radialBarChart = function module() {
             segments.exit().remove();
             segments.transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             // Spokes
-            spokes = d3.select(".spokes").selectAll("line").data(keys).enter().append("line").attr("y2", -radius).attr("transform", function(d, i) {
+            var spokes = chart.select(".spokes").selectAll("line").data(keys).enter().append("line").attr("y2", -radius).attr("transform", function(d, i) {
                 return "rotate(" + i * 360 / numBars + ")";
             });
             // Axis
             var axisScale = d3.scale.linear().domain(domain).range([ 0, -radius ]);
             var axis = d3.svg.axis().scale(axisScale).orient("right");
             //if(tickValues) axis.tickValues(tickValues);
-            axis = d3.select(".axis").call(axis);
+            axis = chart.select(".axis").call(axis);
             // Outer Circle
-            outerCircle = d3.select(".outerCircle").attr("r", radius).style("fill", "none");
+            outerCircle = chart.select(".outerCircle").attr("r", radius).style("fill", "none");
             // Labels
-            var labels = d3.select(".labels");
+            var labels = chart.select(".labels");
             labels.append("def").append("path").attr("id", "label-path").attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");
             labels.selectAll("text").data(keys).enter().append("text").style("text-anchor", "middle").style("fill", function(d, i) {
                 return colorLabels ? colors[i % colors.length] : null;
@@ -761,9 +918,9 @@ d3.ez.circularHeatChart = function module() {
                 return (i + 1) * 2 * Math.PI / numSegments;
             });
             // Rings
-            d3.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true).on("mouseover", dispatch.customHover);
+            chart.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true).on("mouseover", dispatch.customHover);
             // Ring Segments
-            d3.selectAll(".ring").selectAll("path").data(function(d, i) {
+            chart.selectAll(".ring").selectAll("path").data(function(d, i) {
                 // Add index (used to calculate ring number)
                 for (j = 0; j < numSegments; j++) {
                     d.values[j].ring = i;
@@ -773,11 +930,11 @@ d3.ez.circularHeatChart = function module() {
                 return colorScale(accessor(d.value));
             }).classed("segment", true);
             // Unique id so that the text path defs are unique - is there a better way to do this?
-            var id = d3.selectAll(".circularHeat")[0].length;
+            var id = chart.selectAll(".circularHeat")[0].length;
             // Radial Labels
             var lsa = .01;
             // Label start angle
-            var radLabels = d3.select(".radialLabels").classed("labels", true);
+            var radLabels = chart.select(".radialLabels").classed("labels", true);
             radLabels.selectAll("def").data(radialLabels).enter().append("def").append("path").attr("id", function(d, i) {
                 return "radialLabelPath" + id + "-" + i;
             }).attr("d", function(d, i) {
@@ -792,7 +949,7 @@ d3.ez.circularHeatChart = function module() {
             // Segment Labels
             var segmentLabelOffset = 2;
             var r = innerRadius + numRadials * segmentHeight + segmentLabelOffset;
-            var segLabels = d3.select(".segmentLabels").classed("labels", true);
+            var segLabels = chart.select(".segmentLabels").classed("labels", true);
             segLabels.append("def").append("path").attr("id", "segmentLabelPath" + id).attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
             segLabels.selectAll("text").data(segmentLabels).enter().append("text").append("textPath").attr("xlink:href", "#segmentLabelPath" + id).attr("startOffset", function(d, i) {
                 return i * 100 / numSegments + "%";
@@ -889,9 +1046,9 @@ d3.ez.tabularHeatChart = function module() {
         duration: 500
     };
     var classed = "tabularHeatChart";
-    var colors = [ "#ffffd9", "#edf8b1", "#c7e9b4", "#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58" ];
+    var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     // Data Options (Populated by 'init' function)
-    var domain = null;
+    var thresholds = undefined;
     var minValue = 0;
     var maxValue = 0;
     var numCols = 0;
@@ -901,7 +1058,7 @@ d3.ez.tabularHeatChart = function module() {
     var rowNames = [];
     var colorScale = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         // Group and Category Names
         colNames = data.map(function(d) {
@@ -940,12 +1097,14 @@ d3.ez.tabularHeatChart = function module() {
                 values.push(d.value);
             });
         });
-        // maxValue = d3.quantile(values, 0.95) + 5;
-        minValue = d3.min(values);
-        maxValue = d3.max(values);
-        domain = [ minValue, maxValue ];
+        // If thresholds values are not already set attempt to auto-calculate some thresholds
+        if (!thresholds) {
+            minValue = d3.min(values);
+            maxValue = d3.max(values);
+            thresholds = [ Math.floor(maxValue * .25), Math.floor(maxValue * .5), Math.floor(maxValue * .75), Math.floor(maxValue + 1) ];
+        }
         // Colour Scale
-        colorScale = d3.scale.quantile().domain(domain).range(colors);
+        colorScale = d3.scale.threshold().domain(thresholds).range(colors);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -998,7 +1157,7 @@ d3.ez.tabularHeatChart = function module() {
             });
             cards.enter().append("rect").attr("x", function(d) {
                 return rowNames.indexOf(d.column) * gridSize;
-            }).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("class", "card").attr("width", gridSize).attr("height", gridSize).on("click", dispatch.customClick).on("mouseover", dispatch.customHover);
+            }).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("class", "card").attr("width", gridSize).attr("height", gridSize).on("click", dispatch.customClick).on("mouseover", dispatch.customMouseOver).on("mouseout", dispatch.customMouseOut);
             cards.transition().duration(1e3).style("fill", function(d) {
                 return colorScale(d.value);
             });
@@ -1050,9 +1209,9 @@ d3.ez.tabularHeatChart = function module() {
         colorScale = _;
         return this;
     };
-    my.domain = function(_) {
-        if (!arguments.length) return domain;
-        domain = _;
+    my.thresholds = function(_) {
+        if (!arguments.length) return thresholds;
+        thresholds = _;
         return this;
     };
     my.accessor = function(_) {
@@ -1175,7 +1334,7 @@ d3.ez.donutChart = function module() {
                 transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")"
             });
             // Slices
-            var slices = d3.select(".slices").selectAll("path.slice").data(pie(values));
+            var slices = chart.select(".slices").selectAll("path.slice").data(pie(values));
             slices.enter().append("path").attr("class", "slice").attr("fill", function(d, i) {
                 return colorScale(data.values[i].key);
             }).attr("d", arc).each(function(d) {
@@ -1184,7 +1343,7 @@ d3.ez.donutChart = function module() {
             slices.transition().ease(transition.ease).duration(transition.duration).attrTween("d", arcTween);
             slices.exit().remove();
             // Labels
-            var labels = d3.select(".labels").selectAll("text.label").data(pie(values), key);
+            var labels = chart.select(".labels").selectAll("text.label").data(pie(values), key);
             labels.enter().append("text").attr("class", "label").attr("dy", ".35em");
             labels.transition().duration(transition.duration).text(function(d, i) {
                 return data.values[i].key;
@@ -1209,7 +1368,7 @@ d3.ez.donutChart = function module() {
             });
             labels.exit().remove();
             // Slice to Label Lines
-            var lines = d3.select(".lines").selectAll("polyline.line").data(pie(values));
+            var lines = chart.select(".lines").selectAll("polyline.line").data(pie(values));
             lines.enter().append("polyline").attr("class", "line");
             lines.transition().duration(transition.duration).attrTween("points", function(d) {
                 this._current = this._current || d;
@@ -1962,17 +2121,17 @@ d3.ez.colors = {
         switch (scheme) {
           case 1:
             // Stephen Few - Show Me the Numbers Book
-            //    Blue        Orange    Green      Pink        L Brown    Purple   Dir Yello   Red         Black
+            //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
             return [ "#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d" ];
 
           case 2:
             // Color Brewer - http://colorbrewer2.com/
-            //        Red       L.Blue     Green      Purple     Orange      Yellow    Brown      Pink         Grey
+            //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
             return [ "#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2" ];
 
           case 3:
             // Google Design - http://www.google.com/design/spec/style/color.html
-            //       D. Blue    Orange     L.Green     Purple     Yello       L.Blue       Red     D.Green     Brown
+            //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
             return [ "#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548" ];
 
           case 4:
@@ -2060,6 +2219,7 @@ d3.ez.legend = function module() {
     var sizeScale = undefined;
     var sizeLabel = null;
     var colorScale = undefined;
+    var colorLabel = null;
     var title = null;
     var width = 100;
     var height = 150;
@@ -2076,8 +2236,9 @@ d3.ez.legend = function module() {
         legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", fill).attr("stroke-width", strokewidth).attr("stroke", stroke);
         legendTitle = legendBox.append("g").attr("transform", "translate(5, 15)");
         legendTitle.append("text").style("font-weight", "bold").text(title);
+        var y = 10;
         // Size Key
-        if (typeof sizeScale != "undefined") {
+        if (typeof sizeScale !== "undefined") {
             // Calcualate a range of 5 numbers between min and max of range
             min = d3.min(sizeScale.range());
             max = d3.max(sizeScale.range());
@@ -2085,30 +2246,35 @@ d3.ez.legend = function module() {
             step = diff / 4;
             var range = [];
             range[0] = min;
-            for (j = 1; j < 5; j++) {
-                range[j] = range[j - 1] + step;
+            for (var s = 1; s < 5; s++) {
+                range[s] = range[s - 1] + step;
             }
             sizeScale.range(range);
             numElements = sizeScale.range().length;
             elementHeight = (height - 45) / numElements;
             sizeKey = legendBox.append("g").attr("transform", "translate(5, 20)");
-            var i = 10;
-            for (index = 0; index < numElements; index++) {
-                sizeKey.append("circle").attr("cx", 17).attr("cy", i).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("r", sizeScale.range()[index]);
-                sizeKey.append("text").attr("x", 40).attr("y", i + 5).text(keyScaleRange("size", index));
-                i = i + (elementHeight + spacing);
+            for (var index = 0; index < numElements; index++) {
+                sizeKey.append("circle").attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("r", sizeScale.range()[index]);
+                text = keyScaleRange("size", index);
+                sizeKey.append("text").attr("x", 40).attr("y", y + 5).text(text);
+                y = y + (elementHeight + spacing);
             }
         }
         // Colour Key
-        if (typeof colorScale != "undefined") {
+        if (typeof colorScale !== "undefined") {
             numElements = colorScale.domain().length;
             elementHeight = (height - 45) / numElements - 5;
             colorKey = legendBox.append("g").attr("transform", "translate(5, 20)");
-            var i = 10;
-            for (index = 0; index < numElements; index++) {
-                colorKey.append("rect").attr("x", 10).attr("y", i).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("width", 20).attr("height", elementHeight);
-                colorKey.append("text").attr("x", 40).attr("y", i + 10).text(colorScale.domain()[index]);
-                i = i + (elementHeight + spacing);
+            for (var index = 0; index < numElements; index++) {
+                colorKey.append("rect").attr("x", 10).attr("y", y).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("width", 20).attr("height", elementHeight);
+                if (!isNaN(colorScale.domain()[index])) {
+                    // If the scale is a threshold scale.
+                    text = keyScaleRange("threshold", index);
+                } else {
+                    text = colorScale.domain()[index];
+                }
+                colorKey.append("text").attr("x", 40).attr("y", y + 10).text(text);
+                y = y + (elementHeight + spacing);
             }
         }
     }
@@ -2127,6 +2293,13 @@ d3.ez.legend = function module() {
             var domainMax = Math.max.apply(Math, colorScale.domain());
             var domainSize = domainMax - domainMin;
             var rangeLength = colorScale.range().length;
+            break;
+
+          case "threshold":
+            min = colorScale.domain()[position];
+            max = colorScale.domain()[position + 1] - 1;
+            rangeStr = isNaN(max) ? "> " + min : min + " - " + max;
+            return rangeStr;
             break;
         }
         var rangeIncrement = domainSize / rangeLength;
@@ -2157,6 +2330,11 @@ d3.ez.legend = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.colorLabel = function(_) {
+        if (!arguments.length) return colorLabel;
+        colorLabel = _;
         return my;
     };
     my.title = function(_) {

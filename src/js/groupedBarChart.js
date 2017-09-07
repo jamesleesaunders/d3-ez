@@ -175,7 +175,7 @@ d3.ez.groupedBarChart = function module() {
           return series;
         });
 
-      if (groupType == "stacked") {
+      if (groupType === "stacked") {
 
         var gapSize = xScale.rangeBand() / 100 * gap;
         var barW = xScale.rangeBand() - gapSize;
@@ -220,7 +220,7 @@ d3.ez.groupedBarChart = function module() {
           })
           .remove();
 
-      } else if (groupType == "clustered") {
+      } else if (groupType === "clustered") {
 
         var x1 = d3.scale.ordinal()
           .rangeRoundBands([0, xScale.rangeBand()])

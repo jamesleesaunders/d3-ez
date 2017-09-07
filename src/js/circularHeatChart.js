@@ -111,7 +111,7 @@ d3.ez.circularHeatChart = function module() {
         });
 
       // Rings
-      d3.select(".rings").selectAll("g")
+      chart.select(".rings").selectAll("g")
         .data(data)
         .enter()
         .append("g")
@@ -119,7 +119,7 @@ d3.ez.circularHeatChart = function module() {
         .on("mouseover", dispatch.customHover);
 
       // Ring Segments
-      d3.selectAll(".ring").selectAll("path")
+      chart.selectAll(".ring").selectAll("path")
         .data(function(d, i) {
           // Add index (used to calculate ring number)
           for (j = 0; j < numSegments; j++) {
@@ -136,11 +136,11 @@ d3.ez.circularHeatChart = function module() {
         .classed("segment", true);
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
-      var id = d3.selectAll(".circularHeat")[0].length;
+      var id = chart.selectAll(".circularHeat")[0].length;
 
       // Radial Labels
       var lsa = 0.01; // Label start angle
-      var radLabels = d3.select(".radialLabels")
+      var radLabels = chart.select(".radialLabels")
         .classed("labels", true);
 
       radLabels.selectAll("def")
@@ -171,7 +171,7 @@ d3.ez.circularHeatChart = function module() {
       // Segment Labels
       var segmentLabelOffset = 2;
       var r = innerRadius + (numRadials * segmentHeight) + segmentLabelOffset;
-      var segLabels = d3.select(".segmentLabels")
+      var segLabels = chart.select(".segmentLabels")
         .classed("labels", true);
 
       segLabels.append("def")

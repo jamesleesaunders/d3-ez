@@ -1,6 +1,7 @@
 # D3.EZ Makefile
 
 JS_FILES :=        src/js/header.js \
+                   src/js/base.js \
                    src/js/discreteBarChart.js \
                    src/js/groupedBarChart.js \
                    src/js/radialBarChart.js \
@@ -19,7 +20,7 @@ CSS_FILES :=       src/css/global.css \
                    src/css/circularHeatChart.css \
                    src/css/tabularHeatChart.css \
                    src/css/donutChart.css \
-									 src/css/punchCard.css \
+                   src/css/punchCard.css \
                    src/css/htmlList.css \
                    src/css/htmlTable.css
 

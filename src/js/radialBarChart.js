@@ -61,9 +61,9 @@ d3.ez.radialBarChart = function module() {
       tickCircleValues.push(i);
     }
 
-    // tickCircleValues (dont know the difference really?)
+    // tickCircleValues (don't know the difference really?)
     tickValues = tickCircleValues;
-    tickValues.push(maxValue + 1)
+    tickValues.push(maxValue + 1);
 
     // Domain
     domain = [0, maxValue + 1];
@@ -96,11 +96,8 @@ d3.ez.radialBarChart = function module() {
           }
         })(d3.select(this));
 
-        svg.attr({
-          width: width,
-          height: height
-        });
-        svg.classed("d3ez", true);
+        svg.classed("d3ez", true)
+          .attr({ width: width, height: height });
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("tickCircles", true);
@@ -119,9 +116,9 @@ d3.ez.radialBarChart = function module() {
         .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
 
       // Concentric tick circles
-      tickCircles = d3.select(".tickCircles")
+      tickCircles = chart.select(".tickCircles")
         .selectAll("circle")
-        .data(tickCircleValues)
+        .data(tickCircleValues);
 
       tickCircles.enter()
         .append("circle")
@@ -151,7 +148,7 @@ d3.ez.radialBarChart = function module() {
         });
 
       // Segment enter/exit/update
-      var segments = d3.select(".segments")
+      var segments = chart.select(".segments")
         .selectAll("path")
         .data(data.values);
 
@@ -173,7 +170,7 @@ d3.ez.radialBarChart = function module() {
         .attr("d", arc);
 
       // Spokes
-      spokes = d3.select(".spokes")
+      var spokes = chart.select(".spokes")
         .selectAll("line")
         .data(keys)
         .enter()
@@ -188,16 +185,16 @@ d3.ez.radialBarChart = function module() {
       var axis = d3.svg.axis().scale(axisScale).orient("right");
 
       //if(tickValues) axis.tickValues(tickValues);
-      axis = d3.select(".axis")
+      axis = chart.select(".axis")
         .call(axis);
 
       // Outer Circle
-      outerCircle = d3.select(".outerCircle")
+      outerCircle = chart.select(".outerCircle")
         .attr("r", radius)
         .style("fill", "none");
 
       // Labels
-      var labels = d3.select(".labels");
+      var labels = chart.select(".labels");
       labels.append("def")
         .append("path")
         .attr("id", "label-path")

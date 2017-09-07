@@ -97,9 +97,11 @@
 			}
 		];
 
-		var colors = d3.ez.colors.categorical(1);
-		var chart = d3.ez.groupedBarChart().yAxisLabel("Number").groupType('stacked');
-		var legend = d3.ez.legend().title('Top 10');
+		var chart = d3.ez.groupedBarChart()
+		  .yAxisLabel("Number")
+		  .groupType("stacked")
+          .colors(d3.ez.colors.categorical(1));
+		var legend = d3.ez.legend().title("Top 10");
 		var title = d3.ez.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
 
 		// Create Column Chart object
@@ -107,7 +109,6 @@
 			.width(750)
 			.height(400)
 			.chart(chart)
-			.colors(colors)
 			.legend(legend)
 			.title(title)
 			.on("customHover", function(d, i) {
