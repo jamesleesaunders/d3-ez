@@ -18,7 +18,7 @@ d3.ez.tabularHeatChart = function module() {
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
   var transition = { ease: "bounce", duration: 500 };
   var classed = "tabularHeatChart";
-  var colors = [ "#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007" ];
+  var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
 
   // Data Options (Populated by 'init' function)
   var thresholds = undefined;
@@ -81,7 +81,7 @@ d3.ez.tabularHeatChart = function module() {
     if (!thresholds) {
       minValue = d3.min(values);
       maxValue = d3.max(values);
-      thresholds = [(maxValue*0.25), (maxValue*0.50), (maxValue*0.75)];
+      thresholds = [(maxValue*0.25), (maxValue*0.50), (maxValue*0.75), maxValue+1];
     }
 
     // Colour Scale

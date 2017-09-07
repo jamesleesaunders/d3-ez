@@ -5,7 +5,8 @@
     <title>D3.EZ : Tabular Heat Chart Example</title>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="../src/d3.ez.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://rizzo.private.virginmedia.net/include/jquery/jquery-1.8.2.min.js"></script>
+    <script src="https://rizzo.private.virginmedia.net/include/jquery-faloading/jquery.faloading.js"></script>
     <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
@@ -46,96 +47,112 @@
 </table>
 <script type="text/javascript">
 
-    var heatChart = [];
-    heatChart['siteChart'] = d3.ez.tabularHeatChart()
-      .width(600)
-      .height(600)
-      .thresholds([6, 12, 24, 48]);
+  var heatChart = [];
 
-    heatChart['monthChart'] = d3.ez.tabularHeatChart()
-      .width(600)
-      .height(600)
-      .thresholds([6, 12, 24, 48]);
+  var chart1 = d3.ez.tabularHeatChart()
+    .thresholds([1, 6, 12, 24, 48])
+    .colors([ "#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007" ]);
+  var legend1 = d3.ez.legend().title('Count of Errors');
+  var title1 = d3.ez.title().mainText("Brix Performance").subText("Site to Site");
 
-    // POP to POP Heatmap
-    $.ajax({
-        type: 'POST',
-        url: 'data/ajax_brixPop2PopMatrix.json',
-        dataType: 'json',
-        beforeSend: function() {
-          // Start Loading Spinner
-          //$('#siteChart').faLoading('fa-gear');
-        },
-        success: function(data) {
-          // Set Title
-          // In time this should setting a SVN title using D3.EZ, but for now simply tacking on a HTML title before the chart.
-          $('#siteChart').append('<h3>' + data.Metadata.Title + '</h3>');
-          // Convert data into format required for D3.EZ
-          var graphData = d3.nest().key(function(d) {
-            return d.ControllerSite;
-          }).entries(data.Data).map(function(obj) {
-            obj.values = obj.values.map(function(values) {
-              return {
-                key: values.ResponderSite,
-                value: values.PacketLoss
-              };
-            });
-            return obj;
-          });
-          // Render D3.EZ Graph
-          d3.select('#siteChart')
-            .datum(graphData)
-            .call(heatChart['siteChart']);
-        },
-        complete: function() {
-          // Stop Loading Spinner
-          //$('#siteChart').faLoading(false);
-        },
-        error: function(e) {
-          console.log('Error loading data');
-          //$('#siteChart').faLoading('fail', 'Error Loading Data', 'Error');
-        }
-    });
+  heatChart['siteChart'] = d3.ez.base()
+    .width(600)
+    .height(600)
+    .chart(chart1)
+    .legend(legend1)
+    .title(title1);
 
-    // Month Heatmap
-    $.ajax({
-      type: 'POST',
-      url: 'data/ajax_brixPop2PopMonth.json',
-      dataType: 'json',
-      beforeSend: function() {
-        // Start Loading Spinner
-        //$('#monthChart').faLoading('fa-gear');
-      },
-      success: function(data) {
-        // Set Title
-        // In time this should setting a SVN title using D3.EZ, but for now simply tacking on a HTML title before the chart.
-        $('#monthChart').append('<h3>' + data.Metadata.Title + '</h3>');
-        // Convert data into format required for D3.EZ
-        var graphData = d3.nest().key(function(d) {
-          return d.Hour;
-        }).entries(data.Data).map(function(obj) {
-          obj.values = obj.values.map(function(values) {
-            return {
-              key: values.Day,
-              value: values.PacketLoss
-            };
-          });
-          return obj;
+  var chart2 = d3.ez.tabularHeatChart()
+    .thresholds([1, 6, 12, 24, 48])
+    .colors([ "#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007" ])
+    .margin({ top: 60, right: 20, bottom: 20, left: 20 });
+  var legend2 = d3.ez.legend().title('Count of Errors');
+  var title2 = d3.ez.title().mainText("Brix Performance").subText("Last 30 Days");
+
+  heatChart['monthChart'] = d3.ez.base()
+    .width(600)
+    .height(600)
+    .chart(chart2)
+    .legend(legend2)
+    .title(title2);
+
+  // POP to POP Heatmap
+  $.ajax({
+    type: 'POST',
+    url: 'data/ajax_brixPop2PopMatrix.json',
+    dataType: 'json',
+    beforeSend: function() {
+      // Start Loading Spinner
+      $('#siteChart').faLoading('fa-gear');
+    },
+    success: function(data) {
+      // Set Title
+      // In time this should setting a SVN title using D3.EZ, but for now simply tacking on a HTML title before the chart.
+      // Convert data into format required for D3.EZ
+      var graphData = d3.nest().key(function(d) {
+        return d.ControllerSite;
+      }).entries(data.Data).map(function(obj) {
+        obj.values = obj.values.map(function(values) {
+          return {
+            key: values.ResponderSite,
+            value: values.PacketLoss
+          };
         });
-        // Render D3.EZ Graph
-        d3.select('#monthChart')
-          .datum(graphData)
-          .call(heatChart['monthChart']);
-      },
-      complete: function() {
-        // Stop Loading Spinner
-        //$('#monthChart').faLoading(false);
-      },
-      error: function(e) {
-        console.log('Error loading data');
-        //$('#monthChart').faLoading('fail', 'Error Loading Data', 'Error');
-      }
-    });
+        return obj;
+      });
+      // Render D3.EZ Graph
+      d3.select('#siteChart')
+        .datum(graphData)
+        .call(heatChart['siteChart']);
+    },
+    complete: function() {
+      // Stop Loading Spinner
+      $('#siteChart').faLoading(false);
+    },
+    error: function(e) {
+      console.log('Error loading data');
+      $('#siteChart').faLoading('fail', 'Error Loading Data', 'Error');
+    }
+  });
+
+  // Month Heatmap
+  $.ajax({
+    type: 'POST',
+    url: 'data/ajax_brixPop2PopMonth.json',
+    dataType: 'json',
+    beforeSend: function() {
+      // Start Loading Spinner
+      $('#monthChart').faLoading('fa-gear');
+    },
+    success: function(data) {
+      // Set Title
+      // In time this should setting a SVN title using D3.EZ, but for now simply tacking on a HTML title before the chart.
+      // Convert data into format required for D3.EZ
+      var graphData = d3.nest().key(function(d) {
+        return d.Hour;
+      }).entries(data.Data).map(function(obj) {
+        obj.values = obj.values.map(function(values) {
+          return {
+            key: values.Day,
+            value: values.PacketLoss
+          };
+        });
+        return obj;
+      });
+      // Render D3.EZ Graph
+      d3.select('#monthChart')
+        .datum(graphData)
+        .call(heatChart['monthChart']);
+    },
+    complete: function() {
+      // Stop Loading Spinner
+      $('#monthChart').faLoading(false);
+    },
+    error: function(e) {
+      console.log('Error loading data');
+      $('#monthChart').faLoading('fail', 'Error Loading Data', 'Error');
+    }
+  });
 
 </script>
 <script type='text/javascript' src="Brix.js"></script>

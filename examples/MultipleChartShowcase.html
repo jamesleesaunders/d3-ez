@@ -30,7 +30,7 @@
         myChart1 = d3.ez.htmlTable()
           .width(400)
           .on("customHover", function(d, i) {
-            groupType = (myChart5.groupType() === 'clustered' ? 'stacked' : 'clustered');
+            groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");
             myChart5.groupType(groupType);
             update5(data);
             update2(d);
@@ -59,14 +59,14 @@
         myChart5 = d3.ez.groupedBarChart()
           .width(400)
           .height(200)
-          .yAxisLabel('Fruit')
+          .yAxisLabel("Fruit")
           .colors(d3.scale.category10().range())
           .on("customHover", function(d, i) {
             update2(d);
             update3(d);
             update4(d);
           })
-          .groupType('stacked');
+          .groupType("stacked");
 
         myChart6 = d3.ez.circularHeatChart()
           .width(400)

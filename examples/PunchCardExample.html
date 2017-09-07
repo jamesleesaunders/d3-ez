@@ -146,18 +146,16 @@
 			}
 		];
 
-		var colors = d3.ez.colors.diverging(2);
 		var chart = d3.ez.punchCard();
-		var legend = d3.ez.legend().title('How small?');
+		var legend = d3.ez.legend().title("How small?");
 		var title = d3.ez.title().mainText("Punch Example").subText("Punchcard example sub-title");
 
 		// Create Tabular Heat Chart object
-		var myChart = d3.ez.chart()
+		var myChart = d3.ez.base()
 			.width(750)
 			.height(400)
 			.chart(chart)
 			.legend(legend)
-			.colors(colors)
 			.title(title)
 			.on("customHover", function(d, i) {
 				d3.select("#message").text(d.value);

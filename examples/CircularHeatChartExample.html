@@ -124,18 +124,16 @@
 			return data;
 		}
 
-		var colors = ["white", "blue"];
-		var chart = d3.ez.circularHeatChart();
+		var chart = d3.ez.circularHeatChart().colors(["white", "blue"]);
 		var legend = d3.ez.legend().title('How hot?');
 		var title = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");
 
 		// Create Tabular Heat Chart object
-		var myChart = d3.ez.chart()
+		var myChart = d3.ez.base()
 			.width(750)
 			.height(400)
 			.chart(chart)
 			.legend(legend)
-			.colors(colors)
 			.title(title)
 			.on("customHover", function(d, i) {
 				d3.select("#message").text(d.value);

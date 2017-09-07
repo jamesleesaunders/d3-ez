@@ -11,14 +11,14 @@
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "0",
-      "PacketLoss": "0"
+      "PacketLoss": "1"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "1",
-      "PacketLoss": "0"
+      "PacketLoss": "1000"
     },
     {
       "SiteA": "pete",
