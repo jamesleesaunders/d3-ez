@@ -18,10 +18,10 @@ var div = d3.select("body").append("div")
     'position': 'absolute',
     'text-align': 'left',
     'font-family': 'Verdana,Arial,Helvetica,Serif',
-    'font-size': '9pt',
-    'width': '150px',
-    'height': '70px',
-    'padding': '2px',
+    'font-size': '8pt',
+    'width': '140px',
+    'height': '50px',
+    'padding': '5px',
     'background': 'lightsteelblue',
     'border': '0px',
     'border-radius': '5px',
@@ -41,8 +41,8 @@ heatChart['monthChart']
   .on("customMouseOver", function(d, i) {
     // Show Tooltip
     div.transition()
-      .duration(200)
-      .style("opacity", .9);
+      .duration(100)
+      .style("opacity", 0.8);
     div.html("<p><b>Date:</b> " + d.row + "<br /><b>Hour:</b> " + d.column + "<br /><b>Value:</b> " + d.value + "</p>")
       .style("left", (d3.event.pageX) + "px")
       .style("top", (d3.event.pageY) + "px");
@@ -65,8 +65,8 @@ heatChart['siteChart']
   .on("customMouseOver", function(d, i) {
     // Show Tooltip
     div.transition()
-      .duration(200)
-      .style("opacity", .9);
+      .duration(100)
+      .style("opacity", 0.8);
     div.html("<p><b>Site A:</b> " + d.row + "<br /><b>Site B:</b> " + d.column + "<br /><b>Value:</b> " + d.value + "</p>")
       .style("left", (d3.event.pageX) + "px")
       .style("top", (d3.event.pageY) + "px");

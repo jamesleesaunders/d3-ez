@@ -11,84 +11,84 @@
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "0",
-      "PacketLoss": "1"
+      "PacketLoss": "0"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "1",
-      "PacketLoss": "1000"
+      "PacketLoss": "1"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "2",
-      "PacketLoss": "0"
+      "PacketLoss": "6"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "3",
-      "PacketLoss": "0"
+      "PacketLoss": "7"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "4",
-      "PacketLoss": "0"
+      "PacketLoss": "12"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "5",
-      "PacketLoss": "0"
+      "PacketLoss": "13"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "6",
-      "PacketLoss": "0"
+      "PacketLoss": "24"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "7",
-      "PacketLoss": "0"
+      "PacketLoss": "25"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "8",
-      "PacketLoss": "0"
+      "PacketLoss": "48"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "9",
-      "PacketLoss": "0"
+      "PacketLoss": "49"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "10",
-      "PacketLoss": "0"
+      "PacketLoss": "100"
     },
     {
       "SiteA": "pete",
       "SiteB": "renf",
       "Day": "01-09-2017",
       "Hour": "11",
-      "PacketLoss": "0"
+      "PacketLoss": "1000"
     },
     {
       "SiteA": "pete",

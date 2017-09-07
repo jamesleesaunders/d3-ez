@@ -52,7 +52,7 @@
   var chart1 = d3.ez.tabularHeatChart()
     .thresholds([1, 6, 12, 24, 48])
     .colors([ "#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007" ]);
-  var legend1 = d3.ez.legend().title('Count of Errors');
+  var legend1 = d3.ez.legend().title('Count of Errors').colorLabel("test");
   var title1 = d3.ez.title().mainText("Brix Performance").subText("Site to Site");
 
   heatChart['siteChart'] = d3.ez.base()

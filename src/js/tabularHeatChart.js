@@ -81,7 +81,7 @@ d3.ez.tabularHeatChart = function module() {
     if (!thresholds) {
       minValue = d3.min(values);
       maxValue = d3.max(values);
-      thresholds = [(maxValue*0.25), (maxValue*0.50), (maxValue*0.75), maxValue+1];
+      thresholds = [ Math.floor(maxValue*0.25), Math.floor(maxValue*0.50), Math.floor(maxValue*0.75), Math.floor(maxValue+1) ];
     }
 
     // Colour Scale

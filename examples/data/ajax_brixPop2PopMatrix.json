@@ -9,62 +9,62 @@
     {
       "ControllerSite": "aztw",
       "ResponderSite": "bagu",
-      "PacketLoss": "6"
+      "PacketLoss": "0"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "basl",
-      "PacketLoss": "6"
+      "PacketLoss": "1"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "belf",
-      "PacketLoss": "12"
+      "PacketLoss": "6"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "bmly",
-      "PacketLoss": "12"
+      "PacketLoss": "7"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brad",
-      "PacketLoss": "24"
+      "PacketLoss": "12"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brhm",
-      "PacketLoss": "24"
+      "PacketLoss": "13"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brig",
-      "PacketLoss": "48"
+      "PacketLoss": "24"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "brnt",
-      "PacketLoss": "48"
+      "PacketLoss": "25"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "cdif",
-      "PacketLoss": "0"
+      "PacketLoss": "48"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "cosh",
-      "PacketLoss": "0"
+      "PacketLoss": "49"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "croy",
-      "PacketLoss": "0"
+      "PacketLoss": "100"
     },
     {
       "ControllerSite": "aztw",
       "ResponderSite": "exe2",
-      "PacketLoss": "0"
+      "PacketLoss": "1000"
     },
     {
       "ControllerSite": "aztw",
