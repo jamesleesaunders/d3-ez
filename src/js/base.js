@@ -4,7 +4,7 @@
  * @example
  * @todo
  */
-d3.ez.chart = function module() {
+d3.ez.base = function module() {
   // SVG and Canvas containers (Populated by 'my' function)
   var svg;
   var canvas;
@@ -31,11 +31,10 @@ d3.ez.chart = function module() {
   var yAxisLabel = "";
 
   // Colours
-  var colors = d3.ez.colors.categorical(4);
-  var colorScale = d3.scale.ordinal();
+  var colorScale = undefined;
 
   // Dispatch (custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     canvasW = width - (margin.left + margin.right);
@@ -72,10 +71,6 @@ d3.ez.chart = function module() {
       chart.height(chart.height() - title.height());
     }
 
-    if (typeof chart.colors === "function") {
-      chart.colors(colors);
-    }
-
     // Init Credit Tag
     creditTag.text("d3ez.org").href("http://d3ez.org");
   }
@@ -88,12 +83,8 @@ d3.ez.chart = function module() {
       if (!svg) {
         svg = d3.select(this)
           .append("svg")
-          .classed(classed, true);
-
-        svg.attr({
-          width: width,
-          height: height
-        });
+          .classed(classed, true)
+          .attr({ width: width, height: height });
 
         canvas = svg.append("g").classed("canvas", true);
         canvas.append("g").classed("chartbox", true);
@@ -105,24 +96,17 @@ d3.ez.chart = function module() {
       }
 
       // Update the canvas dimensions
-      canvas.attr({
-          width: canvasW,
-          height: canvasH
-        })
-        .attr({
-          transform: "translate(" + margin.left + "," + margin.top + ")"
-        });
+      canvas.attr({ width: canvasW, height: canvasH})
+        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       // Add Chart
       canvas.select(".chartbox")
         .datum(data)
-        .attr({
-          transform: "translate(" + 0 + "," + chartTop + ")"
-        })
+        .attr({ transform: "translate(" + 0 + "," + chartTop + ")" })
         .call(chart);
 
       // Add Legend
-      if (legend) {
+      if (legend && (typeof chart.colorScale === "function" || typeof chart.sizeScale === "function")) {
         if (typeof chart.colorScale === "function") {
           legend.colorScale(chart.colorScale());
         }
@@ -130,26 +114,20 @@ d3.ez.chart = function module() {
           legend.sizeScale(chart.sizeScale());
         }
         canvas.select(".legendbox")
-          .attr({
-            transform: "translate(" + (canvasW - legend.width()) + "," + title.height() + ")"
-          })
+          .attr({ transform: "translate(" + (canvasW - legend.width()) + "," + title.height() + ")" })
           .call(legend);
       }
 
       // Add Title
       if (title) {
         canvas.select(".titlebox")
-          .attr({
-            transform: "translate(" + width / 2 + "," + 0 + ")"
-          })
+          .attr({transform: "translate(" + width / 2 + "," + 0 + ")"})
           .call(title);
       }
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr({
-          transform: "translate(" + (width - 20) + "," + (height - 20) + ")"
-        })
+        .attr({ transform: "translate(" + (width - 20) + "," + (height - 20) + ")" })
         .call(creditTag);
     });
   }
@@ -179,15 +157,15 @@ d3.ez.chart = function module() {
     return this;
   };
 
-  my.colors = function(_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
-
   my.title = function(_) {
     if (!arguments.length) return title;
-    title = _;
+    if (typeof _ === "string") {
+      console.log(_);
+      // If the caller has passed a plain string convert it to a title object.
+      title = d3.ez.title().mainText(_).subText('');
+    } else {
+      title = _;
+    }
     return this;
   };
 

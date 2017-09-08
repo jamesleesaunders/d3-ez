@@ -229,15 +229,15 @@ d3.ez.colors = {
     switch (scheme) {
       case 1:
         // Stephen Few - Show Me the Numbers Book
-        //    Blue        Orange    Green      Pink        L Brown    Purple   Dir Yello   Red         Black
+        //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
         return ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
       case 2:
         // Color Brewer - http://colorbrewer2.com/
-        //        Red       L.Blue     Green      Purple     Orange      Yellow    Brown      Pink         Grey
+        //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
         return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
       case 3:
         // Google Design - http://www.google.com/design/spec/style/color.html
-        //       D. Blue    Orange     L.Green     Purple     Yello       L.Blue       Red     D.Green     Brown
+        //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
         return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
       case 4:
         return (d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
@@ -333,6 +333,7 @@ d3.ez.legend = function module() {
   var sizeScale = undefined;
   var sizeLabel = null;
   var colorScale = undefined;
+  var colorLabel = null;
   var title = null;
   var width = 100;
   var height = 150;
@@ -366,8 +367,9 @@ d3.ez.legend = function module() {
       .style('font-weight', 'bold')
       .text(title);
 
+    var y = 10;
     // Size Key
-    if (typeof sizeScale != "undefined") {
+    if (typeof sizeScale !== "undefined") {
       // Calcualate a range of 5 numbers between min and max of range
       min = d3.min(sizeScale.range());
       max = d3.max(sizeScale.range());
@@ -375,8 +377,8 @@ d3.ez.legend = function module() {
       step = diff / 4;
       var range = [];
       range[0] = min;
-      for (j = 1; j < 5; j++) {
-        range[j] = range[j - 1] + step;
+      for (var s = 1; s < 5; s++) {
+        range[s] = range[s - 1] + step;
       }
       sizeScale.range(range);
 
@@ -386,37 +388,39 @@ d3.ez.legend = function module() {
       sizeKey = legendBox.append('g')
         .attr('transform', 'translate(5, 20)');
 
-      var i = 10;
-      for (index = 0; index < numElements; index++) {
+      for (var index = 0; index < numElements; index++) {
         sizeKey.append('circle')
           .attr('cx', 17)
-          .attr('cy', i)
+          .attr('cy', y)
           .attr('fill', 'lightgrey')
           .attr('stroke-width', '1px')
           .attr('stroke', 'grey')
           .attr('fill-opacity', 0.8)
           .attr('r', sizeScale.range()[index]);
+
+        text = keyScaleRange('size', index);
+
         sizeKey.append('text')
           .attr('x', 40)
-          .attr('y', i + 5)
-          .text(keyScaleRange('size', index));
+          .attr('y', y + 5)
+          .text(text);
 
-        i = i + (elementHeight + spacing);
+        y = y + (elementHeight + spacing);
       }
     }
 
     // Colour Key
-    if (typeof colorScale != 'undefined') {
+    if (typeof colorScale !== 'undefined') {
       numElements = colorScale.domain().length;
       elementHeight = ((height - 45) / numElements) - 5;
 
       colorKey = legendBox.append('g')
         .attr('transform', 'translate(5, 20)');
-      var i = 10;
-      for (index = 0; index < numElements; index++) {
+
+      for (var index = 0; index < numElements; index++) {
         colorKey.append('rect')
           .attr('x', 10)
-          .attr('y', i)
+          .attr('y', y)
           .attr('fill', colorScale.range()[index])
           .attr('stroke-width', '1px')
           .attr('stroke', 'grey')
@@ -424,11 +428,18 @@ d3.ez.legend = function module() {
           .attr('width', 20)
           .attr('height', elementHeight);
 
+        if ( !isNaN(colorScale.domain()[index]) ) {
+          // If the scale is a threshold scale.
+          text = keyScaleRange('threshold', index);
+        } else {
+          text = colorScale.domain()[index];
+        }
+
         colorKey.append('text')
           .attr('x', 40)
-          .attr('y', i + 10)
-          .text(colorScale.domain()[index]);
-        i = i + (elementHeight + spacing);
+          .attr('y', y + 10)
+          .text(text);
+        y = y + (elementHeight + spacing);
       }
     }
   }
@@ -447,6 +458,12 @@ d3.ez.legend = function module() {
         var domainMax = Math.max.apply(Math, colorScale.domain());
         var domainSize = domainMax - domainMin;
         var rangeLength = colorScale.range().length;
+        break;
+      case 'threshold':
+        min = colorScale.domain()[position];
+        max = colorScale.domain()[position+1]-1;
+        rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max );
+        return  rangeStr;
         break;
     }
     var rangeIncrement = domainSize / rangeLength;
@@ -482,6 +499,12 @@ d3.ez.legend = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colorLabel = function(_) {
+    if (!arguments.length) return colorLabel;
+    colorLabel = _;
     return my;
   };
 
