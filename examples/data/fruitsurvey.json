@@ -1,0 +1,102 @@
+[
+  {
+    "key": "Jim",
+    "values": [
+      {
+        "key": "Apples",
+        "value": 6
+      },
+      {
+        "key": "Oranges",
+        "value": 4
+      },
+      {
+        "key": "Pears",
+        "value": 3
+      },
+      {
+        "key": "Bananas",
+        "value": 0
+      },
+      {
+        "key": "Kiwi",
+        "value": 2
+      }
+    ]
+  },
+  {
+    "key": "Claire",
+    "values": [
+      {
+        "key": "Apples",
+        "value": 2
+      },
+      {
+        "key": "Oranges",
+        "value": 4
+      },
+      {
+        "key": "Pears",
+        "value": 1
+      },
+      {
+        "key": "Bananas",
+        "value": 3
+      },
+      {
+        "key": "Kiwi",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "key": "Beth",
+    "values": [
+      {
+        "key": "Apples",
+        "value": 5
+      },
+      {
+        "key": "Oranges",
+        "value": 2
+      },
+      {
+        "key": "Pears",
+        "value": 1
+      },
+      {
+        "key": "Bananas",
+        "value": 4
+      },
+      {
+        "key": "Kiwi",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "key": "Grace",
+    "values": [
+      {
+        "key": "Apples",
+        "value": 3
+      },
+      {
+        "key": "Oranges",
+        "value": 3
+      },
+      {
+        "key": "Pears",
+        "value": 1
+      },
+      {
+        "key": "Bananas",
+        "value": 5
+      },
+      {
+        "key": "Kiwi",
+        "value": 4
+      }
+    ]
+  }
+]
