@@ -9,7 +9,8 @@
     "chart",
     "graph",
     "data",
-    "svg"
+    "svg",
+    "dataviz"
   ],
   "homepage": "http://d3ez.org",
   "author": "James Saunders (james@saunders-family.net)",
