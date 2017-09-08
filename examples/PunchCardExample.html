@@ -14,139 +14,107 @@
 <div>Value: <span id="message"></span></div>
 
 <script type="text/javascript">
+  // Generate some data
   var _randomNum = function() {
     return Math.floor(Math.random() * 20);
   };
-  // Generate some data
   var data = [{
     key: "Apples",
     values: [{
       key: "2004",
       value: _randomNum()
-    },
-      {
-        key: "2005",
-        value: _randomNum()
-      },
-      {
-        key: "2006",
-        value: _randomNum()
-      },
-      {
-        key: "2007",
-        value: _randomNum()
-      },
-      {
-        key: "2008",
-        value: _randomNum()
-      },
-      {
-        key: "2009",
-        value: _randomNum()
-      },
-      {
-        key: "2010",
-        value: _randomNum()
-      }
-    ]
-  },
-    {
-      key: "Oranges",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      },
-        {
-          key: "2005",
-          value: _randomNum()
-        },
-        {
-          key: "2006",
-          value: _randomNum()
-        },
-        {
-          key: "2007",
-          value: _randomNum()
-        },
-        {
-          key: "2008",
-          value: _randomNum()
-        },
-        {
-          key: "2009",
-          value: _randomNum()
-        },
-        {
-          key: "2010",
-          value: _randomNum()
-        }
-      ]
-    },
-    {
-      key: "Pears",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      },
-        {
-          key: "2005",
-          value: _randomNum()
-        },
-        {
-          key: "2006",
-          value: _randomNum()
-        },
-        {
-          key: "2007",
-          value: _randomNum()
-        },
-        {
-          key: "2008",
-          value: _randomNum()
-        },
-        {
-          key: "2009",
-          value: _randomNum()
-        },
-        {
-          key: "2010",
-          value: _randomNum()
-        }
-      ]
-    },
-    {
-      key: "Kiwis",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      },
-        {
-          key: "2005",
-          value: _randomNum()
-        },
-        {
-          key: "2006",
-          value: _randomNum()
-        },
-        {
-          key: "2007",
-          value: _randomNum()
-        },
-        {
-          key: "2008",
-          value: _randomNum()
-        },
-        {
-          key: "2009",
-          value: _randomNum()
-        },
-        {
-          key: "2010",
-          value: _randomNum()
-        }
-      ]
-    }
-  ];
+    }, {
+      key: "2005",
+      value: _randomNum()
+    }, {
+      key: "2006",
+      value: _randomNum()
+    }, {
+      key: "2007",
+      value: _randomNum()
+    }, {
+      key: "2008",
+      value: _randomNum()
+    }, {
+      key: "2009",
+      value: _randomNum()
+    }, {
+      key: "2010",
+      value: _randomNum()
+    }]
+  }, {
+    key: "Oranges",
+    values: [{
+      key: "2004",
+      value: _randomNum()
+    }, {
+      key: "2005",
+      value: _randomNum()
+    }, {
+      key: "2006",
+      value: _randomNum()
+    }, {
+      key: "2007",
+      value: _randomNum()
+    }, {
+      key: "2008",
+      value: _randomNum()
+    }, {
+      key: "2009",
+      value: _randomNum()
+    }, {
+      key: "2010",
+      value: _randomNum()
+    }]
+  }, {
+    key: "Pears",
+    values: [{
+      key: "2004",
+      value: _randomNum()
+    }, {
+      key: "2005",
+      value: _randomNum()
+    }, {
+      key: "2006",
+      value: _randomNum()
+    }, {
+      key: "2007",
+      value: _randomNum()
+    }, {
+      key: "2008",
+      value: _randomNum()
+    }, {
+      key: "2009",
+      value: _randomNum()
+    }, {
+      key: "2010",
+      value: _randomNum()
+    }]
+  }, {
+    key: "Kiwis",
+    values: [{
+      key: "2004",
+      value: _randomNum()
+    }, {
+      key: "2005",
+      value: _randomNum()
+    }, {
+      key: "2006",
+      value: _randomNum()
+    }, {
+      key: "2007",
+      value: _randomNum()
+    }, {
+      key: "2008",
+      value: _randomNum()
+    }, {
+      key: "2009",
+      value: _randomNum()
+    }, {
+      key: "2010",
+      value: _randomNum()
+    }]
+  }];
 
   var chart = d3.ez.punchCard();
   var legend = d3.ez.legend().title("How small?");
