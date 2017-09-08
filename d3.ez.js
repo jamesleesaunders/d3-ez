@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.6.3",
+    version: "1.6.4",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -44,7 +44,7 @@ d3.ez.base = function module() {
     // Colours
     var colorScale = undefined;
     // Dispatch (custom events)
-    var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         canvasW = width - (margin.left + margin.right);
         canvasH = height - (margin.top + margin.bottom);
@@ -215,7 +215,7 @@ d3.ez.discreteBarChart = function module() {
     var yAxis = undefined;
     var colorScale = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
@@ -295,7 +295,7 @@ d3.ez.discreteBarChart = function module() {
                 },
                 y: chartH,
                 height: 0
-            }).on("mouseover", dispatch.customHover);
+            }).on("mouseover", dispatch.customMouseOver);
             bars.transition().ease(transition.ease).duration(transition.duration).attr({
                 width: barW,
                 x: function(d, i) {
@@ -398,7 +398,7 @@ d3.ez.groupedBarChart = function module() {
     var yAxis = undefined;
     var colorScale = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
@@ -476,7 +476,7 @@ d3.ez.groupedBarChart = function module() {
             var barGroup = chart.selectAll(".barGroup").data(data);
             barGroup.enter().append("g").attr("class", "barGroup").attr("transform", function(d, i) {
                 return "translate(" + xScale(d.key) + ", 0)";
-            }).on("mouseover", dispatch.customHover);
+            }).on("mouseover", dispatch.customMouseOver);
             // Add bars to group
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 series = [];
@@ -647,7 +647,7 @@ d3.ez.radialBarChart = function module() {
     var groupTotals = [];
     var maxValue = 0;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         // Bars
         keys = d3.values(data)[1].map(function(d) {
@@ -730,7 +730,7 @@ d3.ez.radialBarChart = function module() {
             segments.enter().append("path").style("fill", function(d, i) {
                 if (!colors) return;
                 return colors[i % colors.length];
-            }).classed("segment", true).on("mouseover", dispatch.customHover);
+            }).classed("segment", true).on("mouseover", dispatch.customMouseOver);
             segments.exit().remove();
             segments.transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             // Spokes
@@ -843,11 +843,11 @@ d3.ez.circularHeatChart = function module() {
         duration: 500
     };
     var classed = "circularHeatChart";
-    var colors = [ "white", "orange" ];
+    var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     var radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
     var innerRadius = 50;
     // Data Options (Populated by 'init' function)
-    var domain = undefined;
+    var thresholds = undefined;
     var radialLabels = [];
     var numRadials = 24;
     var segmentLabels = [];
@@ -856,7 +856,7 @@ d3.ez.circularHeatChart = function module() {
     var maxValue = 0;
     var colorScale = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         radialLabels = data.map(function(d) {
             return d.key;
@@ -867,13 +867,18 @@ d3.ez.circularHeatChart = function module() {
         });
         numSegments = segmentLabels.length;
         segmentHeight = (radius - innerRadius) / numRadials;
+        // Calculate the Max Value
         d3.map(data).values().forEach(function(d) {
             d.values.forEach(function(d) {
                 maxValue = d.value > maxValue ? d.value : maxValue;
             });
         });
-        domain = [ 0, maxValue ];
-        colorScale = d3.scale.linear().domain(domain).range(colors);
+        // If thresholds values are not already set attempt to auto-calculate some thresholds
+        if (!thresholds) {
+            thresholds = [ Math.floor(maxValue * .25), Math.floor(maxValue * .5), Math.floor(maxValue * .75), Math.floor(maxValue + 1) ];
+        }
+        // Colour Scale
+        colorScale = d3.scale.threshold().domain(thresholds).range(colors);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -918,7 +923,7 @@ d3.ez.circularHeatChart = function module() {
                 return (i + 1) * 2 * Math.PI / numSegments;
             });
             // Rings
-            chart.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true).on("mouseover", dispatch.customHover);
+            chart.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true).on("mouseover", dispatch.customMouseOver);
             // Ring Segments
             chart.selectAll(".ring").selectAll("path").data(function(d, i) {
                 // Add index (used to calculate ring number)
@@ -1058,7 +1063,7 @@ d3.ez.tabularHeatChart = function module() {
     var rowNames = [];
     var colorScale = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         // Group and Category Names
         colNames = data.map(function(d) {
@@ -1271,7 +1276,7 @@ d3.ez.donutChart = function module() {
     var outerArc = undefined;
     var key = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         values = d3.values(data)[1].map(function(d) {
             return d.value;
@@ -1339,7 +1344,7 @@ d3.ez.donutChart = function module() {
                 return colorScale(data.values[i].key);
             }).attr("d", arc).each(function(d) {
                 this._current = d;
-            }).on("mouseover", dispatch.customHover);
+            }).on("mouseover", dispatch.customMouseOver);
             slices.transition().ease(transition.ease).duration(transition.duration).attrTween("d", arcTween);
             slices.exit().remove();
             // Labels
@@ -1487,7 +1492,7 @@ d3.ez.punchCard = function module() {
     var valDomain;
     var rowHeight;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
@@ -1569,7 +1574,7 @@ d3.ez.punchCard = function module() {
                     return sizeScale(d["value"]);
                 }).attr("class", "punchSpot").style("fill", function(d) {
                     return colorScale(d["value"]);
-                });
+                }).on("mouseover", dispatch.customMouseOver);
                 var text = g.selectAll("text").data(data[j]["values"]).enter().append("text").attr("y", chartH - rowHeight * 2 - j * rowHeight + rowHeight).attr("x", function(d, i) {
                     return xScale(d["key"]);
                 }).attr("text-anchor", "middle").attr("dominant-baseline", "central").attr("class", "punchValue").text(function(d) {
@@ -1585,7 +1590,6 @@ d3.ez.punchCard = function module() {
         var g = d3.select(this).node().parentNode;
         d3.select(g).selectAll("circle").style("display", "none");
         d3.select(g).selectAll("text.punchValue").style("display", "block");
-        dispatch.customHover(d);
     }
     function mouseout(d) {
         var g = d3.select(this).node().parentNode;
@@ -1686,7 +1690,7 @@ d3.ez.timeSeriesChart = function module() {
     var chartW = 0;
     var chartH = 0;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
@@ -1817,7 +1821,7 @@ d3.ez.htmlTable = function module() {
     var rowNames = undefined;
     var columnNames = [];
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         // Cut the data in different ways....
         rowNames = data.map(function(d) {
@@ -1855,7 +1859,7 @@ d3.ez.htmlTable = function module() {
             // Add table body
             rows = body.selectAll("tr").data(data).enter().append("tr").attr("class", function(d) {
                 return d.key;
-            }).on("mouseover", dispatch.customHover);
+            }).on("mouseover", dispatch.customMouseOver);
             // Add the first column of headings (categories)
             rows.append("th").html(function(d) {
                 return d.key;
@@ -1901,7 +1905,7 @@ d3.ez.htmlList = function module() {
     // Default Options (Configurable via setters)
     var classed = "htmlList";
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customHover");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
         selection.each(function(data) {
             // Create HTML List 'ul' element (if it does not exist already)
@@ -1915,7 +1919,7 @@ d3.ez.htmlList = function module() {
             }).on("click", expand);
             function expand(d) {
                 d3.event.stopPropagation();
-                dispatch.customHover(d);
+                dispatch.customMouseOver(d);
                 if (typeof d.values === "undefined") {
                     return 0;
                 }
