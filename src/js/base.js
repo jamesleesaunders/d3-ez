@@ -160,7 +160,6 @@ d3.ez.base = function module() {
   my.title = function(_) {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
-      console.log(_);
       // If the caller has passed a plain string convert it to a title object.
       title = d3.ez.title().mainText(_).subText('');
     } else {
