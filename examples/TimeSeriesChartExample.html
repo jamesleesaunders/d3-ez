@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>D3.EZ : Reusable Time Series Chart Example</title>
+  <title>D3.EZ : Time Series Chart Example</title>
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="../src/d3.ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
@@ -38,7 +38,7 @@
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    // Create Punchcard object
+    // Create chart object
     var chart = d3.ez.timeSeriesChart()
       .x(function(d) {
         return formatDate.parse(d.date);
