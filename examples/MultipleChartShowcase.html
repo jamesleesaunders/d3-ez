@@ -2,26 +2,26 @@
 <html>
 
 <head>
-    <title>D3.EZ : Showcase</title>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="../src/d3.ez.js"></script>
-    <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <title>D3.EZ : Showcase</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
 <body>
-<div id="chartholder1"></div>
-<div id="chartholder2"></div>
-<div id="chartholder3"></div>
-<div id="chartholder4"></div>
-<div id="chartholder5"></div>
-<div id="chartholder6"></div>
-<div id="chartholder7"></div>
-<div id="chartholder8"></div>
+  <div id="chartholder1"></div>
+  <div id="chartholder2"></div>
+  <div id="chartholder3"></div>
+  <div id="chartholder4"></div>
+  <div id="chartholder5"></div>
+  <div id="chartholder6"></div>
+  <div id="chartholder7"></div>
+  <div id="chartholder8"></div>
 
-<script type="text/javascript">
+  <script type="text/javascript">
   // Generate some sample data
   var request = new XMLHttpRequest();
-  request.open("GET", "data/fruit.json", false);
+  request.open("GET", "data/fruitsurvey.json", false);
   request.send(null);
   var data = JSON.parse(request.responseText);
   console.log(data);
@@ -145,16 +145,15 @@
       .call(myChart8);
   }
 
-  update1(data);     // htmlTable
-  update2(data[0]);  // discreteBarChart
-  update3(data[0]);  // donutChart
-  update4(data[0]);  // radialBarChart
-  update5(data);     // groupedBarChart
-  update6(data);     // circularHeatChart
-  update7(data);     // tabularHeatChart
-  update8(data);     // punchCard
-
-</script>
+  update1(data); // htmlTable
+  update2(data[0]); // discreteBarChart
+  update3(data[0]); // donutChart
+  update4(data[0]); // radialBarChart
+  update5(data); // groupedBarChart
+  update6(data); // circularHeatChart
+  update7(data); // tabularHeatChart
+  update8(data); // punchCard
+  </script>
 </body>
 
 </html>

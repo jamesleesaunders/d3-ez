@@ -428,7 +428,7 @@ d3.ez.legend = function module() {
           .attr('width', 20)
           .attr('height', elementHeight);
 
-        if ( !isNaN(colorScale.domain()[index]) ) {
+        if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
           text = keyScaleRange('threshold', index);
         } else {
@@ -461,9 +461,9 @@ d3.ez.legend = function module() {
         break;
       case 'threshold':
         min = colorScale.domain()[position];
-        max = colorScale.domain()[position+1]-1;
-        rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max );
-        return  rangeStr;
+        max = colorScale.domain()[position + 1] - 1;
+        rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max);
+        return rangeStr;
         break;
     }
     var rangeIncrement = domainSize / rangeLength;

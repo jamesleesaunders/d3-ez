@@ -96,7 +96,7 @@ d3.ez.base = function module() {
       }
 
       // Update the canvas dimensions
-      canvas.attr({ width: canvasW, height: canvasH})
+      canvas.attr({ width: canvasW, height: canvasH })
         .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       // Add Chart
@@ -121,7 +121,7 @@ d3.ez.base = function module() {
       // Add Title
       if (title) {
         canvas.select(".titlebox")
-          .attr({transform: "translate(" + width / 2 + "," + 0 + ")"})
+          .attr({ transform: "translate(" + width / 2 + "," + 0 + ")" })
           .call(title);
       }
 

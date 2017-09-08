@@ -18,7 +18,7 @@ d3.ez.tabularHeatChart = function module() {
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
   var transition = { ease: "bounce", duration: 500 };
   var classed = "tabularHeatChart";
-  var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
+  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Data Options (Populated by 'init' function)
   var thresholds = undefined;
@@ -81,7 +81,7 @@ d3.ez.tabularHeatChart = function module() {
     if (!thresholds) {
       minValue = d3.min(values);
       maxValue = d3.max(values);
-      thresholds = [ Math.floor(maxValue*0.25), Math.floor(maxValue*0.50), Math.floor(maxValue*0.75), Math.floor(maxValue+1) ];
+      thresholds = [Math.floor(maxValue * 0.25), Math.floor(maxValue * 0.50), Math.floor(maxValue * 0.75), Math.floor(maxValue + 1)];
     }
 
     // Colour Scale
@@ -99,7 +99,7 @@ d3.ez.tabularHeatChart = function module() {
       if (!svg) {
         svg = (function(selection) {
           var el = selection[0][0];
-          if (!! el.ownerSVGElement || el.tagName === "svg") {
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
             return selection.append("svg");
@@ -119,7 +119,7 @@ d3.ez.tabularHeatChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height})
+        .attr({ width: width, height: height })
         .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
       var deck = chart.select(".cards")

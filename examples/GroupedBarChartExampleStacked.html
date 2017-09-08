@@ -2,105 +2,104 @@
 <html>
 
 <head>
-    <title>D3.EZ : Grouped Bar Chart (Stacked) Example</title>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="../src/d3.ez.js"></script>
-    <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <title>D3.EZ : Grouped Bar Chart (Stacked) Example</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
 <body>
-<div id="chartholder"></div>
-<br/>
-<div>Value: <span id="message"></span></div>
+  <div id="chartholder"></div>
+  <br/>
+  <div>Value: <span id="message"></span></div>
 
-<script type="text/javascript">
-  // Generate some data
-  var data = [{
-    "key": "Jim",
-    "values": [{
-      "key": "Apples",
-      "value": 4
+  <script type="text/javascript">
+    // Generate some data
+    var data = [{
+      "key": "Jim",
+      "values": [{
+        "key": "Apples",
+        "value": 4
+      }, {
+        "key": "Oranges",
+        "value": 3
+      }, {
+        "key": "Pears",
+        "value": 1
+      }, {
+        "key": "Bananas",
+        "value": 0
+      }]
     }, {
-      "key": "Oranges",
-      "value": 3
+      "key": "Claire",
+      "values": [{
+        "key": "Apples",
+        "value": 3
+      }, {
+        "key": "Oranges",
+        "value": 1
+      }, {
+        "key": "Pears",
+        "value": 2
+      }, {
+        "key": "Bananas",
+        "value": 2
+      }]
     }, {
-      "key": "Pears",
-      "value": 1
+      "key": "Beth",
+      "values": [{
+        "key": "Apples",
+        "value": 5
+      }, {
+        "key": "Oranges",
+        "value": 2
+      }, {
+        "key": "Pears",
+        "value": 4
+      }, {
+        "key": "Bananas",
+        "value": 1
+      }]
     }, {
-      "key": "Bananas",
-      "value": 0
-    }]
-  }, {
-    "key": "Claire",
-    "values": [{
-      "key": "Apples",
-      "value": 3
-    }, {
-      "key": "Oranges",
-      "value": 1
-    }, {
-      "key": "Pears",
-      "value": 2
-    }, {
-      "key": "Bananas",
-      "value": 2
-    }]
-  }, {
-    "key": "Beth",
-    "values": [{
-      "key": "Apples",
-      "value": 5
-    }, {
-      "key": "Oranges",
-      "value": 2
-    }, {
-      "key": "Pears",
-      "value": 4
-    }, {
-      "key": "Bananas",
-      "value": 1
-    }]
-  }, {
-    "key": "Grace",
-    "values": [{
-      "key": "Apples",
-      "value": 1
-    }, {
-      "key": "Oranges",
-      "value": 4
-    }, {
-      "key": "Pears",
-      "value": 2
-    }, {
-      "key": "Bananas",
-      "value": 3
-    }]
-  }];
+      "key": "Grace",
+      "values": [{
+        "key": "Apples",
+        "value": 1
+      }, {
+        "key": "Oranges",
+        "value": 4
+      }, {
+        "key": "Pears",
+        "value": 2
+      }, {
+        "key": "Bananas",
+        "value": 3
+      }]
+    }];
 
-  var chart = d3.ez.groupedBarChart()
-    .yAxisLabel("Number")
-    .groupType("stacked")
-    .colors(d3.ez.colors.categorical(1));
-  var legend = d3.ez.legend().title("Top 10");
-  var title = d3.ez.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
+    var chart = d3.ez.groupedBarChart()
+      .yAxisLabel("Number")
+      .groupType("stacked")
+      .colors(d3.ez.colors.categorical(1));
+    var legend = d3.ez.legend().title("Top 10");
+    var title = d3.ez.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
 
-  // Create chart object
-  var myChart = d3.ez.base()
-    .width(750)
-    .height(400)
-    .chart(chart)
-    .legend(legend)
-    .title(title)
-    .on("customMouseOver", function(d, i) {
-      d3.select("#message").text(d.key);
-    });
+    // Create chart object
+    var myChart = d3.ez.base()
+      .width(750)
+      .height(400)
+      .chart(chart)
+      .legend(legend)
+      .title(title)
+      .on("customMouseOver", function(d, i) {
+        d3.select("#message").text(d.key);
+      });
 
-  // Add to page
-  d3.select("#chartholder")
-    .datum(data)
-    .call(myChart);
-
-</script>
+    // Add to page
+    d3.select("#chartholder")
+      .datum(data)
+      .call(myChart);
+  </script>
 </body>
 
 </html>

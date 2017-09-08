@@ -2,54 +2,53 @@
 <html>
 
 <head>
-    <title>D3.EZ : Tabular Heat Chart Example</title>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="../src/d3.ez.js"></script>
-    <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <title>D3.EZ : Tabular Heat Chart Example</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
 <body>
-<div id="chartholder"></div>
-<br/>
-<div>Value: <span id="message"></span></div>
+  <div id="chartholder"></div>
+  <br/>
+  <div>Value: <span id="message"></span></div>
 
-<script type="text/javascript">
-  d3.json("data/town2town.json", function(error, data) {
+  <script type="text/javascript">
+    d3.json("data/town2town.json", function(error, data) {
 
-    var graphData = d3.nest().key(function(d) {
-      return d.TownA;
-    }).entries(data.Data).map(function(obj) {
-      obj.values = obj.values.map(function(values) {
-        return {
-          key: values.TownB,
-          value: values.Value
-        };
+      var graphData = d3.nest().key(function(d) {
+        return d.TownA;
+      }).entries(data.Data).map(function(obj) {
+        obj.values = obj.values.map(function(values) {
+          return {
+            key: values.TownB,
+            value: values.Value
+          };
+        });
+        return obj;
       });
-      return obj;
+
+      var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
+      var chart = d3.ez.tabularHeatChart().colors(colors);
+      var legend = d3.ez.legend().title('Widget Counts');
+      var title = d3.ez.title().mainText(data.Metadata.Title).subText(data.Metadata.Detail);
+
+      // Create chart object
+      var myChart = d3.ez.base()
+        .width(750)
+        .height(550)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customMouseOver", function(d, i) {
+          d3.select("#message").text(d.value);
+        });
+
+      d3.select('#chartholder')
+        .datum(graphData)
+        .call(myChart);
     });
-
-    var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
-    var chart = d3.ez.tabularHeatChart().colors(colors);
-    var legend = d3.ez.legend().title('Widget Counts');
-    var title = d3.ez.title().mainText(data.Metadata.Title).subText(data.Metadata.Detail);
-
-    // Create chart object
-    var myChart = d3.ez.base()
-      .width(750)
-      .height(550)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
-      .on("customMouseOver", function(d, i) {
-        d3.select("#message").text(d.value);
-      });
-
-    d3.select('#chartholder')
-      .datum(graphData)
-      .call(myChart);
-  });
-
-</script>
+  </script>
 </body>
 
 </html>

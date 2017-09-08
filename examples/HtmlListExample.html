@@ -2,171 +2,170 @@
 <html>
 
 <head>
-    <title>D3.EZ : HTML List Example</title>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="../src/d3.ez.js"></script>
-    <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <title>D3.EZ : HTML List Example</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
 <body>
-<div id="listholder"></div>
+  <div id="listholder"></div>
 
-<script type="text/javascript">
-  // Example Data (1 Level Deep)
-  var L1 = {
-    "key": "Languages",
-    "values": [{
-      "key": "JavaScript",
-      "value": 8
-    }, {
-      "key": "C++",
-      "value": 3
-    }, {
-      "key": "Java",
-      "value": 7
-    }, {
-      "key": "Ruby",
-      "value": 2
-    }, {
-      "key": "Python",
-      "value": 9
-    }, {
-      "key": "PHP",
-      "value": 7
-    }, {
-      "key": "Perl",
-      "value": 0
-    }, {
-      "key": "Basic",
-      "value": 1
-    }, {
-      "key": "Assembly",
-      "value": 3
-    }]
-  };
-
-  // Example Data (2 Levels Deep)
-  var L2 = [{
-    "key": "Jim",
-    "values": [{
-      "key": "Apples",
-      "value": 4
-    }, {
-      "key": "Oranges",
-      "value": 3
-    }, {
-      "key": "Pears",
-      "value": 1
-    }, {
-      "key": "Bananas",
-      "value": 0
-    }]
-  }, {
-    "key": "Claire",
-    "values": [{
-      "key": "Apples",
-      "value": 3
-    }, {
-      "key": "Oranges",
-      "value": 1
-    }, {
-      "key": "Pears",
-      "value": 2
-    }, {
-      "key": "Bananas",
-      "value": 2
-    }]
-  }, {
-    "key": "Beth",
-    "values": [{
-      "key": "Apples",
-      "value": 5
-    }, {
-      "key": "Oranges",
-      "value": 2
-    }, {
-      "key": "Pears",
-      "value": 4
-    }, {
-      "key": "Bananas",
-      "value": 1
-    }]
-  }, {
-    "key": "Grace",
-    "values": [{
-      "key": "Apples",
-      "value": 1
-    }, {
-      "key": "Oranges",
-      "value": 4
-    }, {
-      "key": "Pears",
-      "value": 2
-    }, {
-      "key": "Bananas",
-      "value": 3
-    }]
-  }];
-
-  // Example Data (3 Levels Deep)
-  var L3 = [{
-    "key": "Plants",
-    "values": [{
-      "key": "Cryptogamia",
+  <script type="text/javascript">
+    // Example Data (1 Level Deep)
+    var L1 = {
+      "key": "Languages",
       "values": [{
-        "key": "Thallophyta",
-        "values": [{
-          "key": "Bacteria",
-          "value": 21
-        }, {
-          "key": "Algae",
-          "value": 32
-        }, {
-          "key": "Fungi",
-          "value": 43
-        }, {
-          "key": "Lichens",
-          "value": 54
-        }]
+        "key": "JavaScript",
+        "value": 8
       }, {
-        "key": "Bryophyta",
-        "value": 23
+        "key": "C++",
+        "value": 3
       }, {
-        "key": "Pteridophyta",
-        "value": 34
+        "key": "Java",
+        "value": 7
+      }, {
+        "key": "Ruby",
+        "value": 2
+      }, {
+        "key": "Python",
+        "value": 9
+      }, {
+        "key": "PHP",
+        "value": 7
+      }, {
+        "key": "Perl",
+        "value": 0
+      }, {
+        "key": "Basic",
+        "value": 1
+      }, {
+        "key": "Assembly",
+        "value": 3
+      }]
+    };
+
+    // Example Data (2 Levels Deep)
+    var L2 = [{
+      "key": "Jim",
+      "values": [{
+        "key": "Apples",
+        "value": 4
+      }, {
+        "key": "Oranges",
+        "value": 3
+      }, {
+        "key": "Pears",
+        "value": 1
+      }, {
+        "key": "Bananas",
+        "value": 0
       }]
     }, {
-      "key": "Phanerogamia",
+      "key": "Claire",
       "values": [{
-        "key": "Gymnospermae",
-        "value": 19
+        "key": "Apples",
+        "value": 3
       }, {
-        "key": "Angiospermae",
+        "key": "Oranges",
+        "value": 1
+      }, {
+        "key": "Pears",
+        "value": 2
+      }, {
+        "key": "Bananas",
+        "value": 2
+      }]
+    }, {
+      "key": "Beth",
+      "values": [{
+        "key": "Apples",
+        "value": 5
+      }, {
+        "key": "Oranges",
+        "value": 2
+      }, {
+        "key": "Pears",
+        "value": 4
+      }, {
+        "key": "Bananas",
+        "value": 1
+      }]
+    }, {
+      "key": "Grace",
+      "values": [{
+        "key": "Apples",
+        "value": 1
+      }, {
+        "key": "Oranges",
+        "value": 4
+      }, {
+        "key": "Pears",
+        "value": 2
+      }, {
+        "key": "Bananas",
+        "value": 3
+      }]
+    }];
+
+    // Example Data (3 Levels Deep)
+    var L3 = [{
+      "key": "Plants",
+      "values": [{
+        "key": "Cryptogamia",
         "values": [{
-          "key": "Monocots",
+          "key": "Thallophyta",
+          "values": [{
+            "key": "Bacteria",
+            "value": 21
+          }, {
+            "key": "Algae",
+            "value": 32
+          }, {
+            "key": "Fungi",
+            "value": 43
+          }, {
+            "key": "Lichens",
+            "value": 54
+          }]
+        }, {
+          "key": "Bryophyta",
+          "value": 23
+        }, {
+          "key": "Pteridophyta",
           "value": 34
+        }]
+      }, {
+        "key": "Phanerogamia",
+        "values": [{
+          "key": "Gymnospermae",
+          "value": 19
         }, {
-          "key": "Dicots",
-          "value": 20
+          "key": "Angiospermae",
+          "values": [{
+            "key": "Monocots",
+            "value": 34
+          }, {
+            "key": "Dicots",
+            "value": 20
+          }]
         }]
       }]
-    }]
-  }];
+    }];
 
 
-  // Create chart object
-  var myList = d3.ez.htmlList()
-    .classed("htmlList")
-    .on("customMouseOver", function(d, i) {
-      console.log(d);
-    });
+    // Create chart object
+    var myList = d3.ez.htmlList()
+      .classed("htmlList")
+      .on("customMouseOver", function(d, i) {
+        console.log(d);
+      });
 
-  // Add to page
-  d3.select("#listholder")
-    .datum(L3)
-    .call(myList);
-
-</script>
+    // Add to page
+    d3.select("#listholder")
+      .datum(L3)
+      .call(myList);
+  </script>
 </body>
 
 </html>

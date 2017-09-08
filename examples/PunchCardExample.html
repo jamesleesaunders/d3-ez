@@ -2,140 +2,139 @@
 <html>
 
 <head>
-    <title>D3.EZ : Punchcard Example</title>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="../src/d3.ez.js"></script>
-    <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <title>D3.EZ : Punchcard Example</title>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="../src/d3.ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
 <body>
-<div id="chartholder"></div>
-<br/>
-<div>Value: <span id="message"></span></div>
+  <div id="chartholder"></div>
+  <br/>
+  <div>Value: <span id="message"></span></div>
 
-<script type="text/javascript">
-  // Generate some data
-  var _randomNum = function() {
-    return Math.floor(Math.random() * 20);
-  };
-  var data = [{
-    key: "Apples",
-    values: [{
-      key: "2004",
-      value: _randomNum()
+  <script type="text/javascript">
+    // Generate some data
+    var _randomNum = function() {
+      return Math.floor(Math.random() * 20);
+    };
+    var data = [{
+      key: "Apples",
+      values: [{
+        key: "2004",
+        value: _randomNum()
+      }, {
+        key: "2005",
+        value: _randomNum()
+      }, {
+        key: "2006",
+        value: _randomNum()
+      }, {
+        key: "2007",
+        value: _randomNum()
+      }, {
+        key: "2008",
+        value: _randomNum()
+      }, {
+        key: "2009",
+        value: _randomNum()
+      }, {
+        key: "2010",
+        value: _randomNum()
+      }]
     }, {
-      key: "2005",
-      value: _randomNum()
+      key: "Oranges",
+      values: [{
+        key: "2004",
+        value: _randomNum()
+      }, {
+        key: "2005",
+        value: _randomNum()
+      }, {
+        key: "2006",
+        value: _randomNum()
+      }, {
+        key: "2007",
+        value: _randomNum()
+      }, {
+        key: "2008",
+        value: _randomNum()
+      }, {
+        key: "2009",
+        value: _randomNum()
+      }, {
+        key: "2010",
+        value: _randomNum()
+      }]
     }, {
-      key: "2006",
-      value: _randomNum()
+      key: "Pears",
+      values: [{
+        key: "2004",
+        value: _randomNum()
+      }, {
+        key: "2005",
+        value: _randomNum()
+      }, {
+        key: "2006",
+        value: _randomNum()
+      }, {
+        key: "2007",
+        value: _randomNum()
+      }, {
+        key: "2008",
+        value: _randomNum()
+      }, {
+        key: "2009",
+        value: _randomNum()
+      }, {
+        key: "2010",
+        value: _randomNum()
+      }]
     }, {
-      key: "2007",
-      value: _randomNum()
-    }, {
-      key: "2008",
-      value: _randomNum()
-    }, {
-      key: "2009",
-      value: _randomNum()
-    }, {
-      key: "2010",
-      value: _randomNum()
-    }]
-  }, {
-    key: "Oranges",
-    values: [{
-      key: "2004",
-      value: _randomNum()
-    }, {
-      key: "2005",
-      value: _randomNum()
-    }, {
-      key: "2006",
-      value: _randomNum()
-    }, {
-      key: "2007",
-      value: _randomNum()
-    }, {
-      key: "2008",
-      value: _randomNum()
-    }, {
-      key: "2009",
-      value: _randomNum()
-    }, {
-      key: "2010",
-      value: _randomNum()
-    }]
-  }, {
-    key: "Pears",
-    values: [{
-      key: "2004",
-      value: _randomNum()
-    }, {
-      key: "2005",
-      value: _randomNum()
-    }, {
-      key: "2006",
-      value: _randomNum()
-    }, {
-      key: "2007",
-      value: _randomNum()
-    }, {
-      key: "2008",
-      value: _randomNum()
-    }, {
-      key: "2009",
-      value: _randomNum()
-    }, {
-      key: "2010",
-      value: _randomNum()
-    }]
-  }, {
-    key: "Kiwis",
-    values: [{
-      key: "2004",
-      value: _randomNum()
-    }, {
-      key: "2005",
-      value: _randomNum()
-    }, {
-      key: "2006",
-      value: _randomNum()
-    }, {
-      key: "2007",
-      value: _randomNum()
-    }, {
-      key: "2008",
-      value: _randomNum()
-    }, {
-      key: "2009",
-      value: _randomNum()
-    }, {
-      key: "2010",
-      value: _randomNum()
-    }]
-  }];
+      key: "Kiwis",
+      values: [{
+        key: "2004",
+        value: _randomNum()
+      }, {
+        key: "2005",
+        value: _randomNum()
+      }, {
+        key: "2006",
+        value: _randomNum()
+      }, {
+        key: "2007",
+        value: _randomNum()
+      }, {
+        key: "2008",
+        value: _randomNum()
+      }, {
+        key: "2009",
+        value: _randomNum()
+      }, {
+        key: "2010",
+        value: _randomNum()
+      }]
+    }];
 
-  var chart = d3.ez.punchCard();
-  var legend = d3.ez.legend().title("How small?");
-  var title = d3.ez.title().mainText("Punch Example").subText("Punchcard example sub-title");
+    var chart = d3.ez.punchCard();
+    var legend = d3.ez.legend().title("How small?");
+    var title = d3.ez.title().mainText("Punch Example").subText("Punchcard example sub-title");
 
-  // Create chart object
-  var myChart = d3.ez.base()
-    .width(750)
-    .height(400)
-    .chart(chart)
-    .legend(legend)
-    .title(title)
-    .on("customMouseOver", function(d, i) {
-      d3.select("#message").text(d.value);
-    });
+    // Create chart object
+    var myChart = d3.ez.base()
+      .width(750)
+      .height(400)
+      .chart(chart)
+      .legend(legend)
+      .title(title)
+      .on("customMouseOver", function(d, i) {
+        d3.select("#message").text(d.value);
+      });
 
-  d3.select('#chartholder')
-    .datum(data)
-    .call(myChart);
-
-</script>
+    d3.select('#chartholder')
+      .datum(data)
+      .call(myChart);
+  </script>
 </body>
 
 </html>

@@ -20,7 +20,7 @@ d3.ez.circularHeatChart = function module() {
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: "bounce", duration: 500 };
   var classed = "circularHeatChart";
-  var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
+  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
   var innerRadius = 50;
 
@@ -59,7 +59,7 @@ d3.ez.circularHeatChart = function module() {
 
     // If thresholds values are not already set attempt to auto-calculate some thresholds
     if (!thresholds) {
-      thresholds = [ Math.floor(maxValue*0.25), Math.floor(maxValue*0.50), Math.floor(maxValue*0.75), Math.floor(maxValue+1) ];
+      thresholds = [Math.floor(maxValue * 0.25), Math.floor(maxValue * 0.50), Math.floor(maxValue * 0.75), Math.floor(maxValue + 1)];
     }
 
     // Colour Scale

@@ -24,7 +24,7 @@
     {
       "TownA": "aztw",
       "TownB": "bmly",
-      "Value": "7"
+      "Value": "0"
     },
     {
       "TownA": "aztw",
@@ -519,12 +519,12 @@
     {
       "TownA": "basl",
       "TownB": "popl",
-      "Value": "0"
+      "Value": "20"
     },
     {
       "TownA": "basl",
       "TownB": "pres",
-      "Value": "0"
+      "Value": "6"
     },
     {
       "TownA": "basl",
@@ -594,17 +594,17 @@
     {
       "TownA": "belf",
       "TownB": "brig",
-      "Value": "0"
+      "Value": "5"
     },
     {
       "TownA": "belf",
       "TownB": "brnt",
-      "Value": "0"
+      "Value": "5"
     },
     {
       "TownA": "belf",
       "TownB": "cdif",
-      "Value": "0"
+      "Value": "5"
     },
     {
       "TownA": "belf",
@@ -804,17 +804,17 @@
     {
       "TownA": "bmly",
       "TownB": "exe2",
-      "Value": "0"
+      "Value": "8"
     },
     {
       "TownA": "bmly",
       "TownB": "gate",
-      "Value": "0"
+      "Value": "100"
     },
     {
       "TownA": "bmly",
       "TownB": "glfd",
-      "Value": "0"
+      "Value": "60"
     },
     {
       "TownA": "bmly",
@@ -1789,12 +1789,12 @@
     {
       "TownA": "cdif",
       "TownB": "nott",
-      "Value": "0"
+      "Value": "90"
     },
     {
       "TownA": "cdif",
       "TownB": "nrth",
-      "Value": "0"
+      "Value": "8"
     },
     {
       "TownA": "cdif",
@@ -1874,7 +1874,7 @@
     {
       "TownA": "cosh",
       "TownB": "belf",
-      "Value": "0"
+      "Value": "16"
     },
     {
       "TownA": "cosh",
@@ -2029,7 +2029,7 @@
     {
       "TownA": "cosh",
       "TownB": "uddi",
-      "Value": "0"
+      "Value": "2"
     },
     {
       "TownA": "cosh",
@@ -2514,22 +2514,22 @@
     {
       "TownA": "gate",
       "TownB": "lutn",
-      "Value": "0"
+      "Value": "20"
     },
     {
       "TownA": "gate",
       "TownB": "manc",
-      "Value": "0"
+      "Value": "20"
     },
     {
       "TownA": "gate",
       "TownB": "midd",
-      "Value": "0"
+      "Value": "1"
     },
     {
       "TownA": "gate",
       "TownB": "nott",
-      "Value": "0"
+      "Value": "1"
     },
     {
       "TownA": "gate",
@@ -2619,7 +2619,7 @@
     {
       "TownA": "glfd",
       "TownB": "bmly",
-      "Value": "0"
+      "Value": "1"
     },
     {
       "TownA": "glfd",
@@ -4169,7 +4169,7 @@
     {
       "TownA": "manc",
       "TownB": "hudd",
-      "Value": "0"
+      "Value": "21"
     },
     {
       "TownA": "manc",
@@ -4229,7 +4229,7 @@
     {
       "TownA": "manc",
       "TownB": "renf",
-      "Value": "0"
+      "Value": "25"
     },
     {
       "TownA": "manc",
@@ -4259,7 +4259,7 @@
     {
       "TownA": "manc",
       "TownB": "wolv",
-      "Value": "0"
+      "Value": "100"
     },
     {
       "TownA": "midd",
@@ -5234,7 +5234,7 @@
     {
       "TownA": "pete",
       "TownB": "cdif",
-      "Value": "0"
+      "Value": "80"
     },
     {
       "TownA": "pete",
