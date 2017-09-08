@@ -97,7 +97,10 @@
 
 		// Create Column Chart object
 		var myTable = d3.ez.htmlTable()
-			.width(600);
+			.width(600)
+			.on("customMouseOver", function(d, i) {
+				console.log(d);
+			});
 
 		// Add to page
 		d3.select("#tableholder")

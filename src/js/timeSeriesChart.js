@@ -36,7 +36,7 @@ d3.ez.timeSeriesChart = function module() {
   var chartH = 0;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     chartW = width - margin.left - margin.right;

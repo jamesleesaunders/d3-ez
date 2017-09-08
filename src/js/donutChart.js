@@ -36,7 +36,7 @@ d3.ez.donutChart = function module() {
   var key = undefined;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     values = d3.values(data)[1].map(function(d) {
@@ -129,7 +129,7 @@ d3.ez.donutChart = function module() {
         .each(function(d) {
           this._current = d;
         })
-        .on("mouseover", dispatch.customHover);
+        .on("mouseover", dispatch.customMouseOver);
 
       slices.transition()
         .ease(transition.ease)

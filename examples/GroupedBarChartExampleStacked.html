@@ -105,14 +105,14 @@
 		var title = d3.ez.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
 
 		// Create Column Chart object
-		var myChart = d3.ez.chart()
+		var myChart = d3.ez.base()
 			.width(750)
 			.height(400)
 			.chart(chart)
 			.legend(legend)
 			.title(title)
-			.on("customHover", function(d, i) {
-				d3.select("#message").text(d.value);
+			.on("customMouseOver", function(d, i) {
+				d3.select("#message").text(d.key);
 			});
 
 		// Add to page

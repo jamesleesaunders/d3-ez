@@ -33,7 +33,7 @@ d3.ez.tabularHeatChart = function module() {
   var colorScale = undefined;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     // Group and Category Names

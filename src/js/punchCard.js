@@ -44,7 +44,7 @@ d3.ez.punchCard = function module() {
   var rowHeight;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -157,7 +157,8 @@ d3.ez.punchCard = function module() {
           .attr("class", "punchSpot")
           .style("fill", function(d) {
             return colorScale(d['value'])
-          });
+          })
+          .on("mouseover", dispatch.customMouseOver);
 
         var text = g.selectAll("text")
           .data(data[j]['values'])
@@ -196,7 +197,6 @@ d3.ez.punchCard = function module() {
     var g = d3.select(this).node().parentNode;
     d3.select(g).selectAll("circle").style("display", "none");
     d3.select(g).selectAll("text.punchValue").style("display", "block");
-    dispatch.customHover(d);
   }
 
   function mouseout(d) {

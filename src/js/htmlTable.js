@@ -22,7 +22,7 @@ d3.ez.htmlTable = function module() {
   var columnNames = [];
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     // Cut the data in different ways....
@@ -81,7 +81,7 @@ d3.ez.htmlTable = function module() {
         .attr("class", function(d) {
           return d.key;
         })
-        .on("mouseover", dispatch.customHover);
+        .on("mouseover", dispatch.customMouseOver);
 
       // Add the first column of headings (categories)
       rows.append("th")

@@ -43,7 +43,7 @@ d3.ez.groupedBarChart = function module() {
   var colorScale = undefined;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -156,7 +156,7 @@ d3.ez.groupedBarChart = function module() {
         .attr("transform", function(d, i) {
           return "translate(" + xScale(d.key) + ", 0)";
         })
-        .on("mouseover", dispatch.customHover);
+        .on("mouseover", dispatch.customMouseOver);
 
       // Add bars to group
       var bars = barGroup.selectAll(".bar")

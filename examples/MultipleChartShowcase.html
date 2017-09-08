@@ -29,7 +29,7 @@
       // Setup charts components
       myChart1 = d3.ez.htmlTable()
         .width(400)
-        .on("customHover", function(d, i) {
+        .on("customMouseOver", function(d, i) {
           groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");
           myChart5.groupType(groupType);
           update5(data);
@@ -42,7 +42,7 @@
         .width(400)
         .height(200)
         .colors(d3.scale.category10().range())
-        .on("customHover", function(d, i) {
+        .on("customMouseOver", function(d, i) {
           console.log(d);
         });
 
@@ -61,7 +61,7 @@
         .height(200)
         .yAxisLabel("Fruit")
         .colors(d3.scale.category10().range())
-        .on("customHover", function(d, i) {
+        .on("customMouseOver", function(d, i) {
           update2(d);
           update3(d);
           update4(d);
@@ -84,7 +84,7 @@
         .minRadius(2)
         .useGlobalScale(true)
         .maxRadius(18)
-        .on("customHover", function(d, i) {
+        .on("customMouseOver", function(d, i) {
           console.log(d);
         });
 

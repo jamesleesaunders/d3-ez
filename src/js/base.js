@@ -34,7 +34,7 @@ d3.ez.base = function module() {
   var colorScale = undefined;
 
   // Dispatch (custom events)
-  var dispatch = d3.dispatch("customHover", "customMouseOver", "customMouseOut", "customClick");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     canvasW = width - (margin.left + margin.right);

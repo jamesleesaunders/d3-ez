@@ -20,12 +20,12 @@ d3.ez.circularHeatChart = function module() {
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: "bounce", duration: 500 };
   var classed = "circularHeatChart";
-  var colors = ["white", "orange"];
+  var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
   var innerRadius = 50;
 
   // Data Options (Populated by 'init' function)
-  var domain = undefined;
+  var thresholds = undefined;
   var radialLabels = [];
   var numRadials = 24;
   var segmentLabels = [];
@@ -35,7 +35,7 @@ d3.ez.circularHeatChart = function module() {
   var colorScale = undefined;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     radialLabels = data.map(function(d) {
@@ -50,16 +50,21 @@ d3.ez.circularHeatChart = function module() {
 
     segmentHeight = ((radius - innerRadius) / numRadials);
 
+    // Calculate the Max Value
     d3.map(data).values().forEach(function(d) {
       d.values.forEach(function(d) {
         maxValue = (d.value > maxValue ? d.value : maxValue);
       });
     });
 
-    domain = [0, maxValue];
+    // If thresholds values are not already set attempt to auto-calculate some thresholds
+    if (!thresholds) {
+      thresholds = [ Math.floor(maxValue*0.25), Math.floor(maxValue*0.50), Math.floor(maxValue*0.75), Math.floor(maxValue+1) ];
+    }
 
-    colorScale = d3.scale.linear()
-      .domain(domain)
+    // Colour Scale
+    colorScale = d3.scale.threshold()
+      .domain(thresholds)
       .range(colors);
   }
 
@@ -116,7 +121,7 @@ d3.ez.circularHeatChart = function module() {
         .enter()
         .append("g")
         .classed("ring", true)
-        .on("mouseover", dispatch.customHover);
+        .on("mouseover", dispatch.customMouseOver);
 
       // Ring Segments
       chart.selectAll(".ring").selectAll("path")

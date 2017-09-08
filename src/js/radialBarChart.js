@@ -38,7 +38,7 @@ d3.ez.radialBarChart = function module() {
   var maxValue = 0;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customHover");
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     // Bars
@@ -159,7 +159,7 @@ d3.ez.radialBarChart = function module() {
           return colors[i % colors.length];
         })
         .classed("segment", true)
-        .on("mouseover", dispatch.customHover);
+        .on("mouseover", dispatch.customMouseOver);
 
       segments.exit()
         .remove();

@@ -73,7 +73,7 @@
 			.chart(chart)
 			.legend(legend)
 			.title(title)
-			.on("customHover", function(d, i) {
+			.on("customMouseOver", function(d, i) {
 				d3.select("#message").text(d.value);
 			});
 

@@ -1,6 +1,6 @@
 {
   "name": "d3.ez",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "D3 Easy Reusable Chary Library",
   "license": "GPL-3.0",
   "keywords": [
@@ -12,7 +12,7 @@
     "svg"
   ],
   "homepage": "http://d3ez.org",
-  "author": "James Saunders (http://d3ez.org)",
+  "author": "James Saunders (james@saunders-family.net)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jamesleesaunders/d3.ez.git"

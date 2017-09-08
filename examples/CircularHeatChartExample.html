@@ -124,24 +124,26 @@
 			return data;
 		}
 
-		var chart = d3.ez.circularHeatChart().colors(["white", "blue"]);
-		var legend = d3.ez.legend().title('How hot?');
-		var title = d3.ez.title().mainText("Heatchart Example").subText("It's getting hot in here");
+        var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
+		var chart = d3.ez.circularHeatChart().colors(colors);
+		var legend = d3.ez.legend().title('Widget Counts');
+		var title = d3.ez.title().mainText("Town to Town Stats").subText("Number of widgets between UK towns");
 
 		// Create Tabular Heat Chart object
 		var myChart = d3.ez.base()
 			.width(750)
-			.height(400)
+			.height(550)
 			.chart(chart)
 			.legend(legend)
 			.title(title)
-			.on("customHover", function(d, i) {
-				d3.select("#message").text(d.value);
+			.on("customMouseOver", function(d, i) {
+			  	d3.select("#message").text(d.key);
 			});
 
 		d3.select('#chartholder')
 			.datum(randomDataset())
 			.call(myChart);
+
 	</script>
 </body>
 
