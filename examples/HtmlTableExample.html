@@ -2,111 +2,112 @@
 <html>
 
 <head>
-	<title>D3.EZ : HTML Table Example</title>
-	<script src="https://d3js.org/d3.v3.min.js"></script>
-	<script src="../src/d3.ez.js"></script>
-	<link rel="stylesheet" type="text/css" href="../d3.ez.css">
+    <title>D3.EZ : HTML Table Example</title>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="../src/d3.ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
 
 <body>
-	<div id="tableholder"></div>
+<div id="tableholder"></div>
 
-	<script type="text/javascript">
-		// Generate some data
-		var data = [{
-				"key": "Jim",
-				"values": [{
-						"key": "Apples",
-						"value": 4
-					},
-					{
-						"key": "Oranges",
-						"value": 3
-					},
-					{
-						"key": "Pears",
-						"value": 1
-					},
-					{
-						"key": "Bananas",
-						"value": 0
-					}
-				]
-			},
-			{
-				"key": "Claire",
-				"values": [{
-						"key": "Apples",
-						"value": 3
-					},
-					{
-						"key": "Oranges",
-						"value": 1
-					},
-					{
-						"key": "Pears",
-						"value": 2
-					},
-					{
-						"key": "Bananas",
-						"value": 2
-					}
-				]
-			},
-			{
-				"key": "Beth",
-				"values": [{
-						"key": "Apples",
-						"value": 5
-					},
-					{
-						"key": "Oranges",
-						"value": 2
-					},
-					{
-						"key": "Pears",
-						"value": 4
-					},
-					{
-						"key": "Bananas",
-						"value": 1
-					}
-				]
-			},
-			{
-				"key": "Grace",
-				"values": [{
-						"key": "Apples",
-						"value": 1
-					},
-					{
-						"key": "Oranges",
-						"value": 4
-					},
-					{
-						"key": "Pears",
-						"value": 2
-					},
-					{
-						"key": "Bananas",
-						"value": 3
-					}
-				]
-			}
-		];
+<script type="text/javascript">
+  // Generate some data
+  var data = [{
+    "key": "Jim",
+    "values": [{
+      "key": "Apples",
+      "value": 4
+    },
+      {
+        "key": "Oranges",
+        "value": 3
+      },
+      {
+        "key": "Pears",
+        "value": 1
+      },
+      {
+        "key": "Bananas",
+        "value": 0
+      }
+    ]
+  },
+    {
+      "key": "Claire",
+      "values": [{
+        "key": "Apples",
+        "value": 3
+      },
+        {
+          "key": "Oranges",
+          "value": 1
+        },
+        {
+          "key": "Pears",
+          "value": 2
+        },
+        {
+          "key": "Bananas",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Beth",
+      "values": [{
+        "key": "Apples",
+        "value": 5
+      },
+        {
+          "key": "Oranges",
+          "value": 2
+        },
+        {
+          "key": "Pears",
+          "value": 4
+        },
+        {
+          "key": "Bananas",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Grace",
+      "values": [{
+        "key": "Apples",
+        "value": 1
+      },
+        {
+          "key": "Oranges",
+          "value": 4
+        },
+        {
+          "key": "Pears",
+          "value": 2
+        },
+        {
+          "key": "Bananas",
+          "value": 3
+        }
+      ]
+    }
+  ];
 
-		// Create chart object
-		var myTable = d3.ez.htmlTable()
-			.width(600)
-			.on("customMouseOver", function(d, i) {
-				console.log(d);
-			});
+  // Create chart object
+  var myTable = d3.ez.htmlTable()
+    .width(600)
+    .on("customMouseOver", function(d, i) {
+      console.log(d);
+    });
 
-		// Add to page
-		d3.select("#tableholder")
-			.datum(data)
-			.call(myTable);
-	</script>
+  // Add to page
+  d3.select("#tableholder")
+    .datum(data)
+    .call(myTable);
+
+</script>
 </body>
 
 </html>
