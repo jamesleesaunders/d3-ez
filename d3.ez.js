@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "1.6.4",
+    version: "1.6.5",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -1963,13 +1963,20 @@ d3.ez.title = function module() {
     var subText = "Sub Title";
     var height = 40;
     var width = 200;
-    function my() {
-        var titleGroup = this.selectAll("#titleGroup").data([ 0 ]).enter().append("g").attr("id", "titleGroup");
-        var title = titleGroup.append("text").text(mainText).classed("title", true);
-        var subTitle = titleGroup.append("text").text(subText).classed("subTitle", true);
+    function my(selection) {
+        selection.selectAll("#titleGroup").data([ 0 ]).enter().append("g").attr("id", "titleGroup");
+        var titleGroup = selection.select("#titleGroup");
+        titleGroup.selectAll(".title").data([ mainText ]).enter().append("text").classed("title", true).text(function(d) {
+            return d;
+        });
+        var title = titleGroup.select(".title").text(mainText);
+        titleGroup.selectAll(".subTitle").data([ subText ]).enter().append("text").classed("subTitle", true).text(function(d) {
+            return d;
+        });
+        var subTitle = titleGroup.select(".subTitle").text(subText);
         // Centre Text
-        var titleOffset = 1 - d3.select("#titleGroup").selectAll(".title").node().getBBox().width / 2;
-        var subTitleOffset = 1 - d3.select("#titleGroup").selectAll(".subTitle").node().getComputedTextLength() / 2;
+        var titleOffset = 1 - title.node().getBBox().width / 2;
+        var subTitleOffset = 1 - subTitle.node().getComputedTextLength() / 2;
         title.attr({
             transform: "translate(" + titleOffset + ", " + 15 + ")"
         });
