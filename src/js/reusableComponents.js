@@ -15,24 +15,31 @@ d3.ez.title = function module() {
   var height = 40;
   var width = 200;
 
-  function my() {
-    var titleGroup = this.selectAll("#titleGroup")
+  function my(selection) {
+    selection.selectAll("#titleGroup")
       .data([0])
       .enter()
       .append("g")
       .attr("id", "titleGroup");
+    var titleGroup = selection.select("#titleGroup");
 
-    var title = titleGroup.append("text")
-      .text(mainText)
-      .classed("title", true);
+    titleGroup.selectAll('.title').data([mainText])
+      .enter()
+      .append("text")
+      .classed("title", true)
+      .text( function(d) { return d; } );
+    var title = titleGroup.select(".title").text(mainText);
 
-    var subTitle = titleGroup.append("text")
-      .text(subText)
-      .classed("subTitle", true);
+    titleGroup.selectAll('.subTitle').data([subText])
+      .enter()
+      .append("text")
+      .classed("subTitle", true)
+      .text( function(d) { return d; } );
+    var subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    var titleOffset = 1 - (d3.select("#titleGroup").selectAll(".title").node().getBBox().width / 2);
-    var subTitleOffset = 1 - (d3.select("#titleGroup").selectAll(".subTitle").node().getComputedTextLength() / 2);
+    var titleOffset = 1 - (title.node().getBBox().width / 2);
+    var subTitleOffset = 1 - (subTitle.node().getComputedTextLength() / 2);
     title.attr({
       transform: "translate(" + titleOffset + ", " + 15 + ")"
     });
