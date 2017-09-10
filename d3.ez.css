@@ -217,4 +217,18 @@ table.htmlTable {
   background-color: #eeeeee;
 }
 
-
+/* === Multi Series Line Chart Styles === */
+.multiSeriesLineChart .axis path,
+.multiSeriesLineChart .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.multiSeriesLineChart .x.axis path {
+  display: none;
+}
+.multiSeriesLineChart .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
