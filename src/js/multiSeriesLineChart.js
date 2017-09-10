@@ -19,7 +19,7 @@ d3.ez.multiSeriesLineChart = function module() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var classed = "multiSeriesLineChart";
-  var colors = d3.ez.colors.categorical(4);
+  var colors = d3.ez.colors.categorical(3);
   var yAxisLabel = null;
   var groupType = "clustered";
 
@@ -39,16 +39,16 @@ d3.ez.multiSeriesLineChart = function module() {
 
   // Other functions
   var parseDate = d3.time.format("%Y%m%d").parse;
-
   var line = undefined;
+  var cities;
 
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-
     // Colour Scale
-    colorScale = d3.scale.category10()
+    colorScale = d3.scale.ordinal()
+      .range(colors)
       .domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
 
     // X & Y Scales
@@ -65,20 +65,38 @@ d3.ez.multiSeriesLineChart = function module() {
       .scale(yScale)
       .orient("left");
 
+    // Line
     line = d3.svg.line()
       .x(function(d) { return xScale(d.date); })
       .y(function(d) { return yScale(d.temperature); });
+
+    // Convert dates
+    data.forEach(function(d) {
+      d.date = parseDate(d.date);
+    });
+
+    // Other stuff to sort...
+    cities = colorScale.domain().map(function(name) {
+      return {
+        name: name,
+        values: data.map(function(d) {
+          return { date: d.date, temperature: +d[name] };
+        })
+      };
+    });
+
+    xScale.domain(d3.extent(data, function(d) { return d.date; }));
+    yScale.domain([
+        d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+        d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
+      ]);
+
   }
 
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
       init(data);
-
-
-
-
-
 
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
@@ -102,78 +120,51 @@ d3.ez.multiSeriesLineChart = function module() {
           .attr("y", -35)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          .text(yAxisLabel);
+          //.text(yAxisLabel);
+          .text("Temperature (ºF)");
       } else {
         chart = selection.select(".chart");
       }
-
 
       // Update the chart dimensions
       chart.classed(classed, true)
         .attr({ width: width, height: height })
         .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
 
-
-
-
-
-      data.forEach(function(d) {
-        d.date = parseDate(d.date);
-      });
-      var cities = colorScale.domain().map(function(name) {
-        return {
-          name: name,
-          values: data.map(function(d) {
-            return { date: d.date, temperature: +d[name] };
-          })
-        };
-      });
-      xScale.domain(d3.extent(data, function(d) { return d.date; }));
-      yScale.domain([
-        d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
-        d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
-      ]);
-
-      chart.append("g")
-        .attr("class", "x axis")
+      // Add axis to chart
+      chart.select(".x-axis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
-      chart.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Temperature (ºF)");
+      chart.select(".y-axis")
+        .call(yAxis);
 
-      var city = chart.selectAll(".city")
+      var series = chart.selectAll(".series")
         .data(cities)
         .enter().append("g")
-        .attr("class", "city");
+        .attr("class", "series");
 
-      city.append("path")
+      series.append("path")
         .attr("class", "line")
         .attr("d", function(d) { return line(d.values); })
         .style("stroke", function(d) { return colorScale(d.name); });
 
-      city.append("text")
-        .datum(function(d) { return { name: d.name, value: d.values[d.values.length - 1] }; })
-        .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.temperature) + ")"; })
-        .attr("x", 3)
-        .attr("dy", ".35em")
-        .text(function(d) { return d.name; });
-
-      city.selectAll("circle")
+      series.selectAll("circle")
         .data(function(d) { return d.values })
         .enter()
         .append("circle")
         .attr("r", 3)
         .attr("cx", function(d) { return xScale(d.date); })
         .attr("cy", function(d) { return yScale(d.temperature); })
-        .style("fill", function(d, i, j) { return colorScale(cities[j].name); });
+        .style("fill", function(d, i, j) { return colorScale(cities[j].name); })
+        .on("mouseover", dispatch.customMouseOver);
+
+      //series.append("text")
+      //  .datum(function(d) { return { name: d.name, value: d.values[d.values.length - 1] }; })
+      //  .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.temperature) + ")"; })
+      //  .attr("x", 3)
+      //  .attr("dy", ".35em")
+      //  .text(function(d) { return d.name; });
 
     });
   }

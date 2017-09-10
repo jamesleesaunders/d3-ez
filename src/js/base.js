@@ -12,12 +12,7 @@ d3.ez.base = function module() {
   // Default Options (Configurable via setters)
   var width = 600;
   var height = 400;
-  var margin = {
-    top: 15,
-    right: 15,
-    bottom: 15,
-    left: 15
-  };
+  var margin = { top: 15, right: 15, bottom: 15, left: 15 };
   var canvasW = 580;
   var canvasH = 380;
   var chartTop = 0;
@@ -39,20 +34,6 @@ d3.ez.base = function module() {
   function init(data) {
     canvasW = width - (margin.left + margin.right);
     canvasH = height - (margin.top + margin.bottom);
-
-    // Init Data
-    if (!data[0]) { // TODO: Can this be done better?
-      // If 1 dimensional data
-      categories = d3.values(data)[1];
-    } else {
-      // If 2 dimensional data
-      categories = data.map(function(d) {
-        return d.values;
-      })[0];
-    }
-    categoryNames = categories.map(function(d) {
-      return d.key;
-    });
 
     // Init Chart
     chart.dispatch(dispatch)
