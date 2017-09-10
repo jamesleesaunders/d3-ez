@@ -11,6 +11,7 @@ include('js/tabularHeatChart.js');
 include('js/donutChart.js');
 include('js/punchCard.js');
 include('js/timeSeriesChart.js');
+include('js/multiSeriesLineChart.js');
 include('js/htmlTable.js');
 include('js/htmlList.js');
 include('js/reusableComponents.js');
