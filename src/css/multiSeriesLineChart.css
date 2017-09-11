@@ -4,3 +4,16 @@
   stroke: steelblue;
   stroke-width: 1.5px;
 }
+@keyframes circleTransition {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+    }
+}
+.multiSeriesLineChart circle:hover {
+    animation-duration: 0.2s;
+    animation-name: circleTransition;
+    transform-origin: center center;
+}
