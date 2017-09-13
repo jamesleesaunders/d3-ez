@@ -21,13 +21,14 @@ What type of chart is best for different types of data?
 * Bar Charts are good for quantitive data.
 * Pie charts for good to represent parts of a whole.
 
-For reference there are a few other reusable D3 chart libraries similar to D3.JS including:
+For reference here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:
 * [Britecharts](http://eventbrite.github.io/britecharts/)
 * [NVD3](http://nvd3.org)
 * [D4](http://visible.io/index.html)
 * [C3](http://c3js.org)
 * [D3 Plus](http://d3plus.org)
-* [ReD3](http://xibbit.github.io/reD3/#/)
+* [ReD3](https://github.com/bugzin/reD3)
+* [Miso d3.chart](http://misoproject.com/d3-chart/)
 
 Credits:
 * Peter Cook http://animateddata.co.uk/ For giving permission to use his Radial Bar and Radial Heat Map charts.
