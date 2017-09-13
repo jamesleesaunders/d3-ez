@@ -15,6 +15,31 @@
 
   <script type="text/javascript">
     d3.tsv("data/data.tsv", function(error, data) {
+      console.log(data);
+
+      var data2 = d3.nest()
+        .key(function(d) { return d.date; })
+        .entries(data)
+        .map(function(group) {
+          series = group.values[0];
+          return {
+            key: group['key'],
+            values: [
+              {key: "New York", value: series['New York']},
+              {key: "San Francisco", value: series['San Francisco']},
+              {key: "Austin", value: series['Austin']},
+            ]
+          };
+        });
+      console.log(data2);
+
+      data3 = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
+      d3.map(data).values().forEach(function(d) {
+        data3[0].values.push({key: d.date, value: parseInt(d['New York'])});
+        data3[1].values.push({key: d.date, value: parseInt(d['San Francisco'])});
+        data3[2].values.push({key: d.date, value: parseInt(d['Austin'])});
+      });
+      console.log(data3);
 
       var colors = d3.ez.colors.categorical(3);
       var chart = d3.ez.multiSeriesLineChart().colors(colors);
