@@ -17,6 +17,12 @@
     d3.tsv("data/data.tsv", function(error, data) {
       console.log(data);
 
+      dateConvert = function(dateYMD) {
+        var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
+        var dateUnix = new Date(dateISO)/1000;
+        return dateUnix;
+      }
+
       var data2 = d3.nest()
         .key(function(d) { return d.date; })
         .entries(data)
@@ -35,9 +41,9 @@
 
       data3 = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
       d3.map(data).values().forEach(function(d) {
-        data3[0].values.push({key: d.date, value: parseInt(d['New York'])});
-        data3[1].values.push({key: d.date, value: parseInt(d['San Francisco'])});
-        data3[2].values.push({key: d.date, value: parseInt(d['Austin'])});
+        data3[0].values.push({key: dateConvert(d.date), value: parseInt(d['New York'])});
+        data3[1].values.push({key: dateConvert(d.date), value: parseInt(d['San Francisco'])});
+        data3[2].values.push({key: dateConvert(d.date), value: parseInt(d['Austin'])});
       });
       console.log(data3);
 
