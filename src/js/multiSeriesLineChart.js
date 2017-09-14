@@ -132,7 +132,7 @@ d3.ez.multiSeriesLineChart = function module() {
         .enter().append("g")
         .attr("class", "series");
 
-      // Line
+      // Line Generator
       line = d3.svg.line()
         .x(function(d) { return xScale(d.key); })
         .y(function(d) { return yScale(d.value); });
@@ -142,15 +142,15 @@ d3.ez.multiSeriesLineChart = function module() {
         .attr("d", function(d) { return line(d.values); })
         .style("stroke", function(d) { return colorScale(d.key); });
 
-      //series.selectAll("circle")
-      //  .data(function(d) { return d.values })
-      //  .enter()
-      //  .append("circle")
-      //  .attr("r", 3)
-      //  .attr("cx", function(d) { return xScale(d.key); })
-      //  .attr("cy", function(d) { return yScale(d.value); })
-      //  .style("fill", function(d, i, j) { return colorScale(cities[j].name); })
-      //  .on("mouseover", dispatch.customMouseOver);
+      series.selectAll("circle")
+        .data(function(d) { return d.values })
+        .enter()
+        .append("circle")
+        .attr("r", 3)
+        .attr("cx", function(d) { return xScale(d.key); })
+        .attr("cy", function(d) { return yScale(d.value); })
+        .style("fill", function(d, i, j) { return colorScale(data[j].key); })
+        .on("mouseover", dispatch.customMouseOver);
 
       //series.append("text")
       //  .datum(function(d) { return { name: d.name, value: d.values[d.values.length - 1] }; })

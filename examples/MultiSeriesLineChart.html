@@ -14,14 +14,14 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
+    dateConvert = function(dateYMD) {
+      var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
+      var dateUnix = new Date(dateISO)/1000;
+      return dateUnix;
+    }
+
     d3.tsv("data/data.tsv", function(error, data) {
       // console.log(data);
-
-      dateConvert = function(dateYMD) {
-        var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
-        var dateUnix = new Date(dateISO)/1000;
-        return dateUnix;
-      }
 
       var data2 = d3.nest()
         .key(function(d) { return d.date; })
@@ -37,7 +37,7 @@
             ]
           };
         });
-      //console.log(data2);
+      console.log(data2);
 
       data3 = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
       d3.map(data).values().forEach(function(d) {
