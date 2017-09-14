@@ -15,7 +15,7 @@
 
   <script type="text/javascript">
     d3.tsv("data/data.tsv", function(error, data) {
-      console.log(data);
+      // console.log(data);
 
       dateConvert = function(dateYMD) {
         var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
@@ -37,7 +37,7 @@
             ]
           };
         });
-      console.log(data2);
+      //console.log(data2);
 
       data3 = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
       d3.map(data).values().forEach(function(d) {
@@ -64,7 +64,7 @@
         });
 
       d3.select('#chartholder')
-        .datum(data)
+        .datum(data3)
         .call(myChart);
     });
   </script>
