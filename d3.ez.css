@@ -137,6 +137,27 @@
 }
 
 
+/* === Multi Series Line Chart Styles === */
+.multiSeriesLineChart .line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+@keyframes circleTransition {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+    }
+}
+.multiSeriesLineChart circle:hover {
+    animation-duration: 0.2s;
+    animation-name: circleTransition;
+    transform-origin: center center;
+}
+
+
 /* === HTML List Styles === */
 .htmlList, .htmlList ul {
   margin: 0;
@@ -217,22 +238,4 @@ table.htmlTable {
   background-color: #eeeeee;
 }
 
-/* === Multi Series Line Chart Styles === */
-.multiSeriesLineChart .line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-@keyframes circleTransition {
-    from {
-        transform: scale(1);
-    }
-    to {
-        transform: scale(1.5);
-    }
-}
-.multiSeriesLineChart circle:hover {
-    animation-duration: 0.2s;
-    animation-name: circleTransition;
-    transform-origin: center center;
-}
+

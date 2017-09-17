@@ -17,7 +17,7 @@ d3.ez.multiSeriesLineChart = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 30, left: 40 };
   var classed = "multiSeriesLineChart";
   var colors = d3.ez.colors.categorical(3);
   var yAxisLabel = null;
@@ -26,6 +26,7 @@ d3.ez.multiSeriesLineChart = function module() {
   // Data Options (Populated by 'init' function)
   var chartW = 0;
   var chartH = 0;
+  var minValue = 0;
   var maxValue = 0;
   var maxGroupTotal = undefined;
   var xScale = undefined;
@@ -50,10 +51,13 @@ d3.ez.multiSeriesLineChart = function module() {
       return d.key;
     });
 
-    // Convert dates
+    // Convert dates and calculate min / max
     data.forEach(function(d, i) {
       d.values.forEach(function(b, j) {
         data[i].values[j].key = new Date(b.key * 1000);
+        var value = data[i].values[j].value;
+        minValue = (value < minValue ? value : minValue);
+        maxValue = (value > maxValue ? value : maxValue);
       });
     });
 
@@ -65,12 +69,13 @@ d3.ez.multiSeriesLineChart = function module() {
 
     yScale = d3.scale.linear()
       .range([chartH, 0])
-      .domain([0, 100]);
+      .domain([minValue, maxValue + 10]);
 
     // X & Y Axis
     xAxis = d3.svg.axis()
       .scale(xScale)
-      .orient("bottom");
+      .orient("bottom")
+      .tickFormat(d3.time.format("%d-%b"));
     yAxis = d3.svg.axis()
       .scale(yScale)
       .orient("left");
@@ -108,8 +113,7 @@ d3.ez.multiSeriesLineChart = function module() {
           .attr("y", -35)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          //.text(yAxisLabel);
-          .text("Temperature (ºF)");
+          .text(yAxisLabel);
       } else {
         chart = selection.select(".chart");
       }
@@ -122,7 +126,12 @@ d3.ez.multiSeriesLineChart = function module() {
       // Add axis to chart
       chart.select(".x-axis")
         .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");;
 
       chart.select(".y-axis")
         .call(yAxis);

@@ -20,37 +20,21 @@
       return dateUnix;
     }
 
-    d3.tsv("data/data.tsv", function(error, data) {
-      // console.log(data);
-
-      var data2 = d3.nest()
-        .key(function(d) { return d.date; })
-        .entries(data)
-        .map(function(group) {
-          series = group.values[0];
-          return {
-            key: group['key'],
-            values: [
-              {key: "New York", value: series['New York']},
-              {key: "San Francisco", value: series['San Francisco']},
-              {key: "Austin", value: series['Austin']},
-            ]
-          };
-        });
-      console.log(data2);
-
-      data3 = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
-      d3.map(data).values().forEach(function(d) {
-        data3[0].values.push({key: dateConvert(d.date), value: parseInt(d['New York'])});
-        data3[1].values.push({key: dateConvert(d.date), value: parseInt(d['San Francisco'])});
-        data3[2].values.push({key: dateConvert(d.date), value: parseInt(d['Austin'])});
+    d3.tsv("data/data.tsv", function(error, tsv) {
+      // Convert tsv to d3.ez data format
+      data = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
+      d3.map(tsv).values().forEach(function(d) {
+        data[0].values.push({key: dateConvert(d.date), value: parseInt(d['New York'])});
+        data[1].values.push({key: dateConvert(d.date), value: parseInt(d['San Francisco'])});
+        data[2].values.push({key: dateConvert(d.date), value: parseInt(d['Austin'])});
       });
-      console.log(data3);
 
       var colors = d3.ez.colors.categorical(3);
-      var chart = d3.ez.multiSeriesLineChart().colors(colors);
-      var legend = d3.ez.legend().title('Cities Count');
-      var title = d3.ez.title().mainText("Cities").subText("Count");
+      var chart = d3.ez.multiSeriesLineChart()
+        .colors(colors)
+        .yAxisLabel('Temperature (°F)');
+      var legend = d3.ez.legend().title('City');
+      var title = d3.ez.title().mainText("Average Temperatures").subText("Per City");
 
       // Create chart object
       var myChart = d3.ez.base()
@@ -60,11 +44,11 @@
         .legend(legend)
         .title(title)
         .on("customMouseOver", function(d, i) {
-          d3.select("#message").text(d.temperature);
+          d3.select("#message").text(d.value);
         });
 
       d3.select('#chartholder')
-        .datum(data3)
+        .datum(data)
         .call(myChart);
     });
   </script>

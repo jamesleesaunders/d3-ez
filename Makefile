@@ -9,7 +9,7 @@ JS_FILES :=        src/js/header.js \
                    src/js/tabularHeatChart.js \
                    src/js/donutChart.js \
                    src/js/punchCard.js \
-                   src/js/timeSeriesChart.js \
+                   src/js/multiSeriesLineChart.js \
                    src/js/htmlTable.js \
                    src/js/htmlList.js \
                    src/js/reusableComponents.js
@@ -21,6 +21,7 @@ CSS_FILES :=       src/css/global.css \
                    src/css/tabularHeatChart.css \
                    src/css/donutChart.css \
                    src/css/punchCard.css \
+                   src/css/multiSeriesLineChart.css \
                    src/css/htmlList.css \
                    src/css/htmlTable.css
 
