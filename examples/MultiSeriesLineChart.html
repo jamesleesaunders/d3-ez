@@ -6,6 +6,7 @@
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="../src/d3.ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <meta charset="utf-8">
 </head>
 
 <body>
@@ -22,19 +23,19 @@
 
     d3.tsv("data/data.tsv", function(error, tsv) {
       // Convert tsv to d3.ez data format
-      data = [ {key: "New York", values: []}, {key: "San Francisco", values: []}, {key: "Austin", values: []} ];
+      data = [ {key: "Portsmouth", values: []}, {key: "Eastbourne", values: []}, {key: "Brighton", values: []} ];
       d3.map(tsv).values().forEach(function(d) {
-        data[0].values.push({key: dateConvert(d.date), value: parseInt(d['New York'])});
-        data[1].values.push({key: dateConvert(d.date), value: parseInt(d['San Francisco'])});
-        data[2].values.push({key: dateConvert(d.date), value: parseInt(d['Austin'])});
+        data[0].values.push({key: dateConvert(d.date), value: parseInt(d['Portsmouth'])});
+        data[1].values.push({key: dateConvert(d.date), value: parseInt(d['Eastbourne'])});
+        data[2].values.push({key: dateConvert(d.date), value: parseInt(d['Brighton'])});
       });
 
       var colors = d3.ez.colors.categorical(3);
       var chart = d3.ez.multiSeriesLineChart()
         .colors(colors)
         .yAxisLabel('Temperature (°F)');
-      var legend = d3.ez.legend().title('City');
-      var title = d3.ez.title().mainText("Average Temperatures").subText("Per City");
+      var legend = d3.ez.legend().title('Town');
+      var title = d3.ez.title().mainText("Average Temperatures").subText("Per Town");
 
       // Create chart object
       var myChart = d3.ez.base()
