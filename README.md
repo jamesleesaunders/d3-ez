@@ -19,7 +19,7 @@ Gist (bl.ocks) Examples:
 
 What type of chart is best for different types of data?
 * Bar Charts are good for quantitive data.
-* Pie charts for good to represent parts of a whole.
+* Pie Charts for good to represent parts of a whole.
 
 For reference here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:
 * [Britecharts](http://eventbrite.github.io/britecharts/)
