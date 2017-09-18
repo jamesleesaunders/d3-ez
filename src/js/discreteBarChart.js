@@ -138,9 +138,6 @@ d3.ez.discreteBarChart = function module() {
       var gapSize = xScale.bandwidth() / 100 * gap;
       var barW = xScale.bandwidth() - gapSize;
 
-      console.log(gapSize);
-      console.log(barW);
-
       var bars = chart.selectAll(".bar")
         .data(data.values);
 
@@ -151,7 +148,7 @@ d3.ez.discreteBarChart = function module() {
         .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
         .attr("y", chartH)
         .attr("height", 0)
-        .on("mouseover", dispatch.customMouseOver);
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       bars.transition()
         .ease(transition.ease)
@@ -163,7 +160,7 @@ d3.ez.discreteBarChart = function module() {
 
       bars.exit()
         .transition()
-        .style({ opacity: 0 })
+        .style("opacity", 0)
         .remove();
     });
   }
@@ -205,7 +202,6 @@ d3.ez.discreteBarChart = function module() {
     return this;
   };
 
-  //d3.rebind(my, dispatch, "on");
   my.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;

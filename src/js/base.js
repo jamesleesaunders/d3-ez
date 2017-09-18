@@ -65,7 +65,8 @@ d3.ez.base = function module() {
         svg = d3.select(this)
           .append("svg")
           .classed(classed, true)
-          .attr({ width: width, height: height });
+          .attr("width", width)
+          .attr("height", height);
 
         canvas = svg.append("g").classed("canvas", true);
         canvas.append("g").classed("chartbox", true);
@@ -77,13 +78,14 @@ d3.ez.base = function module() {
       }
 
       // Update the canvas dimensions
-      canvas.attr({ width: canvasW, height: canvasH })
-        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
+      canvas.attr("transform", "translate(" + margin.left + "," + margin.top + ")" )
+        .attr("width", canvasW)
+        .attr("height", canvasH)
 
       // Add Chart
       canvas.select(".chartbox")
         .datum(data)
-        .attr({ transform: "translate(" + 0 + "," + chartTop + ")" })
+        .attr("transform", "translate(" + 0 + "," + chartTop + ")")
         .call(chart);
 
       // Add Legend
@@ -95,20 +97,20 @@ d3.ez.base = function module() {
           legend.sizeScale(chart.sizeScale());
         }
         canvas.select(".legendbox")
-          .attr({ transform: "translate(" + (canvasW - legend.width()) + "," + title.height() + ")" })
+          .attr("transform", "translate(" + (canvasW - legend.width()) + "," + title.height() + ")")
           .call(legend);
       }
 
       // Add Title
       if (title) {
         canvas.select(".titlebox")
-          .attr({ transform: "translate(" + width / 2 + "," + 0 + ")" })
+          .attr("transform", "translate(" + width / 2 + "," + 0 + ")")
           .call(title);
       }
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr({ transform: "translate(" + (width - 20) + "," + (height - 20) + ")" })
+        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")" )
         .call(creditTag);
     });
   }
@@ -155,7 +157,6 @@ d3.ez.base = function module() {
     return this;
   };
 
-  // d3.rebind(my, dispatch, "on");
   my.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;

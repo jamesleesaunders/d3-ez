@@ -40,12 +40,8 @@ d3.ez.title = function module() {
     // Centre Text
     var titleOffset = 1 - (title.node().getBBox().width / 2);
     var subTitleOffset = 1 - (subTitle.node().getComputedTextLength() / 2);
-    title.attr({
-      transform: "translate(" + titleOffset + ", " + 15 + ")"
-    });
-    subTitle.attr({
-      transform: "translate(" + subTitleOffset + ", " + 30 + ")"
-    });
+    title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
+    subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
   }
 
   // Configuration Getters & Setters
@@ -91,8 +87,8 @@ d3.ez.creditTag = function module() {
   var text = "d3ez.org";
   var href = "http://d3ez.org";
 
-  function my() {
-    var creditTag = this.selectAll("#creditTag")
+  function my(selection) {
+    var creditTag = selection.selectAll("#creditTag")
       .data([0])
       .enter()
       .append("g")
@@ -100,18 +96,14 @@ d3.ez.creditTag = function module() {
 
     var creditText = creditTag.append("text")
       .text(text)
-      .attr({
-        "xlink:href": href
-      })
+      .attr("xlink:href", href)
       .on("click", function() {
         window.open(href);
       });
 
     // Right Justify Text
     var xPos = 0 - (d3.select("#creditTag").selectAll("text").node().getBBox().width);
-    creditText.attr({
-      transform: "translate(" + xPos + ", 0)"
-    });
+    creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
   // Configuration Getters & Setters
@@ -350,12 +342,12 @@ d3.ez.legend = function module() {
   var strokewidth = "1px";
   var spacing = 5;
 
-  function my() {
+  function my(selection) {
     height = (height ? height : this.attr("height"));
     width = (width ? width : this.attr("width"));
 
     // Legend Box
-    var legendBox = this.selectAll("#legendBox")
+    var legendBox = selection.selectAll("#legendBox")
       .data([0])
       .enter()
       .append("g")
@@ -369,7 +361,7 @@ d3.ez.legend = function module() {
       .attr("stroke", stroke);
 
     legendTitle = legendBox.append('g')
-      .attr('transform', 'translate(5, 15)');
+      .attr("transform", "translate(5, 15)");
     legendTitle.append('text')
       .style('font-weight', 'bold')
       .text(title);

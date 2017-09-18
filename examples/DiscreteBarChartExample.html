@@ -58,13 +58,14 @@
     var title = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
 
     // Create chart object
-    var myChart = d3.ez.discreteBarChart()
+    var myChart = d3.ez.base()
       .width(750)
       .height(400)
-      //.chart(chart)
-      //.legend(legend)
-      //.title(title)
+      .chart(chart)
+      .legend(legend)
+      .title(title)
       .on("customMouseOver", function(d, i) {
+        console.log(d);
         d3.select("#message").text(d.value);
       });
 
