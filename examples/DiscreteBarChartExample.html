@@ -3,7 +3,7 @@
 
 <head>
   <title>D3.EZ : Discrete Bar Chart Example</title>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../src/d3.ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
@@ -58,12 +58,12 @@
     var title = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
 
     // Create chart object
-    var myChart = d3.ez.base()
+    var myChart = d3.ez.discreteBarChart()
       .width(750)
       .height(400)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
+      //.chart(chart)
+      //.legend(legend)
+      //.title(title)
       .on("customMouseOver", function(d, i) {
         d3.select("#message").text(d.value);
       });

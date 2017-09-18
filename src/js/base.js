@@ -155,7 +155,11 @@ d3.ez.base = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  // d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  }
 
   return my;
 };
