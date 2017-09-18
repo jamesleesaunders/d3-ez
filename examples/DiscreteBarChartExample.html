@@ -65,7 +65,6 @@
       .legend(legend)
       .title(title)
       .on("customMouseOver", function(d, i) {
-        console.log(d);
         d3.select("#message").text(d.value);
       });
 

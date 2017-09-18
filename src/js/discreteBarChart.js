@@ -146,8 +146,8 @@ d3.ez.discreteBarChart = function module() {
         .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", barW)
         .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
-        .attr("y", chartH)
-        .attr("height", 0)
+        .attr("y", function(d, i) { return yScale(d.value); })
+        .attr("height", function(d, i) { return chartH - yScale(d.value); })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       bars.transition()
