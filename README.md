@@ -9,7 +9,7 @@ Gist (bl.ocks) Examples:
 * [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
 * [Radial Bar Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Circular Heat Chart](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
-* [Time Series Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
+* [Multi Series Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
 * [Punchcard](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [HTML Expanding List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
