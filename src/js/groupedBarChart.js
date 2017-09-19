@@ -23,7 +23,7 @@ d3.ez.groupedBarChart = function module() {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "groupedBarChart";
   var colors = d3.ez.colors.categorical(4);
-  var gap = 0;
+  var gap = 20;
   var yAxisLabel = null;
   var groupType = "clustered";
 
@@ -146,9 +146,8 @@ d3.ez.groupedBarChart = function module() {
 
       // Create gar group
       var barGroup = chart.selectAll(".barGroup")
-        .data(data);
-
-      barGroup.enter()
+        .data(data)
+        .enter()
         .append("g")
         .attr("class", "barGroup")
         .attr("transform", function(d, i) { return "translate(" + xScale(d.key) + ", 0)"; })
@@ -156,7 +155,10 @@ d3.ez.groupedBarChart = function module() {
 
       // Add bars to group
       var bars = barGroup.selectAll(".bar")
-        .data(function(d) {
+        //.data(function(d) { console.log(d); return d.values; })
+
+
+      .data(function(d) {
           series = [];
           var y0 = 0;
           d3.map(d.values).values().forEach(function(d, i) {
@@ -171,8 +173,6 @@ d3.ez.groupedBarChart = function module() {
           return series;
         });
 
-      console.log(bars);
-
       if (groupType === "stacked") {
 
         var gapSize = xScale.bandwidth() / 100 * gap;
@@ -183,16 +183,15 @@ d3.ez.groupedBarChart = function module() {
           .classed("bar", true)
           .attr("class", function(d) { return d.name + " bar"; } )
           .attr("width", barW)
-          .attr("x", 0)
+          .attr("x", gapSize / 2)
           .attr("y", chartH)
           .attr("height", 0)
-          .attr("fill", function(d) { return colorScale(d.name); });
-
-        bars.transition()
+          .attr("fill", function(d) { return colorScale(d.name); })
+          .transition()
           .ease(transition.ease)
           .duration(transition.duration)
           .attr("width", barW)
-          .attr("x", 0)
+          .attr("x", gapSize / 2)
           .attr("y", function(d) { return yScale(d.y1); })
           .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
           .attr("fill", function(d) { return colorScale(d.name); });
@@ -215,9 +214,8 @@ d3.ez.groupedBarChart = function module() {
           .attr("x", function(d) { return x1(d.name); })
           .attr("y", chartH)
           .attr("height", 0)
-          .attr("fill", function(d) { return colorScale(d.name); });
-
-        bars.transition()
+          .attr("fill", function(d) { return colorScale(d.name); })
+          .transition()
           .ease(transition.ease)
           .duration(transition.duration)
           .attr("width", x1.bandwidth())
