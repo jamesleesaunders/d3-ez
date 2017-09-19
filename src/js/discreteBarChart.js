@@ -23,7 +23,7 @@ d3.ez.discreteBarChart = function module() {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "discreteBarChart";
   var colors = d3.ez.colors.categorical(4);
-  var gap = 10;
+  var gap = 0;
 
   // Data Options (Populated by 'init' function)
   var chartW = 0;
@@ -55,8 +55,8 @@ d3.ez.discreteBarChart = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .range([0, chartW])
-      .round(0.1);
+			.rangeRound([0, chartW])
+			.padding(0.15);
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
@@ -145,12 +145,19 @@ d3.ez.discreteBarChart = function module() {
         .attr("class", function(d) { return d.key + " bar"; })
         .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", barW)
-        .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
-        .attr("y", chartH)
-        .attr("height", 0)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .transition()
-        .ease(transition.ease)
+				.attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
+				.attr("y", chartH)
+				.attr("height", 0)
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
+				.attr("y", function(d, i) { return yScale(d.value); })
+				.attr("height", function(d, i) { return chartH - yScale(d.value); });
+
+			bars.transition()
+				.ease(transition.ease)
         .duration(transition.duration)
         .attr("width", barW)
         .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
@@ -204,7 +211,7 @@ d3.ez.discreteBarChart = function module() {
   my.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
-  }
+  };
 
   return my;
 };

@@ -23,7 +23,7 @@ d3.ez.groupedBarChart = function module() {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "groupedBarChart";
   var colors = d3.ez.colors.categorical(4);
-  var gap = 20;
+  var gap = 0;
   var yAxisLabel = null;
   var groupType = "clustered";
 
@@ -80,12 +80,12 @@ d3.ez.groupedBarChart = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(groupNames)
-      .range([0, chartW])
-      .round(0.1);
+			.rangeRound([0, chartW])
+			.padding(0.1);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (groupType == "stacked" ? maxGroupTotal : maxValue)]);
+      .domain([0, (groupType === "stacked" ? maxGroupTotal : maxValue)]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -183,18 +183,22 @@ d3.ez.groupedBarChart = function module() {
           .classed("bar", true)
           .attr("class", function(d) { return d.name + " bar"; } )
           .attr("width", barW)
-          .attr("x", gapSize / 2)
+          .attr("x", 0)
           .attr("y", chartH)
           .attr("height", 0)
           .attr("fill", function(d) { return colorScale(d.name); })
-          .transition()
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
+					.attr("y", function(d) { return yScale(d.y1); })
+					.attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
+
+				bars.transition()
           .ease(transition.ease)
           .duration(transition.duration)
           .attr("width", barW)
-          .attr("x", gapSize / 2)
           .attr("y", function(d) { return yScale(d.y1); })
-          .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); })
-          .attr("fill", function(d) { return colorScale(d.name); });
+          .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
 
         bars.exit()
           .transition()
@@ -215,14 +219,21 @@ d3.ez.groupedBarChart = function module() {
           .attr("y", chartH)
           .attr("height", 0)
           .attr("fill", function(d) { return colorScale(d.name); })
-          .transition()
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
+					.attr("width", x1.bandwidth())
+					.attr("x", function(d) { return x1(d.name); })
+					.attr("y", function(d) { return yScale(d.value); })
+					.attr("height", function(d) { return chartH - yScale(d.value); });
+
+				bars.transition()
           .ease(transition.ease)
           .duration(transition.duration)
           .attr("width", x1.bandwidth())
           .attr("x", function(d) { return x1(d.name); })
           .attr("y", function(d) { return yScale(d.value); })
-          .attr("height", function(d) { return chartH - yScale(d.value); })
-          .attr("fill", function(d) { return colorScale(d.name); });
+          .attr("height", function(d) { return chartH - yScale(d.value); });
 
         bars.exit()
           .transition()
@@ -290,7 +301,7 @@ d3.ez.groupedBarChart = function module() {
   my.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
-  }
+  };
 
   return my;
 };
