@@ -42,7 +42,7 @@ d3.ez.htmlList = function module() {
 
       function expand(d) {
         d3.event.stopPropagation();
-        dispatch.customMouseOver(d);
+        dispatch.call("customMouseOver", this, d);
 
         if (typeof d.values === "undefined") {
           return 0;
@@ -84,7 +84,10 @@ d3.ez.htmlList = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };
