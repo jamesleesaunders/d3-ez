@@ -249,13 +249,13 @@ d3.ez.colors = {
     switch (scheme) {
       case 1:
         // Color Brewer - Colourblind Safe
-        return ['#8c510a', '#bf812d', '#dfc27d', '#f6e8c3', '#f5f5f5', '#c7eae5', '#80cdc1', '#35978f', '#01665e'];
+        return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
       case 2:
         // Color Brewer - RAG
-        return ['#d73027', '#f46d43', '#fdae61', '#fee08b', '#ffffbf', '#d9ef8b', '#a6d96a', '#66bd63', '#1a9850'];
+        return ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850"];
       case 3:
         // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
-        return ['#0000ff', '#8052fe', '#b58bfb', '#ddc5f7', '#fffff0', '#ffcfb4', '#ff9e7a', '#ff6842', '#ff0000'];
+        return ["#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000"];
     }
   },
 
@@ -363,7 +363,7 @@ d3.ez.legend = function module() {
     legendTitle = legendBox.append('g')
       .attr("transform", "translate(5, 15)");
     legendTitle.append('text')
-      .style('font-weight', 'bold')
+      .style("font-weight", "bold")
       .text(title);
 
     var y = 10;
@@ -385,23 +385,23 @@ d3.ez.legend = function module() {
       elementHeight = ((height - 45) / numElements);
 
       sizeKey = legendBox.append('g')
-        .attr('transform', 'translate(5, 20)');
+        .attr("transform", "translate(5, 20)");
 
       for (var index = 0; index < numElements; index++) {
         sizeKey.append('circle')
-          .attr('cx', 17)
-          .attr('cy', y)
-          .attr('fill', 'lightgrey')
-          .attr('stroke-width', '1px')
-          .attr('stroke', 'grey')
-          .attr('fill-opacity', 0.8)
-          .attr('r', sizeScale.range()[index]);
+          .attr("cx", 17)
+          .attr("cy", y)
+          .attr("fill", "lightgrey")
+          .attr("stroke-width", "1px")
+          .attr("stroke", "grey")
+          .attr("fill-opacity", 0.8)
+          .attr("r", sizeScale.range()[index]);
 
         text = keyScaleRange('size', index);
 
         sizeKey.append('text')
-          .attr('x', 40)
-          .attr('y', y + 5)
+          .attr("x", 40)
+          .attr("y", y + 5)
           .text(text);
 
         y = y + (elementHeight + spacing);
@@ -414,18 +414,18 @@ d3.ez.legend = function module() {
       elementHeight = ((height - 45) / numElements) - 5;
 
       colorKey = legendBox.append('g')
-        .attr('transform', 'translate(5, 20)');
+        .attr("transform", "translate(5, 20)");
 
       for (var index = 0; index < numElements; index++) {
         colorKey.append('rect')
-          .attr('x', 10)
-          .attr('y', y)
-          .attr('fill', colorScale.range()[index])
-          .attr('stroke-width', '1px')
-          .attr('stroke', 'grey')
-          .attr('fill-opacity', 0.8)
-          .attr('width', 20)
-          .attr('height', elementHeight);
+          .attr("x", 10)
+          .attr("y", y)
+          .attr("fill", colorScale.range()[index])
+          .attr("stroke-width", "1px")
+          .attr("stroke", "grey")
+          .attr("fill-opacity", 0.8)
+          .attr("width", 20)
+          .attr("height", elementHeight);
 
         if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
@@ -435,8 +435,8 @@ d3.ez.legend = function module() {
         }
 
         colorKey.append('text')
-          .attr('x', 40)
-          .attr('y', y + 10)
+          .attr("x", 40)
+          .attr("y", y + 10)
           .text(text);
         y = y + (elementHeight + spacing);
       }

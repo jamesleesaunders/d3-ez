@@ -53,7 +53,7 @@
       return data;
     }
 
-    var chart = d3.ez.discreteBarChart().colors(d3.ez.colors.diverging(2));
+    var chart = d3.ez.discreteBarChart().colors(d3.ez.colors.categorical(1));
     var legend = d3.ez.legend().title('Top 10');
     var title = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
 
