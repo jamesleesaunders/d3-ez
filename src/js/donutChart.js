@@ -20,7 +20,7 @@ d3.ez.donutChart = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: "cubic", duration: 300 };
+  var transition = { ease: d3.easeCubic, duration: 300 };
   var classed = "donutChart";
   var colors = d3.ez.colors.categorical(4);
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -46,21 +46,21 @@ d3.ez.donutChart = function module() {
       return d.key;
     });
 
-    pie = d3.layout.pie()
+    pie = d3.pie()
       .sort(null);
 
-    arc = d3.svg.arc()
+    arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(radius);
 
-    outerArc = d3.svg.arc()
+    outerArc = d3.arc()
       .innerRadius(radius * 0.9)
       .outerRadius(radius * 0.9);
 
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
-      colorScale = d3.scale.ordinal()
+      colorScale = d3.scaleOrdinal()
         .range(colors)
         .domain(categoryNames);
     }
@@ -90,7 +90,7 @@ d3.ez.donutChart = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -99,7 +99,8 @@ d3.ez.donutChart = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").attr("class", "slices");
@@ -111,8 +112,9 @@ d3.ez.donutChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
+        .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
+        .attr("width", width)
+        .attr("height", height);
 
       // Slices
       var slices = chart.select(".slices")
@@ -129,7 +131,7 @@ d3.ez.donutChart = function module() {
         .each(function(d) {
           this._current = d;
         })
-        .on("mouseover", dispatch.customMouseOver);
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
 
       slices.transition()
         .ease(transition.ease)
@@ -263,7 +265,10 @@ d3.ez.donutChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };
