@@ -189,7 +189,8 @@ d3.ez.donutChart = function module() {
         .append("polyline")
         .attr("class", "line");
 
-      lines.transition().duration(transition.duration)
+      lines.transition()
+        .duration(transition.duration)
         .attrTween("points", function(d) {
           this._current = this._current || d;
           var interpolate = d3.interpolate(this._current, d);
