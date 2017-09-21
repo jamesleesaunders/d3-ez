@@ -16,7 +16,7 @@ d3.ez.tabularHeatChart = function module() {
   var width = 600;
   var height = 600;
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
-  var transition = { ease: "bounce", duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "tabularHeatChart";
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
@@ -85,7 +85,7 @@ d3.ez.tabularHeatChart = function module() {
     }
 
     // Colour Scale
-    colorScale = d3.scale.threshold()
+    colorScale = d3.scaleThreshold()
       .domain(thresholds)
       .range(colors);
   }
@@ -98,7 +98,7 @@ d3.ez.tabularHeatChart = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._group[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -261,7 +261,10 @@ d3.ez.tabularHeatChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };
