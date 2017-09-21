@@ -138,11 +138,6 @@
 
 
 /* === Multi Series Line Chart Styles === */
-.multiSeriesLineChart .line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
 @keyframes circleTransition {
     from {
         transform: scale(1);
@@ -237,5 +232,3 @@ table.htmlTable {
 .htmlTable tbody tr:hover {
   background-color: #eeeeee;
 }
-
-
