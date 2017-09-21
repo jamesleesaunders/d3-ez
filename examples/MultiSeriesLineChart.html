@@ -16,9 +16,10 @@
 
   <script type="text/javascript">
     dateConvert = function(dateYMD) {
-      var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
-      var dateUnix = new Date(dateISO)/1000;
-      return dateUnix;
+      //var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
+      //var dateUnix = new Date(dateISO)/1000;
+      //return dateUnix;
+      return dateYMD;
     }
 
     d3.tsv("data/data.tsv", function(error, tsv) {
