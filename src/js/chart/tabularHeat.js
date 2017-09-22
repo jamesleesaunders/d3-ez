@@ -7,7 +7,7 @@
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.tabularHeatChart = function module() {
+d3.ez.chart.tabularHeat = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
@@ -17,7 +17,7 @@ d3.ez.tabularHeatChart = function module() {
   var height = 600;
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var classed = "tabularHeatChart";
+  var classed = "chartTabularHeat";
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Data Options (Populated by 'init' function)

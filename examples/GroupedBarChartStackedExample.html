@@ -77,15 +77,15 @@
       }]
     }];
 
-    var chart = d3.ez.groupedBarChart()
+    var chart = d3.ez.chart.groupedBar()
       .yAxisLabel("Number")
       .groupType("stacked")
       .colors(d3.ez.colors.categorical(1));
-    var legend = d3.ez.legend().title("Top 10");
-    var title = d3.ez.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
+    var legend = d3.ez.component.legend().title("Top 10");
+    var title = d3.ez.component.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
 
     // Create chart object
-    var myChart = d3.ez.base()
+    var myChart = d3.ez.chart()
       .width(750)
       .height(400)
       .chart(chart)

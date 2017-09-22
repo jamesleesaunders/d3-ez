@@ -53,12 +53,12 @@
       return data;
     }
 
-    var chart = d3.ez.radialBarChart().colors(d3.ez.colors.diverging(2));
-    var legend = d3.ez.legend().title('Top 10');
-    var title = d3.ez.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
+    var chart = d3.ez.chart.radialBar().colors(d3.ez.colors.diverging(2));
+    var legend = d3.ez.component.legend().title('Top 10');
+    var title = d3.ez.component.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
 
     // Create chart object
-    var myChart = d3.ez.base()
+    var myChart = d3.ez.chart()
       .width(750)
       .height(400)
       .chart(chart)

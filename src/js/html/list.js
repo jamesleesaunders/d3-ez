@@ -8,7 +8,7 @@
  *     .datum(data)
  *     .call(myList);
  */
-d3.ez.htmlList = function module() {
+d3.ez.html.list = function module() {
   // HTML List Element (Populated by 'my' function)
   var listEl;
 

@@ -29,12 +29,12 @@
       });
 
       var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
-      var chart = d3.ez.tabularHeatChart().colors(colors);
-      var legend = d3.ez.legend().title('Widget Counts');
-      var title = d3.ez.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
+      var chart = d3.ez.chart.tabularHeat().colors(colors);
+      var legend = d3.ez.component.legend().title('Widget Counts');
+      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
 
       // Create chart object
-      var myChart = d3.ez.base()
+      var myChart = d3.ez.chart()
         .width(750)
         .height(550)
         .chart(chart)

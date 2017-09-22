@@ -116,12 +116,12 @@
       }]
     }];
 
-    var chart = d3.ez.punchCard();
-    var legend = d3.ez.legend().title("How small?");
-    var title = d3.ez.title().mainText("Punch Example").subText("Punchcard example sub-title");
+    var chart = d3.ez.chart.punchCard();
+    var legend = d3.ez.component.legend().title("How small?");
+    var title = d3.ez.component.title().mainText("Punch Example").subText("Punchcard example sub-title");
 
     // Create chart object
-    var myChart = d3.ez.base()
+    var myChart = d3.ez.chart()
       .width(750)
       .height(400)
       .chart(chart)

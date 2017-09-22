@@ -7,7 +7,7 @@
         transform: scale(1.5);
     }
 }
-.multiSeriesLineChart circle:hover {
+.chartMultiSeriesLine circle:hover {
     animation-duration: 0.2s;
     animation-name: circleTransition;
     transform-origin: center center;

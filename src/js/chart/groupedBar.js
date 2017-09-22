@@ -11,7 +11,7 @@
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.groupedBarChart = function module() {
+d3.ez.chart.groupedBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
@@ -21,7 +21,7 @@ d3.ez.groupedBarChart = function module() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var classed = "groupedBarChart";
+  var classed = "chartGroupedBar";
   var colors = d3.ez.colors.categorical(4);
   var gap = 0;
   var yAxisLabel = null;

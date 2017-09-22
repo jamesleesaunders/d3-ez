@@ -4,7 +4,7 @@
  * @example
  * @todo
  */
-d3.ez.base = function module() {
+d3.ez.chart = function module() {
   // SVG and Canvas containers (Populated by 'my' function)
   var svg;
   var canvas;
@@ -21,7 +21,7 @@ d3.ez.base = function module() {
   var chart = undefined;
   var legend = undefined;
   var title = undefined;
-  var creditTag = d3.ez.creditTag();
+  var creditTag = d3.ez.component.creditTag();
   var description = "";
   var yAxisLabel = "";
 

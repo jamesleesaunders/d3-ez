@@ -27,7 +27,7 @@
   console.log(data);
 
   // Setup chart components
-  myChart1 = d3.ez.htmlTable()
+  myChart1 = d3.ez.html.table()
     .width(400)
     .on("customMouseOver", function(d, i) {
       groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");
@@ -38,23 +38,23 @@
       update4(d);
     });
 
-  myChart2 = d3.ez.discreteBarChart()
+  myChart2 = d3.ez.chart.discreteBar()
     .width(400)
     .height(200)
     .on("customMouseOver", function(d, i) {
       console.log(d);
     });
 
-  myChart3 = d3.ez.donutChart()
+  myChart3 = d3.ez.chart.donut()
     .width(400)
     .height(200)
     .innerRadius(40);
 
-  myChart4 = d3.ez.radialBarChart()
+  myChart4 = d3.ez.chart.radialBar()
     .width(400)
     .height(200);
 
-  myChart5 = d3.ez.groupedBarChart()
+  myChart5 = d3.ez.chart.groupedBar()
     .width(400)
     .height(200)
     .yAxisLabel("Fruit")
@@ -65,16 +65,16 @@
     })
     .groupType("stacked");
 
-  myChart6 = d3.ez.circularHeatChart()
+  myChart6 = d3.ez.chart.circularHeat()
     .width(400)
     .height(200)
     .innerRadius(5);
 
-  myChart7 = d3.ez.tabularHeatChart()
+  myChart7 = d3.ez.chart.tabularHeat()
     .width(400)
     .height(200);
 
-  myChart8 = d3.ez.punchCard()
+  myChart8 = d3.ez.chart.punchCard()
     .width(400)
     .height(200)
     .color("green")

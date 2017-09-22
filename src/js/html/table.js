@@ -9,7 +9,7 @@
  *     .datum(data)
  *     .call(myTable);
  */
-d3.ez.htmlTable = function module() {
+d3.ez.html.table = function module() {
   // HTML Table Element (Populated by 'my' function)
   var tableEl;
 

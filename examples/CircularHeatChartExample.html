@@ -99,12 +99,12 @@
     }
 
     var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
-    var chart = d3.ez.circularHeatChart().colors(colors);
-    var legend = d3.ez.legend().title('Widget Counts');
-    var title = d3.ez.title().mainText("Town to Town Stats").subText("Number of widgets between UK towns");
+    var chart = d3.ez.chart.circularHeat().colors(colors);
+    var legend = d3.ez.component.legend().title('Widget Counts');
+    var title = d3.ez.component.title().mainText("Town to Town Stats").subText("Number of widgets between UK towns");
 
     // Create chart object
-    var myChart = d3.ez.base()
+    var myChart = d3.ez.chart()
       .width(750)
       .height(400)
       .chart(chart)

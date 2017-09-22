@@ -9,7 +9,7 @@
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.multiSeriesLineChart = function module() {
+d3.ez.chart.multiSeriesLine = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
@@ -18,7 +18,7 @@ d3.ez.multiSeriesLineChart = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 30, left: 40 };
-  var classed = "multiSeriesLineChart";
+  var classed = "chartMultiSeriesLine";
   var colors = d3.ez.colors.categorical(3);
   var yAxisLabel = null;
   var groupType = "clustered";

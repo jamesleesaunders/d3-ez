@@ -2,6 +2,8 @@
 
 **D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating graphs and charts making D3. **D3.EZ** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualizations with minimal code.
 
+Compatible with D3 v4.
+
 Gist (bl.ocks) Examples:
 * [Discrete Bar Chart](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
 * [Stacked Bar Chart](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
@@ -32,3 +34,4 @@ For reference here are a few other alternative D3 chart libraries which also fol
 
 Credits:
 * Peter Cook http://animateddata.co.uk/ For giving permission to use his Radial Bar and Radial Heat Map charts.
+* Virgin Media http://www.virginmedia.co.uk/ For support in development of the Tabular Heat Map.

@@ -32,14 +32,14 @@
       });
 
       var colors = d3.ez.colors.categorical(3);
-      var chart = d3.ez.multiSeriesLineChart()
+      var chart = d3.ez.chart.multiSeriesLine()
         .colors(colors)
         .yAxisLabel('Temperature (°F)');
-      var legend = d3.ez.legend().title('Town');
-      var title = d3.ez.title().mainText("Average Temperatures").subText("Per Town");
+      var legend = d3.ez.component.legend().title('Town');
+      var title = d3.ez.component.title().mainText("Average Temperatures").subText("Per Town");
 
       // Create chart object
-      var myChart = d3.ez.base()
+      var myChart = d3.ez.chart()
         .width(750)
         .height(400)
         .chart(chart)

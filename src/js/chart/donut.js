@@ -11,7 +11,7 @@
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.donutChart = function module() {
+d3.ez.chart.donut = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
@@ -21,7 +21,7 @@ d3.ez.donutChart = function module() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
-  var classed = "donutChart";
+  var classed = "chartDonut";
   var colors = d3.ez.colors.categorical(4);
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
   var innerRadius = 70;

@@ -2,18 +2,19 @@
 // Use before Makefile
 
 include('js/header.js');
-include('js/base.js');
-include('js/discreteBarChart.js');
-include('js/groupedBarChart.js');
-include('js/radialBarChart.js');
-include('js/circularHeatChart.js');
-include('js/tabularHeatChart.js');
-include('js/donutChart.js');
-include('js/punchCard.js');
-include('js/multiSeriesLineChart.js');
-include('js/htmlTable.js');
-include('js/htmlList.js');
-include('js/reusableComponents.js');
+include('js/chart.js');
+include('js/component.js');
+include('js/colors.js');
+include('js/chart/discreteBar.js');
+include('js/chart/groupedBar.js');
+include('js/chart/radialBar.js');
+include('js/chart/circularHeat.js');
+include('js/chart/tabularHeat.js');
+include('js/chart/donut.js');
+include('js/chart/punchCard.js');
+include('js/chart/multiSeriesLine.js');
+include('js/html/table.js');
+include('js/html/list.js');
 
 function include(file) {
   var loc = document.currentScript.src;
