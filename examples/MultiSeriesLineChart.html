@@ -20,7 +20,7 @@
       var dateISO = parser(dateYMD).toISOString();
       var dateUnix = new Date(dateISO)/1000;
       return dateUnix;
-    }
+    };
 
     d3.tsv("data/data.tsv", function(error, tsv) {
       // Convert tsv to d3.ez data format
