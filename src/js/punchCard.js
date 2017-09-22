@@ -22,7 +22,7 @@ d3.ez.punchCard = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 40, right: 80, bottom: 20, left: 20 };
-  var transition = { ease: "bounce", duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "punchCard";
   var color = "steelblue";
   var sizeScale = undefined;
@@ -76,18 +76,17 @@ d3.ez.punchCard = function module() {
     });
 
     // X (& Y) Scales
-    xScale = d3.scale.ordinal()
-      .domain(categoryNames)
-      .rangeRoundBands([0, chartW], 1);
+		xScale = d3.scaleBand()
+			.domain(categoryNames)
+			.rangeRound([0, chartW])
+			.padding(0.1);
 
     // X (& Y) Axis
-    xAxis = d3.svg.axis()
-      .scale(xScale)
-      .orient("bottom")
+    xAxis = d3.axisBottom(xScale)
       .ticks(data[0].values.length);
 
     // Colour Scale
-    colorScale = d3.scale.linear()
+    colorScale = d3.scaleLinear()
       .domain(d3.extent(allValues, function(d) {
         return d['value'];
       }))
@@ -106,7 +105,7 @@ d3.ez.punchCard = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -115,7 +114,8 @@ d3.ez.punchCard = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+					.attr("width", width)
+					.attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
@@ -125,19 +125,20 @@ d3.ez.punchCard = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+				.attr("width", width)
+				.attr("height", height);
 
       // Add axis to chart
       chart.select(".x-axis")
-        .attr({ transform: "translate(0," + chartH + ")" })
+			  .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
       for (var j = 0; j < data.length; j++) {
         sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) {
           return d['value'];
         })];
-        sizeScale = d3.scale.linear()
+        sizeScale = d3.scaleLinear()
           .domain(sizeDomain)
           .range([minRadius, maxRadius]);
 
@@ -158,7 +159,7 @@ d3.ez.punchCard = function module() {
           .style("fill", function(d) {
             return colorScale(d['value'])
           })
-          .on("mouseover", dispatch.customMouseOver);
+					.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
         var text = g.selectAll("text")
           .data(data[j]['values'])
@@ -261,7 +262,10 @@ d3.ez.punchCard = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+	my.on = function() {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
   return my;
 };
