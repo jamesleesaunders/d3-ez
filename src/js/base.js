@@ -80,7 +80,7 @@ d3.ez.base = function module() {
       // Update the canvas dimensions
       canvas.attr("transform", "translate(" + margin.left + "," + margin.top + ")" )
         .attr("width", canvasW)
-        .attr("height", canvasH)
+        .attr("height", canvasH);
 
       // Add Chart
       canvas.select(".chartbox")

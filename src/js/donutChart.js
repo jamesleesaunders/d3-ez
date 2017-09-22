@@ -20,7 +20,7 @@ d3.ez.donutChart = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeCubic, duration: 300 };
+  var transition = { ease: d3.easeCubic, duration: 750 };
   var classed = "donutChart";
   var colors = d3.ez.colors.categorical(4);
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -90,6 +90,7 @@ d3.ez.donutChart = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
+					return selection.append("svg");
           var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
@@ -132,10 +133,10 @@ d3.ez.donutChart = function module() {
           this._current = d;
         })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-
-      slices.transition()
+				.merge(slices)
+				.transition()
+				.duration(transition.duration)
         .ease(transition.ease)
-        .duration(transition.duration)
         .attrTween("d", arcTween);
 
       slices.exit()
@@ -149,10 +150,10 @@ d3.ez.donutChart = function module() {
       labels.enter()
         .append("text")
         .attr("class", "label")
-        .attr("dy", ".35em");
-
-      labels.transition()
-        .duration(transition.duration)
+        .attr("dy", ".35em")
+				.merge(labels)
+				.transition()
+				.duration(transition.duration)
         .text(function(d, i) {
           return data.values[i].key;
         })
@@ -187,10 +188,10 @@ d3.ez.donutChart = function module() {
 
       lines.enter()
         .append("polyline")
-        .attr("class", "line");
-
-      lines.transition()
-        .duration(transition.duration)
+        .attr("class", "line")
+				.merge(lines)
+				.transition()
+				.duration(transition.duration)
         .attrTween("points", function(d) {
           this._current = this._current || d;
           var interpolate = d3.interpolate(this._current, d);

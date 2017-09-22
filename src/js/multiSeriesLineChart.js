@@ -161,13 +161,6 @@ d3.ez.multiSeriesLineChart = function module() {
         .attr("cy", function(d) { return yScale(d.value); })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
-      //series.append("text")
-      //  .datum(function(d) { return { name: d.name, value: d.values[d.values.length - 1] }; })
-      //  .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.temperature) + ")"; })
-      //  .attr("x", 3)
-      //  .attr("dy", ".35em")
-      //  .text(function(d) { return d.name; });
-
     });
   }
 
