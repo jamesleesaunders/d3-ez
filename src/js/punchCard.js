@@ -79,7 +79,7 @@ d3.ez.punchCard = function module() {
 		xScale = d3.scaleBand()
 			.domain(categoryNames)
 			.rangeRound([0, chartW])
-			.padding(0.1);
+			.padding(1);
 
     // X (& Y) Axis
     xAxis = d3.axisBottom(xScale)
