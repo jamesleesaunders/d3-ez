@@ -18,7 +18,7 @@ d3.ez.circularHeatChart = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: "bounce", duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "circularHeatChart";
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -63,7 +63,7 @@ d3.ez.circularHeatChart = function module() {
     }
 
     // Colour Scale
-    colorScale = d3.scale.threshold()
+    colorScale = d3.scaleThreshold()
       .domain(thresholds)
       .range(colors);
   }
@@ -76,7 +76,7 @@ d3.ez.circularHeatChart = function module() {
       // Create chart element (if it does not exist already)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -84,8 +84,9 @@ d3.ez.circularHeatChart = function module() {
           }
         })(d3.select(this));
 
-        svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+				svg.classed("d3ez", true)
+					.attr("width", width)
+					.attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("rings", true);
@@ -97,11 +98,12 @@ d3.ez.circularHeatChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
+        .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
+				.attr("width", width)
+				.attr("height", height);
 
       // Arc Generator
-      var arc = d3.svg.arc()
+      var arc = d3.arc()
         .innerRadius(function(d, i) {
           return innerRadius + d.ring * segmentHeight;
         })
@@ -121,7 +123,7 @@ d3.ez.circularHeatChart = function module() {
         .enter()
         .append("g")
         .classed("ring", true)
-        .on("mouseover", dispatch.customMouseOver);
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       // Ring Segments
       chart.selectAll(".ring").selectAll("path")
@@ -141,7 +143,7 @@ d3.ez.circularHeatChart = function module() {
         .classed("segment", true);
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
-      var id = chart.selectAll(".circularHeat")[0].length;
+      var id = chart.selectAll(".circularHeat")._groups[0].length;
 
       // Radial Labels
       var lsa = 0.01; // Label start angle
@@ -267,7 +269,10 @@ d3.ez.circularHeatChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+	my.on = function() {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
   return my;
 };
