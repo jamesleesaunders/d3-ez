@@ -3,7 +3,7 @@
 
 <head>
   <title>D3.EZ : Showcase</title>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../src/d3.ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
 </head>
@@ -41,7 +41,6 @@
   myChart2 = d3.ez.discreteBarChart()
     .width(400)
     .height(200)
-    .colors(d3.scale.category10().range())
     .on("customMouseOver", function(d, i) {
       console.log(d);
     });
@@ -49,7 +48,6 @@
   myChart3 = d3.ez.donutChart()
     .width(400)
     .height(200)
-    .colors(d3.scale.category10().range())
     .innerRadius(40);
 
   myChart4 = d3.ez.radialBarChart()
@@ -60,7 +58,6 @@
     .width(400)
     .height(200)
     .yAxisLabel("Fruit")
-    .colors(d3.scale.category10().range())
     .on("customMouseOver", function(d, i) {
       update2(d);
       update3(d);

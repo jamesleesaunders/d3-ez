@@ -16,7 +16,7 @@ d3.ez.tabularHeatChart = function module() {
   var width = 600;
   var height = 600;
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
-  var transition = { ease: "bounce", duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "tabularHeatChart";
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
@@ -85,7 +85,7 @@ d3.ez.tabularHeatChart = function module() {
     }
 
     // Colour Scale
-    colorScale = d3.scale.threshold()
+    colorScale = d3.scaleThreshold()
       .domain(thresholds)
       .range(colors);
   }
@@ -98,7 +98,7 @@ d3.ez.tabularHeatChart = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -106,8 +106,9 @@ d3.ez.tabularHeatChart = function module() {
           }
         })(d3.select(this));
 
-        svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+				svg.classed("d3ez", true)
+					.attr("width", width)
+					.attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
@@ -119,23 +120,23 @@ d3.ez.tabularHeatChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
+				.attr("width", width)
+				.attr("height", height)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       var deck = chart.select(".cards")
         .selectAll(".deck")
         .data(data);
 
-      deck.enter().append("g")
+      var deckEnter = deck.enter().append("g")
         .attr("class", "deck")
         .attr("transform", function(d, i) {
           return "translate(0, " + ((colNames.indexOf(d.key)) * gridSize) + ")";
         });
 
-      deck.transition()
-        .attr("class", "deck");
+			deck.exit().remove();
 
-      var cards = deck.selectAll(".card")
+      var cards = deckEnter.selectAll(".card")
         .data(function(d) {
           // Map row, column and value to new data array
           var ret = [];
@@ -160,20 +161,20 @@ d3.ez.tabularHeatChart = function module() {
         .attr("width", gridSize)
         .attr("height", gridSize)
         .on("click", dispatch.customClick)
-        .on("mouseover", dispatch.customMouseOver)
-        .on("mouseout", dispatch.customMouseOut);
-
-      cards.transition()
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+				.on("mouseout", function(d) { dispatch.call("customMouseOut", this, d); })
+				.merge(cards)
+				.transition()
         .duration(1000)
         .style("fill", function(d) {
           return colorScale(d.value);
         });
 
+			cards.exit().remove();
+
       cards.select("title").text(function(d) {
         return d.value;
       });
-
-      cards.exit().remove();
 
       var colLabels = chart.select(".x-axis").selectAll(".colLabel")
         .data(colNames)
@@ -261,7 +262,10 @@ d3.ez.tabularHeatChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };

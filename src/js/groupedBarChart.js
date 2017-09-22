@@ -20,7 +20,7 @@ d3.ez.groupedBarChart = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
-  var transition = { ease: "bounce", duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "groupedBarChart";
   var colors = d3.ez.colors.categorical(4);
   var gap = 0;
@@ -78,25 +78,21 @@ d3.ez.groupedBarChart = function module() {
     maxGroupTotal = d3.max(d3.values(groupTotals));
 
     // X & Y Scales
-    xScale = d3.scale.ordinal()
-      .rangeRoundBands([0, chartW], .1)
-      .domain(groupNames);
+    xScale = d3.scaleBand()
+      .domain(groupNames)
+			.rangeRound([0, chartW])
+			.padding(0.1);
 
-    yScale = d3.scale.linear()
+    yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (groupType == "stacked" ? maxGroupTotal : maxValue)]);
+      .domain([0, (groupType === "stacked" ? maxGroupTotal : maxValue)]);
 
     // X & Y Axis
-    xAxis = d3.svg.axis()
-      .scale(xScale)
-      .orient("bottom");
-
-    yAxis = d3.svg.axis()
-      .scale(yScale)
-      .orient("left");
+    xAxis = d3.axisBottom(xScale);
+    yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
-    colorScale = d3.scale.ordinal()
+    colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(categoryNames);
   }
@@ -109,7 +105,7 @@ d3.ez.groupedBarChart = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -118,7 +114,8 @@ d3.ez.groupedBarChart = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
@@ -135,12 +132,13 @@ d3.ez.groupedBarChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("width", chartW)
+        .attr("height", chartH);
 
       // Add axis to chart
       chart.select(".x-axis")
-        .attr({ transform: "translate(0," + chartH + ")" })
+        .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
       chart.select(".y-axis")
@@ -148,19 +146,19 @@ d3.ez.groupedBarChart = function module() {
 
       // Create gar group
       var barGroup = chart.selectAll(".barGroup")
-        .data(data);
-
-      barGroup.enter()
+        .data(data)
+        .enter()
         .append("g")
         .attr("class", "barGroup")
-        .attr("transform", function(d, i) {
-          return "translate(" + xScale(d.key) + ", 0)";
-        })
-        .on("mouseover", dispatch.customMouseOver);
+        .attr("transform", function(d, i) { return "translate(" + xScale(d.key) + ", 0)"; })
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       // Add bars to group
       var bars = barGroup.selectAll(".bar")
-        .data(function(d) {
+        //.data(function(d) { console.log(d); return d.values; })
+
+
+      .data(function(d) {
           series = [];
           var y0 = 0;
           d3.map(d.values).values().forEach(function(d, i) {
@@ -177,94 +175,56 @@ d3.ez.groupedBarChart = function module() {
 
       if (groupType === "stacked") {
 
-        var gapSize = xScale.rangeBand() / 100 * gap;
-        var barW = xScale.rangeBand() - gapSize;
+        var gapSize = xScale.bandwidth() / 100 * gap;
+        var barW = xScale.bandwidth() - gapSize;
 
         bars.enter()
           .append("rect")
           .classed("bar", true)
-          .attr("class", function(d) {
-            return d.name + " bar";
-          })
-          .attr({
-            width: barW,
-            x: 0,
-            y: chartH,
-            height: 0
-          })
-          .attr("fill", function(d) {
-            return colorScale(d.name);
-          });
-
-        bars.transition()
-          .ease(transition.ease)
-          .duration(transition.duration)
-          .attr({
-            width: barW,
-            x: 0,
-            y: function(d) {
-              return yScale(d.y1);
-            },
-            height: function(d) {
-              return yScale(d.y0) - yScale(d.y1);
-            }
-          })
-          .attr("fill", function(d) {
-            return colorScale(d.name);
-          });
+          .attr("class", function(d) { return d.name + " bar"; } )
+          .attr("width", barW)
+          .attr("x", 0)
+          .attr("y", chartH)
+          .attr("height", 0)
+          .attr("fill", function(d) { return colorScale(d.name); })
+					.merge(bars)
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
+					.attr("y", function(d) { return yScale(d.y1); })
+					.attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
 
         bars.exit()
           .transition()
-          .style({
-            opacity: 0
-          })
+          .style("opacity", 0)
           .remove();
 
       } else if (groupType === "clustered") {
 
-        var x1 = d3.scale.ordinal()
-          .rangeRoundBands([0, xScale.rangeBand()])
-          .domain(categoryNames);
+        var x1 = d3.scaleBand()
+          .domain(categoryNames)
+          .range([0, xScale.bandwidth()]);
 
         bars.enter()
           .append("rect")
           .classed("bar", true)
-          .attr({
-            width: x1.rangeBand(),
-            x: function(d) {
-              return x1(d.name);
-            },
-            y: chartH,
-            height: 0
-          })
-          .attr("fill", function(d) {
-            return colorScale(d.name);
-          });
-
-        bars.transition()
-          .ease(transition.ease)
-          .duration(transition.duration)
-          .attr({
-            width: x1.rangeBand(),
-            x: function(d) {
-              return x1(d.name);
-            },
-            y: function(d) {
-              return yScale(d.value);
-            },
-            height: function(d) {
-              return chartH - yScale(d.value);
-            }
-          })
-          .attr("fill", function(d) {
-            return colorScale(d.name);
-          });
+          .attr("width", x1.bandwidth())
+          .attr("x", function(d) { return x1(d.name); })
+          .attr("y", chartH)
+          .attr("height", 0)
+          .attr("fill", function(d) { return colorScale(d.name); })
+					.merge(bars)
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
+					.attr("width", x1.bandwidth())
+					.attr("x", function(d) { return x1(d.name); })
+					.attr("y", function(d) { return yScale(d.value); })
+					.attr("height", function(d) { return chartH - yScale(d.value); });
 
         bars.exit()
           .transition()
-          .style({
-            opacity: 0
-          })
+          .style("opacity", 0)
           .remove();
       }
     });
@@ -325,7 +285,10 @@ d3.ez.groupedBarChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };

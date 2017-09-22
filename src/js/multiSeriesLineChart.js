@@ -63,27 +63,28 @@ d3.ez.multiSeriesLineChart = function module() {
 
     // X & Y Scales
     dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
-    xScale = d3.time.scale()
+    xScale = d3.scaleTime()
       .range([0, chartW])
       .domain(dateDomain);
 
-    yScale = d3.scale.linear()
+    yScale = d3.scaleLinear()
       .range([chartH, 0])
       .domain([minValue, maxValue + 10]);
 
     // X & Y Axis
-    xAxis = d3.svg.axis()
-      .scale(xScale)
-      .orient("bottom")
-      .tickFormat(d3.time.format("%d-%b"));
-    yAxis = d3.svg.axis()
-      .scale(yScale)
-      .orient("left");
+    xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.timeFormat("%d-%b"));
+    yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
-    colorScale = d3.scale.ordinal()
+    colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(seriesNames);
+
+    // Line Generator
+    line = d3.line()
+      .x(function(d) { return xScale(d.key); })
+      .y(function(d) { return yScale(d.value); });
   }
 
   function my(selection) {
@@ -94,7 +95,7 @@ d3.ez.multiSeriesLineChart = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -103,7 +104,8 @@ d3.ez.multiSeriesLineChart = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
@@ -120,8 +122,9 @@ d3.ez.multiSeriesLineChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" });
+        .attr("width", chartW)
+        .attr("height", chartH)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // Add axis to chart
       chart.select(".x-axis")
@@ -131,7 +134,7 @@ d3.ez.multiSeriesLineChart = function module() {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");;
+        .attr("transform", "rotate(-65)");
 
       chart.select(".y-axis")
         .call(yAxis);
@@ -139,17 +142,15 @@ d3.ez.multiSeriesLineChart = function module() {
       var series = chart.selectAll(".series")
         .data(data)
         .enter().append("g")
-        .attr("class", "series");
-
-      // Line Generator
-      line = d3.svg.line()
-        .x(function(d) { return xScale(d.key); })
-        .y(function(d) { return yScale(d.value); });
+        .attr("class", "series")
+        .style("fill", function(d) { return colorScale(d.key); });
 
       series.append("path")
         .attr("class", "line")
-        .attr("d", function(d) { return line(d.values); })
-        .style("stroke", function(d) { return colorScale(d.key); });
+        .attr("stroke-width", 2)
+        .attr("stroke", function(d) { return colorScale(d.key); })
+        .attr("fill", "none")
+        .attr("d", function(d) { return line(d.values); });
 
       series.selectAll("circle")
         .data(function(d) { return d.values })
@@ -158,15 +159,7 @@ d3.ez.multiSeriesLineChart = function module() {
         .attr("r", 3)
         .attr("cx", function(d) { return xScale(d.key); })
         .attr("cy", function(d) { return yScale(d.value); })
-        .style("fill", function(d, i, j) { return colorScale(data[j].key); })
-        .on("mouseover", dispatch.customMouseOver);
-
-      //series.append("text")
-      //  .datum(function(d) { return { name: d.name, value: d.values[d.values.length - 1] }; })
-      //  .attr("transform", function(d) { return "translate(" + xScale(d.value.date) + "," + yScale(d.value.temperature) + ")"; })
-      //  .attr("x", 3)
-      //  .attr("dy", ".35em")
-      //  .text(function(d) { return d.name; });
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
     });
   }
@@ -226,7 +219,10 @@ d3.ez.multiSeriesLineChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };

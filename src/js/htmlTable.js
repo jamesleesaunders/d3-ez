@@ -81,7 +81,7 @@ d3.ez.htmlTable = function module() {
         .attr("class", function(d) {
           return d.key;
         })
-        .on("mouseover", dispatch.customMouseOver);
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
 
       // Add the first column of headings (categories)
       rows.append("th")
@@ -118,7 +118,10 @@ d3.ez.htmlTable = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };

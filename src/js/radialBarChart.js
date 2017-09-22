@@ -18,7 +18,7 @@ d3.ez.radialBarChart = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: "bounce", duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "radialBarChart";
   var colors = d3.ez.colors.categorical(4);
   var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
@@ -69,12 +69,12 @@ d3.ez.radialBarChart = function module() {
     domain = [0, maxValue + 1];
 
     // Scale
-    barScale = d3.scale.linear()
+    barScale = d3.scaleLinear()
       .domain(domain)
       .range([0, radius]);
 
     // Colour Scale
-    colorScale = d3.scale.ordinal()
+    colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(keys);
 
@@ -88,7 +88,7 @@ d3.ez.radialBarChart = function module() {
       // Create SVG element (if it does not exist already)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection[0][0];
+          var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -97,7 +97,8 @@ d3.ez.radialBarChart = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-          .attr({ width: width, height: height });
+					.attr("width", width)
+					.attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("tickCircles", true);
@@ -112,8 +113,9 @@ d3.ez.radialBarChart = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr({ width: width, height: height })
-        .attr({ transform: "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")" });
+				.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
+				.attr("width", width)
+				.attr("height", height);
 
       // Concentric tick circles
       tickCircles = chart.select(".tickCircles")
@@ -122,20 +124,18 @@ d3.ez.radialBarChart = function module() {
 
       tickCircles.enter()
         .append("circle")
-        .style("fill", "none");
-
-      tickCircles.transition()
+        .style("fill", "none")
+				.merge(tickCircles)
+				.transition()
         .attr("r", function(d) {
           return barScale(d);
-        })
-        .ease(transition.ease)
-        .duration(transition.duration);
+        });
 
       tickCircles.exit()
         .remove();
 
       // Arc Generator
-      var arc = d3.svg.arc()
+      var arc = d3.arc()
         .innerRadius(0)
         .outerRadius(function(d, i) {
           return barScale(d.value);
@@ -159,15 +159,15 @@ d3.ez.radialBarChart = function module() {
           return colors[i % colors.length];
         })
         .classed("segment", true)
-        .on("mouseover", dispatch.customMouseOver);
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+				.merge(segments)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("d", arc);
 
       segments.exit()
         .remove();
-
-      segments.transition()
-        .ease(transition.ease)
-        .duration(transition.duration)
-        .attr("d", arc);
 
       // Spokes
       var spokes = chart.select(".spokes")
@@ -181,8 +181,8 @@ d3.ez.radialBarChart = function module() {
         });
 
       // Axis
-      var axisScale = d3.scale.linear().domain(domain).range([0, -radius]);
-      var axis = d3.svg.axis().scale(axisScale).orient("right");
+      var axisScale = d3.scaleLinear().domain(domain).range([0, -radius]);
+      var axis = d3.axisRight(axisScale);
 
       //if(tickValues) axis.tickValues(tickValues);
       axis = chart.select(".axis")
@@ -283,7 +283,10 @@ d3.ez.radialBarChart = function module() {
     return this;
   };
 
-  d3.rebind(my, dispatch, "on");
+	my.on = function() {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
   return my;
 };

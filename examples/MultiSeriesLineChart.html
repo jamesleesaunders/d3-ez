@@ -3,7 +3,7 @@
 
 <head>
   <title>D3.EZ : Multi Series Line Chart Example</title>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../src/d3.ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../d3.ez.css">
   <meta charset="utf-8">
@@ -16,7 +16,8 @@
 
   <script type="text/javascript">
     dateConvert = function(dateYMD) {
-      var dateISO = d3.time.format('%Y%m%d').parse(dateYMD).toISOString();
+      parser = d3.timeParse('%Y%m%d');
+      var dateISO = parser(dateYMD).toISOString();
       var dateUnix = new Date(dateISO)/1000;
       return dateUnix;
     }
