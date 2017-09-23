@@ -2,10 +2,10 @@
 <html>
 
 <head>
-  <title>D3.EZ : Tabular Heat Chart Example</title>
+  <title>d3-ez : Tabular Heat Chart Example</title>
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="../src/d3.ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <script src="../test/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css">
 </head>
 
 <body>
@@ -29,12 +29,12 @@
       });
 
       var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
-      var chart = d3.ez.tabularHeatChart().colors(colors);
-      var legend = d3.ez.legend().title('Widget Counts');
-      var title = d3.ez.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
+      var chart = d3.ez.chart.tabularHeat().colors(colors);
+      var legend = d3.ez.component.legend().title('Widget Counts');
+      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
 
       // Create chart object
-      var myChart = d3.ez.base()
+      var myChart = d3.ez.chart()
         .width(750)
         .height(550)
         .chart(chart)

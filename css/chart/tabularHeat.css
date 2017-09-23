@@ -1,0 +1,10 @@
+/* === Tabular Heat Chart Styles === */
+.chartTabularHeat rect.card {
+  stroke: #b6b6b6;
+  stroke-width: 0.5px;
+}
+.chartTabularHeat rect.card:hover {
+  opacity: 0.7;
+  stroke: #b6b6b6;
+  cursor: pointer;
+}

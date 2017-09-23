@@ -2,10 +2,10 @@
 <html>
 
 <head>
-  <title>D3.EZ : Multi Series Line Chart Example</title>
+  <title>d3-ez : Multi Series Line Chart Example</title>
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="../src/d3.ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../d3.ez.css">
+  <script src="../test/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css">
   <meta charset="utf-8">
 </head>
 
@@ -32,14 +32,14 @@
       });
 
       var colors = d3.ez.colors.categorical(3);
-      var chart = d3.ez.multiSeriesLineChart()
+      var chart = d3.ez.chart.multiSeriesLine()
         .colors(colors)
         .yAxisLabel('Temperature (°F)');
-      var legend = d3.ez.legend().title('Town');
-      var title = d3.ez.title().mainText("Average Temperatures").subText("Per Town");
+      var legend = d3.ez.component.legend().title('Town');
+      var title = d3.ez.component.title().mainText("Average Temperatures").subText("Per Town");
 
       // Create chart object
-      var myChart = d3.ez.base()
+      var myChart = d3.ez.chart()
         .width(750)
         .height(400)
         .chart(chart)

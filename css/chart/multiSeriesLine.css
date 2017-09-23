@@ -1,0 +1,14 @@
+/* === Multi Series Line Chart Styles === */
+@keyframes circleTransition {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+    }
+}
+.chartMultiSeriesLine circle:hover {
+    animation-duration: 0.2s;
+    animation-name: circleTransition;
+    transform-origin: center center;
+}

@@ -1,0 +1,16 @@
+/* === Circular Heat Chart Styles === */
+.chartCircularHeat path.segment {
+  stroke: #B6B6B6;
+  stroke-width: 0.5px;
+}
+.chartCircularHeat .labels {
+  fill: #000000;
+  letter-spacing: -1px;
+}
+.chartCircularHeat .segmentLabels text {
+  font-size: 1.0em;
+}
+.chartCircularHeat .radialLabels text {
+  font-size: 1.1em;
+  font-weight: bold;
+}

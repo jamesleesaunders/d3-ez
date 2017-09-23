@@ -1,10 +1,11 @@
 {
-  "name": "d3.ez",
-  "version": "2.0.0",
+  "name": "d3-ez",
+  "version": "2.1.1",
   "description": "D3 Easy Reusable Chary Library",
   "license": "GPL-3.0",
   "keywords": [
     "d3",
+    "d3-module",
     "visualization",
     "chart",
     "graph",
@@ -16,17 +17,21 @@
   "author": "James Saunders (james@saunders-family.net)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jamesleesaunders/d3.ez.git"
+    "url": "https://github.com/jamesleesaunders/d3-ez.git"
   },
-  "main": "d3.ez.js",
+  "main": "build/d3-foo.js",
+  "scripts": {
+    "test": "tape 'test/**/*-test.js'"
+  },
   "peerDependencies": {
     "d3": "^4.0.0"
   },
   "devDependencies": {
     "uglify-js": "2.4.24",
-    "vows": "0.8"
+    "vows": "0.8",
+    "tape": "4"
   },
   "bugs": {
-    "url": "https://github.com/jamesleesaunders/d3.ez/issues"
+    "url": "https://github.com/jamesleesaunders/d3-ez/issues"
   }
 }
