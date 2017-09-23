@@ -53,7 +53,7 @@ d3.ez.chart = function module() {
     }
 
     // Init Credit Tag
-    creditTag.text("d3ez.org").href("http://d3ez.org");
+    creditTag.text("d3-ez.net").href("http://d3-ez.net");
   }
 
   function my(selection) {

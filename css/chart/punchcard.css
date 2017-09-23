@@ -1,0 +1,9 @@
+/* === Punchcard Styles === */
+.chartPunchcard text.punchValue {
+  font-size: 20px;
+  font-weight: bold;
+}
+.chartPunchcard text.label {
+  font-size: 12px;
+  font-weight: bold;
+}

@@ -10,7 +10,7 @@ JS_FILES :=        src/header.js \
                    src/chart/circularHeat.js \
                    src/chart/tabularHeat.js \
                    src/chart/donut.js \
-                   src/chart/punchCard.js \
+                   src/chart/punchcard.js \
                    src/chart/multiSeriesLine.js \
                    src/html/table.js \
                    src/html/list.js
@@ -22,7 +22,7 @@ CSS_FILES :=       css/global.css \
                    css/chart/circularHeat.css \
                    css/chart/tabularHeat.css \
                    css/chart/donut.css \
-                   css/chart/punchCard.css \
+                   css/chart/punchcard.css \
                    css/chart/multiSeriesLine.css \
                    css/html/list.css \
                    css/html/table.css

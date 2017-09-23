@@ -11,7 +11,7 @@ include('../src/chart/radialBar.js');
 include('../src/chart/circularHeat.js');
 include('../src/chart/tabularHeat.js');
 include('../src/chart/donut.js');
-include('../src/chart/punchCard.js');
+include('../src/chart/punchcard.js');
 include('../src/chart/multiSeriesLine.js');
 include('../src/html/table.js');
 include('../src/html/list.js');

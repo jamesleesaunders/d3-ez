@@ -78,14 +78,14 @@ d3.ez.component.title = function module() {
  * @example
  * var myCredit = d3.ez.creditTag()
  *     .enabled(true)
- *     .text("Hello World")
- *     .href("http://d3ez.org");
+ *     .text("d3-ez.net")
+ *     .href("http://d3-ez.net");
  * d3.select("svg").call(myCredit);
  */
 d3.ez.component.creditTag = function module() {
   // Default Options (Configurable via setters)
-  var text = "d3ez.org";
-  var href = "http://d3ez.org";
+  var text = "d3-ez.net";
+  var href = "http://d3-ez.net";
 
   function my(selection) {
     var creditTag = selection.selectAll("#creditTag")

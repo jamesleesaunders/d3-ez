@@ -131,12 +131,12 @@
 }
 
 
-/* === Punch Card Styles === */
-.chartPunchCard text.punchValue {
+/* === Punchcard Styles === */
+.chartPunchcard text.punchValue {
   font-size: 20px;
   font-weight: bold;
 }
-.chartPunchCard text.label {
+.chartPunchcard text.label {
   font-size: 12px;
   font-weight: bold;
 }

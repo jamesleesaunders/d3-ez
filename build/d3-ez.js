@@ -69,7 +69,7 @@ d3.ez.chart = function module() {
             chart.height(chart.height() - title.height());
         }
         // Init Credit Tag
-        creditTag.text("d3ez.org").href("http://d3ez.org");
+        creditTag.text("d3-ez.net").href("http://d3-ez.net");
     }
     function my(selection) {
         selection.each(function(data) {
@@ -213,14 +213,14 @@ d3.ez.component.title = function module() {
  * @example
  * var myCredit = d3.ez.creditTag()
  *     .enabled(true)
- *     .text("Hello World")
- *     .href("http://d3ez.org");
+ *     .text("d3-ez.net")
+ *     .href("http://d3-ez.net");
  * d3.select("svg").call(myCredit);
  */
 d3.ez.component.creditTag = function module() {
     // Default Options (Configurable via setters)
-    var text = "d3ez.org";
-    var href = "http://d3ez.org";
+    var text = "d3-ez.net";
+    var href = "http://d3-ez.net";
     function my(selection) {
         var creditTag = selection.selectAll("#creditTag").data([ 0 ]).enter().append("g").attr("id", "creditTag");
         var creditText = creditTag.append("text").text(text).attr("xlink:href", href).on("click", function() {
@@ -1766,7 +1766,7 @@ d3.ez.chart.donut = function module() {
  * Punchcard
  *
  * @example
- * var myChart = d3.ez.punchCard()
+ * var myChart = d3.ez.punchcard()
  *     .width(600)
  *     .height(350)
  *     .color("green")
@@ -1777,7 +1777,7 @@ d3.ez.chart.donut = function module() {
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.chart.punchCard = function module() {
+d3.ez.chart.punchcard = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
@@ -1794,7 +1794,7 @@ d3.ez.chart.punchCard = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartPunchCard";
+    var classed = "chartPunchcard";
     var color = "steelblue";
     var sizeScale = undefined;
     var sizeDomain = [];
