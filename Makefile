@@ -27,9 +27,9 @@ CSS_FILES :=       src/css/global.css \
                    src/css/html/list.css \
                    src/css/html/table.css
 
-GENERATED_FILES := d3-ez.js \
-                   d3-ez.min.js \
-                   d3-ez.css \
+GENERATED_FILES := build/d3-ez.js \
+                   build/d3-ez.min.js \
+                   build/d3-ez.css \
                    README.md \
                    LICENSE.md
 
@@ -39,7 +39,7 @@ all: js css min zip
 js: $(JS_FILES)
 	@echo Concatinating JS Files...
 	@rm -f build/d3-ez.js
-	@uglifyjs $^ --beautify indent_level=4 --comments all > build/d3.ez.js
+	@uglifyjs $^ --beautify indent_level=4 --comments all > build/d3-ez.js
 
 css: $(CSS_FILES)
 	@echo Concatinating CSS Files...
