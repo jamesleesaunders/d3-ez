@@ -1,12 +1,12 @@
 /**
- * D3.EZ
+ * d3-ez
  *
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2017 James Saunders
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.0",
+    version: "2.1.1",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
