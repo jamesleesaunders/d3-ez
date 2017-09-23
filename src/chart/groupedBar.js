@@ -154,11 +154,9 @@ d3.ez.chart.groupedBar = function module() {
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       // Add bars to group
+      var barGroup = chart.selectAll(".barGroup");
       var bars = barGroup.selectAll(".bar")
-        //.data(function(d) { console.log(d); return d.values; })
-
-
-      .data(function(d) {
+        .data(function(d) {
           series = [];
           var y0 = 0;
           d3.map(d.values).values().forEach(function(d, i) {
@@ -174,7 +172,6 @@ d3.ez.chart.groupedBar = function module() {
         });
 
       if (groupType === "stacked") {
-
         var gapSize = xScale.bandwidth() / 100 * gap;
         var barW = xScale.bandwidth() - gapSize;
 
@@ -191,6 +188,8 @@ d3.ez.chart.groupedBar = function module() {
 					.transition()
 					.ease(transition.ease)
 					.duration(transition.duration)
+          .attr("width", barW)
+          .attr("x", 0)
 					.attr("y", function(d) { return yScale(d.y1); })
 					.attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
 
@@ -200,7 +199,6 @@ d3.ez.chart.groupedBar = function module() {
           .remove();
 
       } else if (groupType === "clustered") {
-
         var x1 = d3.scaleBand()
           .domain(categoryNames)
           .range([0, xScale.bandwidth()]);

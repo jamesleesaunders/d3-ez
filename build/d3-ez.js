@@ -840,6 +840,7 @@ d3.ez.chart.groupedBar = function module() {
                 dispatch.call("customMouseOver", this, d);
             });
             // Add bars to group
+            var barGroup = chart.selectAll(".barGroup");
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 series = [];
                 var y0 = 0;
@@ -861,7 +862,7 @@ d3.ez.chart.groupedBar = function module() {
                     return d.name + " bar";
                 }).attr("width", barW).attr("x", 0).attr("y", chartH).attr("height", 0).attr("fill", function(d) {
                     return colorScale(d.name);
-                }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("y", function(d) {
+                }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("width", barW).attr("x", 0).attr("y", function(d) {
                     return yScale(d.y1);
                 }).attr("height", function(d) {
                     return yScale(d.y0) - yScale(d.y1);
