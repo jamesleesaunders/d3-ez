@@ -1,6 +1,6 @@
 ## D3 Easy Reusable Graphs, Charts and Components
 
-**D3.EZ** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating graphs and charts making D3. **D3.EZ** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualizations with minimal code.
+**d3-ez** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating graphs and charts making D3. **d3-ez** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualizations with minimal code.
 
 Compatible with D3 v4.
 
@@ -15,9 +15,9 @@ Gist (bl.ocks) Examples:
 * [Punchcard](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [HTML Expanding List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
-* [D3.EZ Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
+* [Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
-**D3.EZ** also aims to make it easier to create interactive visualizations and dashboards with graphs which are clickable and linkable, see the D3.EZ showcase above for examples.
+**d3-ez** also aims to make it easier to create interactive visualizations and dashboards with graphs which are clickable and linkable, see the Showcase above for examples.
 
 What type of chart is best for different types of data?
 * Bar Charts are good for quantitive data.

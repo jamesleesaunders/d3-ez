@@ -2,8 +2,8 @@
 
 JS_FILES :=        src/js/header.js \
                    src/js/chart.js \
-									 src/js/component.js \
-									 src/js/colors.js \
+                   src/js/component.js \
+                   src/js/colors.js \
                    src/js/chart/discreteBar.js \
                    src/js/chart/groupedBar.js \
                    src/js/chart/radialBar.js \
@@ -27,9 +27,9 @@ CSS_FILES :=       src/css/global.css \
                    src/css/html/list.css \
                    src/css/html/table.css
 
-GENERATED_FILES := d3.ez.js \
-                   d3.ez.min.js \
-                   d3.ez.css \
+GENERATED_FILES := d3-ez.js \
+                   d3-ez.min.js \
+                   d3-ez.css \
                    README.md \
                    LICENSE.md
 
@@ -38,20 +38,20 @@ all: js css min zip
 
 js: $(JS_FILES)
 	@echo Concatinating JS Files...
-	@rm -f d3.ez.js
-	@uglifyjs $^ --beautify indent_level=4 --comments all > d3.ez.js
+	@rm -f build/d3-ez.js
+	@uglifyjs $^ --beautify indent_level=4 --comments all > build/d3.ez.js
 
 css: $(CSS_FILES)
 	@echo Concatinating CSS Files...
-	@rm -f d3.ez.css
-	@for file in $^; do cat "$$file"; echo "\n"; done > d3.ez.css
+	@rm -f build/d3-ez.css
+	@for file in $^; do cat "$$file"; echo "\n"; done > build/d3-ez.css
 
 min:
 	@echo Minifying...
-	@rm -f d3.ez.min.js
-	@uglifyjs d3.ez.js > d3.ez.min.js
+	@rm -f build/d3-ez.min.js
+	@uglifyjs build/d3-ez.js > build/d3-ez.min.js
 
 zip: $(GENERATED_FILES)
 	@echo Zipping...
-	@rm -f d3.ez.zip
-	@zip -q d3.ez.zip $^
+	@rm -f build/d3-ez.zip
+	@zip -q build/d3-ez.zip $^
