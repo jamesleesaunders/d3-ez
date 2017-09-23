@@ -15,7 +15,7 @@
 
   <script type="text/javascript">
     d3.json("data/town2town.json", function(error, json) {
-      // Convert json to d3.ez data format
+      // Convert json to d3-ez data format
       var data = d3.nest().key(function(d) {
         return d.TownA;
       }).entries(json.Data).map(function(obj) {

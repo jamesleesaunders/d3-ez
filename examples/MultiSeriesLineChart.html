@@ -23,7 +23,7 @@
     };
 
     d3.tsv("data/data.tsv", function(error, tsv) {
-      // Convert tsv to d3.ez data format
+      // Convert tsv to d3-ez data format
       data = [ {key: "Portsmouth", values: []}, {key: "Eastbourne", values: []}, {key: "Brighton", values: []} ];
       d3.map(tsv).values().forEach(function(d) {
         data[0].values.push({key: dateConvert(d.date), value: parseInt(d['Portsmouth'])});
