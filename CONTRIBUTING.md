@@ -1,4 +1,5 @@
-## d3-ez D3 Easy Reusable Charts
+# d3-ez
+## Contributing Guidelines
 
 **d3-ez** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/).
 
