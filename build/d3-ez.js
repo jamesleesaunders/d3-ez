@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.1",
+    version: "2.1.2",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -1984,7 +1984,7 @@ d3.ez.chart.multiSeriesLine = function module() {
     var margin = {
         top: 20,
         right: 20,
-        bottom: 30,
+        bottom: 40,
         left: 40
     };
     var classed = "chartMultiSeriesLine";
@@ -2030,7 +2030,7 @@ d3.ez.chart.multiSeriesLine = function module() {
         xScale = d3.scaleTime().range([ 0, chartW ]).domain(dateDomain);
         yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ minValue, maxValue + 10 ]);
         // X & Y Axis
-        xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b"));
+        xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
         yAxis = d3.axisLeft(yScale);
         // Colour Scale
         colorScale = d3.scaleOrdinal().range(colors).domain(seriesNames);

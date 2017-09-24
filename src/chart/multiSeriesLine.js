@@ -17,7 +17,7 @@ d3.ez.chart.multiSeriesLine = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var classed = "chartMultiSeriesLine";
   var colors = d3.ez.colors.categorical(3);
   var yAxisLabel = null;
@@ -73,7 +73,7 @@ d3.ez.chart.multiSeriesLine = function module() {
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b"));
+      .tickFormat(d3.timeFormat("%d-%b-%y"));
     yAxis = d3.axisLeft(yScale);
 
     // Colour Scale

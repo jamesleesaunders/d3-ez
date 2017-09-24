@@ -16,27 +16,28 @@
 
   <script type="text/javascript">
     dateConvert = function(dateYMD) {
-      parser = d3.timeParse('%Y%m%d');
+      parser = d3.timeParse('%d-%b-%y');
       var dateISO = parser(dateYMD).toISOString();
       var dateUnix = new Date(dateISO)/1000;
       return dateUnix;
     };
 
-    d3.tsv("data/data.tsv", function(error, tsv) {
+    d3.csv("data/exchange_rates.csv", function(error, tsv) {
       // Convert tsv to d3-ez data format
-      data = [ {key: "Portsmouth", values: []}, {key: "Eastbourne", values: []}, {key: "Brighton", values: []} ];
+      data = [ {key: "USD", values: []}, {key: "EUR", values: []}, {key: "AUD", values: []} ];
       d3.map(tsv).values().forEach(function(d) {
-        data[0].values.push({key: dateConvert(d.date), value: parseInt(d['Portsmouth'])});
-        data[1].values.push({key: dateConvert(d.date), value: parseInt(d['Eastbourne'])});
-        data[2].values.push({key: dateConvert(d.date), value: parseInt(d['Brighton'])});
+        data[0].values.push({key: dateConvert(d.Date), value: d['USD']});
+        data[1].values.push({key: dateConvert(d.Date), value: d['EUR']});
+        data[2].values.push({key: dateConvert(d.Date), value: d['AUD']});
       });
+      console.log(data);
 
       var colors = d3.ez.colors.categorical(3);
       var chart = d3.ez.chart.multiSeriesLine()
         .colors(colors)
-        .yAxisLabel('Temperature (°F)');
-      var legend = d3.ez.component.legend().title('Town');
-      var title = d3.ez.component.title().mainText("Average Temperatures").subText("Per Town");
+        .yAxisLabel("Rate");
+      var legend = d3.ez.component.legend().title("Currency");
+      var title = d3.ez.component.title().mainText("Historical Exchange Rates").subText("Comparison against GBP");
 
       // Create chart object
       var myChart = d3.ez.chart()
