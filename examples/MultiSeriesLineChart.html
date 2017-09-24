@@ -16,7 +16,6 @@
 
   <script type="text/javascript">
     dateConvert = function(dateYMD) {
-      //parser = d3.timeParse('%Y%m%d');
       parser = d3.timeParse('%d-%b-%y');
       var dateISO = parser(dateYMD).toISOString();
       var dateUnix = new Date(dateISO)/1000;
