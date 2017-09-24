@@ -27,18 +27,18 @@
       // Convert tsv to d3-ez data format
       data = [ {key: "USD", values: []}, {key: "EUR", values: []}, {key: "AUD", values: []} ];
       d3.map(tsv).values().forEach(function(d) {
-        data[0].values.push({key: dateConvert(d.Date), value: parseInt(d['USD'])});
-        data[1].values.push({key: dateConvert(d.Date), value: parseInt(d['EUR'])});
-        data[2].values.push({key: dateConvert(d.Date), value: parseInt(d['AUD'])});
+        data[0].values.push({key: dateConvert(d.Date), value: d['USD']});
+        data[1].values.push({key: dateConvert(d.Date), value: d['EUR']});
+        data[2].values.push({key: dateConvert(d.Date), value: d['AUD']});
       });
       console.log(data);
 
       var colors = d3.ez.colors.categorical(3);
       var chart = d3.ez.chart.multiSeriesLine()
         .colors(colors)
-        .yAxisLabel('Temperature (°F)');
-      var legend = d3.ez.component.legend().title('Town');
-      var title = d3.ez.component.title().mainText("Average Temperatures").subText("Per Town");
+        .yAxisLabel("Rate");
+      var legend = d3.ez.component.legend().title("Currency");
+      var title = d3.ez.component.title().mainText("Historical Exchange Rates").subText("Comparison against GBP");
 
       // Create chart object
       var myChart = d3.ez.chart()
