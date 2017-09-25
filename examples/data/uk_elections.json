@@ -1,0 +1,128 @@
+[
+	{
+		"key": "1992",
+		"values": [
+			{
+				"key": "Conservative",
+				"value": 336
+			},
+			{
+				"key": "Labour",
+				"value": 271
+			},
+			{
+				"key": "Liberal Democrat",
+				"value": 20
+			},
+			{
+				"key": "Scottish National",
+				"value": 3
+			}
+		]
+	},
+	{
+		"key": "1997",
+		"values": [
+			{
+				"key": "Conservative",
+				"value": 165
+			},
+			{
+				"key": "Labour",
+				"value": 418
+			},
+			{
+				"key": "Liberal Democrat",
+				"value": 46
+			},
+			{
+				"key": "Scottish National",
+				"value": 6
+			}
+		]
+	},
+  {
+    "key": "2001",
+    "values": [
+      {
+        "key": "Conservative",
+        "value": 412
+      },
+      {
+        "key": "Labour",
+        "value": 166
+      },
+      {
+        "key": "Liberal Democrat",
+        "value": 52
+      },
+      {
+        "key": "Scottish National",
+        "value": 5
+      }
+    ]
+  },
+  {
+    "key": "2005",
+    "values": [
+      {
+        "key": "Conservative",
+        "value": 356
+      },
+      {
+        "key": "Labour",
+        "value": 198
+      },
+      {
+        "key": "Liberal Democrat",
+        "value": 62
+      },
+      {
+        "key": "Scottish National",
+        "value": 6
+      }
+    ]
+  },
+  {
+    "key": "2010",
+    "values": [
+      {
+        "key": "Conservative",
+        "value": 306
+      },
+      {
+        "key": "Labour",
+        "value": 258
+      },
+      {
+        "key": "Liberal Democrat",
+        "value": 57
+      },
+      {
+        "key": "Scottish National",
+        "value": 6
+      }
+    ]
+  },
+  {
+    "key": "2015",
+    "values": [
+      {
+        "key": "Conservative",
+        "value": 331
+      },
+      {
+        "key": "Labour",
+        "value": 232
+      },
+      {
+        "key": "Liberal Democrat",
+        "value": 8
+      },
+      {
+        "key": "Scottish National",
+        "value": 56
+      }
+    ]
+  }
+]

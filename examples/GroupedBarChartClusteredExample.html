@@ -14,91 +14,33 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    // Generate some data
-    var data = [{
-      "key": "Jim",
-      "values": [{
-        "key": "Apples",
-        "value": 4
-      }, {
-        "key": "Oranges",
-        "value": 3
-      }, {
-        "key": "Pears",
-        "value": 1
-      }, {
-        "key": "Bananas",
-        "value": 0
-      }]
-    }, {
-      "key": "Claire",
-      "values": [{
-        "key": "Apples",
-        "value": 3
-      }, {
-        "key": "Oranges",
-        "value": 1
-      }, {
-        "key": "Pears",
-        "value": 2
-      }, {
-        "key": "Bananas",
-        "value": 2
-      }]
-    }, {
-      "key": "Beth",
-      "values": [{
-        "key": "Apples",
-        "value": 5
-      }, {
-        "key": "Oranges",
-        "value": 2
-      }, {
-        "key": "Pears",
-        "value": 4
-      }, {
-        "key": "Bananas",
-        "value": 1
-      }]
-    }, {
-      "key": "Grace",
-      "values": [{
-        "key": "Apples",
-        "value": 1
-      }, {
-        "key": "Oranges",
-        "value": 4
-      }, {
-        "key": "Pears",
-        "value": 2
-      }, {
-        "key": "Bananas",
-        "value": 3
-      }]
-    }];
 
-    var chart = d3.ez.chart.groupedBar()
-      .yAxisLabel("Number")
-      .groupType("clustered")
-      .colors(d3.ez.colors.categorical(1));
-    var legend = d3.ez.component.legend().title("Top 10");
-    var title = d3.ez.component.title().mainText("Family Fruit Survey").subText("Who Likes Fruit?");
+		d3.json("data/uk_elections.json", function(error, data) {
+			// UK Election Results Source: http://www.ukpolitical.info/2015.htm
+			var chart = d3.ez.chart.groupedBar()
+				.yAxisLabel("Seats")
+				.groupType("clustered")
+				.colors(['#c00', '#36c', '#f90', '#fc0']);
+			var legend = d3.ez.component.legend().title("Party");
+			var title = d3.ez.component.title().mainText("UK Election Results").subText("Seats 1992 - 2015");
 
-    // Create chart object
-    var myChart = d3.ez.chart()
-      .width(750)
-      .height(400)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
-      .on("customMouseOver", function(d, i) {
-        d3.select("#message").text(d.key);
-      });
+			// Create chart object
+			var myChart = d3.ez.chart()
+				.width(750)
+				.height(400)
+				.chart(chart)
+				.legend(legend)
+				.title(title)
+				.on("customMouseOver", function(d, i) {
+					d3.select("#message").text(d.key);
+				});
 
-    // Add to page
-    d3.select("#chartholder")
-      .datum(data)
-      .call(myChart);
+			// Add to page
+			d3.select("#chartholder")
+				.datum(data)
+				.call(myChart);
+		});
+
   </script>
 </body>
 
