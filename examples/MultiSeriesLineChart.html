@@ -30,7 +30,6 @@
         data[1].values.push({key: dateConvert(d.Date), value: d['EUR']});
         data[2].values.push({key: dateConvert(d.Date), value: d['AUD']});
       });
-      console.log(data);
 
       var colors = d3.ez.colors.categorical(3);
       var chart = d3.ez.chart.multiSeriesLine()
