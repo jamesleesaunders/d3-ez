@@ -23,7 +23,7 @@
       return dateUnix;
     };
 
-    d3.csv("data/exchange_rates.csv", function(error, tsv) {
+    d3.csv("data/exchange_rates.csv", function(error, csv) {
 			// Historical Exchange Rates Source: https://www.ofx.com/en-gb/forex-news/historical-exchange-rates/
 
       var colors = d3.ez.colors.categorical(3);
@@ -33,9 +33,9 @@
       var legend = d3.ez.component.legend().title("Currency");
       var title = d3.ez.component.title().mainText("Historical Exchange Rates").subText("Comparison against GBP");
 
-			// Convert tsv to d3-ez data format
+			// Convert csv to d3-ez data format
 			data = [ {key: "USD", values: []}, {key: "EUR", values: []}, {key: "AUD", values: []} ];
-			d3.map(tsv).values().forEach(function(d) {
+			d3.map(csv).values().forEach(function(d) {
 				data[0].values.push({key: dateConvert(d.Date), value: d['USD']});
 				data[1].values.push({key: dateConvert(d.Date), value: d['EUR']});
 				data[2].values.push({key: dateConvert(d.Date), value: d['AUD']});

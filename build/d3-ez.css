@@ -218,6 +218,7 @@
 /* === HTML Table Styles === */
 table.htmlTable {
   border-collapse: collapse;
+  table-layout: fixed;
 }
 .htmlTable td, .htmlTable th {
   border: 1px solid #333333;
