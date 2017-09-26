@@ -1,4 +1,4 @@
-# d3-ez 
+# d3-ez
 ## D3 Easy Reusable Charts
 
 **d3-ez** is a library of reusable charts which use [D3v4](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating charts and graph making with D3. **d3-ez** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualizations with minimal code.
@@ -11,7 +11,7 @@ Include the following files in your header:
 <script src="scripts/d3-ez.js"></script>
 ```
 
-Add a chartholder element to your page body:
+Add a 'chartholder' element to your page body:
 ```html
 <div id="chartholder"></div>
 ```
@@ -21,9 +21,9 @@ Generate some data see the [Data Format](#data-format) section for more details:
 var data = {
 	"key": "Fruit",
 	"values": [
-		{"key": "Apples", "value": 6}, 
-		{"key": "Pears", "value": 3}, 
-		{"key": "Grapes", "value": 4}, 
+		{"key": "Apples", "value": 6},
+		{"key": "Pears", "value": 3},
+		{"key": "Grapes", "value": 4},
 		{"key": "Banana", "value": 1}
 	]
 };
@@ -32,8 +32,8 @@ var data = {
 Configure chart components:
 ```javascript
 var chart = d3.ez.chart.discreteBar().colors(d3.ez.colors.categorical(1));
-var legend = d3.ez.component.legend().title("Top 10");
-var title = d3.ez.component.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
+var legend = d3.ez.component.legend().title("Fruit");
+var title = d3.ez.component.title().mainText("Fruit Survey").subText("Which fruit do you like?");
 ```
 
 Construct chart from components:
@@ -46,19 +46,18 @@ var myChart = d3.ez.chart()
 	.title(title);
 ```
 
-Attach data and chart to chartholder element:
+Attach data and chart to 'chartholder' element:
 ```javascript
-	d3.select("#chartholder")
-		.datum(data)
-		.call(myChart);
-
+d3.select("#chartholder")
+	.datum(data)
+	.call(myChart);
 ```
 
 ### Data Format
 
 The format of the d3-ez data must be in key / value pairs.
 
-### Examples 
+### Examples
 Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. One of the aims of **d3-ez** to make it easier to create visualizations with graphs which are clickable interact with each other, this is done though the use of D3's dispatch, please see the 'Showcase' link below for example:
 * [Discrete Bar Chart](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
 * [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
