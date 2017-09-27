@@ -5,6 +5,8 @@
 
 ### Getting Started
 
+The primary aim of **d3-ez** is to make is quick and easy to generate charts. The following example shows how, with minumal code, you can be up and running with a simple bar chart in no time! 
+
 Include the D3v4 and d3-ez JS and CSS files in your page header:
 ```html
 <script src="d3.v4.min.js"></script>
@@ -12,12 +14,13 @@ Include the D3v4 and d3-ez JS and CSS files in your page header:
 <link rel="stylesheet" type="text/css" href="d3-ez.css" />
 ```
 
-Add a 'chartholder' element to your page body:
+Add a 'chartholder' DIV to your page body:
 ```html
 <div id="chartholder"></div>
 ```
 
-Generate some data see the [Data Format](#data-format) section for more details:
+Generate some data:
+See [Data Structure](#data-structure) section for more details.
 ```javascript
 var data = {
 	"key": "Fruit",
@@ -30,14 +33,23 @@ var data = {
 };
 ```
 
-Configure chart components:
+Configure chart components, 'chart', 'legend' & 'title'.
+See the [Chart Components](#chart-components) for more details:
 ```javascript
-var chart = d3.ez.chart.discreteBar().colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
-var legend = d3.ez.component.legend().title("Fruit Type");
-var title = d3.ez.component.title().mainText("Super Fruit Survey").subText("Which fruit do you like?");
+var title = d3.ez.component.title()
+	.mainText("Super Fruit Survey")
+	.subText("Which fruit do you like?");
+
+var chart = d3.ez.chart.discreteBar()
+	.colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
+
+var legend = d3.ez.component.legend()
+	.title("Fruit Type");
+
 ```
 
-Construct chart from components:
+Construct chart base from the above components:
+See the [Chart Base](#chart-base) for more details.
 ```javascript
 var myChart = d3.ez.chart()
 	.width(750)
@@ -47,14 +59,73 @@ var myChart = d3.ez.chart()
 	.title(title);
 ```
 
-Attach data and chart to 'chartholder' element:
+Attach data and chart to 'chartholder' DIV:
 ```javascript
 d3.select("#chartholder")
 	.datum(data)
 	.call(myChart);
 ```
 
-### Data Format
+### Chart Base
+
+The chart base has 3 components:
+* Title
+* Legend
+* Chart
+
+### Chart Components
+
+As described in the [Chart Base](#chart-base) section a d3-ez chart is made up of 3 components:
+
+**Title**
+
+The title component has the following options:
+* mainText()   The main title.
+* subText()    The sub title.
+Example:
+```javascript
+var title = d3.ez.component.title()
+	.mainText("Super Fruit Survey")
+	.subText("Which fruit do you like?");
+```
+
+**Legend**
+
+The title component has the following options:
+* title()     The legend title.
+```javascript
+var legend = d3.ez.component.legend()
+	.title("Fruit Type");
+```
+
+**Chart**
+
+The following charts are currently supported:
+* circularHeat()
+* discreteBar()
+* donut()
+* groupedBar()
+* multiSeriesLine
+* punchcard()
+* radialBar()
+* tabularHeat()
+
+All of the above support the following options:
+* colors()
+
+All the above charts can also be used stand-alone without having to attach them to a chart base. This can be useful should you just want the main chart but not a legend or title, or you may wish to insert the chart into your own custom D3 project.
+```javascript
+var myChart = d3.ez.chart.discreteBar()
+	.width(750)
+	.height(400)
+	.colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
+
+d3.select("#chartholder")
+	.datum(data)
+	.call(myChart);
+```
+
+### Data Structure
 
 The format of the d3-ez data must be in key / value pairs.
 
