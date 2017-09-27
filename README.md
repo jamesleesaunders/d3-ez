@@ -5,10 +5,11 @@
 
 ### Getting Started
 
-Include the following files in your header:
+Include the D3v4 and d3-ez JS and CSS files in your page header:
 ```html
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="scripts/d3-ez.js"></script>
+<script src="d3.v4.min.js"></script>
+<script src="d3-ez.min.js"></script>
+<link rel="stylesheet" type="text/css" href="d3-ez.css" />
 ```
 
 Add a 'chartholder' element to your page body:
@@ -21,19 +22,19 @@ Generate some data see the [Data Format](#data-format) section for more details:
 var data = {
 	"key": "Fruit",
 	"values": [
-		{"key": "Apples", "value": 6},
-		{"key": "Pears", "value": 3},
+		{"key": "Apples", "value": 5},
+		{"key": "Oranges", "value": 3},
 		{"key": "Grapes", "value": 4},
-		{"key": "Banana", "value": 1}
+		{"key": "Bananas", "value": 1}
 	]
 };
 ```
 
 Configure chart components:
 ```javascript
-var chart = d3.ez.chart.discreteBar().colors(d3.ez.colors.categorical(1));
-var legend = d3.ez.component.legend().title("Fruit");
-var title = d3.ez.component.title().mainText("Fruit Survey").subText("Which fruit do you like?");
+var chart = d3.ez.chart.discreteBar().colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
+var legend = d3.ez.component.legend().title("Fruit Type");
+var title = d3.ez.component.title().mainText("Super Fruit Survey").subText("Which fruit do you like?");
 ```
 
 Construct chart from components:
