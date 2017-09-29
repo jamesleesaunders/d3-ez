@@ -17,6 +17,7 @@
 
 		d3.json("data/uk_elections.json", function(error, data) {
 			// UK Election Results Source: http://www.ukpolitical.info/2015.htm
+
 			var chart = d3.ez.chart.groupedBar()
 				.yAxisLabel("Seats")
 				.groupType("stacked")

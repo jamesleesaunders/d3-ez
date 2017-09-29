@@ -14,23 +14,12 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.json("data/town2town.json", function(error, json) {
-      // Convert json to d3-ez data format
-      var data = d3.nest().key(function(d) {
-        return d.TownA;
-      }).entries(json.Data).map(function(obj) {
-        obj.values = obj.values.map(function(values) {
-          return {
-            key: values.TownB,
-            value: values.Value
-          };
-        });
-        return obj;
-      });
+    d3.json("data/netflix_isp_speed_index.json", function(error, json) {
+			// Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
       var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
       var chart = d3.ez.chart.tabularHeat().colors(colors);
-      var legend = d3.ez.component.legend().title('Widget Counts');
+      var legend = d3.ez.component.legend().title('Speed Index');
       var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
 
       // Create chart object
@@ -43,6 +32,19 @@
         .on("customMouseOver", function(d, i) {
           d3.select("#message").text(d.value);
         });
+
+			// Convert json to d3-ez data format
+			var data = d3.nest().key(function(d) {
+				return d.ISP;
+			}).entries(json.Data).map(function(obj) {
+				obj.values = obj.values.map(function(values) {
+					return {
+						key: values.Month,
+						value: values.Value
+					};
+				});
+				return obj;
+			});
 
       d3.select('#chartholder')
         .datum(data)
