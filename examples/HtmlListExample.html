@@ -13,63 +13,21 @@
 
   <script type="text/javascript">
 
-    // Example Data (note 3 levels deep)
-    var data = [{
-      "key": "Plants",
-      "values": [{
-        "key": "Cryptogamia",
-        "values": [{
-          "key": "Thallophyta",
-          "values": [{
-            "key": "Bacteria",
-            "value": 21
-          }, {
-            "key": "Algae",
-            "value": 32
-          }, {
-            "key": "Fungi",
-            "value": 43
-          }, {
-            "key": "Lichens",
-            "value": 54
-          }]
-        }, {
-          "key": "Bryophyta",
-          "value": 23
-        }, {
-          "key": "Pteridophyta",
-          "value": 34
-        }]
-      }, {
-        "key": "Phanerogamia",
-        "values": [{
-          "key": "Gymnospermae",
-          "value": 19
-        }, {
-          "key": "Angiospermae",
-          "values": [{
-            "key": "Monocots",
-            "value": 34
-          }, {
-            "key": "Dicots",
-            "value": 20
-          }]
-        }]
-      }]
-    }];
+		d3.json("data/plant_family_tree.json", function(error, data) {
 
+      // Create chart object
+      var myList = d3.ez.html.list()
+        .classed("htmlList")
+        .on("customMouseOver", function(d, i) {
+          console.log(d);
+        });
 
-    // Create chart object
-    var myList = d3.ez.html.list()
-      .classed("htmlList")
-      .on("customMouseOver", function(d, i) {
-        console.log(d);
-      });
+      // Add to page
+      d3.select("#listholder")
+        .datum(data)
+        .call(myList);
 
-    // Add to page
-    d3.select("#listholder")
-      .datum(data)
-      .call(myList);
+    });
   </script>
 </body>
 
