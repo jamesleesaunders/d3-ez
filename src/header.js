@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-  version: "2.1.2",
+  version: "2.1.3",
   author: "James Saunders",
   copyright: "Copyright (C) 2017 James Saunders",
   license: "GPL-3.0"
