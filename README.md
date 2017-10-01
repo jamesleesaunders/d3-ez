@@ -5,7 +5,7 @@
 
 ### Getting Started
 
-The primary aim of **d3-ez** is to make is quick and easy to generate charts. The following example shows how, with minumal code, you can be up and running with a simple bar chart in no time! 
+The primary aim of **d3-ez** is to make is quick and easy to generate charts. The following example shows how, with minumal code, you can be up and running with a simple bar chart in no time!
 
 Include the D3v4 and d3-ez JS and CSS files in your page header:
 ```html
@@ -25,10 +25,10 @@ See [Data Structure](#data-structure) section for more details.
 var data = {
 	"key": "Fruit",
 	"values": [
-		{"key": "Apples", "value": 5},
+		{"key": "Apples", "value": 9},
 		{"key": "Oranges", "value": 3},
-		{"key": "Grapes", "value": 4},
-		{"key": "Bananas", "value": 1}
+		{"key": "Grapes", "value": 5},
+		{"key": "Bananas", "value": 7}
 	]
 };
 ```

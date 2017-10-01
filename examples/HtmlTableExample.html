@@ -13,21 +13,23 @@
 
   <script type="text/javascript">
 
-    d3.json("data/uk_elections.json", function(error, data) {
-      // UK Election Results Source: http://www.ukpolitical.info/2015.htm
+    var request = new XMLHttpRequest();
+    request.open("GET", "data/uk_elections.json", false);
+    // UK Election Results Source: http://www.ukpolitical.info/2015.htm
+    request.send(null);
+    var data = JSON.parse(request.responseText);
 
-      // Create chart object
-      var myTable = d3.ez.html.table()
-        .width(600)
-        .on("customMouseOver", function(d, i) {
-          console.log(d);
-        });
+    // Create chart object
+    var myTable = d3.ez.html.table()
+      .width(600)
+      .on("customMouseOver", function(d, i) {
+        console.log(d);
+      });
 
-      // Add to page
-      d3.select("#tableholder")
-        .datum(data)
-        .call(myTable);
-    });
+    // Add to page
+    d3.select("#tableholder")
+      .datum(data)
+      .call(myTable);
 
   </script>
 </body>
