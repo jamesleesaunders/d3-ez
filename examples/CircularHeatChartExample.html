@@ -14,109 +14,44 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    // Generate some data
-    function randomDataset() {
-      var _randomNum = function() {
-        return Math.floor(Math.random() * 10);
-      };
-      var data = [{
-        key: "asfd",
-        values: [{
-          key: "brig",
-          value: _randomNum()
-        }, {
-          key: "cosh",
-          value: _randomNum()
-        }, {
-          key: "popl",
-          value: _randomNum()
-        }, {
-          key: "winn",
-          value: _randomNum()
-        }]
-      }, {
-        key: "brig",
-        values: [{
-          key: "asfd",
-          value: _randomNum()
-        }, {
-          key: "cosh",
-          value: _randomNum()
-        }, {
-          key: "popl",
-          value: _randomNum()
-        }, {
-          key: "winn",
-          value: _randomNum()
-        }]
-      }, {
-        key: "cosh",
-        values: [{
-          key: "asfd",
-          value: _randomNum()
-        }, {
-          key: "brig",
-          value: _randomNum()
-        }, {
-          key: "popl",
-          value: _randomNum()
-        }, {
-          key: "winn",
-          value: _randomNum()
-        }]
-      }, {
-        key: "popl",
-        values: [{
-          key: "asfd",
-          value: _randomNum()
-        }, {
-          key: "brig",
-          value: _randomNum()
-        }, {
-          key: "cosh",
-          value: _randomNum()
-        }, {
-          key: "winn",
-          value: _randomNum()
-        }]
-      }, {
-        key: "winn",
-        values: [{
-          key: "asfd",
-          value: _randomNum()
-        }, {
-          key: "brig",
-          value: _randomNum()
-        }, {
-          key: "cosh",
-          value: _randomNum()
-        }, {
-          key: "popl",
-          value: _randomNum()
-        }]
-      }];
-      return data;
-    }
 
-    var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
-    var chart = d3.ez.chart.circularHeat().colors(colors);
-    var legend = d3.ez.component.legend().title('Widget Counts');
-    var title = d3.ez.component.title().mainText("Town to Town Stats").subText("Number of widgets between UK towns");
+    d3.json("data/netflix_isp_speed_index.json", function(error, json) {
+      // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
-    // Create chart object
-    var myChart = d3.ez.chart()
-      .width(750)
-      .height(400)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
-      .on("customMouseOver", function(d, i) {
-        d3.select("#message").text(d.key);
-      });
+      var colors = ["#c3ff28", "#ffff0b", "#fdb409", "#f38337", "#fb0007"];
+      var chart = d3.ez.chart.circularHeat().colors(colors);
+      var legend = d3.ez.component.legend().title('Speed Index');
+      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
 
-    d3.select('#chartholder')
-      .datum(randomDataset())
-      .call(myChart);
+      // Create chart object
+      var myChart = d3.ez.chart()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customMouseOver", function(d, i) {
+          d3.select("#message").text(d.key);
+        });
+
+      // Convert json to d3-ez data format
+			var data = d3.nest().key(function(d) {
+				return d.ISP;
+			}).entries(json.Data).map(function(obj) {
+				obj.values = obj.values.map(function(values) {
+					return {
+						key: values.Month,
+						value: values.Value
+					};
+				});
+				return obj;
+			});
+
+      d3.select('#chartholder')
+        .datum(data)
+        .call(myChart);
+    });
+
   </script>
 </body>
 

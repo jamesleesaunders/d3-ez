@@ -14,6 +14,7 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
+
     d3.json("data/netflix_isp_speed_index.json", function(error, json) {
 			// Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
@@ -50,6 +51,7 @@
         .datum(data)
         .call(myChart);
     });
+
   </script>
 </body>
 

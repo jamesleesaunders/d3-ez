@@ -14,70 +14,37 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    // Generate some data
-    function randomDataset() {
-      var _randomNum = function() {
-        return Math.floor(Math.random() * 10);
-      };
-      var data = {
-        "key": "Languages",
-        "values": [{
-          "key": "JavaScript",
-          "value": _randomNum()
-        }, {
-          "key": "C++",
-          "value": _randomNum()
-        }, {
-          "key": "Java",
-          "value": _randomNum()
-        }, {
-          "key": "Ruby",
-          "value": _randomNum()
-        }, {
-          "key": "Python",
-          "value": _randomNum()
-        }, {
-          "key": "PHP",
-          "value": _randomNum()
-        }, {
-          "key": "Perl",
-          "value": _randomNum()
-        }, {
-          "key": "Basic",
-          "value": _randomNum()
-        }, {
-          "key": "Assembly",
-          "value": _randomNum()
-        }]
-      };
-      return data;
-    }
 
-    var chart = d3.ez.chart.donut().colors(d3.ez.colors.diverging(2));
-    var legend = d3.ez.component.legend().title("Top 10");
-    var title = d3.ez.component.title().mainText("Programming Languages").subText("Top 10 Languages Used By Developers");
+    d3.json("data/uk_elections.json", function(error, data) {
+      // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
-    // Create chart object
-    var myChart = d3.ez.chart()
-      .width(750)
-      .height(400)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
-      .on("customMouseOver", function(d, i) {
-        d3.select("#message").text(d.value);
-      });
+      var chart = d3.ez.chart.donut().colors(['#c00', '#36c', '#f90', '#fc0']);
+      var legend = d3.ez.component.legend().title("Party");
+      var title = d3.ez.component.title().mainText("UK Election Results").subText("Seats 1992 - 2015");
 
-    // Add to page
-    function update() {
-      var data = randomDataset();
-      d3.select("#chartholder")
-        .datum(data)
-        .call(myChart);
-    }
+      // Create chart object
+      var myChart = d3.ez.chart()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customMouseOver", function(d, i) {
+          d3.select("#message").text(d.value);
+        });
 
-    update();
-    setInterval(update, 2000);
+      // Add to page
+      function update() {
+        var i = Math.round(Math.random() * 3) + 1;
+        d3.select("#chartholder")
+          .datum(data[i])
+          .call(myChart);
+      }
+
+      update();
+      setInterval(update, 2000);
+    });
+
   </script>
 </body>
 

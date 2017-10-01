@@ -14,126 +14,44 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    // Generate some data
-    var _randomNum = function() {
-      return Math.floor(Math.random() * 20);
-    };
-    var data = [{
-      key: "Apples",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      }, {
-        key: "2005",
-        value: _randomNum()
-      }, {
-        key: "2006",
-        value: _randomNum()
-      }, {
-        key: "2007",
-        value: _randomNum()
-      }, {
-        key: "2008",
-        value: _randomNum()
-      }, {
-        key: "2009",
-        value: _randomNum()
-      }, {
-        key: "2010",
-        value: _randomNum()
-      }]
-    }, {
-      key: "Oranges",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      }, {
-        key: "2005",
-        value: _randomNum()
-      }, {
-        key: "2006",
-        value: _randomNum()
-      }, {
-        key: "2007",
-        value: _randomNum()
-      }, {
-        key: "2008",
-        value: _randomNum()
-      }, {
-        key: "2009",
-        value: _randomNum()
-      }, {
-        key: "2010",
-        value: _randomNum()
-      }]
-    }, {
-      key: "Pears",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      }, {
-        key: "2005",
-        value: _randomNum()
-      }, {
-        key: "2006",
-        value: _randomNum()
-      }, {
-        key: "2007",
-        value: _randomNum()
-      }, {
-        key: "2008",
-        value: _randomNum()
-      }, {
-        key: "2009",
-        value: _randomNum()
-      }, {
-        key: "2010",
-        value: _randomNum()
-      }]
-    }, {
-      key: "Kiwis",
-      values: [{
-        key: "2004",
-        value: _randomNum()
-      }, {
-        key: "2005",
-        value: _randomNum()
-      }, {
-        key: "2006",
-        value: _randomNum()
-      }, {
-        key: "2007",
-        value: _randomNum()
-      }, {
-        key: "2008",
-        value: _randomNum()
-      }, {
-        key: "2009",
-        value: _randomNum()
-      }, {
-        key: "2010",
-        value: _randomNum()
-      }]
-    }];
 
-    var chart = d3.ez.chart.punchcard();
-    var legend = d3.ez.component.legend().title("How small?");
-    var title = d3.ez.component.title().mainText("Punch Example").subText("Punchcard example sub-title");
+    d3.json("data/netflix_isp_speed_index.json", function(error, json) {
+      // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
-    // Create chart object
-    var myChart = d3.ez.chart()
-      .width(750)
-      .height(400)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
-      .on("customMouseOver", function(d, i) {
-        d3.select("#message").text(d.value);
-      });
+      var chart = d3.ez.chart.punchcard();
+      var legend = d3.ez.component.legend().title("How small?");
+      var legend = d3.ez.component.legend().title('Speed Index');
+      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
 
-    d3.select('#chartholder')
-      .datum(data)
-      .call(myChart);
+      // Create chart object
+      var myChart = d3.ez.chart()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customMouseOver", function(d, i) {
+          d3.select("#message").text(d.value);
+        });
+
+      // Convert json to d3-ez data format
+			var data = d3.nest().key(function(d) {
+				return d.ISP;
+			}).entries(json.Data).map(function(obj) {
+				obj.values = obj.values.map(function(values) {
+					return {
+						key: values.Month,
+						value: values.Value
+					};
+				});
+				return obj;
+			});
+
+      d3.select('#chartholder')
+        .datum(data)
+        .call(myChart);
+    });
+
   </script>
 </body>
 
