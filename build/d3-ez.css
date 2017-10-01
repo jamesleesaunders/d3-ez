@@ -49,7 +49,7 @@
 .chartDiscreteBar rect.bar:hover {
   opacity: 0.7;
 }
-.chartGroupedBar g.barGroup:hover {
+.chartDiscreteBar g.barGroup:hover {
   opacity: 0.7;
 }
 
@@ -238,3 +238,5 @@ table.htmlTable {
 .htmlTable tbody tr:hover {
   background-color: #eeeeee;
 }
+
+
