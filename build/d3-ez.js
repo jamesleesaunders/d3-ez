@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.3",
+    version: "2.1.4",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -403,7 +403,7 @@ d3.ez.component.legend = function module() {
 
           case "threshold":
             min = colorScale.domain()[position];
-            max = colorScale.domain()[position + 1] - 1;
+            max = colorScale.domain()[position + 1];
             rangeStr = isNaN(max) ? "> " + min : min + " - " + max;
             return rangeStr;
             break;
@@ -1184,6 +1184,7 @@ d3.ez.chart.circularHeat = function module() {
     var segmentLabels = [];
     var numSegments = 24;
     var segmentHeight = 0;
+    var minValue = 0;
     var maxValue = 0;
     var colorScale = undefined;
     // Dispatch (Custom events)
@@ -1198,15 +1199,24 @@ d3.ez.chart.circularHeat = function module() {
         });
         numSegments = segmentLabels.length;
         segmentHeight = (radius - innerRadius) / numRadials;
-        // Calculate the Max Value
+        // Calculate the Max and Min Values
+        var values = [];
+        var decimalPlace = 0;
         d3.map(data).values().forEach(function(d) {
             d.values.forEach(function(d) {
-                maxValue = d.value > maxValue ? d.value : maxValue;
+                values.push(d.value);
+                // Work out max Decinal Place
+                stringValue = d.value.toString();
+                var length = stringValue.split(".")[1].length;
+                decimalPlace = length > decimalPlace ? length : decimalPlace;
             });
         });
+        minValue = parseFloat(d3.min(values));
+        maxValue = parseFloat(d3.max(values));
         // If thresholds values are not already set attempt to auto-calculate some thresholds
         if (!thresholds) {
-            thresholds = [ Math.floor(maxValue * .25), Math.floor(maxValue * .5), Math.floor(maxValue * .75), Math.floor(maxValue + 1) ];
+            var distance = maxValue - minValue;
+            thresholds = [ (minValue + .1 * distance).toFixed(decimalPlace), (minValue + .25 * distance).toFixed(decimalPlace), (minValue + .5 * distance).toFixed(decimalPlace), (minValue + .75 * distance).toFixed(decimalPlace), (minValue + 1 * distance).toFixed(decimalPlace) ];
         }
         // Colour Scale
         colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
@@ -1246,9 +1256,7 @@ d3.ez.chart.circularHeat = function module() {
                 return (i + 1) * 2 * Math.PI / numSegments;
             });
             // Rings
-            chart.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            });
+            chart.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true);
             // Ring Segments
             chart.selectAll(".ring").selectAll("path").data(function(d, i) {
                 // Add index (used to calculate ring number)
@@ -1257,8 +1265,10 @@ d3.ez.chart.circularHeat = function module() {
                 }
                 return d.values;
             }).enter().append("path").attr("d", arc).attr("fill", function(d) {
-                return colorScale(accessor(d.value));
-            }).classed("segment", true);
+                return colorScale(d.value);
+            }).classed("segment", true).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            });
             // Unique id so that the text path defs are unique - is there a better way to do this?
             var id = chart.selectAll(".circularHeat")._groups[0].length;
             // Radial Labels
@@ -1288,9 +1298,6 @@ d3.ez.chart.circularHeat = function module() {
             });
         });
     }
-    var accessor = function(d) {
-        return d;
-    };
     // Configuration Getters & Setters
     my.width = function(_) {
         if (!arguments.length) return width;
@@ -1333,11 +1340,6 @@ d3.ez.chart.circularHeat = function module() {
     my.transition = function(_) {
         if (!arguments.length) return transition;
         transition = _;
-        return this;
-    };
-    my.accessor = function(_) {
-        if (!arguments.length) return accessor;
-        accessor = _;
         return this;
     };
     my.dispatch = function(_) {
@@ -1423,18 +1425,24 @@ d3.ez.chart.tabularHeat = function module() {
         }));
         numRows = rowNames.length;
         gridSize = Math.floor((d3.min([ width, height ]) - (margin.left + margin.right)) / d3.max([ numCols, numRows ]));
-        // Calculate the Max Value
+        // Calculate the Max and Min Values
         var values = [];
+        var decimalPlace = 0;
         d3.map(data).values().forEach(function(d) {
             d.values.forEach(function(d) {
                 values.push(d.value);
+                // Work out max Decinal Place
+                stringValue = d.value.toString();
+                var length = stringValue.split(".")[1].length;
+                decimalPlace = length > decimalPlace ? length : decimalPlace;
             });
         });
+        minValue = parseFloat(d3.min(values));
+        maxValue = parseFloat(d3.max(values));
         // If thresholds values are not already set attempt to auto-calculate some thresholds
         if (!thresholds) {
-            minValue = d3.min(values);
-            maxValue = d3.max(values);
-            thresholds = [ Math.floor(maxValue * .25), Math.floor(maxValue * .5), Math.floor(maxValue * .75), Math.floor(maxValue + 1) ];
+            var distance = maxValue - minValue;
+            thresholds = [ (minValue + .1 * distance).toFixed(2), (minValue + .25 * distance).toFixed(2), (minValue + .5 * distance).toFixed(2), (minValue + .75 * distance).toFixed(2), (minValue + 1 * distance).toFixed(2) ];
         }
         // Colour Scale
         colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
@@ -1486,7 +1494,7 @@ d3.ez.chart.tabularHeat = function module() {
                 dispatch.call("customMouseOver", this, d);
             }).on("mouseout", function(d) {
                 dispatch.call("customMouseOut", this, d);
-            }).merge(cards).transition().duration(1e3).style("fill", function(d) {
+            }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);
             });
             cards.exit().remove();
