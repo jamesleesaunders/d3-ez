@@ -1223,7 +1223,7 @@ d3.ez.chart.circularHeat = function module() {
         // If thresholds values are not already set attempt to auto-calculate some thresholds
         if (!thresholds) {
             var distance = maxValue - minValue;
-            thresholds = [ (minValue + .1 * distance).toFixed(decimalPlace), (minValue + .25 * distance).toFixed(decimalPlace), (minValue + .5 * distance).toFixed(decimalPlace), (minValue + .75 * distance).toFixed(decimalPlace), (minValue + 1 * distance).toFixed(decimalPlace) ];
+            thresholds = [ (minValue + .15 * distance).toFixed(decimalPlace), (minValue + .4 * distance).toFixed(decimalPlace), (minValue + .55 * distance).toFixed(decimalPlace), (minValue + .9 * distance).toFixed(decimalPlace) ];
         }
         // Colour Scale
         colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
@@ -1456,7 +1456,7 @@ d3.ez.chart.tabularHeat = function module() {
         // If thresholds values are not already set attempt to auto-calculate some thresholds
         if (!thresholds) {
             var distance = maxValue - minValue;
-            thresholds = [ (minValue + .1 * distance).toFixed(decimalPlace), (minValue + .25 * distance).toFixed(decimalPlace), (minValue + .5 * distance).toFixed(decimalPlace), (minValue + .75 * distance).toFixed(decimalPlace), (minValue + 1 * distance).toFixed(decimalPlace) ];
+            thresholds = [ (minValue + .15 * distance).toFixed(decimalPlace), (minValue + .4 * distance).toFixed(decimalPlace), (minValue + .55 * distance).toFixed(decimalPlace), (minValue + .9 * distance).toFixed(decimalPlace) ];
         }
         // Colour Scale
         colorScale = d3.scaleThreshold().domain(thresholds).range(colors);

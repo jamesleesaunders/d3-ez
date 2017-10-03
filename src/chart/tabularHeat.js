@@ -99,11 +99,10 @@ d3.ez.chart.tabularHeat = function module() {
     if (!thresholds) {
       var distance = maxValue - minValue;
       thresholds = [
-        (minValue + (0.10 * distance)).toFixed(decimalPlace),
-        (minValue + (0.25 * distance)).toFixed(decimalPlace),
-        (minValue + (0.50 * distance)).toFixed(decimalPlace),
-        (minValue + (0.75 * distance)).toFixed(decimalPlace),
-        (minValue + (1.00 * distance)).toFixed(decimalPlace)
+        (minValue + (0.15 * distance)).toFixed(decimalPlace),
+        (minValue + (0.40 * distance)).toFixed(decimalPlace),
+        (minValue + (0.55 * distance)).toFixed(decimalPlace),
+        (minValue + (0.90 * distance)).toFixed(decimalPlace)
       ];
     }
 
