@@ -38,6 +38,17 @@ d3.ez.chart.circularHeat = function module() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
+  function decimalPlaces(num) {
+    var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match) { return 0; }
+    return Math.max(
+         0,
+         // Number of digits right of decimal point.
+         (match[1] ? match[1].length : 0)
+         // Adjust for scientific notation.
+         - (match[2] ? +match[2] : 0));
+  }
+
   function init(data) {
     radialLabels = data.map(function(d) {
       return d.key;
@@ -59,8 +70,7 @@ d3.ez.chart.circularHeat = function module() {
         values.push(d.value);
 
         // Work out max Decinal Place
-        stringValue = d.value.toString();
-        var length = stringValue.split('.')[1].length;
+        var length = decimalPlaces(d.value);
         decimalPlace = (length > decimalPlace ? length : decimalPlace);
       });
     });

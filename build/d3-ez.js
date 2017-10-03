@@ -1189,6 +1189,14 @@ d3.ez.chart.circularHeat = function module() {
     var colorScale = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function decimalPlaces(num) {
+        var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+        if (!match) {
+            return 0;
+        }
+        // Number of digits right of decimal point.
+        return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+    }
     function init(data) {
         radialLabels = data.map(function(d) {
             return d.key;
@@ -1206,8 +1214,7 @@ d3.ez.chart.circularHeat = function module() {
             d.values.forEach(function(d) {
                 values.push(d.value);
                 // Work out max Decinal Place
-                stringValue = d.value.toString();
-                var length = stringValue.split(".")[1].length;
+                var length = decimalPlaces(d.value);
                 decimalPlace = length > decimalPlace ? length : decimalPlace;
             });
         });
@@ -1394,6 +1401,14 @@ d3.ez.chart.tabularHeat = function module() {
     var colorScale = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function decimalPlaces(num) {
+        var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+        if (!match) {
+            return 0;
+        }
+        // Number of digits right of decimal point.
+        return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+    }
     function init(data) {
         // Group and Category Names
         colNames = data.map(function(d) {
@@ -1432,8 +1447,7 @@ d3.ez.chart.tabularHeat = function module() {
             d.values.forEach(function(d) {
                 values.push(d.value);
                 // Work out max Decinal Place
-                stringValue = d.value.toString();
-                var length = stringValue.split(".")[1].length;
+                var length = decimalPlaces(d.value);
                 decimalPlace = length > decimalPlace ? length : decimalPlace;
             });
         });
@@ -1442,7 +1456,7 @@ d3.ez.chart.tabularHeat = function module() {
         // If thresholds values are not already set attempt to auto-calculate some thresholds
         if (!thresholds) {
             var distance = maxValue - minValue;
-            thresholds = [ (minValue + .1 * distance).toFixed(2), (minValue + .25 * distance).toFixed(2), (minValue + .5 * distance).toFixed(2), (minValue + .75 * distance).toFixed(2), (minValue + 1 * distance).toFixed(2) ];
+            thresholds = [ (minValue + .1 * distance).toFixed(decimalPlace), (minValue + .25 * distance).toFixed(decimalPlace), (minValue + .5 * distance).toFixed(decimalPlace), (minValue + .75 * distance).toFixed(decimalPlace), (minValue + 1 * distance).toFixed(decimalPlace) ];
         }
         // Colour Scale
         colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
