@@ -31,6 +31,7 @@ d3.ez.chart.circularHeat = function module() {
   var segmentLabels = [];
   var numSegments = 24;
   var segmentHeight = 0;
+  var minValue = 0;
   var maxValue = 0;
   var colorScale = undefined;
 
@@ -50,16 +51,32 @@ d3.ez.chart.circularHeat = function module() {
 
     segmentHeight = ((radius - innerRadius) / numRadials);
 
-    // Calculate the Max Value
+    // Calculate the Max and Min Values
+    var values = [];
+    var decimalPlace = 0;
     d3.map(data).values().forEach(function(d) {
       d.values.forEach(function(d) {
-        maxValue = (d.value > maxValue ? d.value : maxValue);
+        values.push(d.value);
+
+        // Work out max Decinal Place
+        stringValue = d.value.toString();
+        var length = stringValue.split('.')[1].length;
+        decimalPlace = (length > decimalPlace ? length : decimalPlace);
       });
     });
+    minValue = parseFloat(d3.min(values));
+    maxValue = parseFloat(d3.max(values));
 
     // If thresholds values are not already set attempt to auto-calculate some thresholds
     if (!thresholds) {
-      thresholds = [Math.floor(maxValue * 0.25), Math.floor(maxValue * 0.50), Math.floor(maxValue * 0.75), Math.floor(maxValue + 1)];
+      var distance = maxValue - minValue;
+      thresholds = [
+        (minValue + (0.10 * distance)).toFixed(decimalPlace),
+        (minValue + (0.25 * distance)).toFixed(decimalPlace),
+        (minValue + (0.50 * distance)).toFixed(decimalPlace),
+        (minValue + (0.75 * distance)).toFixed(decimalPlace),
+        (minValue + (1.00 * distance)).toFixed(decimalPlace)
+      ];
     }
 
     // Colour Scale
@@ -122,8 +139,7 @@ d3.ez.chart.circularHeat = function module() {
         .data(data)
         .enter()
         .append("g")
-        .classed("ring", true)
-				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
+        .classed("ring", true);
 
       // Ring Segments
       chart.selectAll(".ring").selectAll("path")
@@ -138,9 +154,10 @@ d3.ez.chart.circularHeat = function module() {
         .append("path")
         .attr("d", arc)
         .attr("fill", function(d) {
-          return colorScale(accessor(d.value));
+          return colorScale(d.value);
         })
-        .classed("segment", true);
+        .classed("segment", true)
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
       var id = chart.selectAll(".circularHeat")._groups[0].length;
@@ -201,10 +218,6 @@ d3.ez.chart.circularHeat = function module() {
     });
   }
 
-  var accessor = function(d) {
-    return d;
-  };
-
   // Configuration Getters & Setters
   my.width = function(_) {
     if (!arguments.length) return width;
@@ -254,12 +267,6 @@ d3.ez.chart.circularHeat = function module() {
   my.transition = function(_) {
     if (!arguments.length) return transition;
     transition = _;
-    return this;
-  };
-
-  my.accessor = function(_) {
-    if (!arguments.length) return accessor;
-    accessor = _;
     return this;
   };
 

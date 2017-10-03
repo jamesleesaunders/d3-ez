@@ -69,19 +69,32 @@ d3.ez.chart.tabularHeat = function module() {
 
     gridSize = Math.floor((d3.min([width, height]) - (margin.left + margin.right)) / d3.max([numCols, numRows]));
 
-    // Calculate the Max Value
+    // Calculate the Max and Min Values
     var values = [];
+    var decimalPlace = 0;
     d3.map(data).values().forEach(function(d) {
       d.values.forEach(function(d) {
         values.push(d.value);
+
+        // Work out max Decinal Place
+        stringValue = d.value.toString();
+        var length = stringValue.split('.')[1].length;
+        decimalPlace = (length > decimalPlace ? length : decimalPlace);
       });
     });
+    minValue = parseFloat(d3.min(values));
+    maxValue = parseFloat(d3.max(values));
 
     // If thresholds values are not already set attempt to auto-calculate some thresholds
     if (!thresholds) {
-      minValue = d3.min(values);
-      maxValue = d3.max(values);
-      thresholds = [Math.floor(maxValue * 0.25), Math.floor(maxValue * 0.50), Math.floor(maxValue * 0.75), Math.floor(maxValue + 1)];
+      var distance = maxValue - minValue;
+      thresholds = [
+        (minValue + (0.10 * distance)).toFixed(2),
+        (minValue + (0.25 * distance)).toFixed(2),
+        (minValue + (0.50 * distance)).toFixed(2),
+        (minValue + (0.75 * distance)).toFixed(2),
+        (minValue + (1.00 * distance)).toFixed(2)
+      ];
     }
 
     // Colour Scale
@@ -166,7 +179,7 @@ d3.ez.chart.tabularHeat = function module() {
 				.merge(cards)
 				.transition()
         .duration(1000)
-        .style("fill", function(d) {
+        .attr("fill", function(d) {
           return colorScale(d.value);
         });
 

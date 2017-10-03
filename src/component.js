@@ -355,7 +355,7 @@ d3.ez.component.legend = function module() {
         break;
       case 'threshold':
         min = colorScale.domain()[position];
-        max = colorScale.domain()[position + 1] - 1;
+        max = colorScale.domain()[position + 1];
         rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max);
         return rangeStr;
         break;
