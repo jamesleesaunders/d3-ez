@@ -6,6 +6,6 @@
 .chartDiscreteBar rect.bar:hover {
   opacity: 0.7;
 }
-.chartDiscreteBar g.barGroup:hover {
+.chartGroupedBar g.barGroup:hover {
   opacity: 0.7;
 }
