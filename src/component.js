@@ -443,35 +443,42 @@ d3.ez.component.barChart = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
+    selection.each(function(data) {
+      // Add bars to the chart
+      var gapSize = xScale.bandwidth() / 100 * gap;
+      var barW = xScale.bandwidth() - gapSize;
 
-    // Add bars to the chart
-    var gapSize = xScale.bandwidth() / 100 * gap;
-    var barW = xScale.bandwidth() - gapSize;
+      barGroup = selection.selectAll('.barGroup')
+        .data([0]);
 
-    barGroup = selection.append("g").classed('barGroup', true);
-    var bars = barGroup.selectAll(".bar")
-      .data(data.values);
+      barGroup.enter()
+        .append("g")
+        .classed('barGroup', true);
 
-    bars.enter().append("rect")
-      .attr("class", function(d) { return d.key + " bar"; })
-      .attr("fill", function(d) { return colorScale(d.key); })
-      .attr("width", barW)
-      .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
-      .attr("y", height)
-      .attr("height", 0)
-      .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-      .merge(bars)
-      .transition()
-      .ease(transition.ease)
-      .duration(transition.duration)
-      .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
-      .attr("y", function(d, i) { return yScale(d.value); })
-      .attr("height", function(d, i) { return height - yScale(d.value); });
+      var bars = barGroup.selectAll(".bar")
+        .data(data.values);
 
-    bars.exit()
-      .transition()
-      .style("opacity", 0)
-      .remove();
+      bars.enter().append("rect")
+        .attr("class", function(d) { return d.key + " bar"; })
+        .attr("fill", function(d) { return colorScale(d.key); })
+        .attr("width", barW)
+        .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
+        .attr("y", height)
+        .attr("height", 0)
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+        .merge(bars)
+        .transition()
+        .ease(transition.ease)
+        .duration(transition.duration)
+        .attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
+        .attr("y", function(d, i) { return yScale(d.value); })
+        .attr("height", function(d, i) { return height - yScale(d.value); });
+
+      bars.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
+    });
   }
 
   // Configuration Getters & Setters

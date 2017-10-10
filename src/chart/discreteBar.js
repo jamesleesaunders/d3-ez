@@ -135,32 +135,15 @@ d3.ez.chart.discreteBar = function module() {
         });
 
       // Add bars to the chart
-      var gapSize = xScale.bandwidth() / 100 * gap;
-      var barW = xScale.bandwidth() - gapSize;
+      var barChart = d3.ez.component.barChart()
+  			.width(chartW)
+  			.height(chartH)
+  			.colorScale(colorScale)
+  			.yScale(yScale)
+  			.xScale(xScale);
 
-      var bars = chart.selectAll(".bar")
-        .data(data.values);
-
-      bars.enter().append("rect")
-        .attr("class", function(d) { return d.key + " bar"; })
-        .attr("fill", function(d) { return colorScale(d.key); })
-        .attr("width", barW)
-				.attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
-				.attr("y", chartH)
-				.attr("height", 0)
-				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-				.merge(bars)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
-				.attr("x", function(d, i) { return xScale(d.key) + gapSize / 2; })
-				.attr("y", function(d, i) { return yScale(d.value); })
-				.attr("height", function(d, i) { return chartH - yScale(d.value); });
-
-      bars.exit()
-        .transition()
-        .style("opacity", 0)
-        .remove();
+  		chart.datum(data)
+  			.call(barChart);
     });
   }
 
