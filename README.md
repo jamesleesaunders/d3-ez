@@ -148,6 +148,7 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 What type of chart is best for different types of data?
 * Bar Charts are good for quantitive data.
 * Pie Charts for good to represent parts of a whole.
+* Histograms are good for showing distribution.
 
 ### Alternatives to d3-ez
 For reference here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:
