@@ -12,15 +12,25 @@
 	<svg id="holder" width=300 height=100></svg>
 
 	<script type="text/javascript">
-
 		// Generate some data
 		var data = {
 			"key": "Fruit",
-			"values": [
-				{"key": "Apples", "value": 9},
-				{"key": "Oranges", "value": 3},
-				{"key": "Grapes", "value": 5},
-				{"key": "Bananas", "value": 7}
+			"values": [{
+					"key": "Apples",
+					"value": 9
+				},
+				{
+					"key": "Oranges",
+					"value": 3
+				},
+				{
+					"key": "Grapes",
+					"value": 5
+				},
+				{
+					"key": "Bananas",
+					"value": 7
+				}
 			]
 		};
 
@@ -28,25 +38,25 @@
 		var height = 100;
 
 		var maxValue = d3.max(data.values, function(d) {
-      return d.value;
-    });
-    var categoryNames = d3.values(data)[1].map(function(d) {
-      return d.key;
-    });
+			return d.value;
+		});
+		var categoryNames = d3.values(data)[1].map(function(d) {
+			return d.key;
+		});
 
 		// X & Y Scales
-    var xScale = d3.scaleBand()
-      .domain(categoryNames)
+		var xScale = d3.scaleBand()
+			.domain(categoryNames)
 			.rangeRound([0, width])
 			.padding(0.15);
 
-    var yScale = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([height, 0]);
+		var yScale = d3.scaleLinear()
+			.domain([0, maxValue])
+			.range([height, 0]);
 
-    // X & Y Axis
-    var xAxis = d3.axisBottom(xScale);
-    var yAxis = d3.axisLeft(yScale);
+		// X & Y Axis
+		var xAxis = d3.axisBottom(xScale);
+		var yAxis = d3.axisLeft(yScale);
 
 		var colors = ["#fb0007", "#fdb409", "#ffff0b", "#c3ff28"];
 		var colorScale = d3.scaleOrdinal()
@@ -54,7 +64,7 @@
 			.domain(categoryNames);
 
 		// Configure chart component
-		var barChart = d3.ez.component.barChart()
+		var barChart = d3.ez.component.barGrouped()
 			.width(width)
 			.height(height)
 			.colorScale(colorScale)
@@ -69,7 +79,6 @@
 		d3.select("#holder")
 			.datum(data.values)
 			.call(barChart);
-
 	</script>
 </body>
 

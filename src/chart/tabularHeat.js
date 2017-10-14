@@ -36,14 +36,15 @@ d3.ez.chart.tabularHeat = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function decimalPlaces(num) {
-    var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
     return Math.max(
-         0,
-         // Number of digits right of decimal point.
-         (match[1] ? match[1].length : 0)
-         // Adjust for scientific notation.
-         - (match[2] ? +match[2] : 0));
+      0,
+      // Number of digits right of decimal point.
+      (match[1] ? match[1].length : 0)
+      // Adjust for scientific notation.
+      -
+      (match[2] ? +match[2] : 0));
   }
 
   function init(data) {
@@ -128,9 +129,9 @@ d3.ez.chart.tabularHeat = function module() {
           }
         })(d3.select(this));
 
-				svg.classed("d3ez", true)
-					.attr("width", width)
-					.attr("height", height);
+        svg.classed("d3ez", true)
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
@@ -142,8 +143,8 @@ d3.ez.chart.tabularHeat = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-				.attr("width", width)
-				.attr("height", height)
+        .attr("width", width)
+        .attr("height", height)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       var deck = chart.select(".cards")
@@ -156,7 +157,7 @@ d3.ez.chart.tabularHeat = function module() {
           return "translate(0, " + ((colNames.indexOf(d.key)) * gridSize) + ")";
         });
 
-			deck.exit().remove();
+      deck.exit().remove();
 
       var cards = deckEnter.selectAll(".card")
         .data(function(d) {
@@ -183,16 +184,16 @@ d3.ez.chart.tabularHeat = function module() {
         .attr("width", gridSize)
         .attr("height", gridSize)
         .on("click", dispatch.customClick)
-				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-				.on("mouseout", function(d) { dispatch.call("customMouseOut", this, d); })
-				.merge(cards)
-				.transition()
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+        .on("mouseout", function(d) { dispatch.call("customMouseOut", this, d); })
+        .merge(cards)
+        .transition()
         .duration(1000)
         .attr("fill", function(d) {
           return colorScale(d.value);
         });
 
-			cards.exit().remove();
+      cards.exit().remove();
 
       cards.select("title").text(function(d) {
         return d.value;

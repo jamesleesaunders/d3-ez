@@ -55,8 +55,8 @@ d3.ez.chart.discreteBar = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-			.rangeRound([0, chartW])
-			.padding(0.15);
+      .rangeRound([0, chartW])
+      .padding(0.15);
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
@@ -135,16 +135,16 @@ d3.ez.chart.discreteBar = function module() {
         });
 
       // Add bars to the chart
-      var barChart = d3.ez.component.barChart()
-  			.width(chartW)
-  			.height(chartH)
-  			.colorScale(colorScale)
-  			.yScale(yScale)
-  			.xScale(xScale)
+      var barChart = d3.ez.component.barGrouped()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
         .dispatch(dispatch);
 
-  		chart.datum(data.values)
-  			.call(barChart);
+      chart.datum(data.values)
+        .call(barChart);
     });
   }
 

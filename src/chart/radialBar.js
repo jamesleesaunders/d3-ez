@@ -97,8 +97,8 @@ d3.ez.chart.radialBar = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-					.attr("width", width)
-					.attr("height", height);
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("tickCircles", true);
@@ -113,9 +113,9 @@ d3.ez.chart.radialBar = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-				.attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
-				.attr("width", width)
-				.attr("height", height);
+        .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
+        .attr("width", width)
+        .attr("height", height);
 
       // Concentric tick circles
       tickCircles = chart.select(".tickCircles")
@@ -125,8 +125,8 @@ d3.ez.chart.radialBar = function module() {
       tickCircles.enter()
         .append("circle")
         .style("fill", "none")
-				.merge(tickCircles)
-				.transition()
+        .merge(tickCircles)
+        .transition()
         .attr("r", function(d) {
           return barScale(d);
         });
@@ -159,12 +159,12 @@ d3.ez.chart.radialBar = function module() {
           return colors[i % colors.length];
         })
         .classed("segment", true)
-				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-				.merge(segments)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
-				.attr("d", arc);
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+        .merge(segments)
+        .transition()
+        .ease(transition.ease)
+        .duration(transition.duration)
+        .attr("d", arc);
 
       segments.exit()
         .remove();
@@ -283,10 +283,10 @@ d3.ez.chart.radialBar = function module() {
     return this;
   };
 
-	my.on = function() {
-		var value = dispatch.on.apply(dispatch, arguments);
-		return value === dispatch ? my : value;
-	};
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };

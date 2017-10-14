@@ -78,7 +78,7 @@ d3.ez.chart = function module() {
       }
 
       // Update the canvas dimensions
-      canvas.attr("transform", "translate(" + margin.left + "," + margin.top + ")" )
+      canvas.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", canvasW)
         .attr("height", canvasH);
 
@@ -110,7 +110,7 @@ d3.ez.chart = function module() {
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")" )
+        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")")
         .call(creditTag);
     });
   }

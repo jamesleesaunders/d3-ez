@@ -81,8 +81,8 @@ d3.ez.chart.groupedBar = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(groupNames)
-			.rangeRound([0, chartW])
-			.padding(0.1);
+      .rangeRound([0, chartW])
+      .padding(0.1);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
@@ -155,53 +155,23 @@ d3.ez.chart.groupedBar = function module() {
         .data(data);
 
       if (groupType === "stacked") {
-        // Add bars to group
-        var barGroup = chart.selectAll(".barGroup");
-        var bars = barGroup.selectAll(".bar")
-          .data(function(d) {
-            series = [];
-            var y0 = 0;
-            d3.map(d.values).values().forEach(function(d, i) {
-              series[i] = {
-                name: d.key,
-                value: d.value,
-                y0: y0,
-                y1: y0 + d.value
-              };
-              y0 += d.value;
-            });
-            return series;
-          });
+        var barChart = d3.ez.component.barStacked()
+          .width(chartW)
+          .height(chartH)
+          .colorScale(colorScale)
+          .yScale(yScale)
+          .xScale(xScale)
+          .dispatch(dispatch);
 
-        var gapSize = xScale.bandwidth() / 100 * gap;
-        var barW = xScale.bandwidth() - gapSize;
-
-        bars.enter()
-          .append("rect")
-          .classed("bar", true)
-          .attr("class", function(d) { return d.name + " bar"; } )
-          .attr("width", barW)
-          .attr("x", 0)
-          .attr("y", chartH)
-          .attr("height", 0)
-          .attr("fill", function(d) { return colorScale(d.name); })
-					.merge(bars)
-					.transition()
-					.ease(transition.ease)
-					.duration(transition.duration)
-          .attr("width", barW)
-          .attr("x", 0)
-					.attr("y", function(d) { return yScale(d.y1); })
-					.attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
-
-        bars.exit()
-          .transition()
-          .style("opacity", 0)
-          .remove();
+        seriesGroup.enter()
+          .append("g")
+          .attr("class", "seriesGroup")
+          .attr("transform", function(d, i) { return "translate(" + xScale(d.key) + ", 0)"; })
+          .datum(function(d) { return d.values; })
+          .call(barChart);
 
       } else if (groupType === "clustered") {
-        // Add bars to the chart
-        var barChart = d3.ez.component.barChart()
+        var barChart = d3.ez.component.barGrouped()
           .width(chartW)
           .height(chartH)
           .colorScale(colorScale)

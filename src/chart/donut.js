@@ -90,7 +90,7 @@ d3.ez.chart.donut = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-					return selection.append("svg");
+          return selection.append("svg");
           var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
@@ -133,9 +133,9 @@ d3.ez.chart.donut = function module() {
           this._current = d;
         })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-				.merge(slices)
-				.transition()
-				.duration(transition.duration)
+        .merge(slices)
+        .transition()
+        .duration(transition.duration)
         .ease(transition.ease)
         .attrTween("d", arcTween);
 
@@ -151,9 +151,9 @@ d3.ez.chart.donut = function module() {
         .append("text")
         .attr("class", "label")
         .attr("dy", ".35em")
-				.merge(labels)
-				.transition()
-				.duration(transition.duration)
+        .merge(labels)
+        .transition()
+        .duration(transition.duration)
         .text(function(d, i) {
           return data.values[i].key;
         })
@@ -189,9 +189,9 @@ d3.ez.chart.donut = function module() {
       lines.enter()
         .append("polyline")
         .attr("class", "line")
-				.merge(lines)
-				.transition()
-				.duration(transition.duration)
+        .merge(lines)
+        .transition()
+        .duration(transition.duration)
         .attrTween("points", function(d) {
           this._current = this._current || d;
           var interpolate = d3.interpolate(this._current, d);

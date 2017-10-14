@@ -76,10 +76,10 @@ d3.ez.chart.punchcard = function module() {
     });
 
     // X (& Y) Scales
-		xScale = d3.scaleBand()
-			.domain(categoryNames)
-			.rangeRound([0, chartW])
-			.padding(1);
+    xScale = d3.scaleBand()
+      .domain(categoryNames)
+      .rangeRound([0, chartW])
+      .padding(1);
 
     // X (& Y) Axis
     xAxis = d3.axisBottom(xScale)
@@ -114,8 +114,8 @@ d3.ez.chart.punchcard = function module() {
         })(d3.select(this));
 
         svg.classed("d3ez", true)
-					.attr("width", width)
-					.attr("height", height);
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
@@ -125,13 +125,13 @@ d3.ez.chart.punchcard = function module() {
 
       // Update the chart dimensions
       chart.classed(classed, true)
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-				.attr("width", width)
-				.attr("height", height);
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("width", width)
+        .attr("height", height);
 
       // Add axis to chart
       chart.select(".x-axis")
-			  .attr("transform", "translate(0," + chartH + ")")
+        .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
       for (var j = 0; j < data.length; j++) {
@@ -159,7 +159,7 @@ d3.ez.chart.punchcard = function module() {
           .style("fill", function(d) {
             return colorScale(d['value'])
           })
-					.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
+          .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
         var text = g.selectAll("text")
           .data(data[j]['values'])
@@ -262,10 +262,10 @@ d3.ez.chart.punchcard = function module() {
     return this;
   };
 
-	my.on = function() {
-		var value = dispatch.on.apply(dispatch, arguments);
-		return value === dispatch ? my : value;
-	};
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };

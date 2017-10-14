@@ -12,7 +12,6 @@
   <div id="tableholder"></div>
 
   <script type="text/javascript">
-
     var request = new XMLHttpRequest();
     request.open("GET", "data/uk_elections.json", false);
     // UK Election Results Source: http://www.ukpolitical.info/2015.htm
@@ -30,7 +29,6 @@
     d3.select("#tableholder")
       .datum(data)
       .call(myTable);
-
   </script>
 </body>
 

@@ -39,14 +39,15 @@ d3.ez.chart.circularHeat = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function decimalPlaces(num) {
-    var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
     return Math.max(
-         0,
-         // Number of digits right of decimal point.
-         (match[1] ? match[1].length : 0)
-         // Adjust for scientific notation.
-         - (match[2] ? +match[2] : 0));
+      0,
+      // Number of digits right of decimal point.
+      (match[1] ? match[1].length : 0)
+      // Adjust for scientific notation.
+      -
+      (match[2] ? +match[2] : 0));
   }
 
   function init(data) {
@@ -110,9 +111,9 @@ d3.ez.chart.circularHeat = function module() {
           }
         })(d3.select(this));
 
-				svg.classed("d3ez", true)
-					.attr("width", width)
-					.attr("height", height);
+        svg.classed("d3ez", true)
+          .attr("width", width)
+          .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("rings", true);
@@ -125,8 +126,8 @@ d3.ez.chart.circularHeat = function module() {
       // Update the chart dimensions
       chart.classed(classed, true)
         .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
-				.attr("width", width)
-				.attr("height", height);
+        .attr("width", width)
+        .attr("height", height);
 
       // Arc Generator
       var arc = d3.arc()
@@ -166,7 +167,7 @@ d3.ez.chart.circularHeat = function module() {
           return colorScale(d.value);
         })
         .classed("segment", true)
-				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
       var id = chart.selectAll(".circularHeat")._groups[0].length;
@@ -285,10 +286,10 @@ d3.ez.chart.circularHeat = function module() {
     return this;
   };
 
-	my.on = function() {
-		var value = dispatch.on.apply(dispatch, arguments);
-		return value === dispatch ? my : value;
-	};
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
 
   return my;
 };
