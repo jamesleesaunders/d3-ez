@@ -443,20 +443,21 @@ d3.ez.component.barChart = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
+    selection.each(function() {
       // Add bars to the chart
       var gapSize = xScale.bandwidth() / 100 * gap;
       var barW = xScale.bandwidth() - gapSize;
 
-      barGroup = selection.selectAll('.barGroup')
-        .data([0]);
-
-      barGroup.enter()
+      selection.selectAll('.barGroup')
+        .data(function(d) { return [d]; })
+        .enter()
         .append("g")
         .classed('barGroup', true);
 
+      barGroup = selection.selectAll('.barGroup');
+
       var bars = barGroup.selectAll(".bar")
-        .data(data.values);
+        .data(function(d) { return d; });
 
       bars.enter().append("rect")
         .attr("class", function(d) { return d.key + " bar"; })

@@ -142,7 +142,7 @@ d3.ez.chart.discreteBar = function module() {
   			.yScale(yScale)
   			.xScale(xScale);
 
-  		chart.datum(data)
+  		chart.datum(data.values)
   			.call(barChart);
     });
   }
