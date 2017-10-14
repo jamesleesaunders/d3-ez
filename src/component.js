@@ -452,7 +452,8 @@ d3.ez.component.barChart = function module() {
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('barGroup', true);
+        .classed('barGroup', true)
+        .on("click", function(d) { dispatch.call("customClick", this, d); });
 
       barGroup = selection.selectAll('.barGroup');
 

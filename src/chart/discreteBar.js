@@ -140,7 +140,8 @@ d3.ez.chart.discreteBar = function module() {
   			.height(chartH)
   			.colorScale(colorScale)
   			.yScale(yScale)
-  			.xScale(xScale);
+  			.xScale(xScale)
+        .dispatch(dispatch);
 
   		chart.datum(data.values)
   			.call(barChart);

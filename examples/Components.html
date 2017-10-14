@@ -59,7 +59,11 @@
 			.height(height)
 			.colorScale(colorScale)
 			.yScale(yScale)
-			.xScale(xScale);
+			.xScale(xScale)
+			.on("customMouseOver", function(d, i) {
+				console.log(d);
+				d3.select("#message").text(d.value);
+			});
 
 		// Attach data and chart to 'chartholder' element
 		d3.select("#holder")

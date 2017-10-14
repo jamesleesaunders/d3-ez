@@ -206,7 +206,8 @@ d3.ez.chart.groupedBar = function module() {
           .height(chartH)
           .colorScale(colorScale)
           .yScale(yScale)
-          .xScale(xScale2);
+          .xScale(xScale2)
+          .dispatch(dispatch);
 
         seriesGroup.enter()
           .append("g")
