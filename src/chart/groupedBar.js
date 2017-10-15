@@ -165,8 +165,7 @@ d3.ez.chart.groupedBar = function module() {
 
         seriesGroup.enter()
           .append("g")
-          .attr("class", "seriesGroup")
-          .attr("transform", function(d, i) { return "translate(" + xScale(d.key) + ", 0)"; })
+          .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
           .datum(function(d) { return d.values; })
           .call(barChart);
 
@@ -181,8 +180,7 @@ d3.ez.chart.groupedBar = function module() {
 
         seriesGroup.enter()
           .append("g")
-          .attr("class", "seriesGroup")
-          .attr("transform", function(d, i) { return "translate(" + xScale(d.key) + ", 0)"; })
+          .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
           .datum(function(d) { return d.values; })
           .call(barChart);
       }
