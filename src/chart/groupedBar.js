@@ -91,7 +91,7 @@ d3.ez.chart.groupedBar = function module() {
     xScale2 = d3.scaleBand()
       .domain(categoryNames)
       .rangeRound([0, xScale.bandwidth()])
-      .padding(0);
+      .padding(0.1);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -156,7 +156,7 @@ d3.ez.chart.groupedBar = function module() {
 
       if (groupType === "stacked") {
         var barChart = d3.ez.component.barStacked()
-          .width(chartW)
+          .width(xScale.bandwidth())
           .height(chartH)
           .colorScale(colorScale)
           .yScale(yScale)
@@ -172,7 +172,7 @@ d3.ez.chart.groupedBar = function module() {
 
       } else if (groupType === "clustered") {
         var barChart = d3.ez.component.barGrouped()
-          .width(chartW)
+          .width(xScale.bandwidth())
           .height(chartH)
           .colorScale(colorScale)
           .yScale(yScale)
