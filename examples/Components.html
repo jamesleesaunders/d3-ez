@@ -34,7 +34,7 @@
 			]
 		};
 
-		var width = 600;
+		var width = 750;
 		var height = 400;
 
 		var maxValue = d3.max(data.values, function(d) {
@@ -58,12 +58,12 @@
 		var xAxis = d3.axisBottom(xScale);
 		var yAxis = d3.axisLeft(yScale);
 
-		var colors = ["#fb0007", "#fdb409", "#ffff0b", "#c3ff28"];
+		var colors = ['#c00', '#36c', '#f90', '#fc0'];
 		var colorScale = d3.scaleOrdinal()
 			.range(colors)
 			.domain(categoryNames);
 
-		var chart = d3.ez.component.barGrouped();
+		var chart = d3.ez.component.barStacked();
     var legend = d3.ez.component.legend().title("Fruit");
     var title = d3.ez.component.title().mainText("Fruit Survey").subText("Which do you like?");
 

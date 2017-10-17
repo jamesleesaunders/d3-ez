@@ -485,12 +485,12 @@ d3.ez.component.barGrouped = function module() {
         selection.each(function() {
             var barW = xScale.bandwidth();
             // Create Bar Group
-            selection.selectAll(".barGroup").data(function(d) {
+            selection.selectAll(".barGrouped").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("barGroup", true).attr("width", width).attr("height", height).on("click", function(d) {
+            }).enter().append("g").classed("barGrouped", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            barGroup = selection.selectAll(".barGroup");
+            barGroup = selection.selectAll(".barGrouped");
             // Add Bars to Group
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;
@@ -574,7 +574,7 @@ d3.ez.component.barStacked = function module() {
     function my(selection) {
         selection.each(function() {
             // Create Bar Group
-            selection.selectAll(".barGroup").data(function(d) {
+            selection.selectAll(".barStacked").data(function(d) {
                 series = [];
                 var y0 = 0;
                 d3.map(d).values().forEach(function(d, i) {
@@ -587,10 +587,10 @@ d3.ez.component.barStacked = function module() {
                     y0 += d.value;
                 });
                 return [ series ];
-            }).enter().append("g").classed("barGroup", true).attr("width", width).attr("height", height).on("click", function(d) {
+            }).enter().append("g").classed("barStacked", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            barGroup = selection.selectAll(".barGroup");
+            barGroup = selection.selectAll(".barStacked");
             // Add Bars to Group
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;

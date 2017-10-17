@@ -446,22 +446,22 @@ d3.ez.component.barGrouped = function module() {
       var barW = xScale.bandwidth();
 
       // Create Bar Group
-      selection.selectAll('.barGroup')
+      selection.selectAll('.barGrouped')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('barGroup', true)
+        .classed('barGrouped', true)
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      barGroup = selection.selectAll('.barGroup');
+      barGroup = selection.selectAll('.barGrouped');
 
       // Add Bars to Group
       var bars = barGroup.selectAll(".bar")
         .data(function(d) { return d; });
 
       bars.enter().append("rect")
-        .attr("class", function(d) { return d.key + " bar"; })
+        .classed("bar", true)
         .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", barW)
         .attr("x", function(d, i) { return xScale(d.key); })
@@ -549,7 +549,7 @@ d3.ez.component.barStacked = function module() {
   function my(selection) {
     selection.each(function() {
       // Create Bar Group
-      selection.selectAll('.barGroup')
+      selection.selectAll('.barStacked')
         .data(function(d) {
           series = [];
           var y0 = 0;
@@ -566,11 +566,11 @@ d3.ez.component.barStacked = function module() {
         })
         .enter()
         .append("g")
-        .classed('barGroup', true)
+        .classed('barStacked', true)
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      barGroup = selection.selectAll('.barGroup');
+      barGroup = selection.selectAll('.barStacked');
 
       // Add Bars to Group
       var bars = barGroup.selectAll(".bar")
@@ -578,7 +578,6 @@ d3.ez.component.barStacked = function module() {
 
       bars.enter().append("rect")
         .classed("bar", true)
-        .attr("class", function(d) { return d.key + " bar"; })
         .attr("width", width)
         .attr("x", 0)
         .attr("y", height)

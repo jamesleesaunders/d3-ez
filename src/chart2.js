@@ -58,10 +58,10 @@ d3.ez.chart2 = function module() {
       chart.height(chart.height() - title.height() - padding);
     }
 
+    // Init Axis
     if (yAxis) {
       yAxis.scale().range([chart.height(), 0]);
     }
-
     if (xAxis) {
       xAxis.scale().range([chart.width(), 0]);
     }
@@ -104,12 +104,23 @@ d3.ez.chart2 = function module() {
         .datum(data)
         .call(chart);
 
-      canvas.select(".y-axis")
-        .call(yAxis);
+      if (yAxis) {
+        canvas.select(".y-axis")
+          .call(yAxis);
+      }
 
-      canvas.select(".x-axis")
-        .attr("transform", "translate(0," + chart.height() + ")")
-        .call(xAxis);
+      if (xAxis) {
+        canvas.select(".x-axis")
+          .attr("transform", "translate(0," + chart.height() + ")")
+          .call(xAxis);
+      }
+
+      // Add Title
+      if (title) {
+        canvas.select(".titlebox")
+          .attr("transform", "translate(" + width / 2 + "," + 0 + ")")
+          .call(title);
+      }
 
       // Add Legend
       if (legend && (typeof chart.colorScale === "function" || typeof chart.sizeScale === "function")) {
@@ -120,15 +131,8 @@ d3.ez.chart2 = function module() {
           legend.sizeScale(chart.sizeScale());
         }
         canvas.select(".legendbox")
-          .attr("transform", "translate(" + (canvasW - legend.width()) + "," + title.height() + ")")
+          .attr("transform", "translate(" + (canvasW - legend.width()) + "," + chartTop + ")")
           .call(legend);
-      }
-
-      // Add Title
-      if (title) {
-        canvas.select(".titlebox")
-          .attr("transform", "translate(" + width / 2 + "," + 0 + ")")
-          .call(title);
       }
 
       // Add Credit Tag
