@@ -20,7 +20,9 @@ d3.ez.chart2 = function module() {
   var classed = "d3ez";
 
   var chart = undefined;
+  var yScale = undefined;
   var yAxis = undefined;
+  var xScale = undefined;
   var xAxis = undefined;
   var legend = undefined;
   var title = undefined;
@@ -58,13 +60,13 @@ d3.ez.chart2 = function module() {
       chart.height(chart.height() - title.height() - padding);
     }
 
+    // Have we changed the graph size?
+    xScale.range([chart.width(), 0]);
+    yScale.range([chart.height(), 0]);
+
     // Init Axis
-    if (yAxis) {
-      yAxis.scale().range([chart.height(), 0]);
-    }
-    if (xAxis) {
-      xAxis.scale().range([chart.width(), 0]);
-    }
+    xAxis = d3.axisBottom(xScale);
+    yAxis = d3.axisLeft(yScale);
 
     // Init Credit Tag
     creditTag.text("d3-ez.net").href("http://d3-ez.net");
@@ -104,16 +106,12 @@ d3.ez.chart2 = function module() {
         .datum(data)
         .call(chart);
 
-      if (yAxis) {
-        canvas.select(".y-axis")
-          .call(yAxis);
-      }
+      canvas.select(".y-axis")
+        .call(yAxis);
 
-      if (xAxis) {
-        canvas.select(".x-axis")
-          .attr("transform", "translate(0," + chart.height() + ")")
-          .call(xAxis);
-      }
+      canvas.select(".x-axis")
+        .attr("transform", "translate(0," + chart.height() + ")")
+        .call(xAxis);
 
       // Add Title
       if (title) {
@@ -169,15 +167,15 @@ d3.ez.chart2 = function module() {
     return this;
   };
 
-  my.xAxis = function(_) {
-    if (!arguments.length) return xAxis;
-    xAxis = _;
+  my.xScale = function(_) {
+    if (!arguments.length) return xScale;
+    xScale = _;
     return this;
   };
 
-  my.yAxis = function(_) {
-    if (!arguments.length) return yAxis;
-    yAxis = _;
+  my.yScale = function(_) {
+    if (!arguments.length) return yScale;
+    yScale = _;
     return this;
   };
 
