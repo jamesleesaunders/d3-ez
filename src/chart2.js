@@ -29,7 +29,6 @@ d3.ez.chart2 = function module() {
   var creditTag = d3.ez.component.creditTag();
   var yAxisLabel = "";
 
-
   // Colours
   var colorScale = undefined;
 

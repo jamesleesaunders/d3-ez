@@ -40,6 +40,7 @@
 		var maxValue = d3.max(data.values, function(d) {
 			return d.value;
 		});
+		var maxGroupTotal = 24;
 		var categoryNames = d3.values(data)[1].map(function(d) {
 			return d.key;
 		});
@@ -52,10 +53,12 @@
 
 		var yScale = d3.scaleLinear()
 			.domain([0, maxValue])
+			//.domain([0, maxGroupTotal])
 			.range([height, 0]);
 
 		var xScale2 = d3.scaleBand()
 				.domain(categoryNames)
+				//.domain(['Fruit'])
 				.rangeRound([0, xScale.bandwidth()])
 				.padding(0.1);
 
@@ -75,7 +78,7 @@
 			.height(height)
 			.colorScale(colorScale)
 			.yScale(yScale)
-			.xScale(xScale)
+			.xScale(xScale2)
 			.legend(legend)
 			.title(title)
 			.on("customMouseOver", function(d, i) {
