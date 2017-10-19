@@ -4,7 +4,7 @@
  * @example
  * @todo
  */
-d3.ez.chart2 = function module() {
+d3.ez.vega = function module() {
   // SVG and Canvas containers (Populated by 'my' function)
   var svg;
   var canvas;

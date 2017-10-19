@@ -3,7 +3,7 @@
 
 include('../src/header.js');
 include('../src/chart.js');
-include('../src/chart2.js');
+include('../src/vega.js');
 include('../src/component.js');
 include('../src/colors.js');
 include('../src/chart/discreteBar.js');
