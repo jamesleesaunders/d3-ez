@@ -57,10 +57,10 @@
 			.range([height, 0]);
 
 		var xScale2 = d3.scaleBand()
-				.domain(categoryNames)
-				//.domain(['Fruit'])
-				.rangeRound([0, xScale.bandwidth()])
-				.padding(0.1);
+			.domain(categoryNames)
+			//.domain(['Fruit'])
+			.rangeRound([0, xScale.bandwidth()])
+			.padding(0.1);
 
 		var colors = ['#c00', '#36c', '#f90', '#fc0'];
 		var colorScale = d3.scaleOrdinal()
@@ -68,8 +68,8 @@
 			.domain(categoryNames);
 
 		var chart = d3.ez.component.barGrouped();
-    var legend = d3.ez.component.legend().title("Fruit");
-    var title = d3.ez.component.title().mainText("Fruit Survey").subText("Which do you like?");
+		var legend = d3.ez.component.legend().title("Fruit");
+		var title = d3.ez.component.title().mainText("Fruit Survey").subText("Which do you like?");
 
 		// Configure chart component
 		var barChart = d3.ez.vega()

@@ -81,10 +81,6 @@ d3.ez.chart.multiSeriesLine = function module() {
       .range(colors)
       .domain(seriesNames);
 
-    // Line Generator
-    line = d3.line()
-      .x(function(d) { return xScale(d.key); })
-      .y(function(d) { return yScale(d.value); });
   }
 
   function my(selection) {
@@ -145,21 +141,25 @@ d3.ez.chart.multiSeriesLine = function module() {
         .attr("class", "series")
         .style("fill", function(d) { return colorScale(d.key); });
 
-      series.append("path")
-        .attr("class", "line")
-        .attr("stroke-width", 2)
-        .attr("stroke", function(d) { return colorScale(d.key); })
-        .attr("fill", "none")
-        .attr("d", function(d) { return line(d.values); });
+      var lineChart = d3.ez.component.lineChart()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
+        .dispatch(dispatch);
 
-      series.selectAll("circle")
-        .data(function(d) { return d.values })
-        .enter()
-        .append("circle")
-        .attr("r", 3)
-        .attr("cx", function(d) { return xScale(d.key); })
-        .attr("cy", function(d) { return yScale(d.value); })
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
+      var dots = d3.ez.component.scatterPlot()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
+        .dispatch(dispatch);
+
+      series.datum(function(d) { return d; })
+        .call(dots)
+        .call(lineChart);
 
     });
   }

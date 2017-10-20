@@ -665,37 +665,36 @@ d3.ez.component.scatterPlot = function module() {
 
   function my(selection) {
     selection.each(function() {
-      // Create Bar Group
-      selection.selectAll('.barGroup')
+      // Create dot group
+      selection.selectAll('.dotSeries')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('barGroup', true)
+        .classed('dotSeries', true)
+        .attr("fill", function(d) { console.log(d); return colorScale(d.key); })
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      barGroup = selection.selectAll('.barGroup');
+      barGroup = selection.selectAll('.dotSeries');
 
       // Add Bars to Group
-      var bars = barGroup.selectAll(".bar")
-        .data(function(d) { return d; });
+      var dots = barGroup.selectAll(".dot")
+        .data(function(d) { return d.values; });
 
-      bars.enter().append("circle")
+      dots.enter().append("circle")
         .attr("class", function(d) { return d.key + " bar"; })
-        .attr("fill", "steelblue")
         .attr("r", 3)
         .attr("cx", function(d, i) { return xScale(d.key); })
         .attr("cy", height)
-        .style("stroke", "black")
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(bars)
+        .merge(dots)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("cx", function(d, i) { return xScale(d.key); })
         .attr("cy", function(d, i) { return yScale(d.value); });
 
-      bars.exit()
+      dots.exit()
         .transition()
         .style("opacity", 0)
         .remove();
@@ -779,9 +778,10 @@ d3.ez.component.lineChart = function module() {
         .append("path")
         .attr("class", "lineSeries")
         .attr("stroke-width", 1.5)
-        .attr("stroke", "black")
+        .attr("stroke", function(d) { return colorScale(d.key); })
         .attr("fill", "none")
-        .attr("d", function(d) { return line(d); });
+        .attr("d", function(d) { return line(d.values); });
+
     });
   }
 

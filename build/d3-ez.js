@@ -495,9 +495,7 @@ d3.ez.component.barGrouped = function module() {
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;
             });
-            bars.enter().append("rect").attr("class", function(d) {
-                return d.key + " bar";
-            }).attr("fill", function(d) {
+            bars.enter().append("rect").classed("bar", true).attr("fill", function(d) {
                 return colorScale(d.key);
             }).attr("width", barW).attr("x", function(d, i) {
                 return xScale(d.key);
@@ -595,9 +593,7 @@ d3.ez.component.barStacked = function module() {
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;
             });
-            bars.enter().append("rect").classed("bar", true).attr("class", function(d) {
-                return d.key + " bar";
-            }).attr("width", width).attr("x", 0).attr("y", height).attr("height", 0).attr("fill", function(d) {
+            bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("height", 0).attr("fill", function(d) {
                 return colorScale(d.name);
             }).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
@@ -669,29 +665,107 @@ d3.ez.component.scatterPlot = function module() {
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
         selection.each(function() {
-            // Create Bar Group
-            selection.selectAll(".barGroup").data(function(d) {
+            // Create dot group
+            selection.selectAll(".dotSeries").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("barGroup", true).attr("width", width).attr("height", height).on("click", function(d) {
+            }).enter().append("g").classed("dotSeries", true).attr("fill", function(d) {
+                console.log(d);
+                return colorScale(d.key);
+            }).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            barGroup = selection.selectAll(".barGroup");
+            barGroup = selection.selectAll(".dotSeries");
             // Add Bars to Group
-            var bars = barGroup.selectAll(".bar").data(function(d) {
-                return d;
+            var dots = barGroup.selectAll(".dot").data(function(d) {
+                return d.values;
             });
-            bars.enter().append("circle").attr("class", function(d) {
+            dots.enter().append("circle").attr("class", function(d) {
                 return d.key + " bar";
-            }).attr("fill", "steelblue").attr("r", 3).attr("cx", function(d, i) {
+            }).attr("r", 3).attr("cx", function(d, i) {
                 return xScale(d.key);
-            }).attr("cy", height).style("stroke", "black").on("mouseover", function(d) {
+            }).attr("cy", height).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("cx", function(d, i) {
+            }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function(d, i) {
                 return xScale(d.key);
             }).attr("cy", function(d, i) {
                 return yScale(d.value);
             });
-            bars.exit().transition().style("opacity", 0).remove();
+            dots.exit().transition().style("opacity", 0).remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Line Chart
+ *
+ * @example
+ * var myBars = d3.ez.scatterPlot()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.lineChart = function module() {
+    // Default Options (Configurable via setters)
+    var height = 100;
+    var width = 300;
+    var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        selection.each(function() {
+            line = d3.line().curve(d3.curveBasis).x(function(d) {
+                return xScale(d.key);
+            }).y(function(d) {
+                return yScale(d.value);
+            });
+            // Create Bar Group
+            selection.selectAll(".lineSeries").data(function(d) {
+                return [ d ];
+            }).enter().append("path").attr("class", "lineSeries").attr("stroke-width", 1.5).attr("stroke", function(d) {
+                return colorScale(d.key);
+            }).attr("fill", "none").attr("d", function(d) {
+                return line(d.values);
+            });
         });
     }
     // Configuration Getters & Setters
@@ -2279,12 +2353,6 @@ d3.ez.chart.multiSeriesLine = function module() {
         yAxis = d3.axisLeft(yScale);
         // Colour Scale
         colorScale = d3.scaleOrdinal().range(colors).domain(seriesNames);
-        // Line Generator
-        line = d3.line().x(function(d) {
-            return xScale(d.key);
-        }).y(function(d) {
-            return yScale(d.value);
-        });
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2315,20 +2383,11 @@ d3.ez.chart.multiSeriesLine = function module() {
             var series = chart.selectAll(".series").data(data).enter().append("g").attr("class", "series").style("fill", function(d) {
                 return colorScale(d.key);
             });
-            series.append("path").attr("class", "line").attr("stroke-width", 2).attr("stroke", function(d) {
-                return colorScale(d.key);
-            }).attr("fill", "none").attr("d", function(d) {
-                return line(d.values);
-            });
-            series.selectAll("circle").data(function(d) {
-                return d.values;
-            }).enter().append("circle").attr("r", 3).attr("cx", function(d) {
-                return xScale(d.key);
-            }).attr("cy", function(d) {
-                return yScale(d.value);
-            }).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            });
+            var lineChart = d3.ez.component.lineChart().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var dots = d3.ez.component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            series.datum(function(d) {
+                return d;
+            }).call(dots).call(lineChart);
         });
     }
     // Configuration Getters & Setters

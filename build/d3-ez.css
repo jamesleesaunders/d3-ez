@@ -148,7 +148,7 @@
         transform: scale(1.5);
     }
 }
-.chartMultiSeriesLine circle:hover {
+.dotSeries circle:hover {
     animation-duration: 0.2s;
     animation-name: circleTransition;
     transform-origin: center center;
