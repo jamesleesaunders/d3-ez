@@ -671,7 +671,7 @@ d3.ez.component.scatterPlot = function module() {
         .enter()
         .append("g")
         .classed('dotSeries', true)
-        .attr("fill", function(d) { console.log(d); return colorScale(d.key); })
+        .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
