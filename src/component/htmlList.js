@@ -2,13 +2,13 @@
  * Simple HTML List
  *
  * @example
- * var myList = d3.ez.htmlList()
+ * var myList = d3.ez.component.htmlList()
  *      .classed("myClass");
  * d3.select("#listholder")
  *     .datum(data)
  *     .call(myList);
  */
-d3.ez.html.list = function module() {
+d3.ez.component.htmlList = function module() {
   // HTML List Element (Populated by 'my' function)
   var listEl;
 

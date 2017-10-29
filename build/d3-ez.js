@@ -151,49 +151,154 @@ d3.ez.chart = function module() {
 };
 
 /**
- * Title
+ * Colour Palettes
  *
  * @example
- * var myTitle = d3.ez.title()
- *     .enabled(true)
- *     .mainText("Hello World")
- *     .subText("This is a test");
- * d3.select("svg").call(myTitle);
+ * d3.ez.colors.categorical(1);
+ * d3.ez.colors.diverging(1);
+ * d3.ez.colors.sequential("#ff0000", 9);
+ * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
  */
-d3.ez.component.title = function module() {
+d3.ez.colors = {
+    categorical: function(scheme) {
+        // Categorical colour schemes are the ones that are used to separate items into
+        // distinct groups or categories.
+        switch (scheme) {
+          case 1:
+            // Stephen Few - Show Me the Numbers Book
+            //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
+            return [ "#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d" ];
+
+          case 2:
+            // Color Brewer - http://colorbrewer2.com/
+            //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
+            return [ "#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2" ];
+
+          case 3:
+            // Google Design - http://www.google.com/design/spec/style/color.html
+            //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
+            return [ "#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548" ];
+
+          case 4:
+            return d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -.8), 5.5);
+        }
+    },
+    diverging: function(scheme) {
+        // Diverging colour schemes are used for quantitative data. Usually two different hues
+        // that diverge from a light colour, for the critical midpoint, toward dark colours.
+        switch (scheme) {
+          case 1:
+            // Color Brewer - Colourblind Safe
+            return [ "#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e" ];
+
+          case 2:
+            // Color Brewer - RAG
+            return [ "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850" ];
+
+          case 3:
+            // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
+            return [ "#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000" ];
+        }
+    },
+    sequential: function(origHex, count) {
+        // Sequential colour schemes are primarily used to encode quantitative differences.
+        // Quantitative values are arranged sequentially, from low to high.
+        var lumStep = .1;
+        var lumMax = lumStep * count / 2;
+        var lumMin = 0 - lumMax;
+        var lumScale = d3.scale.linear().domain([ 1, count ]).range([ lumMin, lumMax ]);
+        var result = [];
+        for (var i = 1; i <= count; i++) {
+            lum = lumScale(i);
+            // Validate and normalise Hex value.
+            origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
+            if (origHex.length < 6) {
+                origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
+            }
+            // Convert to decimal and change luminosity
+            var newHex = "#";
+            var c;
+            for (var j = 0; j < 3; j++) {
+                c = parseInt(origHex.substr(j * 2, 2), 16);
+                c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+                newHex += ("00" + c).substr(c.length);
+            }
+            result.push(newHex);
+        }
+        return result;
+    },
+    lumShift: function(colors, lum) {
+        var result = [];
+        colors.forEach(function addNumber(origHex, index) {
+            origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
+            if (origHex.length < 6) {
+                origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
+            }
+            lum = lum || 0;
+            // Convert to decimal and change luminosity
+            var newHex = "#", c, i;
+            for (i = 0; i < 3; i++) {
+                c = parseInt(origHex.substr(i * 2, 2), 16);
+                c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+                newHex += ("00" + c).substr(c.length);
+            }
+            result[index] = newHex;
+        });
+        return result;
+    }
+};
+
+/**
+ * Reusable Grouped Bar Chart
+ *
+ * @example
+ * var myBars = d3.ez.barGrouped()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.barGrouped = function module() {
     // Default Options (Configurable via setters)
-    var mainText = "Title";
-    var subText = "Sub Title";
-    var height = 40;
-    var width = 200;
+    var height = 100;
+    var width = 300;
+    var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.selectAll("#titleGroup").data([ 0 ]).enter().append("g").attr("id", "titleGroup");
-        var titleGroup = selection.select("#titleGroup");
-        titleGroup.selectAll(".title").data([ mainText ]).enter().append("text").classed("title", true).text(function(d) {
-            return d;
+        selection.each(function() {
+            var barW = xScale.bandwidth();
+            // Create Bar Group
+            selection.selectAll(".barGrouped").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("barGrouped", true).attr("width", width).attr("height", height).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            barGroup = selection.selectAll(".barGrouped");
+            // Add Bars to Group
+            var bars = barGroup.selectAll(".bar").data(function(d) {
+                return d;
+            });
+            bars.enter().append("rect").classed("bar", true).attr("fill", function(d) {
+                return colorScale(d.key);
+            }).attr("width", barW).attr("x", function(d, i) {
+                return xScale(d.key);
+            }).attr("y", height).attr("height", 0).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function(d, i) {
+                return xScale(d.key);
+            }).attr("y", function(d, i) {
+                return yScale(d.value);
+            }).attr("height", function(d, i) {
+                return height - yScale(d.value);
+            });
+            bars.exit().transition().style("opacity", 0).remove();
         });
-        var title = titleGroup.select(".title").text(mainText);
-        titleGroup.selectAll(".subTitle").data([ subText ]).enter().append("text").classed("subTitle", true).text(function(d) {
-            return d;
-        });
-        var subTitle = titleGroup.select(".subTitle").text(subText);
-        // Centre Text
-        var titleOffset = 1 - title.node().getBBox().width / 2;
-        var subTitleOffset = 1 - subTitle.node().getComputedTextLength() / 2;
-        title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
-        subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
     }
     // Configuration Getters & Setters
-    my.mainText = function(_) {
-        if (!arguments.length) return mainText;
-        mainText = _;
-        return this;
-    };
-    my.subText = function(_) {
-        if (!arguments.length) return subText;
-        subText = _;
-        return this;
-    };
     my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
@@ -203,6 +308,124 @@ d3.ez.component.title = function module() {
         if (!arguments.length) return width;
         width = _;
         return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Stacked Bar Chart
+ *
+ * @example
+ * var myBars = d3.ez.barStacked()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.barStacked = function module() {
+    // Default Options (Configurable via setters)
+    var height = 100;
+    var width = 50;
+    var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        selection.each(function() {
+            // Create Bar Group
+            selection.selectAll(".barStacked").data(function(d) {
+                series = [];
+                var y0 = 0;
+                d3.map(d).values().forEach(function(d, i) {
+                    series[i] = {
+                        name: d.key,
+                        value: d.value,
+                        y0: y0,
+                        y1: y0 + d.value
+                    };
+                    y0 += d.value;
+                });
+                return [ series ];
+            }).enter().append("g").classed("barStacked", true).attr("width", width).attr("height", height).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            barGroup = selection.selectAll(".barStacked");
+            // Add Bars to Group
+            var bars = barGroup.selectAll(".bar").data(function(d) {
+                return d;
+            });
+            bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("height", 0).attr("fill", function(d) {
+                return colorScale(d.name);
+            }).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("width", width).attr("x", 0).attr("y", function(d) {
+                return yScale(d.y1);
+            }).attr("height", function(d) {
+                return yScale(d.y0) - yScale(d.y1);
+            });
+            bars.exit().transition().style("opacity", 0).remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
     };
     return my;
 };
@@ -462,279 +685,10 @@ d3.ez.component.legend = function module() {
 };
 
 /**
- * Reusable Grouped Bar Chart
- *
- * @example
- * var myBars = d3.ez.barGrouped()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
- */
-d3.ez.component.barGrouped = function module() {
-    // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        selection.each(function() {
-            var barW = xScale.bandwidth();
-            // Create Bar Group
-            selection.selectAll(".barGrouped").data(function(d) {
-                return [ d ];
-            }).enter().append("g").classed("barGrouped", true).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            barGroup = selection.selectAll(".barGrouped");
-            // Add Bars to Group
-            var bars = barGroup.selectAll(".bar").data(function(d) {
-                return d;
-            });
-            bars.enter().append("rect").classed("bar", true).attr("fill", function(d) {
-                return colorScale(d.key);
-            }).attr("width", barW).attr("x", function(d, i) {
-                return xScale(d.key);
-            }).attr("y", height).attr("height", 0).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function(d, i) {
-                return xScale(d.key);
-            }).attr("y", function(d, i) {
-                return yScale(d.value);
-            }).attr("height", function(d, i) {
-                return height - yScale(d.value);
-            });
-            bars.exit().transition().style("opacity", 0).remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Reusable Stacked Bar Chart
- *
- * @example
- * var myBars = d3.ez.barStacked()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
- */
-d3.ez.component.barStacked = function module() {
-    // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 50;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        selection.each(function() {
-            // Create Bar Group
-            selection.selectAll(".barStacked").data(function(d) {
-                series = [];
-                var y0 = 0;
-                d3.map(d).values().forEach(function(d, i) {
-                    series[i] = {
-                        name: d.key,
-                        value: d.value,
-                        y0: y0,
-                        y1: y0 + d.value
-                    };
-                    y0 += d.value;
-                });
-                return [ series ];
-            }).enter().append("g").classed("barStacked", true).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            barGroup = selection.selectAll(".barStacked");
-            // Add Bars to Group
-            var bars = barGroup.selectAll(".bar").data(function(d) {
-                return d;
-            });
-            bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("height", 0).attr("fill", function(d) {
-                return colorScale(d.name);
-            }).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("width", width).attr("x", 0).attr("y", function(d) {
-                return yScale(d.y1);
-            }).attr("height", function(d) {
-                return yScale(d.y0) - yScale(d.y1);
-            });
-            bars.exit().transition().style("opacity", 0).remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Reusable Scatter Plot
- *
- * @example
- * var myBars = d3.ez.scatterPlot()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
- */
-d3.ez.component.scatterPlot = function module() {
-    // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        selection.each(function() {
-            // Create dot group
-            selection.selectAll(".dotSeries").data(function(d) {
-                return [ d ];
-            }).enter().append("g").classed("dotSeries", true).attr("fill", function(d) {
-                return colorScale(d.key);
-            }).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            barGroup = selection.selectAll(".dotSeries");
-            // Add Bars to Group
-            var dots = barGroup.selectAll(".dot").data(function(d) {
-                return d.values;
-            });
-            dots.enter().append("circle").attr("class", function(d) {
-                return d.key + " bar";
-            }).attr("r", 3).attr("cx", function(d, i) {
-                return xScale(d.key);
-            }).attr("cy", height).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function(d, i) {
-                return xScale(d.key);
-            }).attr("cy", function(d, i) {
-                return yScale(d.value);
-            });
-            dots.exit().transition().style("opacity", 0).remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
  * Reusable Line Chart
  *
  * @example
- * var myBars = d3.ez.scatterPlot()
+ * var myBars = d3.ez.component.lineChart()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */
@@ -806,101 +760,216 @@ d3.ez.component.lineChart = function module() {
 };
 
 /**
- * Colour Palettes
+ * Title
  *
  * @example
- * d3.ez.colors.categorical(1);
- * d3.ez.colors.diverging(1);
- * d3.ez.colors.sequential("#ff0000", 9);
- * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
+ * var myTitle = d3.ez.title()
+ *     .enabled(true)
+ *     .mainText("Hello World")
+ *     .subText("This is a test");
+ * d3.select("svg").call(myTitle);
  */
-d3.ez.colors = {
-    categorical: function(scheme) {
-        // Categorical colour schemes are the ones that are used to separate items into
-        // distinct groups or categories.
-        switch (scheme) {
-          case 1:
-            // Stephen Few - Show Me the Numbers Book
-            //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
-            return [ "#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d" ];
-
-          case 2:
-            // Color Brewer - http://colorbrewer2.com/
-            //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
-            return [ "#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2" ];
-
-          case 3:
-            // Google Design - http://www.google.com/design/spec/style/color.html
-            //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
-            return [ "#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548" ];
-
-          case 4:
-            return d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -.8), 5.5);
-        }
-    },
-    diverging: function(scheme) {
-        // Diverging colour schemes are used for quantitative data. Usually two different hues
-        // that diverge from a light colour, for the critical midpoint, toward dark colours.
-        switch (scheme) {
-          case 1:
-            // Color Brewer - Colourblind Safe
-            return [ "#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e" ];
-
-          case 2:
-            // Color Brewer - RAG
-            return [ "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850" ];
-
-          case 3:
-            // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
-            return [ "#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000" ];
-        }
-    },
-    sequential: function(origHex, count) {
-        // Sequential colour schemes are primarily used to encode quantitative differences.
-        // Quantitative values are arranged sequentially, from low to high.
-        var lumStep = .1;
-        var lumMax = lumStep * count / 2;
-        var lumMin = 0 - lumMax;
-        var lumScale = d3.scale.linear().domain([ 1, count ]).range([ lumMin, lumMax ]);
-        var result = [];
-        for (var i = 1; i <= count; i++) {
-            lum = lumScale(i);
-            // Validate and normalise Hex value.
-            origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
-            if (origHex.length < 6) {
-                origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
-            }
-            // Convert to decimal and change luminosity
-            var newHex = "#";
-            var c;
-            for (var j = 0; j < 3; j++) {
-                c = parseInt(origHex.substr(j * 2, 2), 16);
-                c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-                newHex += ("00" + c).substr(c.length);
-            }
-            result.push(newHex);
-        }
-        return result;
-    },
-    lumShift: function(colors, lum) {
-        var result = [];
-        colors.forEach(function addNumber(origHex, index) {
-            origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
-            if (origHex.length < 6) {
-                origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
-            }
-            lum = lum || 0;
-            // Convert to decimal and change luminosity
-            var newHex = "#", c, i;
-            for (i = 0; i < 3; i++) {
-                c = parseInt(origHex.substr(i * 2, 2), 16);
-                c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-                newHex += ("00" + c).substr(c.length);
-            }
-            result[index] = newHex;
+d3.ez.component.title = function module() {
+    // Default Options (Configurable via setters)
+    var mainText = "Title";
+    var subText = "Sub Title";
+    var height = 40;
+    var width = 200;
+    function my(selection) {
+        selection.selectAll("#titleGroup").data([ 0 ]).enter().append("g").attr("id", "titleGroup");
+        var titleGroup = selection.select("#titleGroup");
+        titleGroup.selectAll(".title").data([ mainText ]).enter().append("text").classed("title", true).text(function(d) {
+            return d;
         });
-        return result;
+        var title = titleGroup.select(".title").text(mainText);
+        titleGroup.selectAll(".subTitle").data([ subText ]).enter().append("text").classed("subTitle", true).text(function(d) {
+            return d;
+        });
+        var subTitle = titleGroup.select(".subTitle").text(subText);
+        // Centre Text
+        var titleOffset = 1 - title.node().getBBox().width / 2;
+        var subTitleOffset = 1 - subTitle.node().getComputedTextLength() / 2;
+        title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
+        subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
     }
+    // Configuration Getters & Setters
+    my.mainText = function(_) {
+        if (!arguments.length) return mainText;
+        mainText = _;
+        return this;
+    };
+    my.subText = function(_) {
+        if (!arguments.length) return subText;
+        subText = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    return my;
+};
+
+/**
+ * Simple HTML Table
+ *
+ * @example
+ * var myTable = d3.ez.component.htmlTable()
+ *     .classed("myClass")
+ *     .width("600");
+ * d3.select("#tableholder")
+ *     .datum(data)
+ *     .call(myTable);
+ */
+d3.ez.component.htmlTable = function module() {
+    // HTML Table Element (Populated by 'my' function)
+    var tableEl;
+    // Default Options (Configurable via setters)
+    var classed = "htmlTable";
+    var width = 800;
+    // Data Options (Populated by 'init' function)
+    var rowNames = undefined;
+    var columnNames = [];
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function init(data) {
+        // Cut the data in different ways....
+        rowNames = data.map(function(d) {
+            return d.key;
+        });
+        columnNames = [];
+        data.map(function(d) {
+            return d.values;
+        })[0].forEach(function(d, i) {
+            columnNames[i] = d.key;
+        });
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create HTML Table 'table' element (if it does not exist already)
+            if (!tableEl) {
+                tableEl = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
+            } else {
+                tableEl.selectAll("*").remove();
+            }
+            var head = tableEl.append("thead");
+            var foot = tableEl.append("tfoot");
+            var body = tableEl.append("tbody");
+            // Add table headings
+            hdr = head.append("tr");
+            hdr.selectAll("th").data(function() {
+                // Tack on a blank cell at the beginning,
+                // this is for the top of the first column.
+                return [ "" ].concat(columnNames);
+            }).enter().append("th").html(function(d) {
+                return d;
+            });
+            // Add table body
+            rows = body.selectAll("tr").data(data).enter().append("tr").attr("class", function(d) {
+                return d.key;
+            }).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            });
+            // Add the first column of headings (categories)
+            rows.append("th").html(function(d) {
+                return d.key;
+            });
+            // Add the main data values
+            rows.selectAll("td").data(function(d) {
+                return d.values;
+            }).enter().append("td").attr("class", function(d) {
+                return d.key;
+            }).html(function(d) {
+                return d.value;
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.classed = function(_) {
+        if (!arguments.length) return classed;
+        classed = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Simple HTML List
+ *
+ * @example
+ * var myList = d3.ez.component.htmlList()
+ *      .classed("myClass");
+ * d3.select("#listholder")
+ *     .datum(data)
+ *     .call(myList);
+ */
+d3.ez.component.htmlList = function module() {
+    // HTML List Element (Populated by 'my' function)
+    var listEl;
+    // Default Options (Configurable via setters)
+    var classed = "htmlList";
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        selection.each(function(data) {
+            // Create HTML List 'ul' element (if it does not exist already)
+            if (!listEl) {
+                listEl = d3.select(this).append("ul").classed("d3ez", true).classed(classed, true);
+            } else {
+                listEl.selectAll("*").remove();
+            }
+            listEl.selectAll("li").data(data).enter().append("li").text(function(d) {
+                return d.key;
+            }).on("click", expand);
+            function expand(d) {
+                d3.event.stopPropagation();
+                dispatch.call("customMouseOver", this, d);
+                if (typeof d.values === "undefined") {
+                    return 0;
+                }
+                var ul = d3.select(this).on("click", collapse).append("ul");
+                var li = ul.selectAll("li").data(d.values).enter().append("li").text(function(d) {
+                    if (typeof d.value !== "undefined") {
+                        return d.key + " : " + d.value;
+                    } else {
+                        return d.key;
+                    }
+                }).on("click", expand);
+            }
+            function collapse(d) {
+                d3.event.stopPropagation();
+                d3.select(this).on("click", expand).selectAll("*").remove();
+            }
+        });
+    }
+    // Configuration Getters & Setters
+    my.classed = function(_) {
+        if (!arguments.length) return classed;
+        classed = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
 };
 
 /**
@@ -2433,162 +2502,6 @@ d3.ez.chart.multiSeriesLine = function module() {
     my.dispatch = function(_) {
         if (!arguments.length) return dispatch();
         dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Simple HTML Table
- *
- * @example
- * var myTable = d3.ez.htmlTable()
- *     .classed("myClass")
- *     .width("600");
- * d3.select("#tableholder")
- *     .datum(data)
- *     .call(myTable);
- */
-d3.ez.html.table = function module() {
-    // HTML Table Element (Populated by 'my' function)
-    var tableEl;
-    // Default Options (Configurable via setters)
-    var classed = "htmlTable";
-    var width = 800;
-    // Data Options (Populated by 'init' function)
-    var rowNames = undefined;
-    var columnNames = [];
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function init(data) {
-        // Cut the data in different ways....
-        rowNames = data.map(function(d) {
-            return d.key;
-        });
-        columnNames = [];
-        data.map(function(d) {
-            return d.values;
-        })[0].forEach(function(d, i) {
-            columnNames[i] = d.key;
-        });
-    }
-    function my(selection) {
-        selection.each(function(data) {
-            // Initialise Data
-            init(data);
-            // Create HTML Table 'table' element (if it does not exist already)
-            if (!tableEl) {
-                tableEl = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
-            } else {
-                tableEl.selectAll("*").remove();
-            }
-            var head = tableEl.append("thead");
-            var foot = tableEl.append("tfoot");
-            var body = tableEl.append("tbody");
-            // Add table headings
-            hdr = head.append("tr");
-            hdr.selectAll("th").data(function() {
-                // Tack on a blank cell at the beginning,
-                // this is for the top of the first column.
-                return [ "" ].concat(columnNames);
-            }).enter().append("th").html(function(d) {
-                return d;
-            });
-            // Add table body
-            rows = body.selectAll("tr").data(data).enter().append("tr").attr("class", function(d) {
-                return d.key;
-            }).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            });
-            // Add the first column of headings (categories)
-            rows.append("th").html(function(d) {
-                return d.key;
-            });
-            // Add the main data values
-            rows.selectAll("td").data(function(d) {
-                return d.values;
-            }).enter().append("td").attr("class", function(d) {
-                return d.key;
-            }).html(function(d) {
-                return d.value;
-            });
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.classed = function(_) {
-        if (!arguments.length) return classed;
-        classed = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Simple HTML List
- *
- * @example
- * var myList = d3.ez.htmlList()
- *      .classed("myClass");
- * d3.select("#listholder")
- *     .datum(data)
- *     .call(myList);
- */
-d3.ez.html.list = function module() {
-    // HTML List Element (Populated by 'my' function)
-    var listEl;
-    // Default Options (Configurable via setters)
-    var classed = "htmlList";
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        selection.each(function(data) {
-            // Create HTML List 'ul' element (if it does not exist already)
-            if (!listEl) {
-                listEl = d3.select(this).append("ul").classed("d3ez", true).classed(classed, true);
-            } else {
-                listEl.selectAll("*").remove();
-            }
-            listEl.selectAll("li").data(data).enter().append("li").text(function(d) {
-                return d.key;
-            }).on("click", expand);
-            function expand(d) {
-                d3.event.stopPropagation();
-                dispatch.call("customMouseOver", this, d);
-                if (typeof d.values === "undefined") {
-                    return 0;
-                }
-                var ul = d3.select(this).on("click", collapse).append("ul");
-                var li = ul.selectAll("li").data(d.values).enter().append("li").text(function(d) {
-                    if (typeof d.value !== "undefined") {
-                        return d.key + " : " + d.value;
-                    } else {
-                        return d.key;
-                    }
-                }).on("click", expand);
-            }
-            function collapse(d) {
-                d3.event.stopPropagation();
-                d3.select(this).on("click", expand).selectAll("*").remove();
-            }
-        });
-    }
-    // Configuration Getters & Setters
-    my.classed = function(_) {
-        if (!arguments.length) return classed;
-        classed = _;
         return this;
     };
     my.on = function() {

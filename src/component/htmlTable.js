@@ -2,14 +2,14 @@
  * Simple HTML Table
  *
  * @example
- * var myTable = d3.ez.htmlTable()
+ * var myTable = d3.ez.component.htmlTable()
  *     .classed("myClass")
  *     .width("600");
  * d3.select("#tableholder")
  *     .datum(data)
  *     .call(myTable);
  */
-d3.ez.html.table = function module() {
+d3.ez.component.htmlTable = function module() {
   // HTML Table Element (Populated by 'my' function)
   var tableEl;
 

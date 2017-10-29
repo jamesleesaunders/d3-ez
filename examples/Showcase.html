@@ -25,7 +25,7 @@
     console.log(data);
 
     // Setup chart components
-    myChart1 = d3.ez.html.table()
+    myChart1 = d3.ez.component.htmlTable()
       .width(400)
       .on("customMouseOver", function(d, i) {
         groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");

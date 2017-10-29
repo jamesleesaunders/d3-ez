@@ -12,10 +12,6 @@ d3.ez = {
   license: "GPL-3.0"
 };
 
-d3.ez.html = {
-  description: "HTML Components"
-};
-
 d3.ez.component = {
   description: "Reusable Components"
 };

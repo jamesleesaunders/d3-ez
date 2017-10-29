@@ -4,8 +4,17 @@
 include('../src/header.js');
 include('../src/chart.js');
 include('../src/vega.js');
-include('../src/component.js');
 include('../src/colors.js');
+include('../src/component/barGrouped.js');
+include('../src/component/barStacked.js');
+include('../src/component/creditTag.js');
+include('../src/component/labeledNode.js');
+include('../src/component/legend.js');
+include('../src/component/lineChart.js');
+include('../src/component/scatterPlot.js');
+include('../src/component/title.js');
+include('../src/component/htmlTable.js');
+include('../src/component/htmlList.js');
 include('../src/chart/discreteBar.js');
 include('../src/chart/groupedBar.js');
 include('../src/chart/radialBar.js');
@@ -14,8 +23,6 @@ include('../src/chart/tabularHeat.js');
 include('../src/chart/donut.js');
 include('../src/chart/punchcard.js');
 include('../src/chart/multiSeriesLine.js');
-include('../src/html/table.js');
-include('../src/html/list.js');
 
 function include(file) {
   var loc = document.currentScript.src;
