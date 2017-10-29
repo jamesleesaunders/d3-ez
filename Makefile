@@ -24,15 +24,15 @@ JS_FILES :=        src/header.js \
 
 
 CSS_FILES :=       css/global.css \
-                   css/chart/groupedBar.css \
-                   css/chart/radialBar.css \
-                   css/chart/circularHeat.css \
-                   css/chart/tabularHeat.css \
-                   css/chart/donut.css \
-                   css/chart/punchcard.css \
-                   css/chart/multiSeriesLine.css \
-                   css/html/list.css \
-                   css/html/table.css
+                   css/barGrouped.css \
+                   css/radialBar.css \
+                   css/circularHeat.css \
+                   css/tabularHeat.css \
+                   css/donut.css \
+                   css/punchcard.css \
+                   css/lineChart.css \
+                   css/htmlList.css \
+                   css/htmlTable.css
 
 GENERATED_FILES := build/d3-ez.js \
                    build/d3-ez.min.js \
