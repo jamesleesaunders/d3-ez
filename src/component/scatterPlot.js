@@ -30,12 +30,13 @@ d3.ez.component.scatterPlot = function module() {
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       barGroup = selection.selectAll('.dotSeries');
 
-      // Add Bars to Group
+      // Add Dots to Group
       var dots = barGroup.selectAll(".dot")
         .data(function(d) { return d.values; });
 
-      dots.enter().append("circle")
-        .attr("class", function(d) { return d.key + " bar"; })
+      dots.enter()
+        .append("circle")
+        .attr("class", function(d) { return d.key + " dot"; })
         .attr("r", 3)
         .attr("cx", function(d, i) { return xScale(d.key); })
         .attr("cy", height)

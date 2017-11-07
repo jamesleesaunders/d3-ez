@@ -13,27 +13,41 @@ d3.ez.component.lineChart = function module() {
   var colorScale = undefined;
   var xScale = undefined;
   var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 1500 };
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
     selection.each(function() {
-      line = d3.line()
+      // Line generation function
+      var line = d3.line()
         .curve(d3.curveBasis)
         .x(function(d) { return xScale(d.key); })
         .y(function(d) { return yScale(d.value); });
 
-      // Create Bar Group
-      selection.selectAll('.lineSeries')
-        .data(function(d) { return [d]; })
-        .enter()
+      // Line animation tween
+      var pathTween = function(data) {
+          var interpolate = d3.scaleQuantile()
+            .domain([0, 1])
+            .range(d3.range(1, data.length + 1));
+          return function(t) {
+              return line(data.slice(0, interpolate(t)));
+          };
+      }
+
+      // Create Line
+      var path = selection.selectAll('.lineSeries')
+        .data(function(d) { return [d]; });
+
+      path.enter()
         .append("path")
         .attr("class", "lineSeries")
         .attr("stroke-width", 1.5)
         .attr("stroke", function(d) { return colorScale(d.key); })
         .attr("fill", "none")
-        .attr("d", function(d) { return line(d.values); });
-
+        .merge(path)
+        .transition()
+        .duration(transition.duration)
+        .attrTween("d", function(d) { return pathTween(d.values); });
     });
   }
 
