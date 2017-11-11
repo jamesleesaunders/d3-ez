@@ -13,6 +13,8 @@ d3.ez.chart.tabularHeat = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var chartW = 0;
+  var chartH = 0;
   var width = 600;
   var height = 600;
   var margin = { top: 40, right: 40, bottom: 40, left: 40 };
@@ -48,11 +50,14 @@ d3.ez.chart.tabularHeat = function module() {
   }
 
   function init(data) {
+    chartW = width - margin.left - margin.right;
+    chartH = height - margin.top - margin.bottom;
+
     // Group and Category Names
-    colNames = data.map(function(d) {
+    rowNames = data.map(function(d) {
       return d.key;
     });
-    numCols = colNames.length;
+    numCols = rowNames.length;
 
     /*
      The following bit of code is a little dirty! Its purpose is to identify the complete list of row names.
@@ -74,10 +79,10 @@ d3.ez.chart.tabularHeat = function module() {
     })[numCols - 1].forEach(function(d, i) {
       b[i] = d.key;
     });
-    rowNames = b.concat(a.filter(function(element) {
+    colNames = b.concat(a.filter(function(element) {
       return b.indexOf(element) < 0;
     }));
-    numRows = rowNames.length;
+    numRows = colNames.length;
 
     gridSize = Math.floor((d3.min([width, height]) - (margin.left + margin.right)) / d3.max([numCols, numRows]));
 
@@ -106,6 +111,21 @@ d3.ez.chart.tabularHeat = function module() {
         (minValue + (0.90 * distance)).toFixed(decimalPlace)
       ];
     }
+
+    // X & Y Scales
+    xScale = d3.scaleBand()
+      .domain(colNames)
+      .rangeRound([0, chartW])
+      .padding(0.05);
+
+    yScale = d3.scaleBand()
+      .domain(rowNames)
+      .rangeRound([0, chartH])
+      .padding(0.05);
+
+    // X & Y Axis
+    xAxis = d3.axisTop(xScale);
+    yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
     colorScale = d3.scaleThreshold()
@@ -136,103 +156,34 @@ d3.ez.chart.tabularHeat = function module() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
         chart.append("g").classed("y-axis axis", true);
-        chart.append("g").classed("cards", true);
       } else {
         chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", chartW)
+        .attr("height", chartH)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var deck = chart.select(".cards")
-        .selectAll(".deck")
-        .data(data);
+      // Add axis to chart
+      chart.select(".x-axis")
+        .call(xAxis);
 
-      var deckEnter = deck.enter().append("g")
-        .attr("class", "deck")
-        .attr("transform", function(d, i) {
-          return "translate(0, " + ((colNames.indexOf(d.key)) * gridSize) + ")";
-        });
+      chart.select(".y-axis")
+        .call(yAxis);
 
-      deck.exit().remove();
+      var cardDeck = d3.ez.component.heatMap()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
+        .dispatch(dispatch);
 
-      var cards = deckEnter.selectAll(".card")
-        .data(function(d) {
-          // Map row, column and value to new data array
-          var ret = [];
-          d3.map(d.values).values().forEach(function(v, i) {
-            ret[i] = {
-              row: d.key,
-              column: v.key,
-              value: v.value
-            }
-          });
-          return ret;
-        });
+      chart.datum(data)
+        .call(cardDeck);
 
-      cards.enter().append("rect")
-        .attr("x", function(d) {
-          return (rowNames.indexOf(d.column)) * gridSize;
-        })
-        .attr("y", 0)
-        .attr("rx", 5)
-        .attr("ry", 5)
-        .attr("class", "card")
-        .attr("width", gridSize)
-        .attr("height", gridSize)
-        .on("click", dispatch.customClick)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .on("mouseout", function(d) { dispatch.call("customMouseOut", this, d); })
-        .merge(cards)
-        .transition()
-        .duration(1000)
-        .attr("fill", function(d) {
-          return colorScale(d.value);
-        });
-
-      cards.exit().remove();
-
-      cards.select("title").text(function(d) {
-        return d.value;
-      });
-
-      var colLabels = chart.select(".x-axis").selectAll(".colLabel")
-        .data(colNames)
-        .enter().append("text")
-        .text(function(d) {
-          return d;
-        })
-        .attr("x", 0)
-        .attr("y", function(d, i) {
-          return i * gridSize;
-        })
-        .style("text-anchor", "end")
-        .attr("transform", "translate(-6," + gridSize / 2 + ")")
-        .attr("class", function(d, i) {
-          return ((i >= 0 && i <= 4) ? "colLabel mono axis axis-workweek" : "colLabel mono axis");
-        });
-
-      var rowLabels = chart.select(".y-axis").selectAll(".rowLabel")
-        .data(rowNames)
-        .enter()
-        .append("g")
-        .attr("transform", function(d, i) {
-          return "translate(" + ((i * gridSize) + (gridSize / 2)) + ", -6)";
-        })
-        .append("text")
-        .text(function(d) {
-          return d;
-        })
-        .style("text-anchor", "start")
-        .attr("class", function(d, i) {
-          return ((i >= 7 && i <= 16) ? "rowLabel mono axis axis-worktime" : "rowLabel mono axis");
-        })
-        .attr("transform", function(d) {
-          return "rotate(-90)"
-        });
     });
   }
 
