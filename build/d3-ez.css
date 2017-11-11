@@ -110,6 +110,9 @@
   stroke: #b6b6b6;
   cursor: pointer;
 }
+.chartTabularHeat .x-axis path, .chartTabularHeat .y-axis path {
+  display: none;
+}
 
 
 /* === Donut Chart Styles === */

@@ -28,7 +28,8 @@ d3.ez.component.heatMap = function module() {
         .attr("class", "deck")
         .attr("transform", function(d, i) {
           return "translate(0, " + yScale(d.key) + ")";
-      });
+        })
+        .on("click", function(d) { dispatch.call("customClick", this, d); });
       deck.exit().remove();
 
       var cards = deckEnter.selectAll(".card")
@@ -44,7 +45,6 @@ d3.ez.component.heatMap = function module() {
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .on("mouseout", function(d) { dispatch.call("customMouseOut", this, d); })
         .merge(cards)
         .transition()
         .duration(1000)

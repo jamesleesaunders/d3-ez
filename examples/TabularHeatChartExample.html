@@ -31,6 +31,9 @@
         .title(title)
         .on("customMouseOver", function(d, i) {
           d3.select("#message").text(d.value);
+        })
+        .on("customClick", function(d, i) {
+          console.log(d);
         });
 
       // Convert json to d3-ez data format

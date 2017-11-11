@@ -17,7 +17,7 @@ d3.ez.chart.tabularHeat = function module() {
   var chartH = 0;
   var width = 600;
   var height = 600;
-  var margin = { top: 40, right: 40, bottom: 40, left: 40 };
+  var margin = { top: 50, right: 40, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "chartTabularHeat";
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
@@ -163,7 +163,13 @@ d3.ez.chart.tabularHeat = function module() {
 
       // Add axis to chart
       chart.select(".x-axis")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", -8)
+        //.attr("dy", ".35em")
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
 
       chart.select(".y-axis")
         .call(yAxis);
