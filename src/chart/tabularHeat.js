@@ -54,37 +54,32 @@ d3.ez.chart.tabularHeat = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Group and Category Names
-    rowNames = data.map(function(d) {
+    groupNames = data.map(function(d) {
       return d.key;
     });
-    numCols = rowNames.length;
 
-    /*
-     The following bit of code is a little dirty! Its purpose is to identify the complete list of row names.
-     In some cases the first (index 0) set of values may not contain the complete list of key names.
-     This typically this happens in 'matrix' (site A to site B) type scenario, for example where no data
-     would exist where both site A is the same as site B.
-     The code therefore takes the list of keys from the first (index 0) set of values and then concatenates
-     it with the last (index max) set of values, finally removing duplicates.
-     */
-    var a = [];
-    var b = [];
+    categoryNames = [];
     data.map(function(d) {
       return d.values;
     })[0].forEach(function(d, i) {
-      a[i] = d.key;
+      categoryNames[i] = d.key;
     });
-    data.map(function(d) {
-      return d.values;
-    })[numCols - 1].forEach(function(d, i) {
-      b[i] = d.key;
-    });
-    colNames = b.concat(a.filter(function(element) {
-      return b.indexOf(element) < 0;
-    }));
-    numRows = colNames.length;
 
-    gridSize = Math.floor((d3.min([width, height]) - (margin.left + margin.right)) / d3.max([numCols, numRows]));
+    // Group and Category Totals
+    categoryTotals = [];
+    groupTotals = [];
+    maxValue = 0;
+    d3.map(data).values().forEach(function(d) {
+      grp = d.key;
+      d.values.forEach(function(d) {
+        categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === "undefined" ? 0 : categoryTotals[d.key]);
+        categoryTotals[d.key] += d.value;
+        groupTotals[grp] = (typeof(groupTotals[grp]) === "undefined" ? 0 : groupTotals[grp]);
+        groupTotals[grp] += d.value;
+        maxValue = (d.value > maxValue ? d.value : maxValue);
+      });
+    });
+    maxGroupTotal = d3.max(d3.values(groupTotals));
 
     // Calculate the Max and Min Values
     var values = [];
@@ -114,12 +109,12 @@ d3.ez.chart.tabularHeat = function module() {
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(colNames)
+      .domain(categoryNames)
       .rangeRound([0, chartW])
       .padding(0.05);
 
     yScale = d3.scaleBand()
-      .domain(rowNames)
+      .domain(groupNames)
       .rangeRound([0, chartH])
       .padding(0.05);
 
