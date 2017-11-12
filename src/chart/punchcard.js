@@ -2,7 +2,7 @@
  * Punchcard
  *
  * @example
- * var myChart = d3.ez.punchcard()
+ * var myChart = d3.ez.chart.punchcard()
  *     .width(600)
  *     .height(350)
  *     .color("green")

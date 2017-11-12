@@ -2,7 +2,7 @@
  * Reusable Grouped Bar Chart
  *
  * @example
- * var myBars = d3.ez.barGrouped()
+ * var myBars = d3.ez.component.barGrouped()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */

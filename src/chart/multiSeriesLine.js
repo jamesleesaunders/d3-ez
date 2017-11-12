@@ -2,7 +2,7 @@
  * Multi Series Line Chart
  *
  * @example
- * var myChart = d3.ez.multiSeriesLineChart()
+ * var myChart = d3.ez.chart.multiSeriesLine()
  *     .width(400)
  *     .height(300);
  * d3.select("#chartholder")

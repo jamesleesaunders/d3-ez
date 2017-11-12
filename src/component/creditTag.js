@@ -2,7 +2,7 @@
  * Credit Tag
  *
  * @example
- * var myCredit = d3.ez.creditTag()
+ * var myCredit = d3.ez.component.creditTag()
  *     .enabled(true)
  *     .text("d3-ez.net")
  *     .href("http://d3-ez.net");

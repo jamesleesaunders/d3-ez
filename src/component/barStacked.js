@@ -2,7 +2,7 @@
  * Reusable Stacked Bar Chart
  *
  * @example
- * var myBars = d3.ez.barStacked()
+ * var myBars = d3.ez.component.barStacked()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */

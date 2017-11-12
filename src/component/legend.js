@@ -2,7 +2,7 @@
  * Legend
  *
  * @example
- * var myLegend = d3.ez.legend()
+ * var myLegend = d3.ez.component.legend()
  *     .sizeScale(**D3 Scale Object**)
  *     .sizeLabel('Label for Size')
  *     .colorScale(**D3 Scale Object**)

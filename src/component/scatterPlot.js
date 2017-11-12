@@ -2,7 +2,7 @@
  * Reusable Scatter Plot
  *
  * @example
- * var myBars = d3.ez.scatterPlot()
+ * var myBars = d3.ez.component.scatterPlot()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */

@@ -2,7 +2,7 @@
  * Circular Heat Chart
  *
  * @example
- * var myChart = d3.ez.circularHeatChart();
+ * var myChart = d3.ez.chart.circularHeat();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);

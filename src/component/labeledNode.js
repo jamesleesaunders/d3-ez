@@ -2,7 +2,7 @@
  * Labeled Node
  *
  * @example
- * var myNode = d3.ez.labeledNode()
+ * var myNode = d3.ez.component.labeledNode()
  *     .color("#FF0000")
  *     .opacity(0.5)
  *     .stroke(1)

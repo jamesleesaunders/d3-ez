@@ -2,7 +2,7 @@
  * Grouped Bar Chart
  *
  * @example
- * var myChart = d3.ez.groupedBarChart()
+ * var myChart = d3.ez.chart.groupedBar()
  *     .width(400)
  *     .height(300)
  *     .transition({ease: "bounce", duration: 1500})

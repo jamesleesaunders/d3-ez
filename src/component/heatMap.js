@@ -2,7 +2,7 @@
  * Reusable Heat Map
  *
  * @example
- * var myBars = d3.ez.heatMap()
+ * var myBars = d3.ez.component.heatMap()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */

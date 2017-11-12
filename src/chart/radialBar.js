@@ -2,7 +2,7 @@
  * Radial Bar Chart
  *
  * @example
- * var myChart = d3.ez.radialBarChart();
+ * var myChart = d3.ez.chart.radialBar();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);

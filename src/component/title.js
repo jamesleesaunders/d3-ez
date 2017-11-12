@@ -2,7 +2,7 @@
  * Title
  *
  * @example
- * var myTitle = d3.ez.title()
+ * var myTitle = d3.ez.component.title()
  *     .enabled(true)
  *     .mainText("Hello World")
  *     .subText("This is a test");

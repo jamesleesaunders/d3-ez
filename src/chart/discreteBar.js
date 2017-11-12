@@ -2,7 +2,7 @@
  * Discrete Bar Chart
  *
  * @example
- * var myChart = d3.ez.discreteBarChart()
+ * var myChart = d3.ez.chart.discreteBar()
  *     .width(400)
  *     .height(300)
  *     .transition({ease: "bounce", duration: 1500})

@@ -2,7 +2,7 @@
  * Tabular Heat Chart
  *
  * @example
- * var myChart = d3.ez.tabularHeatChart();
+ * var myChart = d3.ez.chart.tabularHeat();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);

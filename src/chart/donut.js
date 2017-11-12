@@ -2,7 +2,7 @@
  * Donut Chart
  *
  * @example
- * var myChart = d3.ez.donutChart()
+ * var myChart = d3.ez.chart.donut()
  *     .width(400)
  *     .height(300)
  *     .radius(200)
