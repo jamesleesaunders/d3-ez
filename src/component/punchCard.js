@@ -41,7 +41,8 @@ d3.ez.component.punchCard = function module() {
         })
         .attr("cy", 0)
         .attr("r", function(d) {
-          return sizeScale(d['value']);
+          // return sizeScale(d['value']);
+          return 5;
         })
         .attr("class", "card")
         .attr("width", cellWidth)

@@ -21,9 +21,9 @@ d3.ez.chart.punchCard = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = { top: 40, right: 80, bottom: 20, left: 20 };
+  var margin = { top: 40, right: 80, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var classed = "chartPunchcard";
+  var classed = "chartPunchCard";
   var color = "steelblue";
   var sizeScale = undefined;
   var sizeDomain = [];
@@ -59,7 +59,12 @@ d3.ez.chart.punchCard = function module() {
     });
 
     //var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
-    var categoryNames = [];
+    // Group and Category Names
+    groupNames = data.map(function(d) {
+      return d.key;
+    });
+
+    categoryNames = [];
     var categoryTotals = [];
     var maxValue = 0;
 
@@ -81,9 +86,14 @@ d3.ez.chart.punchCard = function module() {
       .rangeRound([0, chartW])
       .padding(1);
 
+    yScale = d3.scaleBand()
+      .domain(groupNames)
+      .rangeRound([0, chartH])
+      .padding(0.05);
+
     // X (& Y) Axis
-    xAxis = d3.axisBottom(xScale)
-      .ticks(data[0].values.length);
+    xAxis = d3.axisBottom(xScale).ticks(data[0].values.length);
+    yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
     colorScale = d3.scaleLinear()
@@ -119,6 +129,7 @@ d3.ez.chart.punchCard = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
+        chart.append("g").classed("y-axis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -134,6 +145,21 @@ d3.ez.chart.punchCard = function module() {
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
+      chart.select(".y-axis")
+        .call(yAxis);
+
+      var cardDeck = d3.ez.component.punchCard()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
+        .dispatch(dispatch);
+
+      chart.datum(data)
+        .call(cardDeck);
+
+/*
       for (var j = 0; j < data.length; j++) {
         sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) {
           return d['value'];
@@ -190,7 +216,7 @@ d3.ez.chart.punchCard = function module() {
           .on("mouseover", mouseover)
           .on("mouseout", mouseout);
       }
-
+*/
     });
   }
 
