@@ -31,7 +31,7 @@ CSS_FILES :=       css/global.css \
                    css/circularHeat.css \
                    css/tabularHeat.css \
                    css/donut.css \
-                   css/punchcard.css \
+                   css/punchCard.css \
                    css/lineChart.css \
                    css/htmlList.css \
                    css/htmlTable.css

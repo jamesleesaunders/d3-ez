@@ -58,12 +58,12 @@ d3.ez.chart.punchCard = function module() {
       rowCount++;
     });
 
-    //var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
     // Group and Category Names
     groupNames = data.map(function(d) {
       return d.key;
     });
 
+    // var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
     categoryNames = [];
     var categoryTotals = [];
     var maxValue = 0;
@@ -80,7 +80,7 @@ d3.ez.chart.punchCard = function module() {
       return d['value'];
     });
 
-    // X (& Y) Scales
+    // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
       .rangeRound([0, chartW])

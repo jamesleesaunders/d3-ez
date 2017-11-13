@@ -409,7 +409,7 @@ d3.ez.colors = {
  * Reusable Grouped Bar Chart
  *
  * @example
- * var myBars = d3.ez.barGrouped()
+ * var myBars = d3.ez.component.barGrouped()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */
@@ -497,7 +497,7 @@ d3.ez.component.barGrouped = function module() {
  * Reusable Stacked Bar Chart
  *
  * @example
- * var myBars = d3.ez.barStacked()
+ * var myBars = d3.ez.component.barStacked()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */
@@ -591,7 +591,7 @@ d3.ez.component.barStacked = function module() {
  * Credit Tag
  *
  * @example
- * var myCredit = d3.ez.creditTag()
+ * var myCredit = d3.ez.component.creditTag()
  *     .enabled(true)
  *     .text("d3-ez.net")
  *     .href("http://d3-ez.net");
@@ -628,7 +628,7 @@ d3.ez.component.creditTag = function module() {
  * Labeled Node
  *
  * @example
- * var myNode = d3.ez.labeledNode()
+ * var myNode = d3.ez.component.labeledNode()
  *     .color("#FF0000")
  *     .opacity(0.5)
  *     .stroke(1)
@@ -693,7 +693,7 @@ d3.ez.component.labeledNode = function module() {
  * Legend
  *
  * @example
- * var myLegend = d3.ez.legend()
+ * var myLegend = d3.ez.component.legend()
  *     .sizeScale(**D3 Scale Object**)
  *     .sizeLabel('Label for Size')
  *     .colorScale(**D3 Scale Object**)
@@ -926,10 +926,187 @@ d3.ez.component.lineChart = function module() {
 };
 
 /**
+ * Reusable Heat Map
+ *
+ * @example
+ * var myBars = d3.ez.component.heatMap()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.heatMap = function module() {
+    // Default Options (Configurable via setters)
+    var height = 100;
+    var width = 300;
+    var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        selection.each(function() {
+            var cellHeight = yScale.bandwidth();
+            var cellWidth = xScale.bandwidth();
+            var deck = selection.selectAll(".deck").data(function(d) {
+                return d;
+            });
+            var deckEnter = deck.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
+                return "translate(0, " + yScale(d.key) + ")";
+            }).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            deck.exit().remove();
+            var cards = deckEnter.selectAll(".card").data(function(d) {
+                return d.values;
+            });
+            cards.enter().append("rect").attr("x", function(d, i) {
+                return xScale(d.key);
+            }).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
+                return colorScale(d.value);
+            });
+            cards.exit().remove();
+            cards.select("title").text(function(d) {
+                return d.value;
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Heat Map
+ *
+ * @example
+ * var myBars = d3.ez.component.punchCard()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.punchCard = function module() {
+    // Default Options (Configurable via setters)
+    var height = 100;
+    var width = 300;
+    var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        selection.each(function() {
+            var cellHeight = yScale.bandwidth();
+            var cellWidth = xScale.bandwidth();
+            var deck = selection.selectAll(".deck").data(function(d) {
+                return d;
+            });
+            var deckEnter = deck.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
+                return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
+            }).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            deck.exit().remove();
+            var cards = deckEnter.selectAll(".card").data(function(d) {
+                return d.values;
+            });
+            cards.enter().append("circle").attr("cx", function(d, i) {
+                return cellWidth / 2 + xScale(d.key);
+            }).attr("cy", 0).attr("r", function(d) {
+                // return sizeScale(d['value']);
+                return 5;
+            }).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
+                return colorScale(d.value);
+            });
+            cards.exit().remove();
+            cards.select("title").text(function(d) {
+                return d.value;
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
  * Title
  *
  * @example
- * var myTitle = d3.ez.title()
+ * var myTitle = d3.ez.component.title()
  *     .enabled(true)
  *     .mainText("Hello World")
  *     .subText("This is a test");
@@ -1142,7 +1319,7 @@ d3.ez.component.htmlList = function module() {
  * Discrete Bar Chart
  *
  * @example
- * var myChart = d3.ez.discreteBarChart()
+ * var myChart = d3.ez.chart.discreteBar()
  *     .width(400)
  *     .height(300)
  *     .transition({ease: "bounce", duration: 1500})
@@ -1285,7 +1462,7 @@ d3.ez.chart.discreteBar = function module() {
  * Grouped Bar Chart
  *
  * @example
- * var myChart = d3.ez.groupedBarChart()
+ * var myChart = d3.ez.chart.groupedBar()
  *     .width(400)
  *     .height(300)
  *     .transition({ease: "bounce", duration: 1500})
@@ -1473,7 +1650,7 @@ d3.ez.chart.groupedBar = function module() {
  * Radial Bar Chart
  *
  * @example
- * var myChart = d3.ez.radialBarChart();
+ * var myChart = d3.ez.chart.radialBar();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);
@@ -1680,7 +1857,7 @@ d3.ez.chart.radialBar = function module() {
  * Circular Heat Chart
  *
  * @example
- * var myChart = d3.ez.circularHeatChart();
+ * var myChart = d3.ez.chart.circularHeat();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);
@@ -1896,7 +2073,7 @@ d3.ez.chart.circularHeat = function module() {
  * Tabular Heat Chart
  *
  * @example
- * var myChart = d3.ez.tabularHeatChart();
+ * var myChart = d3.ez.chart.tabularHeat();
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);
@@ -2079,7 +2256,7 @@ d3.ez.chart.tabularHeat = function module() {
  * Donut Chart
  *
  * @example
- * var myChart = d3.ez.donutChart()
+ * var myChart = d3.ez.chart.donut()
  *     .width(400)
  *     .height(300)
  *     .radius(200)
@@ -2283,7 +2460,7 @@ d3.ez.chart.donut = function module() {
  * Punchcard
  *
  * @example
- * var myChart = d3.ez.punchcard()
+ * var myChart = d3.ez.chart.punchCard()
  *     .width(600)
  *     .height(350)
  *     .color("green")
@@ -2294,7 +2471,7 @@ d3.ez.chart.donut = function module() {
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.chart.punchcard = function module() {
+d3.ez.chart.punchCard = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
@@ -2305,13 +2482,13 @@ d3.ez.chart.punchcard = function module() {
         top: 40,
         right: 80,
         bottom: 20,
-        left: 20
+        left: 40
     };
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartPunchcard";
+    var classed = "chartPunchCard";
     var color = "steelblue";
     var sizeScale = undefined;
     var sizeDomain = [];
@@ -2340,8 +2517,12 @@ d3.ez.chart.punchcard = function module() {
             allValues = allValues.concat(d.values);
             rowCount++;
         });
-        //var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
-        var categoryNames = [];
+        // Group and Category Names
+        groupNames = data.map(function(d) {
+            return d.key;
+        });
+        // var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
+        categoryNames = [];
         var categoryTotals = [];
         var maxValue = 0;
         data.map(function(d) {
@@ -2354,10 +2535,12 @@ d3.ez.chart.punchcard = function module() {
         valDomain = d3.extent(allValues, function(d) {
             return d["value"];
         });
-        // X (& Y) Scales
+        // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(1);
+        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
         // X (& Y) Axis
         xAxis = d3.axisBottom(xScale).ticks(data[0].values.length);
+        yAxis = d3.axisLeft(yScale);
         // Colour Scale
         colorScale = d3.scaleLinear().domain(d3.extent(allValues, function(d) {
             return d["value"];
@@ -2382,6 +2565,7 @@ d3.ez.chart.punchcard = function module() {
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true);
             } else {
                 chart = selection.select(".chart");
             }
@@ -2389,30 +2573,9 @@ d3.ez.chart.punchcard = function module() {
             chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
-            for (var j = 0; j < data.length; j++) {
-                sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[j]["values"], function(d) {
-                    return d["value"];
-                }) ];
-                sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
-                var g = chart.append("g");
-                var circles = g.selectAll("circle").data(data[j]["values"]).enter().append("circle").attr("cy", chartH - rowHeight * 2 - j * rowHeight + rowHeight).attr("cx", function(d, i) {
-                    return xScale(d["key"]);
-                }).attr("r", function(d) {
-                    return sizeScale(d["value"]);
-                }).attr("class", "punchSpot").style("fill", function(d) {
-                    return colorScale(d["value"]);
-                }).on("mouseover", function(d) {
-                    dispatch.call("customMouseOver", this, d);
-                });
-                var text = g.selectAll("text").data(data[j]["values"]).enter().append("text").attr("y", chartH - rowHeight * 2 - j * rowHeight + rowHeight).attr("x", function(d, i) {
-                    return xScale(d["key"]);
-                }).attr("text-anchor", "middle").attr("dominant-baseline", "central").attr("class", "punchValue").text(function(d) {
-                    return d["value"];
-                }).style("fill", function(d) {
-                    return colorScale(d["value"]);
-                }).style("display", "none");
-                g.append("text").attr("y", chartH - rowHeight * 2 - j * rowHeight + rowHeight).attr("x", chartW).attr("text-anchor", "start").attr("dominant-baseline", "start").attr("class", "label").text(data[j]["key"]).on("mouseover", mouseover).on("mouseout", mouseout);
-            }
+            chart.select(".y-axis").call(yAxis);
+            var cardDeck = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            chart.datum(data).call(cardDeck);
         });
     }
     function mouseover(d) {
@@ -2483,7 +2646,7 @@ d3.ez.chart.punchcard = function module() {
  * Multi Series Line Chart
  *
  * @example
- * var myChart = d3.ez.multiSeriesLineChart()
+ * var myChart = d3.ez.chart.multiSeriesLine()
  *     .width(400)
  *     .height(300);
  * d3.select("#chartholder")
