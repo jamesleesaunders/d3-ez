@@ -2,11 +2,11 @@
  * Reusable Heat Map
  *
  * @example
- * var myBars = d3.ez.component.heatMap()
+ * var myBars = d3.ez.component.punchCard()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */
-d3.ez.component.heatMap = function module() {
+d3.ez.component.punchCard = function module() {
   // Default Options (Configurable via setters)
   var height = 100;
   var width = 300;
@@ -27,7 +27,7 @@ d3.ez.component.heatMap = function module() {
       var deckEnter = deck.enter().append("g")
         .attr("class", "deck")
         .attr("transform", function(d, i) {
-          return "translate(0, " + yScale(d.key) + ")";
+          return "translate(0, " + (cellHeight/2 + yScale(d.key)) + ")";
         })
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       deck.exit().remove();
@@ -35,13 +35,14 @@ d3.ez.component.heatMap = function module() {
       var cards = deckEnter.selectAll(".card")
         .data(function(d) {  return d.values; });
 
-      cards.enter().append("rect")
-        .attr("x", function(d, i) { 
-          return xScale(d.key);
+      cards.enter().append("circle")
+        .attr("cx", function(d, i) {
+          return (cellWidth/2 + xScale(d.key));
         })
-        .attr("y", 0)
-        .attr("rx", 5)
-        .attr("ry", 5)
+        .attr("cy", 0)
+        .attr("r", function(d) {
+          return sizeScale(d['value']);
+        })
         .attr("class", "card")
         .attr("width", cellWidth)
         .attr("height", cellHeight)

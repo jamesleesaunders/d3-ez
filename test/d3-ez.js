@@ -12,6 +12,7 @@ include('../src/component/labeledNode.js');
 include('../src/component/legend.js');
 include('../src/component/lineChart.js');
 include('../src/component/heatMap.js');
+include('../src/component/punchCard.js');
 include('../src/component/scatterPlot.js');
 include('../src/component/title.js');
 include('../src/component/htmlTable.js');
@@ -22,7 +23,7 @@ include('../src/chart/radialBar.js');
 include('../src/chart/circularHeat.js');
 include('../src/chart/tabularHeat.js');
 include('../src/chart/donut.js');
-include('../src/chart/punchcard.js');
+include('../src/chart/punchCard.js');
 include('../src/chart/multiSeriesLine.js');
 
 function include(file) {

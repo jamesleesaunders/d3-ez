@@ -2,7 +2,7 @@
  * Punchcard
  *
  * @example
- * var myChart = d3.ez.chart.punchcard()
+ * var myChart = d3.ez.chart.punchCard()
  *     .width(600)
  *     .height(350)
  *     .color("green")
@@ -13,7 +13,7 @@
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.chart.punchcard = function module() {
+d3.ez.chart.punchCard = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

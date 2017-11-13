@@ -10,6 +10,8 @@ JS_FILES :=        src/header.js \
                    src/component/labeledNode.js \
                    src/component/legend.js \
                    src/component/lineChart.js \
+									 src/component/heatMap.js \
+									 src/component/punchCard.js \
                    src/component/title.js \
 									 src/component/htmlTable.js \
 									 src/component/htmlList.js \
@@ -19,7 +21,7 @@ JS_FILES :=        src/header.js \
                    src/chart/circularHeat.js \
                    src/chart/tabularHeat.js \
                    src/chart/donut.js \
-                   src/chart/punchcard.js \
+                   src/chart/punchCard.js \
                    src/chart/multiSeriesLine.js
 
 
