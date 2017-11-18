@@ -28,10 +28,10 @@ d3.ez.component.scatterPlot = function module() {
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      barGroup = selection.selectAll('.dotSeries');
+      var dotSeries = selection.selectAll('.dotSeries');
 
       // Add Dots to Group
-      var dots = barGroup.selectAll(".dot")
+      var dots = dotSeries.selectAll(".dot")
         .data(function(d) { return d.values; });
 
       dots.enter()

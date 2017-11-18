@@ -11,6 +11,7 @@ d3.ez.component.punchCard = function module() {
   var height = 100;
   var width = 300;
   var colorScale = undefined;
+  var sizeScale = undefined;
   var xScale = undefined;
   var yScale = undefined;
   var transition = { ease: d3.easeBounce, duration: 500 };
@@ -21,42 +22,41 @@ d3.ez.component.punchCard = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var deck = selection.selectAll(".deck")
+      var punchRows = selection.selectAll(".punchRow")
         .data(function(d) { return d; });
 
-      var deckEnter = deck.enter().append("g")
-        .attr("class", "deck")
+      var punchRow = punchRows.enter().append("g")
+        .attr("class", "punchRow")
         .attr("transform", function(d, i) {
           return "translate(0, " + (cellHeight/2 + yScale(d.key)) + ")";
         })
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      deck.exit().remove();
+      punchRow.exit().remove();
 
-      var cards = deckEnter.selectAll(".card")
+      var circles = punchRow.selectAll(".circle")
         .data(function(d) {  return d.values; });
 
-      cards.enter().append("circle")
+      circles.enter().append("circle")
         .attr("cx", function(d, i) {
           return (cellWidth/2 + xScale(d.key));
         })
         .attr("cy", 0)
         .attr("r", function(d) {
-          // return sizeScale(d['value']);
-          return 5;
+          return sizeScale(d['value']);
         })
-        .attr("class", "card")
+        .attr("class", "circle")
         .attr("width", cellWidth)
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(cards)
+        .merge(circles)
         .transition()
         .duration(1000)
         .attr("fill", function(d) { return colorScale(d.value); });
 
-      cards.exit().remove();
+      circles.exit().remove();
 
-      cards.select("title").text(function(d) {
+      circles.select("title").text(function(d) {
         return d.value;
       });
 
@@ -79,6 +79,12 @@ d3.ez.component.punchCard = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return my;
   };
 

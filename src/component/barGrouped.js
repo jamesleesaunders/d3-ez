@@ -29,7 +29,7 @@ d3.ez.component.barGrouped = function module() {
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      barGroup = selection.selectAll('.barGrouped');
+      var barGroup = selection.selectAll('.barGrouped');
 
       // Add Bars to Group
       var bars = barGroup.selectAll(".bar")

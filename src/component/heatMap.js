@@ -21,10 +21,10 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var deck = selection.selectAll(".deck")
+      var decks = selection.selectAll(".deck")
         .data(function(d) { return d; });
 
-      var deckEnter = deck.enter().append("g")
+      var deck = decks.enter().append("g")
         .attr("class", "deck")
         .attr("transform", function(d, i) {
           return "translate(0, " + yScale(d.key) + ")";
@@ -32,11 +32,11 @@ d3.ez.component.heatMap = function module() {
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       deck.exit().remove();
 
-      var cards = deckEnter.selectAll(".card")
+      var cards = deck.selectAll(".card")
         .data(function(d) {  return d.values; });
 
       cards.enter().append("rect")
-        .attr("x", function(d, i) { 
+        .attr("x", function(d, i) {
           return xScale(d.key);
         })
         .attr("y", 0)

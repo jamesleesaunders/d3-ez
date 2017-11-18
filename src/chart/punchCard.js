@@ -21,7 +21,7 @@ d3.ez.chart.punchCard = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = { top: 40, right: 80, bottom: 20, left: 40 };
+  var margin = { top: 50, right: 40, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var classed = "chartPunchCard";
   var color = "steelblue";
@@ -84,7 +84,7 @@ d3.ez.chart.punchCard = function module() {
     xScale = d3.scaleBand()
       .domain(categoryNames)
       .rangeRound([0, chartW])
-      .padding(1);
+      .padding(0.05);
 
     yScale = d3.scaleBand()
       .domain(groupNames)
@@ -92,7 +92,7 @@ d3.ez.chart.punchCard = function module() {
       .padding(0.05);
 
     // X (& Y) Axis
-    xAxis = d3.axisBottom(xScale).ticks(data[0].values.length);
+    xAxis = d3.axisTop(xScale);
     yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
@@ -101,6 +101,14 @@ d3.ez.chart.punchCard = function module() {
         return d['value'];
       }))
       .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+
+    // Size Scale
+    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) {
+      return d['value'];
+    })];
+    sizeScale = d3.scaleLinear()
+      .domain(sizeDomain)
+      .range([minRadius, maxRadius]);
 
   }
 
@@ -140,10 +148,13 @@ d3.ez.chart.punchCard = function module() {
         .attr("width", width)
         .attr("height", height);
 
-      // Add axis to chart
       chart.select(".x-axis")
-        .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", -8)
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
 
       chart.select(".y-axis")
         .call(yAxis);
@@ -152,6 +163,7 @@ d3.ez.chart.punchCard = function module() {
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
+        .sizeScale(sizeScale)
         .yScale(yScale)
         .xScale(xScale)
         .dispatch(dispatch);

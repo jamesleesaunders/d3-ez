@@ -40,7 +40,7 @@ d3.ez.component.barStacked = function module() {
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      barGroup = selection.selectAll('.barStacked');
+      var barGroup = selection.selectAll('.barStacked');
 
       // Add Bars to Group
       var bars = barGroup.selectAll(".bar")

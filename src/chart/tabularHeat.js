@@ -167,7 +167,6 @@ d3.ez.chart.tabularHeat = function module() {
         .selectAll("text")
         .attr("y", 0)
         .attr("x", -8)
-        //.attr("dy", ".35em")
         .attr("transform", "rotate(60)")
         .style("text-anchor", "end");
 
