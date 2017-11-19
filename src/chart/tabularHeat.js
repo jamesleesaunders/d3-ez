@@ -49,6 +49,24 @@ d3.ez.chart.tabularHeat = function module() {
       (match[2] ? +match[2] : 0));
   }
 
+  function union() {
+      var arrs = [].slice.call(arguments);
+      var out = [];
+      for (var i = 0, l = arrs.length; i < l; i++) {
+          for (var j = 0, jl = arrs[i].length; j < jl; j++) {
+              var currEl = arrs[i][j];
+              if (out.indexOf(currEl) === -1) {
+                  if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
+                      out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+                  } else {
+                      out.push(currEl);
+                  }
+              }
+          }
+      }
+      return out;
+  };
+
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
@@ -59,11 +77,14 @@ d3.ez.chart.tabularHeat = function module() {
     });
 
     categoryNames = [];
-    data.map(function(d) {
-      return d.values;
-    })[0].forEach(function(d, i) {
-      categoryNames[i] = d.key;
-    });
+    for (i = 0; i < groupNames.length; i++) {
+      data.map(function(d) {
+        return d.values;
+      })[i].forEach(function(d, i) {
+        categoryNames[i] = d.key;
+      });
+      categoryNames = union(categoryNames);
+    }
 
     // Group and Category Totals
     categoryTotals = [];

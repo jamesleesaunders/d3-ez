@@ -2,11 +2,11 @@
  * Reusable Heat Map
  *
  * @example
- * var myBars = d3.ez.component.punchCard()
+ * var myBars = d3.ez.component.numberCard()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */
-d3.ez.component.punchCard = function module() {
+d3.ez.component.numberCard = function module() {
   // Default Options (Configurable via setters)
   var height = 100;
   var width = 300;
@@ -33,20 +33,18 @@ d3.ez.component.punchCard = function module() {
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       punchRow.exit().remove();
 
-      var circles = punchRow.selectAll(".punchSpot")
+      var circles = punchRow.selectAll(".circle")
         .data(function(d) {  return d.values; });
 
-      circles.enter().append("circle")
-        .attr("cx", function(d, i) {
-          return (cellWidth/2 + xScale(d.key));
+      circles.enter().append("text")
+        .attr("class", "punchValue")
+        .attr("x", function(d, i) { return (xScale(d.key) + cellWidth/2); })
+        .attr("y", 0)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .text(function(d) {
+          return d['value'];
         })
-        .attr("cy", 0)
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        })
-        .attr("class", "punchSpot")
-        .attr("width", cellWidth)
-        .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(circles)

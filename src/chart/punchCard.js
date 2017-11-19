@@ -171,64 +171,6 @@ d3.ez.chart.punchCard = function module() {
       chart.datum(data)
         .call(cardDeck);
 
-/*
-      for (var j = 0; j < data.length; j++) {
-        sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) {
-          return d['value'];
-        })];
-        sizeScale = d3.scaleLinear()
-          .domain(sizeDomain)
-          .range([minRadius, maxRadius]);
-
-        var g = chart.append("g");
-
-        var circles = g.selectAll("circle")
-          .data(data[j]['values'])
-          .enter()
-          .append("circle")
-          .attr("cy", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
-          .attr("cx", function(d, i) {
-            return xScale(d['key']);
-          })
-          .attr("r", function(d) {
-            return sizeScale(d['value']);
-          })
-          .attr("class", "punchSpot")
-          .style("fill", function(d) {
-            return colorScale(d['value'])
-          })
-          .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
-
-        var text = g.selectAll("text")
-          .data(data[j]['values'])
-          .enter()
-          .append("text")
-          .attr("y", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
-          .attr("x", function(d, i) {
-            return xScale(d['key']);
-          })
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "central")
-          .attr("class", "punchValue")
-          .text(function(d) {
-            return d['value'];
-          })
-          .style("fill", function(d) {
-            return colorScale(d['value'])
-          })
-          .style("display", "none");
-
-        g.append("text")
-          .attr("y", (chartH - rowHeight * 2) - (j * rowHeight) + rowHeight)
-          .attr("x", chartW)
-          .attr("text-anchor", "start")
-          .attr("dominant-baseline", "start")
-          .attr("class", "label")
-          .text(data[j]['key'])
-          .on("mouseover", mouseover)
-          .on("mouseout", mouseout);
-      }
-*/
     });
   }
 

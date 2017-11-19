@@ -434,7 +434,7 @@ d3.ez.component.barGrouped = function module() {
             }).enter().append("g").classed("barGrouped", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            barGroup = selection.selectAll(".barGrouped");
+            var barGroup = selection.selectAll(".barGrouped");
             // Add Bars to Group
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;
@@ -532,7 +532,7 @@ d3.ez.component.barStacked = function module() {
             }).enter().append("g").classed("barStacked", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            barGroup = selection.selectAll(".barStacked");
+            var barGroup = selection.selectAll(".barStacked");
             // Add Bars to Group
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;
@@ -949,16 +949,16 @@ d3.ez.component.heatMap = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var deck = selection.selectAll(".deck").data(function(d) {
+            var decks = selection.selectAll(".deck").data(function(d) {
                 return d;
             });
-            var deckEnter = deck.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
+            var deck = decks.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
                 return "translate(0, " + yScale(d.key) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
             deck.exit().remove();
-            var cards = deckEnter.selectAll(".card").data(function(d) {
+            var cards = deck.selectAll(".card").data(function(d) {
                 return d.values;
             });
             cards.enter().append("rect").attr("x", function(d, i) {
@@ -1025,6 +1025,7 @@ d3.ez.component.punchCard = function module() {
     var height = 100;
     var width = 300;
     var colorScale = undefined;
+    var sizeScale = undefined;
     var xScale = undefined;
     var yScale = undefined;
     var transition = {
@@ -1036,30 +1037,29 @@ d3.ez.component.punchCard = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var deck = selection.selectAll(".deck").data(function(d) {
+            var punchRows = selection.selectAll(".punchRow").data(function(d) {
                 return d;
             });
-            var deckEnter = deck.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
+            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
                 return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            deck.exit().remove();
-            var cards = deckEnter.selectAll(".card").data(function(d) {
+            punchRow.exit().remove();
+            var circles = punchRow.selectAll(".punchSpot").data(function(d) {
                 return d.values;
             });
-            cards.enter().append("circle").attr("cx", function(d, i) {
+            circles.enter().append("circle").attr("cx", function(d, i) {
                 return cellWidth / 2 + xScale(d.key);
             }).attr("cy", 0).attr("r", function(d) {
-                // return sizeScale(d['value']);
-                return 5;
-            }).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+                return sizeScale(d["value"]);
+            }).attr("class", "punchSpot").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
+            }).merge(circles).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);
             });
-            cards.exit().remove();
-            cards.select("title").text(function(d) {
+            circles.exit().remove();
+            circles.select("title").text(function(d) {
                 return d.value;
             });
         });
@@ -1078,6 +1078,106 @@ d3.ez.component.punchCard = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.sizeScale = function(_) {
+        if (!arguments.length) return sizeScale;
+        sizeScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Heat Map
+ *
+ * @example
+ * var myBars = d3.ez.component.numberCard()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.numberCard = function module() {
+    // Default Options (Configurable via setters)
+    var height = 100;
+    var width = 300;
+    var colorScale = undefined;
+    var sizeScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        selection.each(function() {
+            var cellHeight = yScale.bandwidth();
+            var cellWidth = xScale.bandwidth();
+            var punchRows = selection.selectAll(".punchRow").data(function(d) {
+                return d;
+            });
+            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
+                return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
+            }).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            punchRow.exit().remove();
+            var circles = punchRow.selectAll(".circle").data(function(d) {
+                return d.values;
+            });
+            circles.enter().append("text").attr("class", "punchValue").attr("x", function(d, i) {
+                return xScale(d.key) + cellWidth / 2;
+            }).attr("y", 0).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function(d) {
+                return d["value"];
+            }).on("click", dispatch.customClick).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(circles).transition().duration(1e3).attr("fill", function(d) {
+                return colorScale(d.value);
+            });
+            circles.exit().remove();
+            circles.select("title").text(function(d) {
+                return d.value;
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.sizeScale = function(_) {
+        if (!arguments.length) return sizeScale;
+        sizeScale = _;
         return my;
     };
     my.xScale = function(_) {
@@ -2119,6 +2219,23 @@ d3.ez.chart.tabularHeat = function module() {
         // Number of digits right of decimal point.
         return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
     }
+    function union() {
+        var arrs = [].slice.call(arguments);
+        var out = [];
+        for (var i = 0, l = arrs.length; i < l; i++) {
+            for (var j = 0, jl = arrs[i].length; j < jl; j++) {
+                var currEl = arrs[i][j];
+                if (out.indexOf(currEl) === -1) {
+                    if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
+                        out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+                    } else {
+                        out.push(currEl);
+                    }
+                }
+            }
+        }
+        return out;
+    }
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
@@ -2127,11 +2244,14 @@ d3.ez.chart.tabularHeat = function module() {
             return d.key;
         });
         categoryNames = [];
-        data.map(function(d) {
-            return d.values;
-        })[0].forEach(function(d, i) {
-            categoryNames[i] = d.key;
-        });
+        for (i = 0; i < groupNames.length; i++) {
+            data.map(function(d) {
+                return d.values;
+            })[i].forEach(function(d, i) {
+                categoryNames[i] = d.key;
+            });
+            categoryNames = union(categoryNames);
+        }
         // Group and Category Totals
         categoryTotals = [];
         groupTotals = [];
@@ -2479,9 +2599,9 @@ d3.ez.chart.punchCard = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 40,
-        right: 80,
-        bottom: 20,
+        top: 50,
+        right: 40,
+        bottom: 40,
         left: 40
     };
     var transition = {
@@ -2536,15 +2656,20 @@ d3.ez.chart.punchCard = function module() {
             return d["value"];
         });
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(1);
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
         yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
         // X (& Y) Axis
-        xAxis = d3.axisBottom(xScale).ticks(data[0].values.length);
+        xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
         // Colour Scale
         colorScale = d3.scaleLinear().domain(d3.extent(allValues, function(d) {
             return d["value"];
         })).range([ d3.rgb(color).brighter(), d3.rgb(color).darker() ]);
+        // Size Scale
+        sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[j]["values"], function(d) {
+            return d["value"];
+        }) ];
+        sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2571,10 +2696,9 @@ d3.ez.chart.punchCard = function module() {
             }
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
-            // Add axis to chart
-            chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
+            chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var cardDeck = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var cardDeck = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             chart.datum(data).call(cardDeck);
         });
     }
