@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/jamesleesaunders/d3-ez.git"
   },
-  "main": "build/d3-foo.js",
+  "main": "build/d3-ez.js",
   "scripts": {
     "test": "tape 'test/**/*-test.js'"
   },
