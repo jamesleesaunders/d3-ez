@@ -50,21 +50,21 @@ d3.ez.chart.tabularHeat = function module() {
   }
 
   function union() {
-      var arrs = [].slice.call(arguments);
-      var out = [];
-      for (var i = 0, l = arrs.length; i < l; i++) {
-          for (var j = 0, jl = arrs[i].length; j < jl; j++) {
-              var currEl = arrs[i][j];
-              if (out.indexOf(currEl) === -1) {
-                  if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
-                      out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
-                  } else {
-                      out.push(currEl);
-                  }
-              }
+    var arrs = [].slice.call(arguments);
+    var out = [];
+    for (var i = 0, l = arrs.length; i < l; i++) {
+      for (var j = 0, jl = arrs[i].length; j < jl; j++) {
+        var currEl = arrs[i][j];
+        if (out.indexOf(currEl) === -1) {
+          if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
+            out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+          } else {
+            out.push(currEl);
           }
+        }
       }
-      return out;
+    }
+    return out;
   };
 
   function init(data) {
@@ -194,7 +194,7 @@ d3.ez.chart.tabularHeat = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var cardDeck = d3.ez.component.heatMap()
+      var heatMap = d3.ez.component.heatMap()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -203,7 +203,7 @@ d3.ez.chart.tabularHeat = function module() {
         .dispatch(dispatch);
 
       chart.datum(data)
-        .call(cardDeck);
+        .call(heatMap);
 
     });
   }

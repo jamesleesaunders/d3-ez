@@ -28,17 +28,17 @@ d3.ez.component.numberCard = function module() {
       var punchRow = punchRows.enter().append("g")
         .attr("class", "punchRow")
         .attr("transform", function(d, i) {
-          return "translate(0, " + (cellHeight/2 + yScale(d.key)) + ")";
+          return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
         })
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       punchRow.exit().remove();
 
       var circles = punchRow.selectAll(".circle")
-        .data(function(d) {  return d.values; });
+        .data(function(d) { return d.values; });
 
       circles.enter().append("text")
         .attr("class", "punchValue")
-        .attr("x", function(d, i) { return (xScale(d.key) + cellWidth/2); })
+        .attr("x", function(d, i) { return (xScale(d.key) + cellWidth / 2); })
         .attr("y", 0)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")

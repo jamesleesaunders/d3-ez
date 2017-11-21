@@ -28,17 +28,17 @@ d3.ez.component.punchCard = function module() {
       var punchRow = punchRows.enter().append("g")
         .attr("class", "punchRow")
         .attr("transform", function(d, i) {
-          return "translate(0, " + (cellHeight/2 + yScale(d.key)) + ")";
+          return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
         })
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       punchRow.exit().remove();
 
       var circles = punchRow.selectAll(".punchSpot")
-        .data(function(d) {  return d.values; });
+        .data(function(d) { return d.values; });
 
       circles.enter().append("circle")
         .attr("cx", function(d, i) {
-          return (cellWidth/2 + xScale(d.key));
+          return (cellWidth / 2 + xScale(d.key));
         })
         .attr("cy", 0)
         .attr("r", function(d) {

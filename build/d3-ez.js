@@ -2320,8 +2320,8 @@ d3.ez.chart.tabularHeat = function module() {
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var cardDeck = d3.ez.component.heatMap().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data).call(cardDeck);
+            var heatMap = d3.ez.component.heatMap().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            chart.datum(data).call(heatMap);
         });
     }
     // Configuration Getters & Setters
@@ -2627,44 +2627,57 @@ d3.ez.chart.punchCard = function module() {
     var rowHeight;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function union() {
+        var arrs = [].slice.call(arguments);
+        var out = [];
+        for (var i = 0, l = arrs.length; i < l; i++) {
+            for (var j = 0, jl = arrs[i].length; j < jl; j++) {
+                var currEl = arrs[i][j];
+                if (out.indexOf(currEl) === -1) {
+                    if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
+                        out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+                    } else {
+                        out.push(currEl);
+                    }
+                }
+            }
+        }
+        return out;
+    }
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
-        // Cut the data in different ways....
+        // Group and Category Names
+        groupNames = data.map(function(d) {
+            return d.key;
+        });
+        categoryNames = [];
+        for (i = 0; i < groupNames.length; i++) {
+            data.map(function(d) {
+                return d.values;
+            })[i].forEach(function(d, i) {
+                categoryNames[i] = d.key;
+            });
+            categoryNames = union(categoryNames);
+        }
+        // All Values Domain
         var allValues = [];
         var rowCount = 0;
         data.forEach(function(d) {
             allValues = allValues.concat(d.values);
             rowCount++;
         });
-        // Group and Category Names
-        groupNames = data.map(function(d) {
-            return d.key;
-        });
-        // var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
-        categoryNames = [];
-        var categoryTotals = [];
-        var maxValue = 0;
-        data.map(function(d) {
-            return d.values;
-        })[0].forEach(function(d, i) {
-            categoryNames[i] = d.key;
-        });
-        rowHeight = chartH / rowCount;
-        // var rowHeight = (maxRadius * 2) + 2;
         valDomain = d3.extent(allValues, function(d) {
             return d["value"];
         });
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
         yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
-        // X (& Y) Axis
+        // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
         // Colour Scale
-        colorScale = d3.scaleLinear().domain(d3.extent(allValues, function(d) {
-            return d["value"];
-        })).range([ d3.rgb(color).brighter(), d3.rgb(color).darker() ]);
+        colorScale = d3.scaleLinear().domain(valDomain).range([ d3.rgb(color).brighter(), d3.rgb(color).darker() ]);
         // Size Scale
         sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[j]["values"], function(d) {
             return d["value"];
@@ -2696,10 +2709,11 @@ d3.ez.chart.punchCard = function module() {
             }
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
+            // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var cardDeck = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data).call(cardDeck);
+            var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            chart.datum(data).call(punchCard);
         });
     }
     function mouseover(d) {

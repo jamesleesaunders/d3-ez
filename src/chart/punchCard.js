@@ -46,36 +46,50 @@ d3.ez.chart.punchCard = function module() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
+  function union() {
+    var arrs = [].slice.call(arguments);
+    var out = [];
+    for (var i = 0, l = arrs.length; i < l; i++) {
+      for (var j = 0, jl = arrs[i].length; j < jl; j++) {
+        var currEl = arrs[i][j];
+        if (out.indexOf(currEl) === -1) {
+          if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
+            out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+          } else {
+            out.push(currEl);
+          }
+        }
+      }
+    }
+    return out;
+  };
+
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
-
-    // Cut the data in different ways....
-    var allValues = [];
-    var rowCount = 0;
-    data.forEach(function(d) {
-      allValues = allValues.concat(d.values);
-      rowCount++;
-    });
 
     // Group and Category Names
     groupNames = data.map(function(d) {
       return d.key;
     });
 
-    // var categoryNames = d3.extent(allValues, function(d) { return d['key']; });
     categoryNames = [];
-    var categoryTotals = [];
-    var maxValue = 0;
+    for (i = 0; i < groupNames.length; i++) {
+      data.map(function(d) {
+        return d.values;
+      })[i].forEach(function(d, i) {
+        categoryNames[i] = d.key;
+      });
+      categoryNames = union(categoryNames);
+    }
 
-    data.map(function(d) {
-      return d.values;
-    })[0].forEach(function(d, i) {
-      categoryNames[i] = d.key;
+    // All Values Domain
+    var allValues = [];
+    var rowCount = 0;
+    data.forEach(function(d) {
+      allValues = allValues.concat(d.values);
+      rowCount++;
     });
-
-    rowHeight = chartH / rowCount;
-    // var rowHeight = (maxRadius * 2) + 2;
     valDomain = d3.extent(allValues, function(d) {
       return d['value'];
     });
@@ -91,15 +105,13 @@ d3.ez.chart.punchCard = function module() {
       .rangeRound([0, chartH])
       .padding(0.05);
 
-    // X (& Y) Axis
+    // X & Y Axis
     xAxis = d3.axisTop(xScale);
     yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
     colorScale = d3.scaleLinear()
-      .domain(d3.extent(allValues, function(d) {
-        return d['value'];
-      }))
+      .domain(valDomain)
       .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 
     // Size Scale
@@ -148,6 +160,7 @@ d3.ez.chart.punchCard = function module() {
         .attr("width", width)
         .attr("height", height);
 
+      // Add axis to chart
       chart.select(".x-axis")
         .call(xAxis)
         .selectAll("text")
@@ -159,7 +172,7 @@ d3.ez.chart.punchCard = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var cardDeck = d3.ez.component.punchCard()
+      var punchCard = d3.ez.component.punchCard()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -169,7 +182,7 @@ d3.ez.chart.punchCard = function module() {
         .dispatch(dispatch);
 
       chart.datum(data)
-        .call(cardDeck);
+        .call(punchCard);
 
     });
   }

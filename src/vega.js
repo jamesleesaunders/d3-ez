@@ -134,7 +134,7 @@ d3.ez.vega = function module() {
 
       // Add Credit Tag
       if (creditTag) {
-      svg.select(".creditbox")
+        svg.select(".creditbox")
           .attr("transform", "translate(" + (width - 10) + "," + (height - 5) + ")")
           .call(creditTag);
       }

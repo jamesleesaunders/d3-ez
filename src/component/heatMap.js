@@ -33,7 +33,7 @@ d3.ez.component.heatMap = function module() {
       deck.exit().remove();
 
       var cards = deck.selectAll(".card")
-        .data(function(d) {  return d.values; });
+        .data(function(d) { return d.values; });
 
       cards.enter().append("rect")
         .attr("x", function(d, i) {

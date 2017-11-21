@@ -26,12 +26,12 @@ d3.ez.component.lineChart = function module() {
 
       // Line animation tween
       var pathTween = function(data) {
-          var interpolate = d3.scaleQuantile()
-            .domain([0, 1])
-            .range(d3.range(1, data.length + 1));
-          return function(t) {
-              return line(data.slice(0, interpolate(t)));
-          };
+        var interpolate = d3.scaleQuantile()
+          .domain([0, 1])
+          .range(d3.range(1, data.length + 1));
+        return function(t) {
+          return line(data.slice(0, interpolate(t)));
+        };
       }
 
       // Create Line
