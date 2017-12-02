@@ -1,5 +1,5 @@
 /**
- * Chart Base
+ * Vega
  *
  * @example
  * @todo
