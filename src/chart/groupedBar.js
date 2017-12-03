@@ -30,12 +30,9 @@ d3.ez.chart.groupedBar = function module() {
   // Data Options (Populated by 'init' function)
   var chartW = 0;
   var chartH = 0;
-  var groupNames = undefined;
-  var categoryNames = [];
-  var categoryTotals = [];
-  var groupTotals = [];
-  var maxValue = 0;
-  var maxGroupTotal = undefined;
+
+  var slicedData = {};
+
   var xScale = undefined;
   var xScale2 = undefined;
   var yScale = undefined;
@@ -50,46 +47,21 @@ d3.ez.chart.groupedBar = function module() {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-    // Group and Category Names
-    groupNames = data.map(function(d) {
-      return d.key;
-    });
-
-    categoryNames = [];
-    data.map(function(d) {
-      return d.values;
-    })[0].forEach(function(d, i) {
-      categoryNames[i] = d.key;
-    });
-
-    // Group and Category Totals
-    categoryTotals = [];
-    groupTotals = [];
-    maxValue = 0;
-    d3.map(data).values().forEach(function(d) {
-      grp = d.key;
-      d.values.forEach(function(d) {
-        categoryTotals[d.key] = (typeof(categoryTotals[d.key]) === "undefined" ? 0 : categoryTotals[d.key]);
-        categoryTotals[d.key] += d.value;
-        groupTotals[grp] = (typeof(groupTotals[grp]) === "undefined" ? 0 : groupTotals[grp]);
-        groupTotals[grp] += d.value;
-        maxValue = (d.value > maxValue ? d.value : maxValue);
-      });
-    });
-    maxGroupTotal = d3.max(d3.values(groupTotals));
+    // Slice Data, calculate totals, max etc.
+    slicedData = sliceData(data);
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(groupNames)
+      .domain(slicedData.groupNames)
       .rangeRound([0, chartW])
       .padding(0.1);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (groupType === "stacked" ? maxGroupTotal : maxValue)]);
+      .domain([0, (groupType === "stacked" ? slicedData.groupTotalsMax : slicedData.maxValue)]);
 
     xScale2 = d3.scaleBand()
-      .domain(categoryNames)
+      .domain(slicedData.categoryNames)
       .rangeRound([0, xScale.bandwidth()])
       .padding(0.1);
 
@@ -100,7 +72,7 @@ d3.ez.chart.groupedBar = function module() {
     // Colour Scale
     colorScale = d3.scaleOrdinal()
       .range(colors)
-      .domain(categoryNames);
+      .domain(slicedData.categoryNames);
   }
 
   function my(selection) {

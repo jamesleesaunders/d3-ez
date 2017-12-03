@@ -2,6 +2,7 @@
 // Use before Makefile
 
 include('../src/header.js');
+include('../src/baseFunctions.js');
 include('../src/chart.js');
 include('../src/vega.js');
 include('../src/colors.js');

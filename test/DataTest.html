@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>d3-ez : Data Parse Test</title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="../src/baseFunctions.js"></script>
+</head>
+
+<body>
+	<script type="text/javascript">
+	  d3.json("../examples/data/uk_elections.json", function(error, data) {
+			var slicedData = sliceData(data);
+			console.log(slicedData);
+		});
+	</script>
+</body>
+
+</html>

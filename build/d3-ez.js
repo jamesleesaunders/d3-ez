@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.5",
+    version: "2.1.6",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -15,6 +15,104 @@ d3.ez = {
 d3.ez.component = {
     description: "Reusable Components"
 };
+
+/**
+ * Union 2 Assocs
+ * Used to merge 2 assocs whiles keeping the keys in the same order.
+ */
+function union() {
+    var arrs = [].slice.call(arguments);
+    var out = [];
+    for (var i = 0, l = arrs.length; i < l; i++) {
+        for (var j = 0, jl = arrs[i].length; j < jl; j++) {
+            var currEl = arrs[i][j];
+            if (out.indexOf(currEl) === -1) {
+                if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
+                    out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+                } else {
+                    out.push(currEl);
+                }
+            }
+        }
+    }
+    return out;
+}
+
+/**
+ * Slice Data
+ * Calculate totals and max values used in axis and scales.
+ */
+function sliceData(data) {
+    groupNames = [];
+    groupTotals = {};
+    groupTotalsMax = 0;
+    categoryNames = [];
+    categoryTotals = {};
+    categoryTotalsMax = 0;
+    maxValue = undefined;
+    minValues = undefined;
+    // Calcuate Group Names
+    groupNames = data.map(function(d) {
+        return d.key;
+    });
+    d3.map(data).values().forEach(function(d, i) {
+        var groupName = d.key;
+        d.values.forEach(function(d, i) {
+            categoryName = d.key;
+            categoryValue = d.value;
+            // Calcuate Category Names
+            categoryNames[i] = categoryName;
+            // Calculate Category Totals
+            categoryTotals[categoryName] = typeof categoryTotals[categoryName] === "undefined" ? 0 : categoryTotals[categoryName];
+            categoryTotals[categoryName] += categoryValue;
+            // Calculate Group Totals
+            groupTotals[groupName] = typeof groupTotals[groupName] === "undefined" ? 0 : groupTotals[groupName];
+            groupTotals[groupName] += categoryValue;
+            // Calcuate Max Category Value
+            maxValue = typeof maxValue === "undefined" ? categoryValue : d3.max([ maxValue, categoryValue ]);
+            minValue = typeof minValue === "undefined" ? categoryValue : d3.min([ minValue, categoryValue ]);
+        });
+        categoryNames = union(categoryNames);
+    });
+    // Calculate Group & Category Max Values
+    groupTotalsMax = d3.max(d3.values(groupTotals));
+    categoryTotalsMax = d3.max(d3.values(categoryTotals));
+    var slicedData = {
+        groupNames: groupNames,
+        groupTotals: groupTotals,
+        groupTotalsMax: +groupTotalsMax,
+        categoryNames: categoryNames,
+        categoryTotals: categoryTotals,
+        categoryTotalsMax: +categoryTotalsMax,
+        minValue: +minValue,
+        maxValue: +maxValue
+    };
+    return slicedData;
+}
+
+/**
+ * Decimal Places
+ * From circularHeat.
+ */
+function decimalPlaces(num) {
+    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match) {
+        return 0;
+    }
+    // Number of digits right of decimal point.
+    return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
+}
+
+/**
+ * Date Convert
+ * From MultiSeriesLineChart.
+ */
+function dateConvert(dateYMD) {
+    parser = d3.timeParse("%d-%b-%y");
+    var dateISO = parser(dateYMD).toISOString();
+    var dateUnix = new Date(dateISO) / 1e3;
+    return dateUnix;
+}
 
 /**
  * Chart Base
@@ -147,7 +245,7 @@ d3.ez.chart = function module() {
 };
 
 /**
- * Chart Base
+ * Vega
  *
  * @example
  * @todo
@@ -1596,12 +1694,7 @@ d3.ez.chart.groupedBar = function module() {
     // Data Options (Populated by 'init' function)
     var chartW = 0;
     var chartH = 0;
-    var groupNames = undefined;
-    var categoryNames = [];
-    var categoryTotals = [];
-    var groupTotals = [];
-    var maxValue = 0;
-    var maxGroupTotal = undefined;
+    var slicedData = {};
     var xScale = undefined;
     var xScale2 = undefined;
     var yScale = undefined;
@@ -1613,40 +1706,17 @@ d3.ez.chart.groupedBar = function module() {
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
-        // Group and Category Names
-        groupNames = data.map(function(d) {
-            return d.key;
-        });
-        categoryNames = [];
-        data.map(function(d) {
-            return d.values;
-        })[0].forEach(function(d, i) {
-            categoryNames[i] = d.key;
-        });
-        // Group and Category Totals
-        categoryTotals = [];
-        groupTotals = [];
-        maxValue = 0;
-        d3.map(data).values().forEach(function(d) {
-            grp = d.key;
-            d.values.forEach(function(d) {
-                categoryTotals[d.key] = typeof categoryTotals[d.key] === "undefined" ? 0 : categoryTotals[d.key];
-                categoryTotals[d.key] += d.value;
-                groupTotals[grp] = typeof groupTotals[grp] === "undefined" ? 0 : groupTotals[grp];
-                groupTotals[grp] += d.value;
-                maxValue = d.value > maxValue ? d.value : maxValue;
-            });
-        });
-        maxGroupTotal = d3.max(d3.values(groupTotals));
+        // Slice Data, calculate totals, max etc.
+        slicedData = sliceData(data);
         // X & Y Scales
-        xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? maxGroupTotal : maxValue ]);
-        xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
+        xScale = d3.scaleBand().domain(slicedData.groupNames).rangeRound([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? slicedData.groupTotalsMax : slicedData.maxValue ]);
+        xScale2 = d3.scaleBand().domain(slicedData.categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);
         yAxis = d3.axisLeft(yScale);
         // Colour Scale
-        colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        colorScale = d3.scaleOrdinal().range(colors).domain(slicedData.categoryNames);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2201,8 +2271,6 @@ d3.ez.chart.tabularHeat = function module() {
     var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     // Data Options (Populated by 'init' function)
     var thresholds = undefined;
-    var minValue = 0;
-    var maxValue = 0;
     var numCols = 0;
     var numRows = 0;
     var gridSize = 0;
@@ -2211,83 +2279,27 @@ d3.ez.chart.tabularHeat = function module() {
     var colorScale = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function decimalPlaces(num) {
-        var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-        if (!match) {
-            return 0;
-        }
-        // Number of digits right of decimal point.
-        return Math.max(0, (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
-    }
-    function union() {
-        var arrs = [].slice.call(arguments);
-        var out = [];
-        for (var i = 0, l = arrs.length; i < l; i++) {
-            for (var j = 0, jl = arrs[i].length; j < jl; j++) {
-                var currEl = arrs[i][j];
-                if (out.indexOf(currEl) === -1) {
-                    if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
-                        out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
-                    } else {
-                        out.push(currEl);
-                    }
-                }
-            }
-        }
-        return out;
-    }
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
-        // Group and Category Names
-        groupNames = data.map(function(d) {
-            return d.key;
-        });
-        categoryNames = [];
-        for (i = 0; i < groupNames.length; i++) {
-            data.map(function(d) {
-                return d.values;
-            })[i].forEach(function(d, i) {
-                categoryNames[i] = d.key;
-            });
-            categoryNames = union(categoryNames);
-        }
-        // Group and Category Totals
-        categoryTotals = [];
-        groupTotals = [];
-        maxValue = 0;
-        d3.map(data).values().forEach(function(d) {
-            grp = d.key;
-            d.values.forEach(function(d) {
-                categoryTotals[d.key] = typeof categoryTotals[d.key] === "undefined" ? 0 : categoryTotals[d.key];
-                categoryTotals[d.key] += d.value;
-                groupTotals[grp] = typeof groupTotals[grp] === "undefined" ? 0 : groupTotals[grp];
-                groupTotals[grp] += d.value;
-                maxValue = d.value > maxValue ? d.value : maxValue;
-            });
-        });
-        maxGroupTotal = d3.max(d3.values(groupTotals));
-        // Calculate the Max and Min Values
-        var values = [];
+        // Slice Data, calculate totals, max etc.
+        slicedData = sliceData(data);
+        // Work out max Decinal Place
         var decimalPlace = 0;
         d3.map(data).values().forEach(function(d) {
             d.values.forEach(function(d) {
-                values.push(d.value);
-                // Work out max Decinal Place
-                var length = decimalPlaces(d.value);
-                decimalPlace = length > decimalPlace ? length : decimalPlace;
+                decimalPlace = d3.max([ decimalPlace, decimalPlaces(d.value) ]);
             });
         });
-        minValue = parseFloat(d3.min(values));
-        maxValue = parseFloat(d3.max(values));
         // If thresholds values are not already set attempt to auto-calculate some thresholds
         if (!thresholds) {
-            var distance = maxValue - minValue;
+            var distance = slicedData.maxValue - slicedData.minValue;
+            var minValue = slicedData.minValue;
             thresholds = [ (minValue + .15 * distance).toFixed(decimalPlace), (minValue + .4 * distance).toFixed(decimalPlace), (minValue + .55 * distance).toFixed(decimalPlace), (minValue + .9 * distance).toFixed(decimalPlace) ];
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
+        xScale = d3.scaleBand().domain(slicedData.categoryNames).rangeRound([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(slicedData.groupNames).rangeRound([ 0, chartH ]).padding(.05);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);

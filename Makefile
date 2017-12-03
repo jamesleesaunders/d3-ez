@@ -1,6 +1,7 @@
 # D3.EZ Makefile
 
 JS_FILES :=        src/header.js \
+                   src/baseFunctions.js \
                    src/chart.js \
                    src/vega.js \
                    src/colors.js \
