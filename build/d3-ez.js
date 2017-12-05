@@ -49,8 +49,8 @@ function sliceData(data) {
     categoryNames = [];
     categoryTotals = {};
     categoryTotalsMax = 0;
+    minValue = undefined;
     maxValue = undefined;
-    minValues = undefined;
     // Calcuate Group Names
     groupNames = data.map(function(d) {
         return d.key;
@@ -69,8 +69,8 @@ function sliceData(data) {
             groupTotals[groupName] = typeof groupTotals[groupName] === "undefined" ? 0 : groupTotals[groupName];
             groupTotals[groupName] += categoryValue;
             // Calcuate Max Category Value
-            maxValue = typeof maxValue === "undefined" ? categoryValue : d3.max([ maxValue, categoryValue ]);
             minValue = typeof minValue === "undefined" ? categoryValue : d3.min([ minValue, categoryValue ]);
+            maxValue = typeof maxValue === "undefined" ? categoryValue : d3.max([ maxValue, categoryValue ]);
         });
         categoryNames = union(categoryNames);
     });
@@ -962,7 +962,7 @@ d3.ez.component.lineChart = function module() {
     function my(selection) {
         selection.each(function() {
             // Line generation function
-            var line = d3.line().curve(d3.curveBasis).x(function(d) {
+            var line = d3.line().curve(d3.curveCardinal).x(function(d) {
                 return xScale(d.key);
             }).y(function(d) {
                 return yScale(d.value);
@@ -1549,14 +1549,14 @@ d3.ez.chart.discreteBar = function module() {
     // Data Options (Populated by 'init' function)
     var chartW = 0;
     var chartH = 0;
-    var maxValue = 0;
-    var categoryNames = [];
     var xScale = undefined;
     var yScale = undefined;
-    var yAxisLabel = undefined;
     var xAxis = undefined;
     var yAxis = undefined;
     var colorScale = undefined;
+    var yAxisLabel = undefined;
+    var maxValue = 0;
+    var categoryNames = [];
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
@@ -1692,9 +1692,9 @@ d3.ez.chart.groupedBar = function module() {
     var yAxisLabel = null;
     var groupType = "clustered";
     // Data Options (Populated by 'init' function)
+    var slicedData = {};
     var chartW = 0;
     var chartH = 0;
-    var slicedData = {};
     var xScale = undefined;
     var xScale2 = undefined;
     var yScale = undefined;
@@ -2253,8 +2253,6 @@ d3.ez.chart.tabularHeat = function module() {
     var svg;
     var chart;
     // Default Options (Configurable via setters)
-    var chartW = 0;
-    var chartH = 0;
     var width = 600;
     var height = 600;
     var margin = {
@@ -2270,13 +2268,15 @@ d3.ez.chart.tabularHeat = function module() {
     var classed = "chartTabularHeat";
     var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     // Data Options (Populated by 'init' function)
-    var thresholds = undefined;
-    var numCols = 0;
-    var numRows = 0;
-    var gridSize = 0;
-    var colNames = [];
-    var rowNames = [];
+    var slicedData = {};
+    var chartW = 0;
+    var chartH = 0;
+    var xScale = undefined;
+    var yScale = undefined;
+    var xAxis = undefined;
+    var yAxis = undefined;
     var colorScale = undefined;
+    var thresholds = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
@@ -2623,77 +2623,39 @@ d3.ez.chart.punchCard = function module() {
     var classed = "chartPunchCard";
     var color = "steelblue";
     var sizeScale = undefined;
-    var sizeDomain = [];
-    var maxRadius = 18;
     var minRadius = 2;
+    var maxRadius = 18;
     var formatTick = d3.format("0000");
     var useGlobalScale = true;
     // Data Options (Populated by 'init' function)
+    var slicedData = {};
     var chartW = 0;
     var chartH = 0;
-    // Data Options (Populated by 'init' function)
-    var xAxis = undefined;
     var xScale = undefined;
+    var yScale = undefined;
+    var xAxis = undefined;
+    var yAxis = undefined;
     var colorScale = undefined;
-    var valDomain;
-    var rowHeight;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function union() {
-        var arrs = [].slice.call(arguments);
-        var out = [];
-        for (var i = 0, l = arrs.length; i < l; i++) {
-            for (var j = 0, jl = arrs[i].length; j < jl; j++) {
-                var currEl = arrs[i][j];
-                if (out.indexOf(currEl) === -1) {
-                    if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
-                        out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
-                    } else {
-                        out.push(currEl);
-                    }
-                }
-            }
-        }
-        return out;
-    }
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
-        // Group and Category Names
-        groupNames = data.map(function(d) {
-            return d.key;
-        });
-        categoryNames = [];
-        for (i = 0; i < groupNames.length; i++) {
-            data.map(function(d) {
-                return d.values;
-            })[i].forEach(function(d, i) {
-                categoryNames[i] = d.key;
-            });
-            categoryNames = union(categoryNames);
-        }
-        // All Values Domain
-        var allValues = [];
-        var rowCount = 0;
-        data.forEach(function(d) {
-            allValues = allValues.concat(d.values);
-            rowCount++;
-        });
-        valDomain = d3.extent(allValues, function(d) {
+        // Slice Data, calculate totals, max etc.
+        slicedData = sliceData(data);
+        valDomain = [ slicedData.minValue, slicedData.maxValue ];
+        sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
             return d["value"];
-        });
+        }) ];
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
+        xScale = d3.scaleBand().domain(slicedData.categoryNames).rangeRound([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(slicedData.groupNames).rangeRound([ 0, chartH ]).padding(.05);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
         // Colour Scale
         colorScale = d3.scaleLinear().domain(valDomain).range([ d3.rgb(color).brighter(), d3.rgb(color).darker() ]);
         // Size Scale
-        sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[j]["values"], function(d) {
-            return d["value"];
-        }) ];
         sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
     }
     function my(selection) {
@@ -2725,18 +2687,8 @@ d3.ez.chart.punchCard = function module() {
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
             var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data).call(punchCard);
+            chart.datum(data).call(punchCard).call(numberCard);
         });
-    }
-    function mouseover(d) {
-        var g = d3.select(this).node().parentNode;
-        d3.select(g).selectAll("circle").style("display", "none");
-        d3.select(g).selectAll("text.punchValue").style("display", "block");
-    }
-    function mouseout(d) {
-        var g = d3.select(this).node().parentNode;
-        d3.select(g).selectAll("circle").style("display", "block");
-        d3.select(g).selectAll("text.punchValue").style("display", "none");
     }
     // Configuration Getters & Setters
     my.width = function(_) {
@@ -2762,7 +2714,6 @@ d3.ez.chart.punchCard = function module() {
     my.maxRadius = function(_) {
         if (!arguments.length) return maxRadius;
         maxRadius = _;
-        rowHeight = maxRadius * 2 + 2;
         return this;
     };
     my.color = function(_) {
@@ -2821,11 +2772,9 @@ d3.ez.chart.multiSeriesLine = function module() {
     var yAxisLabel = null;
     var groupType = "clustered";
     // Data Options (Populated by 'init' function)
+    var slicedData = {};
     var chartW = 0;
     var chartH = 0;
-    var minValue = 0;
-    var maxValue = 0;
-    var maxGroupTotal = undefined;
     var xScale = undefined;
     var yScale = undefined;
     var xAxis = undefined;
@@ -2833,31 +2782,24 @@ d3.ez.chart.multiSeriesLine = function module() {
     var colorScale = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    // Other functions
-    var line = undefined;
-    var cities;
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
-        // Group and Category Names
-        seriesNames = data.map(function(d) {
-            return d.key;
-        });
-        // Convert dates and calculate min / max
+        // Slice Data, calculate totals, max etc.
+        slicedData = sliceData(data);
+        // Convert dates
         data.forEach(function(d, i) {
             d.values.forEach(function(b, j) {
                 data[i].values[j].key = new Date(b.key * 1e3);
-                var value = data[i].values[j].value;
-                minValue = value < minValue ? value : minValue;
-                maxValue = value > maxValue ? value : maxValue;
             });
         });
-        // X & Y Scales
         dateDomain = d3.extent(data[0].values, function(d) {
             return d.key;
         });
+        seriesNames = slicedData.groupNames;
+        // X & Y Scales
         xScale = d3.scaleTime().range([ 0, chartW ]).domain(dateDomain);
-        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ minValue, maxValue + 10 ]);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ slicedData.minValue, slicedData.maxValue * 1.05 ]);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
         yAxis = d3.axisLeft(yScale);
