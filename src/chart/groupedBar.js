@@ -120,40 +120,35 @@ d3.ez.chart.groupedBar = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
+      if (groupType === "stacked") {
+        var barChart = d3.ez.component.barStacked()
+          .xScale(xScale);
+
+      } else if (groupType === "clustered") {
+        var barChart = d3.ez.component.barGrouped()
+          .xScale(xScale2);
+      }
+
+      barChart.width(xScale.bandwidth())
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .dispatch(dispatch)
+
+      // TODO: This is temporary to allow transition between stacked and clustered
+      chart.selectAll(".seriesGroup").data([]).exit().remove();
+
       // Create bar group
       var seriesGroup = chart.selectAll(".seriesGroup")
         .data(data);
 
-      if (groupType === "stacked") {
-        var barChart = d3.ez.component.barStacked()
-          .width(xScale.bandwidth())
-          .height(chartH)
-          .colorScale(colorScale)
-          .yScale(yScale)
-          .xScale(xScale)
-          .dispatch(dispatch);
+      seriesGroup.enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
+        .datum(function(d) { return d.values; })
+        .call(barChart);
 
-        seriesGroup.enter()
-          .append("g")
-          .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
-          .datum(function(d) { return d.values; })
-          .call(barChart);
-
-      } else if (groupType === "clustered") {
-        var barChart = d3.ez.component.barGrouped()
-          .width(xScale.bandwidth())
-          .height(chartH)
-          .colorScale(colorScale)
-          .yScale(yScale)
-          .xScale(xScale2)
-          .dispatch(dispatch);
-
-        seriesGroup.enter()
-          .append("g")
-          .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
-          .datum(function(d) { return d.values; })
-          .call(barChart);
-      }
     });
   }
 

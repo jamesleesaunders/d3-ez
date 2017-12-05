@@ -125,11 +125,12 @@ d3.ez.chart.discreteBar = function module() {
         .append("text")
         .classed("y-label", true)
         .attr("transform", "rotate(-90)")
-        .attr("y", -35)
+        .attr("y", -40)
         .attr("dy", ".71em")
-        .style("text-anchor", "end");
-
-      ylabel.transition()
+        .attr("fill", "#000000")
+        .style("text-anchor", "end")
+        .merge(ylabel)
+        .transition()
         .text(function(d) {
           return (d);
         });
