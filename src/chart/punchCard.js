@@ -27,7 +27,7 @@ d3.ez.chart.punchCard = function module() {
   var color = "steelblue";
   var sizeScale = undefined;
   var minRadius = 2;
-  var maxRadius = 18;
+  var maxRadius = 20;
   var formatTick = d3.format("0000");
   var useGlobalScale = true;
 
