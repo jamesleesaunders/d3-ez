@@ -28,14 +28,14 @@ d3.ez.chart.discreteBar = function module() {
   // Data Options (Populated by 'init' function)
   var chartW = 0;
   var chartH = 0;
-  var maxValue = 0;
-  var categoryNames = [];
   var xScale = undefined;
   var yScale = undefined;
-  var yAxisLabel = undefined;
   var xAxis = undefined;
   var yAxis = undefined;
   var colorScale = undefined;
+  var yAxisLabel = undefined;
+  var maxValue = 0;
+  var categoryNames = [];
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");

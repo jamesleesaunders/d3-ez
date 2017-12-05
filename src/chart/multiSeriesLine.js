@@ -24,11 +24,9 @@ d3.ez.chart.multiSeriesLine = function module() {
   var groupType = "clustered";
 
   // Data Options (Populated by 'init' function)
+  var slicedData = {};
   var chartW = 0;
   var chartH = 0;
-  var minValue = 0;
-  var maxValue = 0;
-  var maxGroupTotal = undefined;
   var xScale = undefined;
   var yScale = undefined;
   var xAxis = undefined;
@@ -38,38 +36,30 @@ d3.ez.chart.multiSeriesLine = function module() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-  // Other functions
-  var line = undefined;
-  var cities;
-
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-    // Group and Category Names
-    seriesNames = data.map(function(d) {
-      return d.key;
-    });
+    // Slice Data, calculate totals, max etc.
+    slicedData = sliceData(data);
 
-    // Convert dates and calculate min / max
+    // Convert dates
     data.forEach(function(d, i) {
       d.values.forEach(function(b, j) {
         data[i].values[j].key = new Date(b.key * 1000);
-        var value = data[i].values[j].value;
-        minValue = (value < minValue ? value : minValue);
-        maxValue = (value > maxValue ? value : maxValue);
       });
     });
+    dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+    seriesNames = slicedData.groupNames;
 
     // X & Y Scales
-    dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
     xScale = d3.scaleTime()
       .range([0, chartW])
       .domain(dateDomain);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([minValue, maxValue + 10]);
+      .domain([slicedData.minValue, (slicedData.maxValue * 1.05)]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale)
@@ -80,7 +70,6 @@ d3.ez.chart.multiSeriesLine = function module() {
     colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(seriesNames);
-
   }
 
   function my(selection) {

@@ -26,22 +26,20 @@ d3.ez.chart.punchCard = function module() {
   var classed = "chartPunchCard";
   var color = "steelblue";
   var sizeScale = undefined;
-  var sizeDomain = [];
-  var maxRadius = 18;
   var minRadius = 2;
+  var maxRadius = 18;
   var formatTick = d3.format("0000");
   var useGlobalScale = true;
 
   // Data Options (Populated by 'init' function)
+  var slicedData = {};
   var chartW = 0;
   var chartH = 0;
-
-  // Data Options (Populated by 'init' function)
-  var xAxis = undefined;
   var xScale = undefined;
+  var yScale = undefined;
+  var xAxis = undefined;
+  var yAxis = undefined;
   var colorScale = undefined;
-  var valDomain;
-  var rowHeight;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -176,7 +174,6 @@ d3.ez.chart.punchCard = function module() {
   my.maxRadius = function(_) {
     if (!arguments.length) return maxRadius;
     maxRadius = _;
-    rowHeight = (maxRadius * 2) + 2;
     return this;
   };
 

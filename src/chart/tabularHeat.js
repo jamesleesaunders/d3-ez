@@ -13,8 +13,6 @@ d3.ez.chart.tabularHeat = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var chartW = 0;
-  var chartH = 0;
   var width = 600;
   var height = 600;
   var margin = { top: 50, right: 40, bottom: 40, left: 40 };
@@ -23,14 +21,15 @@ d3.ez.chart.tabularHeat = function module() {
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Data Options (Populated by 'init' function)
-  var thresholds = undefined;
-  var numCols = 0;
-  var numRows = 0;
-  var gridSize = 0;
-  var colNames = [];
-
-  var rowNames = [];
+  var slicedData = {};
+  var chartW = 0;
+  var chartH = 0;
+  var xScale = undefined;
+  var yScale = undefined;
+  var xAxis = undefined;
+  var yAxis = undefined;
   var colorScale = undefined;
+  var thresholds = undefined;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");

@@ -28,11 +28,9 @@ d3.ez.chart.groupedBar = function module() {
   var groupType = "clustered";
 
   // Data Options (Populated by 'init' function)
+  var slicedData = {};
   var chartW = 0;
   var chartH = 0;
-
-  var slicedData = {};
-
   var xScale = undefined;
   var xScale2 = undefined;
   var yScale = undefined;

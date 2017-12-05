@@ -20,7 +20,7 @@ d3.ez.component.lineChart = function module() {
     selection.each(function() {
       // Line generation function
       var line = d3.line()
-        .curve(d3.curveBasis)
+        .curve(d3.curveCardinal)
         .x(function(d) { return xScale(d.key); })
         .y(function(d) { return yScale(d.value); });
 
