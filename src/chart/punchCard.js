@@ -140,8 +140,7 @@ d3.ez.chart.punchCard = function module() {
         .dispatch(dispatch);
 
       chart.datum(data)
-        .call(punchCard)
-        .call(numberCard);
+        .call(punchCard);
 
     });
   }
