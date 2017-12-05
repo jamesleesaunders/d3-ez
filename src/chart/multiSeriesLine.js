@@ -59,7 +59,7 @@ d3.ez.chart.multiSeriesLine = function module() {
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([slicedData.minValue, (slicedData.maxValue * 1.05)]);
+      .domain([0, (slicedData.maxValue * 1.05)]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale)
