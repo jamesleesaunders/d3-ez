@@ -33,8 +33,8 @@ function sliceData(data) {
   categoryNames = [];
   categoryTotals = {};
   categoryTotalsMax = 0;
+  minValue = undefined;
   maxValue = undefined;
-  minValues = undefined;
 
   // Calcuate Group Names
   groupNames = data.map(function(d) {
@@ -59,8 +59,8 @@ function sliceData(data) {
       groupTotals[groupName] += categoryValue;
 
       // Calcuate Max Category Value
-      maxValue = (typeof(maxValue) === "undefined" ? categoryValue : d3.max([maxValue, categoryValue]));
       minValue = (typeof(minValue) === "undefined" ? categoryValue : d3.min([minValue, categoryValue]));
+      maxValue = (typeof(maxValue) === "undefined" ? categoryValue : d3.max([maxValue, categoryValue]));
     });
 
     categoryNames = union(categoryNames);

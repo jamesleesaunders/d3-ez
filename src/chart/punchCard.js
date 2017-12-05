@@ -46,62 +46,26 @@ d3.ez.chart.punchCard = function module() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-  function union() {
-    var arrs = [].slice.call(arguments);
-    var out = [];
-    for (var i = 0, l = arrs.length; i < l; i++) {
-      for (var j = 0, jl = arrs[i].length; j < jl; j++) {
-        var currEl = arrs[i][j];
-        if (out.indexOf(currEl) === -1) {
-          if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
-            out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
-          } else {
-            out.push(currEl);
-          }
-        }
-      }
-    }
-    return out;
-  };
-
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-    // Group and Category Names
-    groupNames = data.map(function(d) {
-      return d.key;
-    });
+    // Slice Data, calculate totals, max etc.
+    slicedData = sliceData(data);
 
-    categoryNames = [];
-    for (i = 0; i < groupNames.length; i++) {
-      data.map(function(d) {
-        return d.values;
-      })[i].forEach(function(d, i) {
-        categoryNames[i] = d.key;
-      });
-      categoryNames = union(categoryNames);
-    }
-
-    // All Values Domain
-    var allValues = [];
-    var rowCount = 0;
-    data.forEach(function(d) {
-      allValues = allValues.concat(d.values);
-      rowCount++;
-    });
-    valDomain = d3.extent(allValues, function(d) {
+    valDomain = [slicedData.minValue, slicedData.maxValue];
+    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
       return d['value'];
-    });
+    })];
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(categoryNames)
+      .domain(slicedData.categoryNames)
       .rangeRound([0, chartW])
       .padding(0.05);
 
     yScale = d3.scaleBand()
-      .domain(groupNames)
+      .domain(slicedData.groupNames)
       .rangeRound([0, chartH])
       .padding(0.05);
 
@@ -115,13 +79,9 @@ d3.ez.chart.punchCard = function module() {
       .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
 
     // Size Scale
-    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[j]['values'], function(d) {
-      return d['value'];
-    })];
     sizeScale = d3.scaleLinear()
       .domain(sizeDomain)
       .range([minRadius, maxRadius]);
-
   }
 
   function my(selection) {
@@ -182,21 +142,10 @@ d3.ez.chart.punchCard = function module() {
         .dispatch(dispatch);
 
       chart.datum(data)
-        .call(punchCard);
+        .call(punchCard)
+        .call(numberCard);
 
     });
-  }
-
-  function mouseover(d) {
-    var g = d3.select(this).node().parentNode;
-    d3.select(g).selectAll("circle").style("display", "none");
-    d3.select(g).selectAll("text.punchValue").style("display", "block");
-  }
-
-  function mouseout(d) {
-    var g = d3.select(this).node().parentNode;
-    d3.select(g).selectAll("circle").style("display", "block");
-    d3.select(g).selectAll("text.punchValue").style("display", "none");
   }
 
   // Configuration Getters & Setters
