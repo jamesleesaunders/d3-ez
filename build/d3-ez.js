@@ -2687,7 +2687,7 @@ d3.ez.chart.punchCard = function module() {
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
             var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data).call(punchCard).call(numberCard);
+            chart.datum(data).call(punchCard);
         });
     }
     // Configuration Getters & Setters
@@ -2799,7 +2799,7 @@ d3.ez.chart.multiSeriesLine = function module() {
         seriesNames = slicedData.groupNames;
         // X & Y Scales
         xScale = d3.scaleTime().range([ 0, chartW ]).domain(dateDomain);
-        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ slicedData.minValue, slicedData.maxValue * 1.05 ]);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, slicedData.maxValue * 1.05 ]);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
         yAxis = d3.axisLeft(yScale);
