@@ -44,27 +44,22 @@ d3.ez.chart.discreteBar = function module() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    yAxisLabel = d3.values(data)[0];
-    maxValue = d3.max(data.values, function(d) {
-      return d.value;
-    });
-    categoryNames = d3.values(data)[1].map(function(d) {
-      return d.key;
-    });
+    slicedData = sliceData2(data);
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(categoryNames)
+      .domain(slicedData.categoryNames)
       .rangeRound([0, chartW])
       .padding(0.15);
 
     yScale = d3.scaleLinear()
-      .domain([0, maxValue])
+      .domain([0, slicedData.maxValue])
       .range([chartH, 0]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
+    yAxisLabel = slicedData.groupName;
 
     if (!colorScale) {
       // If the colorScale has not already been passed

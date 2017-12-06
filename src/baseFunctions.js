@@ -25,14 +25,14 @@ function union() {
  * Calculate totals and max values used in axis and scales.
  */
 function sliceData(data) {
-  groupNames = [];
-  groupTotals = {};
-  groupTotalsMax = 0;
-  categoryNames = [];
-  categoryTotals = {};
-  categoryTotalsMax = 0;
-  minValue = undefined;
-  maxValue = undefined;
+  var groupNames = [];
+  var groupTotals = {};
+  var groupTotalsMax = 0;
+  var categoryNames = [];
+  var categoryTotals = {};
+  var categoryTotalsMax = 0;
+  var minValue = undefined;
+  var maxValue = undefined;
 
   // Calcuate Group Names
   groupNames = data.map(function(d) {
@@ -75,6 +75,42 @@ function sliceData(data) {
     'categoryNames': categoryNames,
     'categoryTotals': categoryTotals,
     'categoryTotalsMax': +categoryTotalsMax,
+    'minValue': +minValue,
+    'maxValue': +maxValue
+  };
+
+  return slicedData;
+}
+
+/**
+ * Slice Data 2
+ * Calculate totals and max values used in axis and scales.
+ */
+function sliceData2(data) {
+  var groupName = undefined;
+  var categoryNames = [];
+  var categoryTotal = undefined;
+  var minValue = undefined;
+  var maxValue = undefined;
+
+  groupName = d3.values(data)[0];
+  categoryNames = d3.values(data)[1].map(function(d) {
+    return d.key;
+  });
+  categoryTotal = d3.sum(data.values, function(d) {
+    return d.value;
+  });
+  minValue = d3.min(data.values, function(d) {
+    return d.value;
+  });
+  maxValue = d3.max(data.values, function(d) {
+    return d.value;
+  });
+
+  var slicedData = {
+    'groupName': groupName,
+    'categoryNames': categoryNames,
+    'categoryTotal':  categoryTotal,
     'minValue': +minValue,
     'maxValue': +maxValue
   };

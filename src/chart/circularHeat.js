@@ -25,58 +25,39 @@ d3.ez.chart.circularHeat = function module() {
   var innerRadius = 50;
 
   // Data Options (Populated by 'init' function)
-  var thresholds = undefined;
+  var slicedData = {};
+  var minValue = 0;
+  var maxValue = 0;
   var radialLabels = [];
   var numRadials = 24;
   var segmentLabels = [];
   var numSegments = 24;
   var segmentHeight = 0;
-  var minValue = 0;
-  var maxValue = 0;
   var colorScale = undefined;
+  var thresholds = undefined;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-  function decimalPlaces(num) {
-    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match) { return 0; }
-    return Math.max(
-      0,
-      // Number of digits right of decimal point.
-      (match[1] ? match[1].length : 0)
-      // Adjust for scientific notation.
-      -
-      (match[2] ? +match[2] : 0));
-  }
-
   function init(data) {
-    radialLabels = data.map(function(d) {
-      return d.key;
-    });
+    // Slice Data, calculate totals, max etc.
+    slicedData = sliceData(data);
+
+    minValue = slicedData.minValue;
+    maxValue = slicedData.maxValue;
+    radialLabels = slicedData.groupNames;
     numRadials = radialLabels.length;
-
-    segmentLabels = d3.values(data[0].values).map(function(d) {
-      return d.key;
-    });
+    segmentLabels = slicedData.categoryNames;
     numSegments = segmentLabels.length;
-
     segmentHeight = ((radius - innerRadius) / numRadials);
 
-    // Calculate the Max and Min Values
-    var values = [];
+    // Work out max Decinal Place
     var decimalPlace = 0;
     d3.map(data).values().forEach(function(d) {
       d.values.forEach(function(d) {
-        values.push(d.value);
-
-        // Work out max Decinal Place
-        var length = decimalPlaces(d.value);
-        decimalPlace = (length > decimalPlace ? length : decimalPlace);
+        decimalPlace = d3.max([decimalPlace, decimalPlaces(d.value)])
       });
     });
-    minValue = parseFloat(d3.min(values));
-    maxValue = parseFloat(d3.max(values));
 
     // If thresholds values are not already set attempt to auto-calculate some thresholds
     if (!thresholds) {
