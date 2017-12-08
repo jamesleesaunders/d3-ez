@@ -25,7 +25,8 @@ d3.ez.chart.circularHeat = function module() {
   var innerRadius = 50;
 
   // Data Options (Populated by 'init' function)
-  var slicedData = {};
+  var slicedData = d3.ez.dataParse;
+
   var minValue = 0;
   var maxValue = 0;
   var radialLabels = [];
@@ -33,6 +34,7 @@ d3.ez.chart.circularHeat = function module() {
   var segmentLabels = [];
   var numSegments = 24;
   var segmentHeight = 0;
+
   var colorScale = undefined;
   var thresholds = undefined;
 
@@ -41,33 +43,19 @@ d3.ez.chart.circularHeat = function module() {
 
   function init(data) {
     // Slice Data, calculate totals, max etc.
-    slicedData = sliceData(data);
-
-    minValue = slicedData.minValue;
-    maxValue = slicedData.maxValue;
-    radialLabels = slicedData.groupNames;
+    slicedData.setData(data);
+    minValue = slicedData.minValue();
+    maxValue = slicedData.maxValue();
+    radialLabels = slicedData.groupNames();
     numRadials = radialLabels.length;
-    segmentLabels = slicedData.categoryNames;
+    segmentLabels = slicedData.categoryNames();
     numSegments = segmentLabels.length;
     segmentHeight = ((radius - innerRadius) / numRadials);
 
-    // Work out max Decinal Place
-    var decimalPlace = 0;
-    d3.map(data).values().forEach(function(d) {
-      d.values.forEach(function(d) {
-        decimalPlace = d3.max([decimalPlace, decimalPlaces(d.value)])
-      });
-    });
-
-    // If thresholds values are not already set attempt to auto-calculate some thresholds
+    // If thresholds values are not already set
+    // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      var distance = maxValue - minValue;
-      thresholds = [
-        (minValue + (0.15 * distance)).toFixed(decimalPlace),
-        (minValue + (0.40 * distance)).toFixed(decimalPlace),
-        (minValue + (0.55 * distance)).toFixed(decimalPlace),
-        (minValue + (0.90 * distance)).toFixed(decimalPlace)
-      ];
+      var thresholds = slicedData.thresholds();
     }
 
     // Colour Scale

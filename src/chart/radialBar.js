@@ -26,6 +26,7 @@ d3.ez.chart.radialBar = function module() {
   var colorLabels = false;
 
   // Data Options (Populated by 'init' function)
+  var slicedData = d3.ez.dataParse;
   var tickValues = [];
   var domain = [];
   var numBars = undefined;
@@ -43,12 +44,11 @@ d3.ez.chart.radialBar = function module() {
     // Radius of the key labels
     labelRadius = radius * 1.025;
 
-    slicedData = sliceData2(data);
-
-    domain = [0, slicedData.maxValue + 1];
-    keys = slicedData.categoryNames;
+    slicedData.setData(data);
+    domain = [0, slicedData.maxValue() + 1];
+    keys = slicedData.categoryNames();
     numBars = keys.length;
-    maxValue = slicedData.maxValue;
+    maxValue = slicedData.maxValue();
 
     // Tick Circle Rings
     tickValues = [];

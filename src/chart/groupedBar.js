@@ -28,7 +28,7 @@ d3.ez.chart.groupedBar = function module() {
   var groupType = "clustered";
 
   // Data Options (Populated by 'init' function)
-  var slicedData = {};
+  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -46,20 +46,24 @@ d3.ez.chart.groupedBar = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    slicedData = sliceData(data);
+    slicedData.setData(data);
+    var groupNames = slicedData.groupNames();
+    var groupTotalsMax = slicedData.groupTotalsMax();
+    var maxValue = slicedData.maxValue();
+    var categoryNames = slicedData.categoryNames();
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(slicedData.groupNames)
+      .domain(groupNames)
       .rangeRound([0, chartW])
       .padding(0.1);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (groupType === "stacked" ? slicedData.groupTotalsMax : slicedData.maxValue)]);
+      .domain([0, (groupType === "stacked" ? groupTotalsMax : maxValue)]);
 
     xScale2 = d3.scaleBand()
-      .domain(slicedData.categoryNames)
+      .domain(categoryNames)
       .rangeRound([0, xScale.bandwidth()])
       .padding(0.1);
 
@@ -70,7 +74,7 @@ d3.ez.chart.groupedBar = function module() {
     // Colour Scale
     colorScale = d3.scaleOrdinal()
       .range(colors)
-      .domain(slicedData.categoryNames);
+      .domain(categoryNames);
   }
 
   function my(selection) {

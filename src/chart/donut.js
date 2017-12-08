@@ -27,6 +27,7 @@ d3.ez.chart.donut = function module() {
   var innerRadius = 70;
 
   // Data Options (Populated by 'init' function)
+  var slicedData = d3.ez.dataParse;
   var values = [];
   var categoryNames = [];
   var colorScale = undefined;
@@ -39,11 +40,12 @@ d3.ez.chart.donut = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
+    // Slice Data, calculate totals, max etc.
+    slicedData.setData(data);
+    var categoryNames = slicedData.categoryNames();
+
     values = d3.values(data)[1].map(function(d) {
       return d.value;
-    });
-    categoryNames = d3.values(data)[1].map(function(d) {
-      return d.key;
     });
 
     pie = d3.pie()

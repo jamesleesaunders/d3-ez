@@ -21,7 +21,7 @@ d3.ez.chart.tabularHeat = function module() {
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Data Options (Populated by 'init' function)
-  var slicedData = {};
+  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -39,36 +39,26 @@ d3.ez.chart.tabularHeat = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    slicedData = sliceData(data);
+    slicedData.setData(data);
+    var maxValue = slicedData.maxValue();
+    var minValue = slicedData.minValue();
+    var categoryNames = slicedData.categoryNames();
+    var groupNames = slicedData.groupNames();
 
-    // Work out max Decinal Place
-    var decimalPlace = 0;
-    d3.map(data).values().forEach(function(d) {
-      d.values.forEach(function(d) {
-        decimalPlace = d3.max([decimalPlace, decimalPlaces(d.value)])
-      });
-    });
-
-    // If thresholds values are not already set attempt to auto-calculate some thresholds
+    // If thresholds values are not already set
+    // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      var distance = slicedData.maxValue - slicedData.minValue;
-      var minValue = slicedData.minValue;
-      thresholds = [
-        (minValue + (0.15 * distance)).toFixed(decimalPlace),
-        (minValue + (0.40 * distance)).toFixed(decimalPlace),
-        (minValue + (0.55 * distance)).toFixed(decimalPlace),
-        (minValue + (0.90 * distance)).toFixed(decimalPlace)
-      ];
+      var thresholds = slicedData.thresholds();
     }
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(slicedData.categoryNames)
+      .domain(categoryNames)
       .rangeRound([0, chartW])
       .padding(0.05);
 
     yScale = d3.scaleBand()
-      .domain(slicedData.groupNames)
+      .domain(groupNames)
       .rangeRound([0, chartH])
       .padding(0.05);
 
