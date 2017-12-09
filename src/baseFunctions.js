@@ -14,192 +14,195 @@ d3.ez.dataParse = (function() {
   }
 
   var groupName = function() {
-    var groupName = d3.values(data)[0];
+    var ret = d3.values(data)[0];
 
-    return groupName;
+    return ret;
   }
 
   var groupNames = function() {
-    var groupNames = data.map(function(d) {
+    var ret = data.map(function(d) {
       return d.key;
     });
 
-    return groupNames;
+    return ret;
   }
 
   var groupTotals = function() {
     if (1 == levels()) {
-      var groupTotals = data.map(function(d) {
+      var ret = data.map(function(d) {
         return d.key;
       });
 
     } else {
-      var groupTotals = [];
+      var ret = [];
       d3.map(data).values().forEach(function(d, i) {
         var groupName = d.key;
         d.values.forEach(function(d, i) {
           var categoryValue = d.value;
 
-          groupTotals[groupName] = (typeof(groupTotals[groupName]) === "undefined" ? 0 : groupTotals[groupName]);
-          groupTotals[groupName] += categoryValue;
+          ret[groupName] = (typeof(ret[groupName]) === "undefined" ? 0 : ret[groupName]);
+          ret[groupName] += categoryValue;
         });
       });
     }
 
-    return groupTotals;
+    return ret;
   }
 
 
   var groupTotalsMax = function() {
-    var groupTotalsMax = d3.max(d3.values(groupTotals()));
+    var ret = d3.max(d3.values(groupTotals()));
 
-    return groupTotalsMax;
+    return ret;
   }
 
   var union = function() {
     var arrs = [].slice.call(arguments);
-    var out = [];
+    var ret = [];
     for (var i = 0, l = arrs.length; i < l; i++) {
       for (var j = 0, jl = arrs[i].length; j < jl; j++) {
         var currEl = arrs[i][j];
-        if (out.indexOf(currEl) === -1) {
-          if (j - 1 !== -1 && out.indexOf(arrs[i][j - 1]) > -1) {
-            out.splice(out.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
+        if (ret.indexOf(currEl) === -1) {
+          if (j - 1 !== -1 && ret.indexOf(arrs[i][j - 1]) > -1) {
+            ret.splice(ret.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
           } else {
-            out.push(currEl);
+            ret.push(currEl);
           }
         }
       }
     }
-    return out;
+
+    return ret;
   }
 
   var categoryNames = function() {
     if (1 == levels()) {
-      var categoryNames = d3.values(data)[1].map(function(d) {
+      var ret = d3.values(data)[1].map(function(d) {
         return d.key;
       });
 
     } else {
-      var categoryNames = [];
+      var ret = [];
       d3.map(data).values().forEach(function(d, i) {
         var groupName = d.key;
         d.values.forEach(function(d, i) {
           categoryName = d.key;
-          categoryNames[i] = categoryName;
+          ret[i] = categoryName;
         });
 
-        categoryNames = union(categoryNames);
+        ret = union(ret);
       });
     }
 
-    return categoryNames;
+    return ret;
   };
 
   var categoryTotal = function() {
-    var categoryTotal = d3.sum(data.values, function(d) {
+    var ret = d3.sum(data.values, function(d) {
       return d.value;
     });
 
-    return categoryTotal;
+    return ret;
   }
 
   var categoryTotals = function() {
-    var categoryTotals = [];
+    var ret = [];
     d3.map(data).values().forEach(function(d, i) {
       var groupName = d.key;
       d.values.forEach(function(d, i) {
         var categoryName = d.key;
         var categoryValue = d.value;
 
-        // Calculate Category Totals
-        categoryTotals[categoryName] = (typeof(categoryTotals[categoryName]) === "undefined" ? 0 : categoryTotals[categoryName]);
-        categoryTotals[categoryName] += categoryValue
+        ret[categoryName] = (typeof(ret[categoryName]) === "undefined" ? 0 : ret[categoryName]);
+        ret[categoryName] += categoryValue;
       });
     });
 
-    return categoryTotals;
+    return ret;
   }
 
   var categoryTotalsMax = function() {
-    var categoryTotalsMax = d3.max(d3.values(categoryTotals()));
+    var ret = d3.max(d3.values(categoryTotals()));
 
-    return categoryTotalsMax;
+    return ret;
   }
 
   var minValue = function() {
     if (1 == levels()) {
-      var minValue = d3.min(data.values, function(d) {
+      var ret = d3.min(data.values, function(d) {
         return d.value;
       });
     } else {
-      var minValue = undefined;
+      var ret = undefined;
       d3.map(data).values().forEach(function(d, i) {
         d.values.forEach(function(d, i) {
-          minValue = (typeof(minValue) === "undefined" ? d.value : d3.min([minValue, d.value]));
+          ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, d.value]));
         });
       });
     }
 
-    return +minValue;
+    return +ret;
   }
 
   var maxValue = function() {
     if (1 == levels()) {
-      var maxValue = d3.max(data.values, function(d) {
+      var ret = d3.max(data.values, function(d) {
         return d.value;
       });
 
     } else {
-      var maxValue = undefined;
+      var ret = undefined;
       d3.map(data).values().forEach(function(d, i) {
         d.values.forEach(function(d, i) {
-          maxValue = (typeof(maxValue) === "undefined" ? d.value : d3.max([maxValue, d.value]));
+          maxValue = (typeof(ret) === "undefined" ? d.value : d3.max([ret, d.value]));
         });
       });
     }
 
-    return +maxValue;
+    return +ret;
   }
 
   var decimalPlaces = function(num) {
     var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
-    return Math.max(
+    ret = Math.max(
       0,
       // Number of digits right of decimal point.
       (match[1] ? match[1].length : 0)
       // Adjust for scientific notation.
       -
       (match[2] ? +match[2] : 0));
+
+      return ret;
   }
 
   var maxDecimalPlace = function() {
-    var maxDecimalPlace = 0;
+    var ret = 0;
     d3.map(data).values().forEach(function(d) {
       d.values.forEach(function(d) {
-        maxDecimalPlace = d3.max([maxDecimalPlace, decimalPlaces(d.value)])
+        ret = d3.max([ret, decimalPlaces(d.value)])
       });
     });
 
-    return maxDecimalPlace;
+    return ret;
   }
 
   // If thresholds values are not already set attempt to auto-calculate some thresholds
   var thresholds = function() {
     var distance = maxValue() - minValue();
-    var thresholds = [
+    var ret = [
       (minValue() + (0.15 * distance)).toFixed(maxDecimalPlace()),
       (minValue() + (0.40 * distance)).toFixed(maxDecimalPlace()),
       (minValue() + (0.55 * distance)).toFixed(maxDecimalPlace()),
       (minValue() + (0.90 * distance)).toFixed(maxDecimalPlace())
 		];
 
-    return thresholds;
+    return ret;
   }
 
-  var ret = {
+  var my = {
     'setData': setData,
+    'levels': levels,
     'groupName': groupName,
     'groupNames': groupNames,
     'groupTotals': groupTotals,
@@ -214,5 +217,5 @@ d3.ez.dataParse = (function() {
     'thresholds': thresholds
   };
 
-  return ret;
+  return my;
 })();
