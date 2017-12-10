@@ -24,7 +24,6 @@ d3.ez.chart.multiSeriesLine = function module() {
   var groupType = "clustered";
 
   // Data Options (Populated by 'init' function)
-  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -41,9 +40,9 @@ d3.ez.chart.multiSeriesLine = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    slicedData.setData(data);
-    var maxValue = slicedData.maxValue();
-    var seriesNames = slicedData.groupNames();
+    var slicedData = d3.ez.dataParse(data);
+    var maxValue = slicedData.maxValue;
+    var seriesNames = slicedData.groupNames;
 
     // Convert dates
     data.forEach(function(d, i) {

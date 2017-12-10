@@ -21,7 +21,6 @@ d3.ez.chart.tabularHeat = function module() {
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Data Options (Populated by 'init' function)
-  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -39,16 +38,16 @@ d3.ez.chart.tabularHeat = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    slicedData.setData(data);
-    var maxValue = slicedData.maxValue();
-    var minValue = slicedData.minValue();
-    var categoryNames = slicedData.categoryNames();
-    var groupNames = slicedData.groupNames();
+    var slicedData = d3.ez.dataParse(data);
+    var maxValue = slicedData.maxValue;
+    var minValue = slicedData.minValue;
+    var categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      var thresholds = slicedData.thresholds();
+      var thresholds = slicedData.thresholds;
     }
 
     // X & Y Scales

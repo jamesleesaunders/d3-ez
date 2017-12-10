@@ -26,7 +26,6 @@ d3.ez.chart.discreteBar = function module() {
   var gap = 0;
 
   // Data Options (Populated by 'init' function)
-  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -36,7 +35,6 @@ d3.ez.chart.discreteBar = function module() {
   var colorScale = undefined;
   var yAxisLabel = undefined;
 
-
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
@@ -45,10 +43,10 @@ d3.ez.chart.discreteBar = function module() {
     chartH = height - (margin.top + margin.bottom);
 
     // Slice Data, calculate totals, max etc.
-    slicedData.setData(data);
-    var categoryNames = slicedData.categoryNames();
-    var maxValue = slicedData.maxValue();
-    var yAxisLabel = slicedData.groupName();
+    var slicedData = d3.ez.dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+    var maxValue = slicedData.maxValue;
+    var yAxisLabel = slicedData.groupName;
 
     // X & Y Scales
     xScale = d3.scaleBand()

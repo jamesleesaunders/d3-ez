@@ -28,7 +28,6 @@ d3.ez.chart.groupedBar = function module() {
   var groupType = "clustered";
 
   // Data Options (Populated by 'init' function)
-  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -46,11 +45,11 @@ d3.ez.chart.groupedBar = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    slicedData.setData(data);
-    var groupNames = slicedData.groupNames();
-    var groupTotalsMax = slicedData.groupTotalsMax();
-    var maxValue = slicedData.maxValue();
-    var categoryNames = slicedData.categoryNames();
+    var slicedData = d3.ez.dataParse(data);
+    var groupNames = slicedData.groupNames;
+    var groupTotalsMax = slicedData.groupTotalsMax;
+    var maxValue = slicedData.maxValue;
+    var categoryNames = slicedData.categoryNames;
 
     // X & Y Scales
     xScale = d3.scaleBand()

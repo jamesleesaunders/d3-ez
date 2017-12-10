@@ -32,7 +32,6 @@ d3.ez.chart.punchCard = function module() {
   var useGlobalScale = true;
 
   // Data Options (Populated by 'init' function)
-  var slicedData = d3.ez.dataParse;
   var chartW = 0;
   var chartH = 0;
   var xScale = undefined;
@@ -49,11 +48,11 @@ d3.ez.chart.punchCard = function module() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    slicedData.setData(data);
-    var maxValue = slicedData.maxValue();
-    var minValue = slicedData.minValue();
-    var categoryNames = slicedData.categoryNames();
-    var groupNames = slicedData.groupNames();
+    var slicedData = d3.ez.dataParse(data);
+    var maxValue = slicedData.maxValue;
+    var minValue = slicedData.minValue;
+    var categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
 
     valDomain = [minValue, maxValue];
     sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
