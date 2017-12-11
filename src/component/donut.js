@@ -13,11 +13,14 @@ d3.ez.component.donut = function module() {
   var colorScale = undefined;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-  var innerRadius = 70;
+  var radius = undefined;
+  var innerRadius = undefined;
 
   function my(selection) {
     selection.each(function() {
-      var radius = d3.min([width, height]) / 2;
+      var defaultRadius = d3.min([width, height]) / 2;
+      radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+      innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
 
       var pie = d3.pie()
         .value(function(d) { return d.value; })
@@ -49,7 +52,7 @@ d3.ez.component.donut = function module() {
         .enter()
         .append("g")
         .classed("donutGroup", true)
-        .attr("transform", "translate(" + (width/2) + "," + (height/2) + ")")
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .on("click", function(d) { dispatch.call("customClick", this, d); });
 
       donutGroup.append("g").attr("class", "slices");
@@ -162,6 +165,18 @@ d3.ez.component.donut = function module() {
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
+    return this;
+  };
+
+  my.radius = function(_) {
+    if (!arguments.length) return radius;
+    radius = _;
+    return this;
+  };
+
+  my.innerRadius = function(_) {
+    if (!arguments.length) return innerRadius;
+    innerRadius = _;
     return this;
   };
 

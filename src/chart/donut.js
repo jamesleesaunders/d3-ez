@@ -23,8 +23,8 @@ d3.ez.chart.donut = function module() {
   var transition = { ease: d3.easeCubic, duration: 750 };
   var classed = "chartDonut";
   var colors = d3.ez.colors.categorical(4);
-  var radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
-  var innerRadius = 70;
+  var radius = undefined;
+  var innerRadius = undefined;
 
   // Data Options (Populated by 'init' function)
   var chartW = 0;
@@ -87,6 +87,8 @@ d3.ez.chart.donut = function module() {
       var donutChart = d3.ez.component.donut()
         .width(chartW)
         .height(chartH)
+        .radius(radius)
+        .innerRadius(innerRadius)
         .colorScale(colorScale)
         .dispatch(dispatch);
 
@@ -100,21 +102,18 @@ d3.ez.chart.donut = function module() {
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
-    radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     return this;
   };
 
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     return this;
   };
 
   my.margin = function(_) {
     if (!arguments.length) return margin;
     margin = _;
-    radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     return this;
   };
 

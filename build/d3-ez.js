@@ -801,10 +801,13 @@ d3.ez.component.donut = function module() {
         duration: 500
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    var innerRadius = 70;
+    var radius = undefined;
+    var innerRadius = undefined;
     function my(selection) {
         selection.each(function() {
-            var radius = d3.min([ width, height ]) / 2;
+            var defaultRadius = d3.min([ width, height ]) / 2;
+            radius = typeof radius === "undefined" ? defaultRadius : radius;
+            innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
             var pie = d3.pie().value(function(d) {
                 return d.value;
             }).sort(null);
@@ -893,6 +896,16 @@ d3.ez.component.donut = function module() {
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -2602,8 +2615,8 @@ d3.ez.chart.donut = function module() {
     };
     var classed = "chartDonut";
     var colors = d3.ez.colors.categorical(4);
-    var radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
-    var innerRadius = 70;
+    var radius = undefined;
+    var innerRadius = undefined;
     // Data Options (Populated by 'init' function)
     var chartW = 0;
     var chartH = 0;
@@ -2645,7 +2658,7 @@ d3.ez.chart.donut = function module() {
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add bars to the chart
-            var donutChart = d3.ez.component.donut().width(chartW).height(chartH).colorScale(colorScale).dispatch(dispatch);
+            var donutChart = d3.ez.component.donut().width(chartW).height(chartH).radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
             chart.datum(data.values).call(donutChart);
         });
     }
@@ -2653,19 +2666,16 @@ d3.ez.chart.donut = function module() {
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.margin = function(_) {
         if (!arguments.length) return margin;
         margin = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.radius = function(_) {
