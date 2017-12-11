@@ -21,7 +21,6 @@ d3.ez.chart.donut = function module() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
-  var classed = "chartDonut";
   var colors = d3.ez.colors.categorical(4);
   var radius = undefined;
   var innerRadius = undefined;
@@ -78,8 +77,7 @@ d3.ez.chart.donut = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed(classed, true)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 

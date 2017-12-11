@@ -824,17 +824,17 @@ d3.ez.component.donut = function module() {
                 return d.startAngle + (d.endAngle - d.startAngle) / 2;
             }
             // Create Pie Chart Group
-            var donutGroup = selection.selectAll(".donutGroup").data(function(d) {
+            var chartDonut = selection.selectAll(".chartDonut").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("donutGroup", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
+            }).enter().append("g").classed("chartDonut", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            donutGroup.append("g").attr("class", "slices");
-            donutGroup.append("g").attr("class", "labels");
-            donutGroup.append("g").attr("class", "lines");
-            var donutGroup = selection.selectAll(".donutGroup");
+            chartDonut.append("g").attr("class", "slices");
+            chartDonut.append("g").attr("class", "labels");
+            chartDonut.append("g").attr("class", "lines");
+            var chartDonut = selection.selectAll(".chartDonut");
             // Slices
-            var slices = donutGroup.select(".slices").selectAll("path.slice").data(function(d) {
+            var slices = chartDonut.select(".slices").selectAll("path.slice").data(function(d) {
                 return pie(d);
             });
             slices.enter().append("path").attr("class", "slice").attr("fill", function(d) {
@@ -844,7 +844,7 @@ d3.ez.component.donut = function module() {
             }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attrTween("d", arcTween);
             slices.exit().remove();
             // Labels
-            var labels = donutGroup.select(".labels").selectAll("text.label").data(function(d) {
+            var labels = chartDonut.select(".labels").selectAll("text.label").data(function(d) {
                 return pie(d);
             });
             labels.enter().append("text").attr("class", "label").attr("dy", ".35em").merge(labels).transition().duration(transition.duration).text(function(d, i) {
@@ -870,7 +870,7 @@ d3.ez.component.donut = function module() {
             });
             labels.exit().remove();
             // Slice to Label Lines
-            var lines = donutGroup.select(".lines").selectAll("polyline.line").data(function(d) {
+            var lines = chartDonut.select(".lines").selectAll("polyline.line").data(function(d) {
                 return pie(d);
             });
             lines.enter().append("polyline").attr("class", "line").merge(lines).transition().duration(transition.duration).attrTween("points", function(d) {
@@ -1287,10 +1287,10 @@ d3.ez.component.heatMap = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var decks = selection.selectAll(".deck").data(function(d) {
+            var decks = selection.selectAll(".chartTabularHeat").data(function(d) {
                 return d;
             });
-            var deck = decks.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
+            var deck = decks.enter().append("g").attr("class", "chartTabularHeat").attr("transform", function(d, i) {
                 return "translate(0, " + yScale(d.key) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
@@ -1375,10 +1375,10 @@ d3.ez.component.punchCard = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var punchRows = selection.selectAll(".punchRow").data(function(d) {
+            var punchRows = selection.selectAll(".chartPunchCard").data(function(d) {
                 return d;
             });
-            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
+            var punchRow = punchRows.enter().append("g").attr("class", "chartPunchCard").attr("transform", function(d, i) {
                 return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
@@ -1470,10 +1470,10 @@ d3.ez.component.numberCard = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var punchRows = selection.selectAll(".punchRow").data(function(d) {
+            var punchRows = selection.selectAll(".chartPunchCard").data(function(d) {
                 return d;
             });
-            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
+            var punchRow = punchRows.enter().append("g").attr("class", "chartPunchCard").attr("transform", function(d, i) {
                 return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
@@ -1783,7 +1783,6 @@ d3.ez.chart.discreteBar = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartDiscreteBar";
     var colors = d3.ez.colors.categorical(4);
     var gap = 0;
     // Data Options (Populated by 'init' function)
@@ -1839,7 +1838,7 @@ d3.ez.chart.discreteBar = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
@@ -1921,7 +1920,6 @@ d3.ez.chart.groupedBar = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartGroupedBar";
     var colors = d3.ez.colors.categorical(4);
     var gap = 0;
     var yAxisLabel = null;
@@ -1978,7 +1976,7 @@ d3.ez.chart.groupedBar = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
@@ -2469,7 +2467,6 @@ d3.ez.chart.tabularHeat = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartTabularHeat";
     var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     // Data Options (Populated by 'init' function)
     var chartW = 0;
@@ -2527,7 +2524,7 @@ d3.ez.chart.tabularHeat = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
@@ -2613,7 +2610,6 @@ d3.ez.chart.donut = function module() {
         ease: d3.easeCubic,
         duration: 750
     };
-    var classed = "chartDonut";
     var colors = d3.ez.colors.categorical(4);
     var radius = undefined;
     var innerRadius = undefined;
@@ -2656,7 +2652,7 @@ d3.ez.chart.donut = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add bars to the chart
             var donutChart = d3.ez.component.donut().width(chartW).height(chartH).radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
             chart.datum(data.values).call(donutChart);
@@ -2747,7 +2743,6 @@ d3.ez.chart.punchCard = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartPunchCard";
     var color = "steelblue";
     var sizeScale = undefined;
     var minRadius = 2;
@@ -2812,11 +2807,11 @@ d3.ez.chart.punchCard = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var punchCard = d3.ez.component.numberCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             chart.datum(data).call(punchCard);
         });
     }
@@ -2897,7 +2892,6 @@ d3.ez.chart.multiSeriesLine = function module() {
         bottom: 40,
         left: 40
     };
-    var classed = "chartMultiSeriesLine";
     var colors = d3.ez.colors.categorical(3);
     var yAxisLabel = null;
     var groupType = "clustered";
@@ -2958,7 +2952,7 @@ d3.ez.chart.multiSeriesLine = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
             chart.select(".y-axis").call(yAxis);

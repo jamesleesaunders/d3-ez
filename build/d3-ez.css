@@ -159,13 +159,13 @@
 
 /* === PunchCard Styles === */
 
-.chartPunchCard text.punchValue {
-  font-size: 15px;
-  font-weight: bold;
+.chartPunchCard circle.punchSpot {
+  stroke: #cccccc;
+  stroke-width: 0.5px;
 }
 
-.chartPunchCard text.label {
-  font-size: 12px;
+.chartPunchCard text.punchValue {
+  font-size: 15px;
   font-weight: bold;
 }
 

@@ -47,22 +47,22 @@ d3.ez.component.donut = function module() {
       }
 
       // Create Pie Chart Group
-      var donutGroup = selection.selectAll('.donutGroup')
+      var chartDonut = selection.selectAll('.chartDonut')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("donutGroup", true)
+        .classed("chartDonut", true)
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .on("click", function(d) { dispatch.call("customClick", this, d); });
 
-      donutGroup.append("g").attr("class", "slices");
-      donutGroup.append("g").attr("class", "labels");
-      donutGroup.append("g").attr("class", "lines");
+      chartDonut.append("g").attr("class", "slices");
+      chartDonut.append("g").attr("class", "labels");
+      chartDonut.append("g").attr("class", "lines");
 
-      var donutGroup = selection.selectAll('.donutGroup');
+      var chartDonut = selection.selectAll('.chartDonut');
 
       // Slices
-      var slices = donutGroup.select(".slices")
+      var slices = chartDonut.select(".slices")
         .selectAll("path.slice")
         .data(function(d) {
           return pie(d);
@@ -84,7 +84,7 @@ d3.ez.component.donut = function module() {
         .remove();
 
       // Labels
-      var labels = donutGroup.select(".labels")
+      var labels = chartDonut.select(".labels")
         .selectAll("text.label")
         .data(function(d) {
           return pie(d);
@@ -125,7 +125,7 @@ d3.ez.component.donut = function module() {
         .remove();
 
       // Slice to Label Lines
-      var lines = donutGroup.select(".lines")
+      var lines = chartDonut.select(".lines")
         .selectAll("polyline.line")
         .data(function(d) {
           return pie(d);

@@ -64,7 +64,6 @@ d3.ez.chart.radialBar = function module() {
     colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(keys);
-
   }
 
   function my(selection) {

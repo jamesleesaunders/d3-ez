@@ -22,11 +22,11 @@ d3.ez.component.punchCard = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var punchRows = selection.selectAll(".punchRow")
+      var punchRows = selection.selectAll(".chartPunchCard")
         .data(function(d) { return d; });
 
       var punchRow = punchRows.enter().append("g")
-        .attr("class", "punchRow")
+        .attr("class", "chartPunchCard")
         .attr("transform", function(d, i) {
           return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
         })

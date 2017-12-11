@@ -18,7 +18,6 @@ d3.ez.chart.multiSeriesLine = function module() {
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  var classed = "chartMultiSeriesLine";
   var colors = d3.ez.colors.categorical(3);
   var yAxisLabel = null;
   var groupType = "clustered";
@@ -106,10 +105,9 @@ d3.ez.chart.multiSeriesLine = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed(classed, true)
+      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
-        .attr("height", chartH)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("height", chartH);
 
       // Add axis to chart
       chart.select(".x-axis")

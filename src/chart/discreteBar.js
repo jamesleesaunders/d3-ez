@@ -21,7 +21,6 @@ d3.ez.chart.discreteBar = function module() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var classed = "chartDiscreteBar";
   var colors = d3.ez.colors.categorical(4);
   var gap = 0;
 
@@ -99,8 +98,7 @@ d3.ez.chart.discreteBar = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed(classed, true)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 

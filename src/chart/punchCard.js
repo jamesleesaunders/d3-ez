@@ -23,7 +23,6 @@ d3.ez.chart.punchCard = function module() {
   var height = 300;
   var margin = { top: 50, right: 40, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var classed = "chartPunchCard";
   var color = "steelblue";
   var sizeScale = undefined;
   var minRadius = 2;
@@ -116,8 +115,7 @@ d3.ez.chart.punchCard = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed(classed, true)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", width)
         .attr("height", height);
 

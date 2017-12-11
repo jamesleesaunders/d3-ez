@@ -21,11 +21,11 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var decks = selection.selectAll(".deck")
+      var decks = selection.selectAll(".chartTabularHeat")
         .data(function(d) { return d; });
 
       var deck = decks.enter().append("g")
-        .attr("class", "deck")
+        .attr("class", "chartTabularHeat")
         .attr("transform", function(d, i) {
           return "translate(0, " + yScale(d.key) + ")";
         })
