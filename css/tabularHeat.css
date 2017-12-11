@@ -7,7 +7,6 @@
 
 .chartTabularHeat rect.card:hover {
   opacity: 0.7;
-  stroke: #b6b6b6;
   cursor: pointer;
 }
 
