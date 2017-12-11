@@ -8,6 +8,7 @@ include('../src/vega.js');
 include('../src/colors.js');
 include('../src/component/barGrouped.js');
 include('../src/component/barStacked.js');
+include('../src/component/donut.js');
 include('../src/component/creditTag.js');
 include('../src/component/labeledNode.js');
 include('../src/component/legend.js');

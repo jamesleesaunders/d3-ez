@@ -27,36 +27,21 @@ d3.ez.chart.donut = function module() {
   var innerRadius = 70;
 
   // Data Options (Populated by 'init' function)
-  var values = [];
+  var chartW = 0;
+  var chartH = 0;
   var categoryNames = [];
   var colorScale = undefined;
-  var pie = undefined;
-  var arc = undefined;
-  var outerArc = undefined;
-  var key = undefined;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
+    chartW = width - (margin.left + margin.right);
+    chartH = height - (margin.top + margin.bottom);
+
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     var categoryNames = slicedData.categoryNames;
-
-    values = d3.values(data)[1].map(function(d) {
-      return d.value;
-    });
-
-    pie = d3.pie()
-      .sort(null);
-
-    arc = d3.arc()
-      .innerRadius(innerRadius)
-      .outerRadius(radius);
-
-    outerArc = d3.arc()
-      .innerRadius(radius * 0.9)
-      .outerRadius(radius * 0.9);
 
     if (!colorScale) {
       // If the colorScale has not already been passed
@@ -67,22 +52,6 @@ d3.ez.chart.donut = function module() {
     }
   }
 
-  function key(d, i) {
-    return data.values[i].key;
-  }
-
-  function arcTween(d) {
-    var i = d3.interpolate(this._current, d);
-    this._current = i(0);
-    return function(t) {
-      return arc(i(t));
-    };
-  }
-
-  function midAngle(d) {
-    return d.startAngle + (d.endAngle - d.startAngle) / 2;
-  }
-
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -91,7 +60,6 @@ d3.ez.chart.donut = function module() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          return selection.append("svg");
           var el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
@@ -105,108 +73,26 @@ d3.ez.chart.donut = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").attr("class", "slices");
-        chart.append("g").attr("class", "labels");
-        chart.append("g").attr("class", "lines");
       } else {
         chart = svg.select(".chart");
       }
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("width", chartW)
+        .attr("height", chartH);
 
-      // Slices
-      var slices = chart.select(".slices")
-        .selectAll("path.slice")
-        .data(pie(values));
+      // Add bars to the chart
+      var donutChart = d3.ez.component.donut()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .dispatch(dispatch);
 
-      slices.enter()
-        .append("path")
-        .attr("class", "slice")
-        .attr("fill", function(d, i) {
-          return colorScale(data.values[i].key);
-        })
-        .attr("d", arc)
-        .each(function(d) {
-          this._current = d;
-        })
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(slices)
-        .transition()
-        .duration(transition.duration)
-        .ease(transition.ease)
-        .attrTween("d", arcTween);
+      chart.datum(data.values)
+        .call(donutChart);
 
-      slices.exit()
-        .remove();
-
-      // Labels
-      var labels = chart.select(".labels")
-        .selectAll("text.label")
-        .data(pie(values), key);
-
-      labels.enter()
-        .append("text")
-        .attr("class", "label")
-        .attr("dy", ".35em")
-        .merge(labels)
-        .transition()
-        .duration(transition.duration)
-        .text(function(d, i) {
-          return data.values[i].key;
-        })
-        .attrTween("transform", function(d) {
-          this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
-          this._current = interpolate(0);
-          return function(t) {
-            var d2 = interpolate(t);
-            var pos = outerArc.centroid(d2);
-            pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
-            return "translate(" + pos + ")";
-          };
-        })
-        .styleTween("text-anchor", function(d) {
-          this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
-          this._current = interpolate(0);
-          return function(t) {
-            var d2 = interpolate(t);
-            return midAngle(d2) < Math.PI ? "start" : "end";
-          };
-        });
-
-      labels.exit()
-        .remove();
-
-      // Slice to Label Lines
-      var lines = chart.select(".lines")
-        .selectAll("polyline.line")
-        .data(pie(values));
-
-      lines.enter()
-        .append("polyline")
-        .attr("class", "line")
-        .merge(lines)
-        .transition()
-        .duration(transition.duration)
-        .attrTween("points", function(d) {
-          this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
-          this._current = interpolate(0);
-          return function(t) {
-            var d2 = interpolate(t);
-            var pos = outerArc.centroid(d2);
-            pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
-            return [arc.centroid(d2), outerArc.centroid(d2), pos];
-          };
-        });
-
-      lines.exit()
-        .remove();
     });
   }
 

@@ -7,6 +7,7 @@ JS_FILES :=        src/header.js \
                    src/colors.js \
                    src/component/barGrouped.js \
                    src/component/barStacked.js \
+                   src/component/donut.js \
                    src/component/creditTag.js \
                    src/component/labeledNode.js \
                    src/component/legend.js \

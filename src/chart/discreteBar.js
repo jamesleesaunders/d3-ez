@@ -62,7 +62,6 @@ d3.ez.chart.discreteBar = function module() {
     xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
 
-
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
