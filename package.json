@@ -27,7 +27,7 @@
     "d3": "^4.0.0"
   },
   "devDependencies": {
-    "uglify-js": "2.4.24",
+    "uglify-js": "^2.6.0",
     "vows": "0.8",
     "tape": "4"
   },
