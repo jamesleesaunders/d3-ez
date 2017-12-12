@@ -18,7 +18,7 @@ d3.ez.component.donut = function module() {
 
   function my(selection) {
     selection.each(function() {
-      var defaultRadius = d3.min([width, height]) / 2;
+      var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
 
@@ -28,7 +28,9 @@ d3.ez.component.donut = function module() {
 
       var arc = d3.arc()
         .innerRadius(innerRadius)
-        .outerRadius(radius);
+        .outerRadius(radius)
+        .cornerRadius(2)
+        .padAngle(0.015);
 
       var outerArc = d3.arc()
         .innerRadius(radius * 0.9)
