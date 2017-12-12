@@ -123,8 +123,8 @@
 /* === Tabular Heat Chart Styles === */
 
 .chartTabularHeat rect.card {
-  stroke: #b6b6b6;
-  stroke-width: 0.5px;
+  stroke: #999999;
+  stroke-width: 1px;
 }
 
 .chartTabularHeat rect.card:hover {
@@ -147,8 +147,8 @@
 }
 
 .chartDonut path.slice {
-  stroke: #333333;
-  stroke-width: 1px;
+  stroke: #999999;
+  stroke-width: 0.5px;
 }
 
 .chartDonut path.slice:hover {
@@ -159,8 +159,8 @@
 /* === PunchCard Styles === */
 
 .chartPunchCard circle.punchSpot {
-  stroke: #b6b6b6;
-  stroke-width: 0.5px;
+  stroke: #999999;
+  stroke-width: 1px;
 }
 
 .chartPunchCard circle.punchSpot:hover {

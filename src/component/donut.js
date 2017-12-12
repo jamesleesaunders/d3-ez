@@ -29,7 +29,7 @@ d3.ez.component.donut = function module() {
       var arc = d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(radius)
-        .cornerRadius(2)
+        .cornerRadius(3)
         .padAngle(0.015);
 
       var outerArc = d3.arc()

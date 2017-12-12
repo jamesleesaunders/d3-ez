@@ -805,13 +805,13 @@ d3.ez.component.donut = function module() {
     var innerRadius = undefined;
     function my(selection) {
         selection.each(function() {
-            var defaultRadius = d3.min([ width, height ]) / 2;
+            var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
             var pie = d3.pie().value(function(d) {
                 return d.value;
             }).sort(null);
-            var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius);
+            var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius).cornerRadius(3).padAngle(.015);
             var outerArc = d3.arc().innerRadius(radius * .9).outerRadius(radius * .9);
             function arcTween(d) {
                 var i = d3.interpolate(this._current, d);
@@ -1308,7 +1308,7 @@ d3.ez.component.heatMap = function module() {
             });
             cards.enter().append("rect").attr("x", function(d, i) {
                 return xScale(d.key);
-            }).attr("y", 0).attr("rx", 5).attr("ry", 5).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("y", 0).attr("rx", 3).attr("ry", 3).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
             }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);

@@ -1,8 +1,8 @@
 /* === Tabular Heat Chart Styles === */
 
 .chartTabularHeat rect.card {
-  stroke: #b6b6b6;
-  stroke-width: 0.5px;
+  stroke: #999999;
+  stroke-width: 1px;
 }
 
 .chartTabularHeat rect.card:hover {

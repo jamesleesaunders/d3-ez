@@ -8,8 +8,8 @@
 }
 
 .chartDonut path.slice {
-  stroke: #333333;
-  stroke-width: 1px;
+  stroke: #999999;
+  stroke-width: 0.5px;
 }
 
 .chartDonut path.slice:hover {

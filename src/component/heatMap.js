@@ -51,8 +51,8 @@ d3.ez.component.heatMap = function module() {
           return xScale(d.key);
         })
         .attr("y", 0)
-        .attr("rx", 5)
-        .attr("ry", 5)
+        .attr("rx", 3)
+        .attr("ry", 3)
         .attr("class", "card")
         .attr("width", cellWidth)
         .attr("height", cellHeight)

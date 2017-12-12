@@ -1,8 +1,8 @@
 /* === PunchCard Styles === */
 
 .chartPunchCard circle.punchSpot {
-  stroke: #b6b6b6;
-  stroke-width: 0.5px;
+  stroke: #999999;
+  stroke-width: 1px;
 }
 
 .chartPunchCard circle.punchSpot:hover {
