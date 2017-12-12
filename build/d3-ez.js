@@ -639,7 +639,7 @@ d3.ez.component.barGrouped = function module() {
                 return colorScale(d.key);
             }).attr("width", barW).attr("x", function(d, i) {
                 return xScale(d.key);
-            }).attr("y", height).attr("height", 0).on("mouseover", function(d) {
+            }).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
             }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function(d, i) {
                 return xScale(d.key);
@@ -733,7 +733,7 @@ d3.ez.component.barStacked = function module() {
             var bars = barGroup.selectAll(".bar").data(function(d) {
                 return d;
             });
-            bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("height", 0).attr("fill", function(d) {
+            bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).attr("fill", function(d) {
                 return colorScale(d.name);
             }).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);

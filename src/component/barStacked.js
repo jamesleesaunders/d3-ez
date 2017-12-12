@@ -51,6 +51,8 @@ d3.ez.component.barStacked = function module() {
         .attr("width", width)
         .attr("x", 0)
         .attr("y", height)
+        .attr("rx", 0)
+        .attr("ry", 0)
         .attr("height", 0)
         .attr("fill", function(d) { return colorScale(d.name); })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })

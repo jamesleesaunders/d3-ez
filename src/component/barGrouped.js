@@ -41,6 +41,8 @@ d3.ez.component.barGrouped = function module() {
         .attr("width", barW)
         .attr("x", function(d, i) { return xScale(d.key); })
         .attr("y", height)
+        .attr("rx", 0)
+        .attr("ry", 0)
         .attr("height", 0)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(bars)
