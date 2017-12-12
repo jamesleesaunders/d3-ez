@@ -1287,10 +1287,17 @@ d3.ez.component.heatMap = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var decks = selection.selectAll(".chartTabularHeat").data(function(d) {
+            // Create Punch Card
+            selection.selectAll(".chartTabularHeat").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("chartTabularHeat", true).attr("width", width).attr("height", height).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            var chartTabularHeat = selection.selectAll(".chartTabularHeat");
+            var decks = chartTabularHeat.selectAll(".deck").data(function(d) {
                 return d;
             });
-            var deck = decks.enter().append("g").attr("class", "chartTabularHeat").attr("transform", function(d, i) {
+            var deck = decks.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
                 return "translate(0, " + yScale(d.key) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
@@ -1375,10 +1382,18 @@ d3.ez.component.punchCard = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var punchRows = selection.selectAll(".chartPunchCard").data(function(d) {
+            // Create Punch Card
+            selection.selectAll(".chartPunchCard").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("chartPunchCard", true).attr("width", width).attr("height", height).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            var chartPunchCard = selection.selectAll(".chartPunchCard");
+            // Add Punch Rows
+            var punchRows = chartPunchCard.selectAll(".punchRow").data(function(d) {
                 return d;
             });
-            var punchRow = punchRows.enter().append("g").attr("class", "chartPunchCard").attr("transform", function(d, i) {
+            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
                 return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);
@@ -1470,10 +1485,17 @@ d3.ez.component.numberCard = function module() {
         selection.each(function() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            var punchRows = selection.selectAll(".chartPunchCard").data(function(d) {
+            // Create Number Card
+            selection.selectAll(".chartPunchCard").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("chartPunchCard", true).attr("width", width).attr("height", height).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            var chartPunchCard = selection.selectAll(".chartPunchCard");
+            var punchRows = chartPunchCard.selectAll(".punchRow").data(function(d) {
                 return d;
             });
-            var punchRow = punchRows.enter().append("g").attr("class", "chartPunchCard").attr("transform", function(d, i) {
+            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
                 return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
             }).on("click", function(d) {
                 dispatch.call("customClick", this, d);

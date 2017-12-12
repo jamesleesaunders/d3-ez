@@ -21,11 +21,22 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var decks = selection.selectAll(".chartTabularHeat")
+      // Create Punch Card
+      selection.selectAll('.chartTabularHeat')
+        .data(function(d) { return [d]; })
+        .enter()
+        .append("g")
+        .classed('chartTabularHeat', true)
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", function(d) { dispatch.call("customClick", this, d); });
+      var chartTabularHeat = selection.selectAll('.chartTabularHeat');
+
+      var decks = chartTabularHeat.selectAll(".deck")
         .data(function(d) { return d; });
 
       var deck = decks.enter().append("g")
-        .attr("class", "chartTabularHeat")
+        .attr("class", "deck")
         .attr("transform", function(d, i) {
           return "translate(0, " + yScale(d.key) + ")";
         })

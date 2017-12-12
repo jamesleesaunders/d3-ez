@@ -22,11 +22,23 @@ d3.ez.component.punchCard = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var punchRows = selection.selectAll(".chartPunchCard")
+      // Create Punch Card
+      selection.selectAll('.chartPunchCard')
+        .data(function(d) { return [d]; })
+        .enter()
+        .append("g")
+        .classed('chartPunchCard', true)
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", function(d) { dispatch.call("customClick", this, d); });
+      var chartPunchCard = selection.selectAll('.chartPunchCard');
+
+      // Add Punch Rows
+      var punchRows = chartPunchCard.selectAll(".punchRow")
         .data(function(d) { return d; });
 
       var punchRow = punchRows.enter().append("g")
-        .attr("class", "chartPunchCard")
+        .attr("class", "punchRow")
         .attr("transform", function(d, i) {
           return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
         })
