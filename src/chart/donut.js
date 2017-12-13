@@ -28,7 +28,6 @@ d3.ez.chart.donut = function module() {
   // Data Options (Populated by 'init' function)
   var chartW = 0;
   var chartH = 0;
-  var categoryNames = [];
   var colorScale = undefined;
 
   // Dispatch (Custom events)
@@ -81,7 +80,7 @@ d3.ez.chart.donut = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add bars to the chart
+      // Add the chart
       var donutChart = d3.ez.component.donut()
         .width(chartW)
         .height(chartH)
