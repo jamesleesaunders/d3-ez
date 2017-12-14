@@ -25,7 +25,7 @@ d3.ez.component.barRadial = function module() {
       var labelRadius = radius * 1.050;
 
       var yDomain = yScale.domain();
-      yDomain[1] = yDomain[1] * 1.05;
+      // yDomain[1] = yDomain[1] * 1.05;
       var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
       var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
 
@@ -63,7 +63,7 @@ d3.ez.component.barRadial = function module() {
       var radialChart = selection.selectAll('.chartRadialBar').merge(radialChart);
 
       // Concentric tick circles
-      tickCircles = radialChart.select(".tickCircles")
+      var tickCircles = radialChart.select(".tickCircles")
         .selectAll("circle")
         .data(barScale.ticks().slice(0, -1));
 
@@ -118,17 +118,25 @@ d3.ez.component.barRadial = function module() {
         .call(axis);
 
       // Outer Circle
-      outerCircle = radialChart.select(".outerCircle")
+      var outerCircle = radialChart.select(".outerCircle")
+      outerCircle.selectAll("circle")
+        .data([radius])
+        .enter()
         .append("circle")
-        .attr("r", radius)
+        .attr("r", function(d) { return d; })
         .style("fill", "none");
 
       // Labels
       var labels = radialChart.select(".labels");
-      labels.append("def")
+      labels.selectAll("def")
+        .data([labelRadius])
+        .enter()
+        .append("def")
         .append("path")
         .attr("id", "label-path")
-        .attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");
+        .attr("d", function(d) {
+          return "m0 " + -d+ " a" + d + " " + d + " 0 1,1 -0.01 0";
+        });
 
       labels.selectAll("text")
         .data(function(d) { return d; })

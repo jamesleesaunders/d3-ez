@@ -75,12 +75,6 @@ d3.ez.chart.radialBar = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("tickCircles", true);
-        chart.append("g").classed("segments", true);
-        chart.append("g").classed("spokes", true);
-        chart.append("g").classed("axis", true);
-        chart.append("circle").classed("outerCircle", true);
-        chart.append("g").classed("labels", true);
       } else {
         chart = selection.select(".chart");
       }
