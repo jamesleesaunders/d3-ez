@@ -29,6 +29,7 @@ d3.ez.component.heatCircle = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+      var labelRadius = radius * 1.050;
       var segmentHeight = ((radius - innerRadius) / numRadials);
 
       // Arc Generator
@@ -98,7 +99,7 @@ d3.ez.component.heatCircle = function module() {
         .append("def")
         .append("path")
         .attr("id", function(d, i) {
-          return "radialLabelPath-" + i;
+          return "radial-label-path-" + i;
         })
         .attr("d", function(d, i) {
           var r = innerRadius + ((i + 0.2) * segmentHeight);
@@ -111,31 +112,30 @@ d3.ez.component.heatCircle = function module() {
         .append("text")
         .append("textPath")
         .attr("xlink:href", function(d, i) {
-          return "#radialLabelPath-" + i;
+          return "#radial-label-path-" + i;
         })
         .text(function(d) {
           return d;
         });
 
       // Segment Labels
-      var segmentLabelOffset = 2;
-      var r = innerRadius + (numRadials * segmentHeight) + segmentLabelOffset;
       var segmentLabels = circularHeat.select(".segmentLabels")
         .classed("labels", true);
 
       segmentLabels.append("def")
         .append("path")
-        .attr("id", "segmentLabelPath")
-        .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
+        .attr("id", "segment-label-path")
+        .attr("d", "m0 -" + labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1 1 -1 0");
 
       segmentLabels.selectAll("text")
         .data(categoryNames)
         .enter()
         .append("text")
+        .style("text-anchor", "middle")
         .append("textPath")
-        .attr("xlink:href", "#segmentLabelPath")
+        .attr("xlink:href", "#segment-label-path")
         .attr("startOffset", function(d, i) {
-          return i * 100 / numSegments + "%";
+          return i * 100 / numSegments + 50  / numSegments + "%";
         })
         .text(function(d) {
           return d;

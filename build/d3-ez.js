@@ -1522,13 +1522,14 @@ d3.ez.component.heatCircle = function module() {
         selection.each(function(data) {
             // Slice Data, calculate totals, max etc.
             var slicedData = d3.ez.dataParse(data);
-            radialLabels = slicedData.groupNames;
-            numRadials = radialLabels.length;
-            segmentLabels = slicedData.categoryNames;
-            numSegments = segmentLabels.length;
+            groupNames = slicedData.groupNames;
+            numRadials = groupNames.length;
+            categoryNames = slicedData.categoryNames;
+            numSegments = categoryNames.length;
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+            var labelRadius = radius * 1.05;
             var segmentHeight = (radius - innerRadius) / numRadials;
             // Arc Generator
             var arc = d3.arc().innerRadius(function(d, i) {
@@ -1573,23 +1574,21 @@ d3.ez.component.heatCircle = function module() {
             radialLabels.selectAll("def").data(function(d) {
                 return d;
             }).enter().append("def").append("path").attr("id", function(d, i) {
-                return "radialLabelPath-" + i;
+                return "radial-label-path-" + i;
             }).attr("d", function(d, i) {
                 var r = innerRadius + (i + .2) * segmentHeight;
                 return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
             });
-            radialLabels.selectAll("text").data(radialLabels).enter().append("text").append("textPath").attr("xlink:href", function(d, i) {
-                return "#radialLabelPath-" + i;
+            radialLabels.selectAll("text").data(groupNames).enter().append("text").append("textPath").attr("xlink:href", function(d, i) {
+                return "#radial-label-path-" + i;
             }).text(function(d) {
                 return d;
             });
             // Segment Labels
-            var segmentLabelOffset = 2;
-            var r = innerRadius + numRadials * segmentHeight + segmentLabelOffset;
             var segmentLabels = circularHeat.select(".segmentLabels").classed("labels", true);
-            segmentLabels.append("def").append("path").attr("id", "segmentLabelPath").attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
-            segmentLabels.selectAll("text").data(segmentLabels).enter().append("text").append("textPath").attr("xlink:href", "#segmentLabelPath").attr("startOffset", function(d, i) {
-                return i * 100 / numSegments + "%";
+            segmentLabels.append("def").append("path").attr("id", "segment-label-path").attr("d", "m0 -" + labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1 1 -1 0");
+            segmentLabels.selectAll("text").data(categoryNames).enter().append("text").style("text-anchor", "middle").append("textPath").attr("xlink:href", "#segment-label-path").attr("startOffset", function(d, i) {
+                return i * 100 / numSegments + 50 / numSegments + "%";
             }).text(function(d) {
                 return d;
             });
@@ -2536,13 +2535,6 @@ d3.ez.chart.circularHeat = function module() {
         chartH = height - (margin.top + margin.bottom);
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        minValue = slicedData.minValue;
-        maxValue = slicedData.maxValue;
-        radialLabels = slicedData.groupNames;
-        numRadials = radialLabels.length;
-        segmentLabels = slicedData.categoryNames;
-        numSegments = segmentLabels.length;
-        segmentHeight = (radius - innerRadius) / numRadials;
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {

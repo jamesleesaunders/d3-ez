@@ -116,6 +116,7 @@
 
 .chartCircularHeat .segmentLabels text {
   font-size: 1.0em;
+  font-weight: bold;
 }
 
 .chartCircularHeat .radialLabels text {
