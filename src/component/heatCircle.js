@@ -28,7 +28,7 @@ d3.ez.component.heatCircle = function module() {
 
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-      innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+      innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
       var segmentHeight = ((radius - innerRadius) / numRadials);
 
       // Arc Generator
