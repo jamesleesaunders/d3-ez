@@ -45,13 +45,6 @@ d3.ez.chart.circularHeat = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    minValue = slicedData.minValue;
-    maxValue = slicedData.maxValue;
-    radialLabels = slicedData.groupNames;
-    numRadials = radialLabels.length;
-    segmentLabels = slicedData.categoryNames;
-    numSegments = segmentLabels.length;
-    segmentHeight = ((radius - innerRadius) / numRadials);
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.

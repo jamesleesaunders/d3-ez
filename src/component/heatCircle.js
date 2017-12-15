@@ -21,10 +21,10 @@ d3.ez.component.heatCircle = function module() {
 
       // Slice Data, calculate totals, max etc.
       var slicedData = d3.ez.dataParse(data);
-      radialLabels = slicedData.groupNames;
-      numRadials = radialLabels.length;
-      segmentLabels = slicedData.categoryNames;
-      numSegments = segmentLabels.length;
+      groupNames = slicedData.groupNames;
+      numRadials = groupNames.length;
+      categoryNames = slicedData.categoryNames;
+      numSegments = categoryNames.length;
 
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
@@ -106,7 +106,7 @@ d3.ez.component.heatCircle = function module() {
         });
 
       radialLabels.selectAll("text")
-        .data(radialLabels)
+        .data(groupNames)
         .enter()
         .append("text")
         .append("textPath")
@@ -129,7 +129,7 @@ d3.ez.component.heatCircle = function module() {
         .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
       segmentLabels.selectAll("text")
-        .data(segmentLabels)
+        .data(categoryNames)
         .enter()
         .append("text")
         .append("textPath")
