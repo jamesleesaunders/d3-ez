@@ -17,7 +17,7 @@ d3.ez.component.lineChart = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
       // Line generation function
       var line = d3.line()
         .curve(d3.curveCardinal)

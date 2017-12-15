@@ -17,10 +17,10 @@ d3.ez.component.barGrouped = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
       var barW = xScale.bandwidth();
 
-      // Create Bar Group
+      // Create chart group
       selection.selectAll('.barGrouped')
         .data(function(d) { return [d]; })
         .enter()

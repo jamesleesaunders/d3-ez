@@ -17,8 +17,8 @@ d3.ez.component.scatterPlot = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function() {
-      // Create dot group
+    selection.each(function(data) {
+      // Create chart group
       selection.selectAll('.dotSeries')
         .data(function(d) { return [d]; })
         .enter()

@@ -18,7 +18,7 @@ d3.ez.component.numberCard = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 

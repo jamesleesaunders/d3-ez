@@ -17,25 +17,19 @@ d3.ez.component.heatCircle = function module() {
   var innerRadius = undefined;
 
   function my(selection) {
-    // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
-    minValue = slicedData.minValue;
-    maxValue = slicedData.maxValue;
-    radialLabels = slicedData.groupNames;
-    numRadials = radialLabels.length;
-    segmentLabels = slicedData.categoryNames;
-    numSegments = segmentLabels.length;
-    segmentHeight = ((radius - innerRadius) / numRadials);
+    selection.each(function(data) {
 
-    selection.each(function() {
-      var numSegments = 6;
-      var numRadials = 4;
+      // Slice Data, calculate totals, max etc.
+      var slicedData = d3.ez.dataParse(data);
+      radialLabels = slicedData.groupNames;
+      numRadials = radialLabels.length;
+      segmentLabels = slicedData.categoryNames;
+      numSegments = segmentLabels.length;
 
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
       var segmentHeight = ((radius - innerRadius) / numRadials);
-
 
       // Arc Generator
       var arc = d3.arc()
@@ -45,14 +39,14 @@ d3.ez.component.heatCircle = function module() {
         .outerRadius(function(d, i) {
           return innerRadius + segmentHeight + d.ring * segmentHeight;
         })
-        .startAngle(function(d, i) {
+        .startAngle(function(d, i, j) {
           return (i * 2 * Math.PI) / numSegments;
         })
-        .endAngle(function(d, i) {
+        .endAngle(function(d, i, j) {
           return ((i + 1) * 2 * Math.PI) / numSegments;
         });
 
-      // Create chart croup
+      // Create chart group
       var circularHeat = selection.selectAll('.chartCircularHeat')
         .data(function(d) { return [d]; })
         .enter()
@@ -68,7 +62,7 @@ d3.ez.component.heatCircle = function module() {
 
       // Rings
       circularHeat.select(".rings").selectAll("g")
-        .data(data)
+        .data(function(d) { return d; })
         .enter()
         .append("g")
         .classed("ring", true);
@@ -91,22 +85,21 @@ d3.ez.component.heatCircle = function module() {
         .classed("segment", true)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
-      // Unique id so that the text path defs are unique - is there a better way to do this?
-      // var id = circularHeat.selectAll(".circularHeat")._groups[0].length;
-
       // Radial Labels
       var lsa = 0.01; // Label start angle
       var radLabels = circularHeat.select(".radialLabels")
         .classed("labels", true);
 
       radLabels.selectAll("def")
-        .data(radialLabels)
+        .data(function(d) {
+          return d;
+        })
         .enter()
         .append("def")
         .append("path")
-        //.attr("id", function(d, i) {
-        //  return "radialLabelPath" + id + "-" + i;
-        //})
+        .attr("id", function(d, i) {
+          return "radialLabelPath-" + i;
+        })
         .attr("d", function(d, i) {
           var r = innerRadius + ((i + 0.2) * segmentHeight);
           return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
@@ -117,9 +110,9 @@ d3.ez.component.heatCircle = function module() {
         .enter()
         .append("text")
         .append("textPath")
-        //.attr("xlink:href", function(d, i) {
-        //  return "#radialLabelPath" + id + "-" + i;
-        //})
+        .attr("xlink:href", function(d, i) {
+          return "#radialLabelPath-" + i;
+        })
         .text(function(d) {
           return d;
         });
@@ -132,7 +125,7 @@ d3.ez.component.heatCircle = function module() {
 
       segLabels.append("def")
         .append("path")
-        //.attr("id", "segmentLabelPath" + id)
+        .attr("id", "segmentLabelPath")
         .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
       segLabels.selectAll("text")
@@ -140,10 +133,10 @@ d3.ez.component.heatCircle = function module() {
         .enter()
         .append("text")
         .append("textPath")
-        //.attr("xlink:href", "#segmentLabelPath" + id)
-        //.attr("startOffset", function(d, i) {
-        //  return i * 100 / numSegments + "%";
-        //})
+        .attr("xlink:href", "#segmentLabelPath")
+        .attr("startOffset", function(d, i) {
+          return i * 100 / numSegments + "%";
+        })
         .text(function(d) {
           return d;
         });

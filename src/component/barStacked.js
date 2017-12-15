@@ -17,8 +17,8 @@ d3.ez.component.barStacked = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function() {
-      // Create Bar Group
+    selection.each(function(data) {
+      // Create chart group
       selection.selectAll('.barStacked')
         .data(function(d) {
           series = [];

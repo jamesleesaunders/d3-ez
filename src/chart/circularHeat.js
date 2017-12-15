@@ -40,6 +40,9 @@ d3.ez.chart.circularHeat = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
+    chartW = width - (margin.left + margin.right);
+    chartH = height - (margin.top + margin.bottom);
+
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     minValue = slicedData.minValue;
@@ -91,107 +94,20 @@ d3.ez.chart.circularHeat = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed(classed, true)
-        .attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")")
-        .attr("width", width)
-        .attr("height", height);
+      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("width", chartW)
+        .attr("height", chartH);
 
-      // Arc Generator
-      var arc = d3.arc()
-        .innerRadius(function(d, i) {
-          return innerRadius + d.ring * segmentHeight;
-        })
-        .outerRadius(function(d, i) {
-          return innerRadius + segmentHeight + d.ring * segmentHeight;
-        })
-        .startAngle(function(d, i) {
-          return (i * 2 * Math.PI) / numSegments;
-        })
-        .endAngle(function(d, i) {
-          return ((i + 1) * 2 * Math.PI) / numSegments;
-        });
+        var heatMap = d3.ez.component.heatCircle()
+          .width(chartW)
+          .height(chartH)
+          .colorScale(colorScale)
+          .radius(radius)
+          .innerRadius(innerRadius)
+          .dispatch(dispatch);
 
-      // Rings
-      chart.select(".rings").selectAll("g")
-        .data(data)
-        .enter()
-        .append("g")
-        .classed("ring", true);
-
-      // Ring Segments
-      chart.selectAll(".ring").selectAll("path")
-        .data(function(d, i) {
-          // Add index (used to calculate ring number)
-          for (j = 0; j < numSegments; j++) {
-            d.values[j].ring = i;
-          }
-          return d.values;
-        })
-        .enter()
-        .append("path")
-        .attr("d", arc)
-        .attr("fill", function(d) {
-          return colorScale(d.value);
-        })
-        .classed("segment", true)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
-
-      // Unique id so that the text path defs are unique - is there a better way to do this?
-      var id = chart.selectAll(".circularHeat")._groups[0].length;
-
-      // Radial Labels
-      var lsa = 0.01; // Label start angle
-      var radLabels = chart.select(".radialLabels")
-        .classed("labels", true);
-
-      radLabels.selectAll("def")
-        .data(radialLabels)
-        .enter()
-        .append("def")
-        .append("path")
-        .attr("id", function(d, i) {
-          return "radialLabelPath" + id + "-" + i;
-        })
-        .attr("d", function(d, i) {
-          var r = innerRadius + ((i + 0.2) * segmentHeight);
-          return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
-        });
-
-      radLabels.selectAll("text")
-        .data(radialLabels)
-        .enter()
-        .append("text")
-        .append("textPath")
-        .attr("xlink:href", function(d, i) {
-          return "#radialLabelPath" + id + "-" + i;
-        })
-        .text(function(d) {
-          return d;
-        });
-
-      // Segment Labels
-      var segmentLabelOffset = 2;
-      var r = innerRadius + (numRadials * segmentHeight) + segmentLabelOffset;
-      var segLabels = chart.select(".segmentLabels")
-        .classed("labels", true);
-
-      segLabels.append("def")
-        .append("path")
-        .attr("id", "segmentLabelPath" + id)
-        .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
-
-      segLabels.selectAll("text")
-        .data(segmentLabels)
-        .enter()
-        .append("text")
-        .append("textPath")
-        .attr("xlink:href", "#segmentLabelPath" + id)
-        .attr("startOffset", function(d, i) {
-          return i * 100 / numSegments + "%";
-        })
-        .text(function(d) {
-          return d;
-        });
+        chart.datum(data)
+          .call(heatMap);
     });
   }
 

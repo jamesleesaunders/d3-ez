@@ -622,9 +622,9 @@ d3.ez.component.barGrouped = function module() {
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             var barW = xScale.bandwidth();
-            // Create Bar Group
+            // Create chart group
             selection.selectAll(".barGrouped").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("barGrouped", true).attr("width", width).attr("height", height).on("click", function(d) {
@@ -710,8 +710,8 @@ d3.ez.component.barStacked = function module() {
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function() {
-            // Create Bar Group
+        selection.each(function(data) {
+            // Create chart group
             selection.selectAll(".barStacked").data(function(d) {
                 series = [];
                 var y0 = 0;
@@ -806,12 +806,12 @@ d3.ez.component.barRadial = function module() {
     var capitalizeLabels = false;
     var colorLabels = false;
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             var labelRadius = radius * 1.05;
             var yDomain = yScale.domain();
-            yDomain[1] = yDomain[1] * 1.05;
+            // yDomain[1] = yDomain[1] * 1.05;
             var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
             var axisScale = d3.scaleLinear().domain(yDomain).range([ 0, -radius ]);
             // Arc Generator
@@ -824,7 +824,7 @@ d3.ez.component.barRadial = function module() {
                 numBars = j.length;
                 return (i + 1) * 2 * Math.PI / numBars;
             });
-            // Create Pie Chart Group
+            // Create chart group
             var radialChart = selection.selectAll(".chartRadialBar").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("chartRadialBar", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
@@ -838,7 +838,7 @@ d3.ez.component.barRadial = function module() {
             radialChart.append("g").attr("class", "labels");
             var radialChart = selection.selectAll(".chartRadialBar").merge(radialChart);
             // Concentric tick circles
-            tickCircles = radialChart.select(".tickCircles").selectAll("circle").data(barScale.ticks().slice(0, -1));
+            var tickCircles = radialChart.select(".tickCircles").selectAll("circle").data(barScale.ticks().slice(0, -1));
             tickCircles.enter().append("circle").style("fill", "none").merge(tickCircles).transition().attr("r", function(d) {
                 return barScale(d);
             });
@@ -864,10 +864,15 @@ d3.ez.component.barRadial = function module() {
             var axis = d3.axisRight(axisScale);
             axis = radialChart.select(".axis").call(axis);
             // Outer Circle
-            outerCircle = radialChart.select(".outerCircle").append("circle").attr("r", radius).style("fill", "none");
+            var outerCircle = radialChart.select(".outerCircle");
+            outerCircle.selectAll("circle").data([ radius ]).enter().append("circle").attr("r", function(d) {
+                return d;
+            }).style("fill", "none");
             // Labels
             var labels = radialChart.select(".labels");
-            labels.append("def").append("path").attr("id", "label-path").attr("d", "m0 " + -labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1,1 -0.01 0");
+            labels.selectAll("def").data([ labelRadius ]).enter().append("def").append("path").attr("id", "label-path").attr("d", function(d) {
+                return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
+            });
             labels.selectAll("text").data(function(d) {
                 return d;
             }).enter().append("text").style("text-anchor", "middle").style("fill", function(d, i) {
@@ -940,7 +945,7 @@ d3.ez.component.donut = function module() {
     var radius = undefined;
     var innerRadius = undefined;
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
@@ -959,7 +964,7 @@ d3.ez.component.donut = function module() {
             function midAngle(d) {
                 return d.startAngle + (d.endAngle - d.startAngle) / 2;
             }
-            // Create Pie Chart Group
+            // Create chart group
             var chartDonut = selection.selectAll(".chartDonut").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("chartDonut", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
@@ -1336,7 +1341,7 @@ d3.ez.component.lineChart = function module() {
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             // Line generation function
             var line = d3.line().curve(d3.curveCardinal).x(function(d) {
                 return xScale(d.key);
@@ -1420,10 +1425,10 @@ d3.ez.component.heatMap = function module() {
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            // Create Punch Card
+            // Create chart group
             selection.selectAll(".chartTabularHeat").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("chartTabularHeat", true).attr("width", width).attr("height", height).on("click", function(d) {
@@ -1494,6 +1499,141 @@ d3.ez.component.heatMap = function module() {
 };
 
 /**
+ * Reusable Circular Heat Map
+ *
+ * @example
+ * var myBars = d3.ez.component.heatCircle()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.heatCircle = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 300;
+    var colorScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    var radius = undefined;
+    var innerRadius = undefined;
+    function my(selection) {
+        selection.each(function(data) {
+            // Slice Data, calculate totals, max etc.
+            var slicedData = d3.ez.dataParse(data);
+            radialLabels = slicedData.groupNames;
+            numRadials = radialLabels.length;
+            segmentLabels = slicedData.categoryNames;
+            numSegments = segmentLabels.length;
+            var defaultRadius = Math.min(width, height) / 2;
+            radius = typeof radius === "undefined" ? defaultRadius : radius;
+            innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
+            var segmentHeight = (radius - innerRadius) / numRadials;
+            // Arc Generator
+            var arc = d3.arc().innerRadius(function(d, i) {
+                return innerRadius + d.ring * segmentHeight;
+            }).outerRadius(function(d, i) {
+                return innerRadius + segmentHeight + d.ring * segmentHeight;
+            }).startAngle(function(d, i, j) {
+                return i * 2 * Math.PI / numSegments;
+            }).endAngle(function(d, i, j) {
+                return (i + 1) * 2 * Math.PI / numSegments;
+            });
+            // Create chart group
+            var circularHeat = selection.selectAll(".chartCircularHeat").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            circularHeat.append("g").attr("class", "rings");
+            circularHeat.append("g").attr("class", "radialLabels");
+            circularHeat.append("g").attr("class", "segmentLabels");
+            var circularHeat = selection.selectAll(".chartCircularHeat").merge(circularHeat);
+            // Rings
+            circularHeat.select(".rings").selectAll("g").data(function(d) {
+                return d;
+            }).enter().append("g").classed("ring", true);
+            // Ring Segments
+            circularHeat.selectAll(".ring").selectAll("path").data(function(d, i, j) {
+                // Add index (used to calculate ring number)
+                for (j = 0; j < numSegments; j++) {
+                    d.values[j].ring = i;
+                }
+                return d.values;
+            }).enter().append("path").attr("d", arc).attr("fill", function(d) {
+                return colorScale(d.value);
+            }).classed("segment", true).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            });
+            // Radial Labels
+            var lsa = .01;
+            // Label start angle
+            var radLabels = circularHeat.select(".radialLabels").classed("labels", true);
+            radLabels.selectAll("def").data(function(d) {
+                return d;
+            }).enter().append("def").append("path").attr("id", function(d, i) {
+                return "radialLabelPath-" + i;
+            }).attr("d", function(d, i) {
+                var r = innerRadius + (i + .2) * segmentHeight;
+                return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
+            });
+            radLabels.selectAll("text").data(radialLabels).enter().append("text").append("textPath").attr("xlink:href", function(d, i) {
+                return "#radialLabelPath-" + i;
+            }).text(function(d) {
+                return d;
+            });
+            // Segment Labels
+            var segmentLabelOffset = 2;
+            var r = innerRadius + numRadials * segmentHeight + segmentLabelOffset;
+            var segLabels = circularHeat.select(".segmentLabels").classed("labels", true);
+            segLabels.append("def").append("path").attr("id", "segmentLabelPath").attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
+            segLabels.selectAll("text").data(segmentLabels).enter().append("text").append("textPath").attr("xlink:href", "#segmentLabelPath").attr("startOffset", function(d, i) {
+                return i * 100 / numSegments + "%";
+            }).text(function(d) {
+                return d;
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
  * Reusable Heat Map
  *
  * @example
@@ -1515,10 +1655,10 @@ d3.ez.component.punchCard = function module() {
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            // Create Punch Card
+            // Create chart group
             selection.selectAll(".chartPunchCard").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("chartPunchCard", true).attr("width", width).attr("height", height).on("click", function(d) {
@@ -1618,7 +1758,7 @@ d3.ez.component.numberCard = function module() {
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function() {
+        selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
             // Create Number Card
@@ -2276,12 +2416,6 @@ d3.ez.chart.radialBar = function module() {
                 }(d3.select(this));
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
-                chart.append("g").classed("tickCircles", true);
-                chart.append("g").classed("segments", true);
-                chart.append("g").classed("spokes", true);
-                chart.append("g").classed("axis", true);
-                chart.append("circle").classed("outerCircle", true);
-                chart.append("g").classed("labels", true);
             } else {
                 chart = selection.select(".chart");
             }
@@ -2398,6 +2532,8 @@ d3.ez.chart.circularHeat = function module() {
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
+        chartW = width - (margin.left + margin.right);
+        chartH = height - (margin.top + margin.bottom);
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
         minValue = slicedData.minValue;
@@ -2438,58 +2574,9 @@ d3.ez.chart.circularHeat = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + (width - margin.right + margin.left) / 2 + "," + (height - margin.bottom + margin.top) / 2 + ")").attr("width", width).attr("height", height);
-            // Arc Generator
-            var arc = d3.arc().innerRadius(function(d, i) {
-                return innerRadius + d.ring * segmentHeight;
-            }).outerRadius(function(d, i) {
-                return innerRadius + segmentHeight + d.ring * segmentHeight;
-            }).startAngle(function(d, i) {
-                return i * 2 * Math.PI / numSegments;
-            }).endAngle(function(d, i) {
-                return (i + 1) * 2 * Math.PI / numSegments;
-            });
-            // Rings
-            chart.select(".rings").selectAll("g").data(data).enter().append("g").classed("ring", true);
-            // Ring Segments
-            chart.selectAll(".ring").selectAll("path").data(function(d, i) {
-                // Add index (used to calculate ring number)
-                for (j = 0; j < numSegments; j++) {
-                    d.values[j].ring = i;
-                }
-                return d.values;
-            }).enter().append("path").attr("d", arc).attr("fill", function(d) {
-                return colorScale(d.value);
-            }).classed("segment", true).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            });
-            // Unique id so that the text path defs are unique - is there a better way to do this?
-            var id = chart.selectAll(".circularHeat")._groups[0].length;
-            // Radial Labels
-            var lsa = .01;
-            // Label start angle
-            var radLabels = chart.select(".radialLabels").classed("labels", true);
-            radLabels.selectAll("def").data(radialLabels).enter().append("def").append("path").attr("id", function(d, i) {
-                return "radialLabelPath" + id + "-" + i;
-            }).attr("d", function(d, i) {
-                var r = innerRadius + (i + .2) * segmentHeight;
-                return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
-            });
-            radLabels.selectAll("text").data(radialLabels).enter().append("text").append("textPath").attr("xlink:href", function(d, i) {
-                return "#radialLabelPath" + id + "-" + i;
-            }).text(function(d) {
-                return d;
-            });
-            // Segment Labels
-            var segmentLabelOffset = 2;
-            var r = innerRadius + numRadials * segmentHeight + segmentLabelOffset;
-            var segLabels = chart.select(".segmentLabels").classed("labels", true);
-            segLabels.append("def").append("path").attr("id", "segmentLabelPath" + id).attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
-            segLabels.selectAll("text").data(segmentLabels).enter().append("text").append("textPath").attr("xlink:href", "#segmentLabelPath" + id).attr("startOffset", function(d, i) {
-                return i * 100 / numSegments + "%";
-            }).text(function(d) {
-                return d;
-            });
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            var heatMap = d3.ez.component.heatCircle().width(chartW).height(chartH).colorScale(colorScale).radius(radius).innerRadius(innerRadius).dispatch(dispatch);
+            chart.datum(data).call(heatMap);
         });
     }
     // Configuration Getters & Setters

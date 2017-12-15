@@ -19,7 +19,7 @@ d3.ez.component.barRadial = function module() {
   var colorLabels = false;
 
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       var labelRadius = radius * 1.050;
@@ -44,7 +44,7 @@ d3.ez.component.barRadial = function module() {
           return ((i + 1) * 2 * Math.PI) / numBars;
         });
 
-      // Create chart croup
+      // Create chart group
       var radialChart = selection.selectAll('.chartRadialBar')
         .data(function(d) { return [d]; })
         .enter()

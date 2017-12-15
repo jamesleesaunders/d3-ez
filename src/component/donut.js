@@ -17,7 +17,7 @@ d3.ez.component.donut = function module() {
   var innerRadius = undefined;
 
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
@@ -48,7 +48,7 @@ d3.ez.component.donut = function module() {
         return d.startAngle + (d.endAngle - d.startAngle) / 2;
       }
 
-      // Create Pie Chart Group
+      // Create chart group
       var chartDonut = selection.selectAll('.chartDonut')
         .data(function(d) { return [d]; })
         .enter()

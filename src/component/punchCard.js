@@ -18,11 +18,11 @@ d3.ez.component.punchCard = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      // Create Punch Card
+      // Create chart group
       selection.selectAll('.chartPunchCard')
         .data(function(d) { return [d]; })
         .enter()
