@@ -34,15 +34,15 @@ d3.ez.component.heatCircle = function module() {
       // Arc Generator
       var arc = d3.arc()
         .innerRadius(function(d, i) {
-          return innerRadius + d.ring * segmentHeight;
+          return innerRadius + segmentHeight * d.ring;
         })
         .outerRadius(function(d, i) {
-          return innerRadius + segmentHeight + d.ring * segmentHeight;
+          return innerRadius + segmentHeight * (d.ring + 1);
         })
-        .startAngle(function(d, i, j) {
+        .startAngle(function(d, i) {
           return (i * 2 * Math.PI) / numSegments;
         })
-        .endAngle(function(d, i, j) {
+        .endAngle(function(d, i) {
           return ((i + 1) * 2 * Math.PI) / numSegments;
         });
 
@@ -69,7 +69,7 @@ d3.ez.component.heatCircle = function module() {
 
       // Ring Segments
       circularHeat.selectAll(".ring").selectAll("path")
-        .data(function(d, i, j) {
+        .data(function(d, i) {
           // Add index (used to calculate ring number)
           for (j = 0; j < numSegments; j++) {
             d.values[j].ring = i;
@@ -87,10 +87,10 @@ d3.ez.component.heatCircle = function module() {
 
       // Radial Labels
       var lsa = 0.01; // Label start angle
-      var radLabels = circularHeat.select(".radialLabels")
+      var radialLabels = circularHeat.select(".radialLabels")
         .classed("labels", true);
 
-      radLabels.selectAll("def")
+      radialLabels.selectAll("def")
         .data(function(d) {
           return d;
         })
@@ -105,7 +105,7 @@ d3.ez.component.heatCircle = function module() {
           return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
         });
 
-      radLabels.selectAll("text")
+      radialLabels.selectAll("text")
         .data(radialLabels)
         .enter()
         .append("text")
@@ -120,15 +120,15 @@ d3.ez.component.heatCircle = function module() {
       // Segment Labels
       var segmentLabelOffset = 2;
       var r = innerRadius + (numRadials * segmentHeight) + segmentLabelOffset;
-      var segLabels = circularHeat.select(".segmentLabels")
+      var segmentLabels = circularHeat.select(".segmentLabels")
         .classed("labels", true);
 
-      segLabels.append("def")
+      segmentLabels.append("def")
         .append("path")
         .attr("id", "segmentLabelPath")
         .attr("d", "m0 -" + r + " a" + r + " " + r + " 0 1 1 -1 0");
 
-      segLabels.selectAll("text")
+      segmentLabels.selectAll("text")
         .data(segmentLabels)
         .enter()
         .append("text")

@@ -135,7 +135,7 @@ d3.ez.component.barRadial = function module() {
         .append("path")
         .attr("id", "label-path")
         .attr("d", function(d) {
-          return "m0 " + -d+ " a" + d + " " + d + " 0 1,1 -0.01 0";
+          return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         });
 
       labels.selectAll("text")

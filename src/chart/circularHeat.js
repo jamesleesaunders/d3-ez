@@ -98,16 +98,16 @@ d3.ez.chart.circularHeat = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-        var heatMap = d3.ez.component.heatCircle()
-          .width(chartW)
-          .height(chartH)
-          .colorScale(colorScale)
-          .radius(radius)
-          .innerRadius(innerRadius)
-          .dispatch(dispatch);
+      var heatMap = d3.ez.component.heatCircle()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .radius(radius)
+        .innerRadius(innerRadius)
+        .dispatch(dispatch);
 
-        chart.datum(data)
-          .call(heatMap);
+      chart.datum(data)
+        .call(heatMap);
     });
   }
 
