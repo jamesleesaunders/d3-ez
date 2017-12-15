@@ -44,7 +44,7 @@ d3.ez.component.barRadial = function module() {
           return ((i + 1) * 2 * Math.PI) / numBars;
         });
 
-      // Create Pie Chart Group
+      // Create chart croup
       var radialChart = selection.selectAll('.chartRadialBar')
         .data(function(d) { return [d]; })
         .enter()
