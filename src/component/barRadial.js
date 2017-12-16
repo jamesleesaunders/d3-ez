@@ -25,7 +25,7 @@ d3.ez.component.barRadial = function module() {
       var labelRadius = radius * 1.050;
 
       var yDomain = yScale.domain();
-      // yDomain[1] = yDomain[1] * 1.05;
+      yDomain[1] = yDomain[1] * 1.05;
       var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
       var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
 
@@ -54,18 +54,17 @@ d3.ez.component.barRadial = function module() {
         .on("click", function(d) { dispatch.call("customClick", this, d); });
 
       radialChart.append("g").attr("class", "tickCircles");
-      radialChart.append("g").attr("class", "segments");
-      radialChart.append("g").attr("class", "spokes");
-      radialChart.append("g").attr("class", "axis");
       radialChart.append("g").attr("class", "outerCircle");
-      radialChart.append("g").attr("class", "labels");
+      radialChart.append("g").attr("class", "spokes");
+      radialChart.append("g").attr("class", "segments");
+      radialChart.append("g").attr("class", "axis");
 
       var radialChart = selection.selectAll('.chartRadialBar').merge(radialChart);
 
-      // Concentric tick circles
+      // Tick circles
       var tickCircles = radialChart.select(".tickCircles")
         .selectAll("circle")
-        .data(barScale.ticks().slice(0, -1));
+        .data(barScale.ticks());
 
       tickCircles.enter()
         .append("circle")
@@ -79,7 +78,28 @@ d3.ez.component.barRadial = function module() {
       tickCircles.exit()
         .remove();
 
-      // Segment enter/exit/update
+      // Outer circle
+      var outerCircle = radialChart.select(".outerCircle")
+      outerCircle.selectAll("circle")
+        .data([radius])
+        .enter()
+        .append("circle")
+        .attr("r", function(d) { return d; })
+        .style("fill", "none");
+
+      // Spokes
+      var spokes = radialChart.select(".spokes")
+        .selectAll("line")
+        .data(function(d) { return d; })
+        .enter()
+        .append("line")
+        .attr("y2", -radius)
+        .attr("transform", function(d, i, j) {
+          numBars = j.length;
+          return "rotate(" + (i * 360 / numBars) + ")";
+        });
+
+      // Segments
       var segments = radialChart.select(".segments")
         .selectAll("path")
         .data(function(d) { return d; });
@@ -100,62 +120,10 @@ d3.ez.component.barRadial = function module() {
       segments.exit()
         .remove();
 
-      // Spokes
-      var spokes = radialChart.select(".spokes")
-        .selectAll("line")
-        .data(function(d) { return d; })
-        .enter()
-        .append("line")
-        .attr("y2", -radius)
-        .attr("transform", function(d, i, j) {
-          numBars = j.length;
-          return "rotate(" + (i * 360 / numBars) + ")";
-        });
-
       // Axis
-      var axis = d3.axisRight(axisScale);
+      var axis = d3.axisLeft(axisScale);
       axis = radialChart.select(".axis")
         .call(axis);
-
-      // Outer Circle
-      var outerCircle = radialChart.select(".outerCircle")
-      outerCircle.selectAll("circle")
-        .data([radius])
-        .enter()
-        .append("circle")
-        .attr("r", function(d) { return d; })
-        .style("fill", "none");
-
-      // Labels
-      var labels = radialChart.select(".labels");
-      labels.selectAll("def")
-        .data([labelRadius])
-        .enter()
-        .append("def")
-        .append("path")
-        .attr("id", "label-path")
-        .attr("d", function(d) {
-          return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-        });
-
-      labels.selectAll("text")
-        .data(function(d) { return d; })
-        .enter()
-        .append("text")
-        .style("text-anchor", "middle")
-        .style("fill", function(d, i) {
-          return colorLabels ? colorScale(d.key) : '#000000';
-        })
-        .append("textPath")
-        .attr("xlink:href", "#label-path")
-        .attr("startOffset", function(d, i, j) {
-          numBars = j.length;
-          return i * 100 / numBars + 50 / numBars + "%";
-        })
-        .text(function(d) {
-          var text = d.key;
-          return capitalizeLabels ? text.toUpperCase() : text;
-        });
     });
   }
 

@@ -35,6 +35,7 @@ d3.ez.chart.circularHeat = function module() {
 
   var colorScale = undefined;
   var thresholds = undefined;
+  var categoryNames = [];
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -45,6 +46,7 @@ d3.ez.chart.circularHeat = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
+    categoryNames = slicedData.categoryNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
@@ -79,9 +81,6 @@ d3.ez.chart.circularHeat = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("rings", true);
-        chart.append("g").classed("radialLabels", true);
-        chart.append("g").classed("segmentLabels", true);
       } else {
         chart = svg.select(".chart");
       }
@@ -101,6 +100,16 @@ d3.ez.chart.circularHeat = function module() {
 
       chart.datum(data)
         .call(heatMap);
+
+      // Segment Labels
+      var circularLabels = d3.ez.component.circularLabels()
+        .width(chartW)
+        .height(chartH)
+        .radius(radius);
+
+      chart.datum(categoryNames)
+        .call(circularLabels);
+
     });
   }
 

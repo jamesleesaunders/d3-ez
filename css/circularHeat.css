@@ -5,17 +5,13 @@
   stroke-width: 0.5px;
 }
 
-.chartCircularHeat .labels {
-  fill: #000000;
-  letter-spacing: -1px;
-}
-
 .chartCircularHeat .segmentLabels text {
   font-size: 1.0em;
   font-weight: bold;
 }
 
-.chartCircularHeat .radialLabels text {
+.circularLabels text {
   font-size: 1.1em;
   font-weight: bold;
+  letter-spacing: -0.2px;
 }

@@ -58,7 +58,6 @@ d3.ez.component.heatCircle = function module() {
 
       circularHeat.append("g").attr("class", "rings");
       circularHeat.append("g").attr("class", "radialLabels");
-      circularHeat.append("g").attr("class", "segmentLabels");
       var circularHeat = selection.selectAll('.chartCircularHeat').merge(circularHeat);
 
       // Rings
@@ -113,29 +112,6 @@ d3.ez.component.heatCircle = function module() {
         .append("textPath")
         .attr("xlink:href", function(d, i) {
           return "#radial-label-path-" + i;
-        })
-        .text(function(d) {
-          return d;
-        });
-
-      // Segment Labels
-      var segmentLabels = circularHeat.select(".segmentLabels")
-        .classed("labels", true);
-
-      segmentLabels.append("def")
-        .append("path")
-        .attr("id", "segment-label-path")
-        .attr("d", "m0 -" + labelRadius + " a" + labelRadius + " " + labelRadius + " 0 1 1 -1 0");
-
-      segmentLabels.selectAll("text")
-        .data(categoryNames)
-        .enter()
-        .append("text")
-        .style("text-anchor", "middle")
-        .append("textPath")
-        .attr("xlink:href", "#segment-label-path")
-        .attr("startOffset", function(d, i) {
-          return i * 100 / numSegments + 50  / numSegments + "%";
         })
         .text(function(d) {
           return d;

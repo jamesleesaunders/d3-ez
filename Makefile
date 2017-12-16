@@ -18,6 +18,7 @@ JS_FILES :=        src/header.js \
                    src/component/punchCard.js \
                    src/component/numberCard.js \
                    src/component/title.js \
+                   src/component/circularLabels.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
                    src/chart/discreteBar.js \

@@ -29,6 +29,8 @@ d3.ez.chart.radialBar = function module() {
   var chartH = 0;
   var yScale = undefined;
   var colorScale = undefined;
+  var categoryNames = [];
+  var maxValue = 0;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -39,9 +41,9 @@ d3.ez.chart.radialBar = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var maxValue = slicedData.maxValue;
+    maxValue = slicedData.maxValue;
     var domain = [0, maxValue];
-    var keys = slicedData.categoryNames;
+    categoryNames = slicedData.categoryNames;
 
     // Bar Scale
     yScale = d3.scaleLinear()
@@ -51,7 +53,7 @@ d3.ez.chart.radialBar = function module() {
     // Colour Scale
     colorScale = d3.scaleOrdinal()
       .range(colors)
-      .domain(keys);
+      .domain(categoryNames);
   }
 
   function my(selection) {
@@ -95,6 +97,15 @@ d3.ez.chart.radialBar = function module() {
 
       chart.datum(data.values)
         .call(barRadial);
+
+      // Segment Labels
+      var circularLabels = d3.ez.component.circularLabels()
+        .width(chartW)
+        .height(chartH)
+        .radius(radius);
+
+      chart.datum(categoryNames)
+        .call(circularLabels);
 
     });
   }

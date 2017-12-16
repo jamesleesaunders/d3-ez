@@ -20,6 +20,7 @@ include('../src/component/punchCard.js');
 include('../src/component/numberCard.js');
 include('../src/component/scatterPlot.js');
 include('../src/component/title.js');
+include('../src/component/circularLabels.js');
 include('../src/component/htmlTable.js');
 include('../src/component/htmlList.js');
 include('../src/chart/discreteBar.js');

@@ -31,8 +31,8 @@
   stroke-width: 0.2;
 }
 
-.chartRadialBar .labels text {
-  fill: #333;
-  font-size: 10px;
+.circularLabels text {
+  font-size: 1.1em;
   font-weight: bold;
+  letter-spacing: -0.2px;
 }
