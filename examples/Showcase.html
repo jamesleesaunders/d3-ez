@@ -25,7 +25,7 @@
     console.log(data);
 
     // Setup chart components
-    myChart1 = d3.ez.html.table()
+    myChart1 = d3.ez.component.htmlTable()
       .width(400)
       .on("customMouseOver", function(d, i) {
         groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");
@@ -72,7 +72,7 @@
       .width(400)
       .height(200);
 
-    myChart8 = d3.ez.chart.punchcard()
+    myChart8 = d3.ez.chart.punchCard()
       .width(400)
       .height(200)
       .color("green")
@@ -140,14 +140,14 @@
         .call(myChart8);
     }
 
-    update1(data);    // htmlTable
+    update1(data); // htmlTable
     update2(data[0]); // discreteBarChart
     update3(data[0]); // donutChart
     update4(data[0]); // radialBarChart
-    update5(data);    // groupedBarChart
-    update6(data);    // circularHeatChart
-    update7(data);    // tabularHeatChart
-    update8(data);    // punchcard
+    update5(data); // groupedBarChart
+    update6(data); // circularHeatChart
+    update7(data); // tabularHeatChart
+    update8(data); // punchcard
   </script>
 </body>
 

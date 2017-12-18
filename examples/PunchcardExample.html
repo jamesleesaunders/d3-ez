@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>d3-ez : Punchcard Example</title>
+  <title>d3-ez : PunchCard Example</title>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../test/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
@@ -14,11 +14,10 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-
     d3.json("data/netflix_isp_speed_index.json", function(error, json) {
       // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
-      var chart = d3.ez.chart.punchcard();
+      var chart = d3.ez.chart.punchCard();
       var legend = d3.ez.component.legend().title("How small?");
       var legend = d3.ez.component.legend().title('Speed Index');
       var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
@@ -35,23 +34,22 @@
         });
 
       // Convert json to d3-ez data format
-			var data = d3.nest().key(function(d) {
-				return d.ISP;
-			}).entries(json.Data).map(function(obj) {
-				obj.values = obj.values.map(function(values) {
-					return {
-						key: values.Month,
-						value: values.Value
-					};
-				});
-				return obj;
-			});
+      var data = d3.nest().key(function(d) {
+        return d.ISP;
+      }).entries(json.Data).map(function(obj) {
+        obj.values = obj.values.map(function(values) {
+          return {
+            key: values.Month,
+            value: values.Value
+          };
+        });
+        return obj;
+      });
 
       d3.select('#chartholder')
         .datum(data)
         .call(myChart);
     });
-
   </script>
 </body>
 

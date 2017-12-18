@@ -14,9 +14,8 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-
-  	d3.json("data/uk_elections.json", function(error, data) {
-			// UK Election Results Source: http://www.ukpolitical.info/2015.htm
+    d3.json("data/uk_elections.json", function(error, data) {
+      // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
       var chart = d3.ez.chart.discreteBar().colors(['#c00', '#36c', '#f90', '#fc0']);
       var legend = d3.ez.component.legend().title("Party");
@@ -31,6 +30,9 @@
         .title(title)
         .on("customMouseOver", function(d, i) {
           d3.select("#message").text(d.value);
+        })
+        .on("customClick", function(d, i) {
+          console.log(d);
         });
 
       // Add to page
@@ -43,8 +45,7 @@
 
       update();
       setInterval(update, 2000);
-		});
-
+    });
   </script>
 </body>
 

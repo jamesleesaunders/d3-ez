@@ -1,15 +1,19 @@
 /**
- * Multi Series Line Chart
+ * Punchcard
  *
  * @example
- * var myChart = d3.ez.chart.multiSeriesLine()
- *     .width(400)
- *     .height(300);
+ * var myChart = d3.ez.chart.punchCard()
+ *     .width(600)
+ *     .height(350)
+ *     .color("green")
+ *     .minRadius(5)
+ *     .maxRadius(19)
+ *     .useGlobalScale(true);
  * d3.select("#chartholder")
  *     .datum(data)
  *     .call(myChart);
  */
-d3.ez.chart.multiSeriesLine = function module() {
+d3.ez.chart.punchCard = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
@@ -17,10 +21,14 @@ d3.ez.chart.multiSeriesLine = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  var colors = d3.ez.colors.categorical(3);
-  var yAxisLabel = null;
-  var groupType = "clustered";
+  var margin = { top: 50, right: 40, bottom: 40, left: 40 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
+  var color = "steelblue";
+  var sizeScale = undefined;
+  var minRadius = 2;
+  var maxRadius = 20;
+  var formatTick = d3.format("0000");
+  var useGlobalScale = true;
 
   // Data Options (Populated by 'init' function)
   var chartW = 0;
@@ -41,38 +49,46 @@ d3.ez.chart.multiSeriesLine = function module() {
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     var maxValue = slicedData.maxValue;
-    var seriesNames = slicedData.groupNames;
+    var minValue = slicedData.minValue;
+    var categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
 
-    // Convert dates
-    data.forEach(function(d, i) {
-      d.values.forEach(function(b, j) {
-        data[i].values[j].key = new Date(b.key * 1000);
-      });
-    });
-    dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+    valDomain = [minValue, maxValue];
+    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
+      return d['value'];
+    })];
 
     // X & Y Scales
-    xScale = d3.scaleTime()
-      .range([0, chartW])
-      .domain(dateDomain);
+    xScale = d3.scaleBand()
+      .domain(categoryNames)
+      .rangeRound([0, chartW])
+      .padding(0.05);
 
-    yScale = d3.scaleLinear()
-      .range([chartH, 0])
-      .domain([0, (maxValue * 1.05)]);
+    yScale = d3.scaleBand()
+      .domain(groupNames)
+      .rangeRound([0, chartH])
+      .padding(0.05);
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b-%y"));
+    xAxis = d3.axisTop(xScale);
     yAxis = d3.axisLeft(yScale);
 
     // Colour Scale
-    colorScale = d3.scaleOrdinal()
-      .range(colors)
-      .domain(seriesNames);
+    colorScale = d3.scaleLinear()
+      .domain(valDomain)
+      .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
+
+    // Size Scale
+    sizeScale = d3.scaleLinear()
+      .domain(sizeDomain)
+      .range([minRadius, maxRadius]);
   }
 
   function my(selection) {
     selection.each(function(data) {
+      // If it is a single object, wrap it in an array
+      if (data.constructor !== Array) data = [data];
+
       // Initialise Data
       init(data);
 
@@ -93,60 +109,39 @@ d3.ez.chart.multiSeriesLine = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true)
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", -35)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text(yAxisLabel);
+        chart.append("g").classed("y-axis axis", true);
       } else {
         chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
       chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .attr("width", chartW)
-        .attr("height", chartH);
+        .attr("width", width)
+        .attr("height", height);
 
       // Add axis to chart
       chart.select(".x-axis")
-        .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis)
         .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");
+        .attr("y", 0)
+        .attr("x", -8)
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
 
       chart.select(".y-axis")
         .call(yAxis);
 
-      var series = chart.selectAll(".series")
-        .data(data)
-        .enter().append("g")
-        .attr("class", "series")
-        .style("fill", function(d) { return colorScale(d.key); });
-
-      var lineChart = d3.ez.component.lineChart()
+      var punchCard = d3.ez.component.punchCard()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
+        .sizeScale(sizeScale)
         .yScale(yScale)
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var dots = d3.ez.component.scatterPlot()
-        .width(chartW)
-        .height(chartH)
-        .colorScale(colorScale)
-        .yScale(yScale)
-        .xScale(xScale)
-        .dispatch(dispatch);
-
-      series.datum(function(d) { return d; })
-        .call(dots)
-        .call(lineChart);
+      chart.datum(data)
+        .call(punchCard);
 
     });
   }
@@ -170,33 +165,33 @@ d3.ez.chart.multiSeriesLine = function module() {
     return this;
   };
 
-  my.yAxisLabel = function(_) {
-    if (!arguments.length) return yAxisLabel;
-    yAxisLabel = _;
+  my.minRadius = function(_) {
+    if (!arguments.length) return minRadius;
+    minRadius = _;
     return this;
   };
 
-  my.groupType = function(_) {
-    if (!arguments.length) return groupType;
-    groupType = _;
+  my.maxRadius = function(_) {
+    if (!arguments.length) return maxRadius;
+    maxRadius = _;
     return this;
   };
 
-  my.transition = function(_) {
-    if (!arguments.length) return transition;
-    transition = _;
+  my.color = function(_) {
+    if (!arguments.length) return color;
+    color = _;
     return this;
   };
 
-  my.colors = function(_) {
-    if (!arguments.length) return colors;
-    colors = _;
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return this;
   };
 
-  my.colorScale = function(_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
+  my.useGlobalScale = function(_) {
+    if (!arguments.length) return useGlobalScale;
+    useGlobalScale = _;
     return this;
   };
 

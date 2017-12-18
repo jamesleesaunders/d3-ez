@@ -1,31 +1,45 @@
 # D3.EZ Makefile
 
 JS_FILES :=        src/header.js \
+                   src/baseFunctions.js \
                    src/chart.js \
-                   src/component.js \
+                   src/vega.js \
                    src/colors.js \
+                   src/component/barGrouped.js \
+                   src/component/barStacked.js \
+                   src/component/barRadial.js \
+                   src/component/donut.js \
+                   src/component/creditTag.js \
+                   src/component/labeledNode.js \
+                   src/component/legend.js \
+                   src/component/lineChart.js \
+                   src/component/heatMap.js \
+                   src/component/heatCircle.js \
+                   src/component/punchCard.js \
+                   src/component/numberCard.js \
+                   src/component/title.js \
+                   src/component/circularLabels.js \
+                   src/component/htmlTable.js \
+                   src/component/htmlList.js \
                    src/chart/discreteBar.js \
                    src/chart/groupedBar.js \
                    src/chart/radialBar.js \
                    src/chart/circularHeat.js \
                    src/chart/tabularHeat.js \
                    src/chart/donut.js \
-                   src/chart/punchcard.js \
-                   src/chart/multiSeriesLine.js \
-                   src/html/table.js \
-                   src/html/list.js
-
+                   src/chart/punchCard.js \
+                   src/chart/multiSeriesLine.js
 
 CSS_FILES :=       css/global.css \
-                   css/chart/groupedBar.css \
-                   css/chart/radialBar.css \
-                   css/chart/circularHeat.css \
-                   css/chart/tabularHeat.css \
-                   css/chart/donut.css \
-                   css/chart/punchcard.css \
-                   css/chart/multiSeriesLine.css \
-                   css/html/list.css \
-                   css/html/table.css
+                   css/barGrouped.css \
+                   css/radialBar.css \
+                   css/circularHeat.css \
+                   css/tabularHeat.css \
+                   css/donut.css \
+                   css/punchCard.css \
+                   css/lineChart.css \
+                   css/htmlList.css \
+                   css/htmlTable.css
 
 GENERATED_FILES := build/d3-ez.js \
                    build/d3-ez.min.js \

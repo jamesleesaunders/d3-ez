@@ -1,21 +1,22 @@
 var tape = require("tape");
 d3 = {};
 require('../src/header.js');
-require('../src/component.js');
 require('../src/colors.js');
+require('../src/component/title.js');
+require('../src/component/legend.js');
 
-var title = d3.ez.component.title().mainText("Main Title").subText("Sub Title");
-var legend = d3.ez.component.legend().title("Legend Title");
+var title = d3.ez.component.title().mainText("Foo").subText("Bar");
+var legend = d3.ez.component.legend().title("Foo Bar");
 var colors = d3.ez.colors.categorical(1);
 
 tape("Test Title Component", function(test) {
-  test.equal(title.mainText(), "Main Title");
-  test.equal(title.subText(), "Sub Title");
+  test.equal(title.mainText(), "Foo");
+  test.equal(title.subText(), "Bar");
   test.end();
 });
 
 tape("Test Legend Component", function(test) {
-  test.equal(legend.title(), "Legend Title");
+  test.equal(legend.title(), "Foo Bar");
   test.end();
 });
 

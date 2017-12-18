@@ -12,11 +12,10 @@
   <div id="listholder"></div>
 
   <script type="text/javascript">
-
-		d3.json("data/plant_family_tree.json", function(error, data) {
+    d3.json("data/plant_family_tree.json", function(error, data) {
 
       // Create chart object
-      var myList = d3.ez.html.list()
+      var myList = d3.ez.component.htmlList()
         .classed("htmlList")
         .on("customMouseOver", function(d, i) {
           console.log(d);
@@ -27,7 +26,6 @@
         .datum(data)
         .call(myList);
     });
-
   </script>
 </body>
 
