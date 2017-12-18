@@ -106,7 +106,7 @@ The following charts are currently supported:
 * donut()
 * groupedBar()
 * multiSeriesLine
-* punchcard()
+* punchCard()
 * radialBar()
 * tabularHeat()
 
@@ -137,7 +137,7 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 * [Grouped Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
 * [Radial Bar Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Multi Series Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
-* [Punchcard](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
+* [PunchCard](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
 * [Circular Heat Chart](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
 * [Tabular Heat Chart](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
