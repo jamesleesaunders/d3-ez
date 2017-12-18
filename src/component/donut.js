@@ -67,7 +67,7 @@ d3.ez.component.donut = function module() {
       var slices = chartDonut.select(".slices")
         .selectAll("path.slice")
         .data(function(d) {
-          return pie(d);
+          return pie(d.values);
         });
 
       slices.enter()
@@ -89,7 +89,7 @@ d3.ez.component.donut = function module() {
       var labels = chartDonut.select(".labels")
         .selectAll("text.label")
         .data(function(d) {
-          return pie(d);
+          return pie(d.values);
         });
 
       labels.enter()
@@ -130,7 +130,7 @@ d3.ez.component.donut = function module() {
       var lines = chartDonut.select(".lines")
         .selectAll("polyline.line")
         .data(function(d) {
-          return pie(d);
+          return pie(d.values);
         });
 
       lines.enter()

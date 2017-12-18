@@ -102,7 +102,7 @@ d3.ez.component.barRadial = function module() {
       // Segments
       var segments = radialChart.select(".segments")
         .selectAll("path")
-        .data(function(d) { return d; });
+        .data(function(d) { return d.values; });
 
       segments.enter()
         .append("path")

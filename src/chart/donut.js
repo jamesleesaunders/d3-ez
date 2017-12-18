@@ -89,7 +89,7 @@ d3.ez.chart.donut = function module() {
         .colorScale(colorScale)
         .dispatch(dispatch);
 
-      chart.datum(data.values)
+      chart.datum(data)
         .call(donutChart);
 
     });

@@ -95,7 +95,7 @@ d3.ez.chart.radialBar = function module() {
         .colorScale(colorScale)
         .dispatch(dispatch);
 
-      chart.datum(data.values)
+      chart.datum(data)
         .call(barRadial);
 
       // Segment Labels
