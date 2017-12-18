@@ -633,7 +633,7 @@ d3.ez.component.barGrouped = function module() {
             var barGroup = selection.selectAll(".barGrouped");
             // Add Bars to Group
             var bars = barGroup.selectAll(".bar").data(function(d) {
-                return d;
+                return d.values;
             });
             bars.enter().append("rect").classed("bar", true).attr("fill", function(d) {
                 return colorScale(d.key);
@@ -715,7 +715,7 @@ d3.ez.component.barStacked = function module() {
             selection.selectAll(".barStacked").data(function(d) {
                 series = [];
                 var y0 = 0;
-                d3.map(d).values().forEach(function(d, i) {
+                d3.map(d.values).values().forEach(function(d, i) {
                     series[i] = {
                         name: d.key,
                         value: d.value,
@@ -856,7 +856,7 @@ d3.ez.component.barRadial = function module() {
             });
             // Segments
             var segments = radialChart.select(".segments").selectAll("path").data(function(d) {
-                return d;
+                return d.values;
             });
             segments.enter().append("path").style("fill", function(d, i) {
                 return colorScale(d.key);
@@ -959,7 +959,7 @@ d3.ez.component.donut = function module() {
             var chartDonut = selection.selectAll(".chartDonut");
             // Slices
             var slices = chartDonut.select(".slices").selectAll("path.slice").data(function(d) {
-                return pie(d);
+                return pie(d.values);
             });
             slices.enter().append("path").attr("class", "slice").attr("fill", function(d) {
                 return colorScale(d.data.key);
@@ -969,7 +969,7 @@ d3.ez.component.donut = function module() {
             slices.exit().remove();
             // Labels
             var labels = chartDonut.select(".labels").selectAll("text.label").data(function(d) {
-                return pie(d);
+                return pie(d.values);
             });
             labels.enter().append("text").attr("class", "label").attr("dy", ".35em").merge(labels).transition().duration(transition.duration).text(function(d, i) {
                 return d.data.key;
@@ -995,7 +995,7 @@ d3.ez.component.donut = function module() {
             labels.exit().remove();
             // Slice to Label Lines
             var lines = chartDonut.select(".lines").selectAll("polyline.line").data(function(d) {
-                return pie(d);
+                return pie(d.values);
             });
             lines.enter().append("polyline").attr("class", "line").merge(lines).transition().duration(transition.duration).attrTween("points", function(d) {
                 this._current = this._current || d;
@@ -2195,7 +2195,7 @@ d3.ez.chart.discreteBar = function module() {
             });
             // Add bars to the chart
             var barChart = d3.ez.component.barGrouped().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data.values).call(barChart);
+            chart.datum(data).call(barChart);
         });
     }
     // Configuration Getters & Setters
@@ -2339,7 +2339,7 @@ d3.ez.chart.groupedBar = function module() {
             seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
                 return "translate(" + xScale(d.key) + ", 0)";
             }).datum(function(d) {
-                return d.values;
+                return d;
             }).call(barChart);
         });
     }
@@ -2473,7 +2473,7 @@ d3.ez.chart.radialBar = function module() {
             chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
             // Add the chart
             var barRadial = d3.ez.component.barRadial().width(chartW).height(chartH).radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
-            chart.datum(data.values).call(barRadial);
+            chart.datum(data).call(barRadial);
             // Segment Labels
             var circularLabels = d3.ez.component.circularLabels().width(chartW).height(chartH).radius(radius);
             chart.datum(categoryNames).call(circularLabels);
@@ -2893,7 +2893,7 @@ d3.ez.chart.donut = function module() {
             chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
             var donutChart = d3.ez.component.donut().width(chartW).height(chartH).radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
-            chart.datum(data.values).call(donutChart);
+            chart.datum(data).call(donutChart);
         });
     }
     // Configuration Getters & Setters
