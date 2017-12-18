@@ -33,7 +33,7 @@ d3.ez.component.barGrouped = function module() {
 
       // Add Bars to Group
       var bars = barGroup.selectAll(".bar")
-        .data(function(d) { return d; });
+        .data(function(d) { return d.values; });
 
       bars.enter().append("rect")
         .classed("bar", true)

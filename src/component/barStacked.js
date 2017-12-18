@@ -23,7 +23,7 @@ d3.ez.component.barStacked = function module() {
         .data(function(d) {
           series = [];
           var y0 = 0;
-          d3.map(d).values().forEach(function(d, i) {
+          d3.map(d.values).values().forEach(function(d, i) {
             series[i] = {
               name: d.key,
               value: d.value,

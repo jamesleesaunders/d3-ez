@@ -147,7 +147,7 @@ d3.ez.chart.groupedBar = function module() {
         .append("g")
         .classed("seriesGroup", true)
         .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
-        .datum(function(d) { return d.values; })
+        .datum(function(d) { return d; })
         .call(barChart);
 
     });

@@ -138,7 +138,7 @@ d3.ez.chart.discreteBar = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      chart.datum(data.values)
+      chart.datum(data)
         .call(barChart);
     });
   }
