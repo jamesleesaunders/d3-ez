@@ -32,7 +32,9 @@ d3.ez.component.barStacked = function module() {
             };
             y0 += d.value;
           });
-          return [series];
+
+          data = {key: data.key, values: series};
+          return [data];
         })
         .enter()
         .append("g")
@@ -44,7 +46,7 @@ d3.ez.component.barStacked = function module() {
 
       // Add Bars to Group
       var bars = barGroup.selectAll(".bar")
-        .data(function(d) { return d; });
+        .data(function(d) { return d.values; });
 
       bars.enter().append("rect")
         .classed("bar", true)

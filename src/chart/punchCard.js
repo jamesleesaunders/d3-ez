@@ -140,8 +140,16 @@ d3.ez.chart.punchCard = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      chart.datum(data)
+      var series = chart.selectAll(".series")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "series")
+        .attr("transform", function(d, i) { return "translate(0, " + yScale(d.key) + ")"; });
+
+      series.datum(function(d) { return d; })
         .call(punchCard);
+
+      series.exit().remove();
 
     });
   }

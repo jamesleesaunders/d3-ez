@@ -122,12 +122,6 @@ d3.ez.chart.multiSeriesLine = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var series = chart.selectAll(".series")
-        .data(data)
-        .enter().append("g")
-        .attr("class", "series")
-        .style("fill", function(d) { return colorScale(d.key); });
-
       var lineChart = d3.ez.component.lineChart()
         .width(chartW)
         .height(chartH)
@@ -144,10 +138,17 @@ d3.ez.chart.multiSeriesLine = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
+      var series = chart.selectAll(".series")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "series")
+        .style("fill", function(d) { return colorScale(d.key); });
+
       series.datum(function(d) { return d; })
         .call(dots)
         .call(lineChart);
 
+      series.exit().remove();
     });
   }
 

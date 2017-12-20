@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.6",
+    version: "2.1.7",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -724,14 +724,18 @@ d3.ez.component.barStacked = function module() {
                     };
                     y0 += d.value;
                 });
-                return [ series ];
+                data = {
+                    key: data.key,
+                    values: series
+                };
+                return [ data ];
             }).enter().append("g").classed("barStacked", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
             var barGroup = selection.selectAll(".barStacked");
             // Add Bars to Group
             var bars = barGroup.selectAll(".bar").data(function(d) {
-                return d;
+                return d.values;
             });
             bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).attr("fill", function(d) {
                 return colorScale(d.name);
@@ -1411,22 +1415,12 @@ d3.ez.component.heatMap = function module() {
         selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            // Create chart group
-            selection.selectAll(".chartTabularHeat").data(function(d) {
+            selection.selectAll(".deck").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("chartTabularHeat", true).attr("width", width).attr("height", height).on("click", function(d) {
+            }).enter().append("g").classed("deck", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            var chartTabularHeat = selection.selectAll(".chartTabularHeat");
-            var decks = chartTabularHeat.selectAll(".deck").data(function(d) {
-                return d;
-            });
-            var deck = decks.enter().append("g").attr("class", "deck").attr("transform", function(d, i) {
-                return "translate(0, " + yScale(d.key) + ")";
-            }).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            deck.exit().remove();
+            var deck = selection.selectAll(".deck");
             var cards = deck.selectAll(".card").data(function(d) {
                 return d.values;
             });
@@ -1631,31 +1625,23 @@ d3.ez.component.punchCard = function module() {
         selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            // Create chart group
-            selection.selectAll(".chartPunchCard").data(function(d) {
-                return [ d ];
-            }).enter().append("g").classed("chartPunchCard", true).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            var chartPunchCard = selection.selectAll(".chartPunchCard");
             // Add Punch Rows
-            var punchRows = chartPunchCard.selectAll(".punchRow").data(function(d) {
-                return d;
-            });
-            var punchRow = punchRows.enter().append("g").attr("class", "punchRow").attr("transform", function(d, i) {
-                return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
-            }).on("click", function(d) {
+            selection.selectAll(".punchRow").data(function(d) {
+                return [ d ];
+            }).enter().append("g").attr("transform", function(d, i) {
+                return "translate(0, " + cellHeight / 2 + ")";
+            }).classed("punchRow", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            punchRow.exit().remove();
+            var punchRow = selection.selectAll(".punchRow");
             var circles = punchRow.selectAll(".punchSpot").data(function(d) {
                 return d.values;
             });
-            circles.enter().append("circle").attr("cx", function(d, i) {
+            circles.enter().append("circle").attr("class", "punchSpot").attr("cx", function(d, i) {
                 return cellWidth / 2 + xScale(d.key);
             }).attr("cy", 0).attr("r", function(d) {
                 return sizeScale(d["value"]);
-            }).attr("class", "punchSpot").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
             }).merge(circles).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);
@@ -2333,10 +2319,10 @@ d3.ez.chart.groupedBar = function module() {
             }
             barChart.width(xScale.bandwidth()).height(chartH).colorScale(colorScale).yScale(yScale).dispatch(dispatch);
             // TODO: This is temporary to allow transition between stacked and clustered
-            chart.selectAll(".seriesGroup").data([]).exit().remove();
+            chart.selectAll(".series").data([]).exit().remove();
             // Create bar group
-            var seriesGroup = chart.selectAll(".seriesGroup").data(data);
-            seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
+            var series = chart.selectAll(".series").data(data);
+            series.enter().append("g").classed("series", true).attr("transform", function(d) {
                 return "translate(" + xScale(d.key) + ", 0)";
             }).datum(function(d) {
                 return d;
@@ -2763,12 +2749,20 @@ d3.ez.chart.tabularHeat = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).classed("chartTabularHeat", true);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
             var heatMap = d3.ez.component.heatMap().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data).call(heatMap);
+            var series = chart.selectAll(".series").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "series").attr("transform", function(d, i) {
+                return "translate(0, " + yScale(d.key) + ")";
+            });
+            series.datum(function(d) {
+                return d;
+            }).call(heatMap);
+            series.exit().remove();
         });
     }
     // Configuration Getters & Setters
@@ -3050,7 +3044,15 @@ d3.ez.chart.punchCard = function module() {
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
             var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.datum(data).call(punchCard);
+            var series = chart.selectAll(".series").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "series").attr("transform", function(d, i) {
+                return "translate(0, " + yScale(d.key) + ")";
+            });
+            series.datum(function(d) {
+                return d;
+            }).call(punchCard);
+            series.exit().remove();
         });
     }
     // Configuration Getters & Setters
@@ -3194,14 +3196,17 @@ d3.ez.chart.multiSeriesLine = function module() {
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
             chart.select(".y-axis").call(yAxis);
-            var series = chart.selectAll(".series").data(data).enter().append("g").attr("class", "series").style("fill", function(d) {
-                return colorScale(d.key);
-            });
             var lineChart = d3.ez.component.lineChart().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             var dots = d3.ez.component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var series = chart.selectAll(".series").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "series").style("fill", function(d) {
+                return colorScale(d.key);
+            });
             series.datum(function(d) {
                 return d;
             }).call(dots).call(lineChart);
+            series.exit().remove();
         });
     }
     // Configuration Getters & Setters

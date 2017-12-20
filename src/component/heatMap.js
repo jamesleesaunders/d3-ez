@@ -21,27 +21,13 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      // Create chart group
-      selection.selectAll('.chartTabularHeat')
+      selection.selectAll('.deck')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('chartTabularHeat', true)
-        .attr("width", width)
-        .attr("height", height)
+        .classed('deck', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var chartTabularHeat = selection.selectAll('.chartTabularHeat');
-
-      var decks = chartTabularHeat.selectAll(".deck")
-        .data(function(d) { return d; });
-
-      var deck = decks.enter().append("g")
-        .attr("class", "deck")
-        .attr("transform", function(d, i) {
-          return "translate(0, " + yScale(d.key) + ")";
-        })
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      deck.exit().remove();
+      var deck = selection.selectAll('.deck');
 
       var cards = deck.selectAll(".card")
         .data(function(d) { return d.values; });

@@ -22,33 +22,23 @@ d3.ez.component.punchCard = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      // Create chart group
-      selection.selectAll('.chartPunchCard')
+      // Add Punch Rows
+      selection.selectAll(".punchRow")
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('chartPunchCard', true)
-        .attr("width", width)
-        .attr("height", height)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var chartPunchCard = selection.selectAll('.chartPunchCard');
-
-      // Add Punch Rows
-      var punchRows = chartPunchCard.selectAll(".punchRow")
-        .data(function(d) { return d; });
-
-      var punchRow = punchRows.enter().append("g")
-        .attr("class", "punchRow")
         .attr("transform", function(d, i) {
-          return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
+          return "translate(0, " + (cellHeight / 2) + ")";
         })
+        .classed('punchRow', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      punchRow.exit().remove();
+      var punchRow = selection.selectAll('.punchRow');
 
       var circles = punchRow.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
       circles.enter().append("circle")
+        .attr("class", "punchSpot")
         .attr("cx", function(d, i) {
           return (cellWidth / 2 + xScale(d.key));
         })
@@ -56,7 +46,6 @@ d3.ez.component.punchCard = function module() {
         .attr("r", function(d) {
           return sizeScale(d['value']);
         })
-        .attr("class", "punchSpot")
         .attr("width", cellWidth)
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)

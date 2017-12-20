@@ -100,7 +100,8 @@ d3.ez.chart.tabularHeat = function module() {
       // Update the chart dimensions
       chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
-        .attr("height", chartH);
+        .attr("height", chartH)
+        .classed("chartTabularHeat", true);
 
       // Add axis to chart
       chart.select(".x-axis")
@@ -122,8 +123,16 @@ d3.ez.chart.tabularHeat = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      chart.datum(data)
+      var series = chart.selectAll(".series")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "series")
+        .attr("transform", function(d, i) { return "translate(0, " + yScale(d.key) + ")"; });
+
+      series.datum(function(d) { return d; })
         .call(heatMap);
+
+      series.exit().remove();
     });
   }
 
