@@ -22,7 +22,6 @@ d3.ez.component.barRadial = function module() {
     selection.each(function(data) {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-      var labelRadius = radius * 1.050;
 
       var yDomain = yScale.domain();
       yDomain[1] = yDomain[1] * 1.05;
@@ -45,63 +44,16 @@ d3.ez.component.barRadial = function module() {
         });
 
       // Create chart group
-      var radialChart = selection.selectAll('.chartRadialBar')
+      var barRadial = selection.selectAll('.barRadial')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("chartRadialBar", true)
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .classed("barRadial", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-
-      radialChart.append("g").attr("class", "tickCircles");
-      radialChart.append("g").attr("class", "outerCircle");
-      radialChart.append("g").attr("class", "spokes");
-      radialChart.append("g").attr("class", "segments");
-      radialChart.append("g").attr("class", "axis");
-
-      var radialChart = selection.selectAll('.chartRadialBar').merge(radialChart);
-
-      // Tick circles
-      var tickCircles = radialChart.select(".tickCircles")
-        .selectAll("circle")
-        .data(barScale.ticks());
-
-      tickCircles.enter()
-        .append("circle")
-        .style("fill", "none")
-        .merge(tickCircles)
-        .transition()
-        .attr("r", function(d) {
-          return barScale(d);
-        });
-
-      tickCircles.exit()
-        .remove();
-
-      // Outer circle
-      var outerCircle = radialChart.select(".outerCircle")
-      outerCircle.selectAll("circle")
-        .data([radius])
-        .enter()
-        .append("circle")
-        .attr("r", function(d) { return d; })
-        .style("fill", "none");
-
-      // Spokes
-      var spokes = radialChart.select(".spokes")
-        .selectAll("line")
-        .data(function(d) { return d; })
-        .enter()
-        .append("line")
-        .attr("y2", -radius)
-        .attr("transform", function(d, i, j) {
-          numBars = j.length;
-          return "rotate(" + (i * 360 / numBars) + ")";
-        });
+      var barRadial = selection.selectAll('.barRadial').merge(barRadial);
 
       // Segments
-      var segments = radialChart.select(".segments")
-        .selectAll("path")
+      var segments = barRadial.selectAll("path")
         .data(function(d) { return d.values; });
 
       segments.enter()
@@ -120,10 +72,6 @@ d3.ez.component.barRadial = function module() {
       segments.exit()
         .remove();
 
-      // Axis
-      var axis = d3.axisLeft(axisScale);
-      axis = radialChart.select(".axis")
-        .call(axis);
     });
   }
 

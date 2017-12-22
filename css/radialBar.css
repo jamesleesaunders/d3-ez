@@ -27,8 +27,8 @@
 }
 
 .chartRadialBar .spokes line {
-  stroke: #666;
-  stroke-width: 0.2;
+  stroke: #aaa;
+  stroke-width: 1px;
 }
 
 .circularLabels text {

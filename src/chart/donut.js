@@ -76,7 +76,8 @@ d3.ez.chart.donut = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.classed("chartDonut", true)
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 

@@ -45,7 +45,12 @@ d3.ez.chart.radialBar = function module() {
     var domain = [0, maxValue];
     categoryNames = slicedData.categoryNames;
 
-    // Bar Scale
+    // X & Y Scales
+    xScale = d3.scaleBand()
+      .domain(categoryNames)
+      .rangeRound([0, chartW])
+      .padding(0.15);
+
     yScale = d3.scaleLinear()
       .domain(domain)
       .range([0, radius]);
@@ -77,12 +82,17 @@ d3.ez.chart.radialBar = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
+        chart.append("g").classed("circleAxis", true);
+        chart.append("g").classed("barChart", true);
+        chart.append("g").classed("axis", true);
+        chart.append("g").classed("circleLabels", true);
       } else {
         chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.classed("chartRadialBar", true)
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", width)
         .attr("height", height);
 
@@ -95,16 +105,35 @@ d3.ez.chart.radialBar = function module() {
         .colorScale(colorScale)
         .dispatch(dispatch);
 
-      chart.datum(data)
+      chart.select(".barChart")
+        .datum(data)
         .call(barRadial);
 
-      // Segment Labels
+      // Circular Axis
+      var circularAxis = d3.ez.component.circularAxis()
+        .xScale(xScale)
+        .yScale(yScale)
+        .width(chartW)
+        .height(chartH)
+        .radius(radius);
+
+      chart.select(".circleAxis")
+        .call(circularAxis);
+
+      // Y Axis
+      var yScale2 = d3.scaleLinear().domain(yScale.domain()).range([0, -radius]);
+      var yAxis = d3.axisLeft(yScale2);
+      chart.select(".axis")
+        .call(yAxis);
+
+      // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()
         .width(chartW)
         .height(chartH)
         .radius(radius);
 
-      chart.datum(categoryNames)
+      chart.select(".circleLabels")
+        .datum(categoryNames)
         .call(circularLabels);
 
     });

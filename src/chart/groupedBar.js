@@ -109,7 +109,8 @@ d3.ez.chart.groupedBar = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.classed("chartGroupedBar", true)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 

@@ -29,7 +29,6 @@ d3.ez.component.heatCircle = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
-      var labelRadius = radius * 1.050;
       var segmentHeight = ((radius - innerRadius) / numRadials);
 
       // Arc Generator
@@ -48,17 +47,16 @@ d3.ez.component.heatCircle = function module() {
         });
 
       // Create chart group
-      var circularHeat = selection.selectAll('.chartCircularHeat')
+      var circularHeat = selection.selectAll('.heatCircle')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("chartCircularHeat", true)
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .classed("heatCircle", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
 
       circularHeat.append("g").attr("class", "rings");
       circularHeat.append("g").attr("class", "radialLabels");
-      var circularHeat = selection.selectAll('.chartCircularHeat').merge(circularHeat);
+      var circularHeat = selection.selectAll('.heatCircle').merge(circularHeat);
 
       // Rings
       circularHeat.select(".rings").selectAll("g")

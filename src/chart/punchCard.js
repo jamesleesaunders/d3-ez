@@ -115,7 +115,8 @@ d3.ez.chart.punchCard = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.classed("chartPunchCard", true)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", width)
         .attr("height", height);
 

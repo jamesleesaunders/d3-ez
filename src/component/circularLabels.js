@@ -23,8 +23,7 @@ d3.ez.component.circularLabels = function module() {
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("circularLabels", true)
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")");
+        .classed("circularLabels", true);
       var circularLabels = selection.selectAll('.circularLabels').merge(circularLabels);
 
       // Labels
@@ -84,17 +83,6 @@ d3.ez.component.circularLabels = function module() {
     if (!arguments.length) return yScale;
     yScale = _;
     return my;
-  };
-
-  my.dispatch = function(_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
-
-  my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
   };
 
   return my;

@@ -49,19 +49,18 @@ d3.ez.component.donut = function module() {
       }
 
       // Create chart group
-      var chartDonut = selection.selectAll('.chartDonut')
+      var chartDonut = selection.selectAll('.donut')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("chartDonut", true)
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .classed("donut", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
 
       chartDonut.append("g").attr("class", "slices");
       chartDonut.append("g").attr("class", "labels");
       chartDonut.append("g").attr("class", "lines");
 
-      var chartDonut = selection.selectAll('.chartDonut');
+      var chartDonut = selection.selectAll('.donut');
 
       // Slices
       var slices = chartDonut.select(".slices")

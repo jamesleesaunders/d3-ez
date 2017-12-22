@@ -86,7 +86,8 @@ d3.ez.chart.circularHeat = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.classed("chartCircularHeat", true)
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 
@@ -101,7 +102,7 @@ d3.ez.chart.circularHeat = function module() {
       chart.datum(data)
         .call(heatMap);
 
-      // Segment Labels
+      // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()
         .width(chartW)
         .height(chartH)

@@ -105,7 +105,8 @@ d3.ez.chart.multiSeriesLine = function module() {
       }
 
       // Update the chart dimensions
-      chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      chart.classed("chartMultiSeriesLine", true)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 

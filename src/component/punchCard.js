@@ -23,16 +23,16 @@ d3.ez.component.punchCard = function module() {
       var cellWidth = xScale.bandwidth();
 
       // Add Punch Rows
-      selection.selectAll(".punchRow")
+      selection.selectAll(".punchCard")
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
         .attr("transform", function(d, i) {
           return "translate(0, " + (cellHeight / 2) + ")";
         })
-        .classed('punchRow', true)
+        .classed('punchCard', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var punchRow = selection.selectAll('.punchRow');
+      var punchRow = selection.selectAll('.punchCard');
 
       var circles = punchRow.selectAll(".punchSpot")
         .data(function(d) { return d.values; });

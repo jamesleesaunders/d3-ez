@@ -813,7 +813,6 @@ d3.ez.component.barRadial = function module() {
         selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
-            var labelRadius = radius * 1.05;
             var yDomain = yScale.domain();
             yDomain[1] = yDomain[1] * 1.05;
             var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
@@ -829,37 +828,14 @@ d3.ez.component.barRadial = function module() {
                 return (i + 1) * 2 * Math.PI / numBars;
             });
             // Create chart group
-            var radialChart = selection.selectAll(".chartRadialBar").data(function(d) {
+            var barRadial = selection.selectAll(".barRadial").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("chartRadialBar", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
+            }).enter().append("g").classed("barRadial", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            radialChart.append("g").attr("class", "tickCircles");
-            radialChart.append("g").attr("class", "outerCircle");
-            radialChart.append("g").attr("class", "spokes");
-            radialChart.append("g").attr("class", "segments");
-            radialChart.append("g").attr("class", "axis");
-            var radialChart = selection.selectAll(".chartRadialBar").merge(radialChart);
-            // Tick circles
-            var tickCircles = radialChart.select(".tickCircles").selectAll("circle").data(barScale.ticks());
-            tickCircles.enter().append("circle").style("fill", "none").merge(tickCircles).transition().attr("r", function(d) {
-                return barScale(d);
-            });
-            tickCircles.exit().remove();
-            // Outer circle
-            var outerCircle = radialChart.select(".outerCircle");
-            outerCircle.selectAll("circle").data([ radius ]).enter().append("circle").attr("r", function(d) {
-                return d;
-            }).style("fill", "none");
-            // Spokes
-            var spokes = radialChart.select(".spokes").selectAll("line").data(function(d) {
-                return d;
-            }).enter().append("line").attr("y2", -radius).attr("transform", function(d, i, j) {
-                numBars = j.length;
-                return "rotate(" + i * 360 / numBars + ")";
-            });
+            var barRadial = selection.selectAll(".barRadial").merge(barRadial);
             // Segments
-            var segments = radialChart.select(".segments").selectAll("path").data(function(d) {
+            var segments = barRadial.selectAll("path").data(function(d) {
                 return d.values;
             });
             segments.enter().append("path").style("fill", function(d, i) {
@@ -868,9 +844,6 @@ d3.ez.component.barRadial = function module() {
                 dispatch.call("customMouseOver", this, d);
             }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             segments.exit().remove();
-            // Axis
-            var axis = d3.axisLeft(axisScale);
-            axis = radialChart.select(".axis").call(axis);
         });
     }
     // Configuration Getters & Setters
@@ -952,15 +925,15 @@ d3.ez.component.donut = function module() {
                 return d.startAngle + (d.endAngle - d.startAngle) / 2;
             }
             // Create chart group
-            var chartDonut = selection.selectAll(".chartDonut").data(function(d) {
+            var chartDonut = selection.selectAll(".donut").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("chartDonut", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
+            }).enter().append("g").classed("donut", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
             chartDonut.append("g").attr("class", "slices");
             chartDonut.append("g").attr("class", "labels");
             chartDonut.append("g").attr("class", "lines");
-            var chartDonut = selection.selectAll(".chartDonut");
+            var chartDonut = selection.selectAll(".donut");
             // Slices
             var slices = chartDonut.select(".slices").selectAll("path.slice").data(function(d) {
                 return pie(d.values);
@@ -1506,7 +1479,6 @@ d3.ez.component.heatCircle = function module() {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
-            var labelRadius = radius * 1.05;
             var segmentHeight = (radius - innerRadius) / numRadials;
             // Arc Generator
             var arc = d3.arc().innerRadius(function(d, i) {
@@ -1519,14 +1491,14 @@ d3.ez.component.heatCircle = function module() {
                 return (i + 1) * 2 * Math.PI / numSegments;
             });
             // Create chart group
-            var circularHeat = selection.selectAll(".chartCircularHeat").data(function(d) {
+            var circularHeat = selection.selectAll(".heatCircle").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").on("click", function(d) {
+            }).enter().append("g").classed("heatCircle", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
             circularHeat.append("g").attr("class", "rings");
             circularHeat.append("g").attr("class", "radialLabels");
-            var circularHeat = selection.selectAll(".chartCircularHeat").merge(circularHeat);
+            var circularHeat = selection.selectAll(".heatCircle").merge(circularHeat);
             // Rings
             circularHeat.select(".rings").selectAll("g").data(function(d) {
                 return d;
@@ -1626,14 +1598,14 @@ d3.ez.component.punchCard = function module() {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
             // Add Punch Rows
-            selection.selectAll(".punchRow").data(function(d) {
+            selection.selectAll(".punchCard").data(function(d) {
                 return [ d ];
             }).enter().append("g").attr("transform", function(d, i) {
                 return "translate(0, " + cellHeight / 2 + ")";
-            }).classed("punchRow", true).on("click", function(d) {
+            }).classed("punchCard", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            var punchRow = selection.selectAll(".punchRow");
+            var punchRow = selection.selectAll(".punchCard");
             var circles = punchRow.selectAll(".punchSpot").data(function(d) {
                 return d.values;
             });
@@ -1855,6 +1827,84 @@ d3.ez.component.title = function module() {
 };
 
 /**
+ * Reusable Circular Axis
+ *
+ * @example
+ * var myBars = d3.ez.component.circularAxis()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.circularAxis = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 300;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var radius = undefined;
+    function my(selection) {
+        selection.each(function(data) {
+            var defaultRadius = Math.min(width, height) / 2;
+            radius = typeof radius === "undefined" ? defaultRadius : radius;
+            // Create chart group
+            var circularAxis = selection.selectAll(".circularAxis").data([ 0 ]).enter().append("g").classed("circularAxis", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            circularAxis.append("g").attr("class", "outerCircle");
+            circularAxis.append("g").attr("class", "tickCircles");
+            circularAxis.append("g").attr("class", "spokes");
+            var circularAxis = selection.selectAll(".circularAxis").merge(circularAxis);
+            // Outer circle
+            var outerCircle = circularAxis.select(".outerCircle");
+            outerCircle.selectAll("circle").data([ radius ]).enter().append("circle").attr("r", function(d) {
+                return d;
+            }).style("fill", "none");
+            // Tick circles
+            var tickCircles = circularAxis.select(".tickCircles").selectAll("circle").data(yScale.ticks());
+            tickCircles.enter().append("circle").style("fill", "none").merge(tickCircles).transition().attr("r", function(d) {
+                return yScale(d);
+            });
+            tickCircles.exit().remove();
+            // Spokes
+            var spokes = circularAxis.select(".spokes").selectAll("line").data(xScale.domain()).enter().append("line").attr("y2", -radius).attr("transform", function(d, i, j) {
+                numBars = j.length;
+                return "rotate(" + i * 360 / numBars + ")";
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    return my;
+};
+
+/**
  * Reusable Circular Labels
  *
  * @example
@@ -1875,7 +1925,7 @@ d3.ez.component.circularLabels = function module() {
             var labelRadius = radius * 1.05;
             var circularLabels = selection.selectAll(".circularLabels").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("circularLabels", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            }).enter().append("g").classed("circularLabels", true);
             var circularLabels = selection.selectAll(".circularLabels").merge(circularLabels);
             // Labels
             circularLabels.selectAll("def").data([ labelRadius ]).enter().append("def").append("path").attr("id", "label-path").attr("d", function(d) {
@@ -1916,15 +1966,6 @@ d3.ez.component.circularLabels = function module() {
         if (!arguments.length) return yScale;
         yScale = _;
         return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
     };
     return my;
 };
@@ -2170,7 +2211,7 @@ d3.ez.chart.discreteBar = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed("chartDiscreteBar", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
@@ -2308,7 +2349,7 @@ d3.ez.chart.groupedBar = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed("chartGroupedBar", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
@@ -2431,7 +2472,8 @@ d3.ez.chart.radialBar = function module() {
         maxValue = slicedData.maxValue;
         var domain = [ 0, maxValue ];
         categoryNames = slicedData.categoryNames;
-        // Bar Scale
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
         yScale = d3.scaleLinear().domain(domain).range([ 0, radius ]);
         // Colour Scale
         colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
@@ -2452,17 +2494,28 @@ d3.ez.chart.radialBar = function module() {
                 }(d3.select(this));
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("circleAxis", true);
+                chart.append("g").classed("barChart", true);
+                chart.append("g").classed("axis", true);
+                chart.append("g").classed("circleLabels", true);
             } else {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
+            chart.classed("chartRadialBar", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", width).attr("height", height);
             // Add the chart
             var barRadial = d3.ez.component.barRadial().width(chartW).height(chartH).radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
-            chart.datum(data).call(barRadial);
-            // Segment Labels
+            chart.select(".barChart").datum(data).call(barRadial);
+            // Circular Axis
+            var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
+            chart.select(".circleAxis").call(circularAxis);
+            // Y Axis
+            var yScale2 = d3.scaleLinear().domain(yScale.domain()).range([ 0, -radius ]);
+            var yAxis = d3.axisLeft(yScale2);
+            chart.select(".axis").call(yAxis);
+            // Circular Labels
             var circularLabels = d3.ez.component.circularLabels().width(chartW).height(chartH).radius(radius);
-            chart.datum(categoryNames).call(circularLabels);
+            chart.select(".circleLabels").datum(categoryNames).call(circularLabels);
         });
     }
     // Configuration Getters & Setters
@@ -2605,10 +2658,10 @@ d3.ez.chart.circularHeat = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             var heatMap = d3.ez.component.heatCircle().width(chartW).height(chartH).colorScale(colorScale).radius(radius).innerRadius(innerRadius).dispatch(dispatch);
             chart.datum(data).call(heatMap);
-            // Segment Labels
+            // Circular Labels
             var circularLabels = d3.ez.component.circularLabels().width(chartW).height(chartH).radius(radius);
             chart.datum(categoryNames).call(circularLabels);
         });
@@ -2749,7 +2802,7 @@ d3.ez.chart.tabularHeat = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).classed("chartTabularHeat", true);
+            chart.classed("chartTabularHeat", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
@@ -2884,7 +2937,7 @@ d3.ez.chart.donut = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed("chartDonut", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
             var donutChart = d3.ez.component.donut().width(chartW).height(chartH).radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
             chart.datum(data).call(donutChart);
@@ -3039,7 +3092,7 @@ d3.ez.chart.punchCard = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
+            chart.classed("chartPunchCard", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
@@ -3192,7 +3245,7 @@ d3.ez.chart.multiSeriesLine = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed("chartMultiSeriesLine", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
             chart.select(".y-axis").call(yAxis);
