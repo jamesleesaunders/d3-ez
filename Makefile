@@ -11,6 +11,7 @@ JS_FILES :=        src/header.js \
                    src/component/donut.js \
                    src/component/creditTag.js \
                    src/component/labeledNode.js \
+                   src/component/scatterPlot.js \
                    src/component/legend.js \
                    src/component/lineChart.js \
                    src/component/heatMap.js \
