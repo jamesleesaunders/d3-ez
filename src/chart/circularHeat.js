@@ -111,8 +111,8 @@ d3.ez.chart.circularHeat = function module() {
         .attr("height", chartH);
 
       var heatRing = d3.ez.component.heatRing()
-        .radius(function(d) { return yScale(d.series); })
-        .innerRadius(function(d) { return yScale(d.series) + yScale.bandwidth(); })
+        .radius(function(d) { return yScale(d.series) + yScale.padding(); })
+        .innerRadius(function(d) { return yScale(d.series) + yScale.bandwidth() ; })
         .colorScale(colorScale)
         .yScale(yScale)
         .xScale(xScale)

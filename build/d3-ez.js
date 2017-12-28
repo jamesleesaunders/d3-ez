@@ -1692,7 +1692,8 @@ d3.ez.component.heatRing = function module() {
                 return i * 2 * Math.PI / numSegments;
             }).endAngle(function(d, i) {
                 return (i + 1) * 2 * Math.PI / numSegments;
-            });
+            }).cornerRadius(3);
+            //.padAngle(0.015);
             // Create chart group
             var heatRing = selection.selectAll(".heatRing").data(function(d) {
                 return [ d ];
@@ -2858,7 +2859,7 @@ d3.ez.chart.circularHeat = function module() {
             // Update the chart dimensions
             chart.classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             var heatRing = d3.ez.component.heatRing().radius(function(d) {
-                return yScale(d.series);
+                return yScale(d.series) + yScale.padding();
             }).innerRadius(function(d) {
                 return yScale(d.series) + yScale.bandwidth();
             }).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);

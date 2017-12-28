@@ -34,7 +34,9 @@ d3.ez.component.heatRing = function module() {
         })
         .endAngle(function(d, i) {
           return ((i + 1) * 2 * Math.PI) / numSegments;
-        });
+        })
+        .cornerRadius(3)
+        .padAngle(0.015);
 
       // Create chart group
       var heatRing = selection.selectAll('.heatRing')

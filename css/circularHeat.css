@@ -5,6 +5,12 @@
   stroke-width: 0.5px;
 }
 
+.chartCircularHeat path.segment:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
 .chartCircularHeat .segmentLabels text {
   font-size: 1.0em;
   font-weight: bold;
