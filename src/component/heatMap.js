@@ -8,8 +8,8 @@
  */
 d3.ez.component.heatMap = function module() {
   // Default Options (Configurable via setters)
-  var height = 100;
   var width = 300;
+  var height = 100;
   var colorScale = undefined;
   var xScale = undefined;
   var yScale = undefined;
@@ -21,37 +21,37 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      selection.selectAll('.deck')
+      var heatMap = selection.selectAll('.heatMap')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('deck', true)
+        .classed('heatMap', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var deck = selection.selectAll('.deck');
+      heatMap = selection.selectAll('.heatMap').merge(heatMap);
 
-      var cards = deck.selectAll(".card")
+      var cells = heatMap.selectAll(".cell")
         .data(function(d) { return d.values; });
 
-      cards.enter().append("rect")
+      cells.enter().append("rect")
         .attr("x", function(d, i) {
           return xScale(d.key);
         })
         .attr("y", 0)
         .attr("rx", 3)
         .attr("ry", 3)
-        .attr("class", "card")
+        .attr("class", "cell")
         .attr("width", cellWidth)
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(cards)
+        .merge(cells)
         .transition()
         .duration(1000)
         .attr("fill", function(d) { return colorScale(d.value); });
 
-      cards.exit().remove();
+      cells.exit().remove();
 
-      cards.select("title").text(function(d) {
+      cells.select("title").text(function(d) {
         return d.value;
       });
 

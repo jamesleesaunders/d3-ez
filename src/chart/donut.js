@@ -37,6 +37,10 @@ d3.ez.chart.donut = function module() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     var categoryNames = slicedData.categoryNames;

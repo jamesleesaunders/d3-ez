@@ -16,6 +16,7 @@ include('../src/component/legend.js');
 include('../src/component/lineChart.js');
 include('../src/component/heatMap.js');
 include('../src/component/heatCircle.js');
+include('../src/component/heatRing.js');
 include('../src/component/punchCard.js');
 include('../src/component/numberCard.js');
 include('../src/component/scatterPlot.js');

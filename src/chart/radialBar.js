@@ -39,6 +39,10 @@ d3.ez.chart.radialBar = function module() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
+    var defaultRadius = Math.min(chartW, chartH) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     maxValue = slicedData.maxValue;
@@ -93,8 +97,8 @@ d3.ez.chart.radialBar = function module() {
       // Update the chart dimensions
       chart.classed("chartRadialBar", true)
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("width", chartW)
+        .attr("height", chartH);
 
       // Add the chart
       var barRadial = d3.ez.component.barRadial()
@@ -143,21 +147,18 @@ d3.ez.chart.radialBar = function module() {
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
-    radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     return this;
   };
 
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     return this;
   };
 
   my.margin = function(_) {
     if (!arguments.length) return margin;
     margin = _;
-    radius = d3.min([(width - (margin.right + margin.left)), (height - (margin.top + margin.bottom))]) / 2;
     return this;
   };
 

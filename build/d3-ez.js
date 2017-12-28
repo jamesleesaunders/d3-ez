@@ -1461,8 +1461,8 @@ d3.ez.component.lineChart = function module() {
  */
 d3.ez.component.heatMap = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
     var width = 300;
+    var height = 100;
     var colorScale = undefined;
     var xScale = undefined;
     var yScale = undefined;
@@ -1475,24 +1475,24 @@ d3.ez.component.heatMap = function module() {
         selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            selection.selectAll(".deck").data(function(d) {
+            var heatMap = selection.selectAll(".heatMap").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("deck", true).on("click", function(d) {
+            }).enter().append("g").classed("heatMap", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            var deck = selection.selectAll(".deck");
-            var cards = deck.selectAll(".card").data(function(d) {
+            heatMap = selection.selectAll(".heatMap").merge(heatMap);
+            var cells = heatMap.selectAll(".cell").data(function(d) {
                 return d.values;
             });
-            cards.enter().append("rect").attr("x", function(d, i) {
+            cells.enter().append("rect").attr("x", function(d, i) {
                 return xScale(d.key);
-            }).attr("y", 0).attr("rx", 3).attr("ry", 3).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("y", 0).attr("rx", 3).attr("ry", 3).attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
+            }).merge(cells).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);
             });
-            cards.exit().remove();
-            cards.select("title").text(function(d) {
+            cells.exit().remove();
+            cells.select("title").text(function(d) {
                 return d.value;
             });
         });
@@ -1645,6 +1645,123 @@ d3.ez.component.heatCircle = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Circular Heat Ring
+ *
+ * @example
+ * var myBars = d3.ez.component.heatRing()
+ *     .colorScale(**D3 Scale Object**);
+ * d3.select("svg").call(myBars);
+ */
+d3.ez.component.heatRing = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 300;
+    var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    var radius = undefined;
+    var innerRadius = undefined;
+    function my(selection) {
+        selection.each(function(data) {
+            var defaultRadius = Math.min(width, height) / 2;
+            radius = typeof radius === "undefined" ? defaultRadius : radius;
+            innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+            numSegments = data.values.length;
+            // Arc Generator
+            var arc = d3.arc().innerRadius(function(d) {
+                return yScale(d.jim);
+            }).outerRadius(function(d, i) {
+                return yScale(d.jim) + yScale.bandwidth();
+            }).startAngle(function(d, i) {
+                return i * 2 * Math.PI / numSegments;
+            }).endAngle(function(d, i) {
+                return (i + 1) * 2 * Math.PI / numSegments;
+            });
+            // Create chart group
+            var heatRing = selection.selectAll(".heatRing").data(function(d) {
+                ret = [];
+                var jim = d.key;
+                d.values.forEach(function(d, i) {
+                    ret[i] = {
+                        key: d.key,
+                        value: d.value,
+                        jim: jim
+                    };
+                });
+                return [ {
+                    key: jim,
+                    values: ret
+                } ];
+            }).enter().append("g").classed("heatRing", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            heatRing = selection.selectAll(".heatRing").merge(heatRing);
+            var segments = heatRing.selectAll(".segment").data(function(d) {
+                return d.values;
+            });
+            // Ring Segments
+            segments.enter().append("path").attr("d", arc).attr("fill", function(d) {
+                return colorScale(d.value);
+            }).classed("segment", true).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            });
+            segments.exit().remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
         return my;
     };
     my.dispatch = function(_) {
@@ -2009,7 +2126,7 @@ d3.ez.component.circularLabels = function module() {
         selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
-            var labelRadius = radius * 1.05;
+            var labelRadius = radius * 1.02;
             var circularLabels = selection.selectAll(".circularLabels").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("circularLabels", true);
@@ -2554,6 +2671,9 @@ d3.ez.chart.radialBar = function module() {
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
         maxValue = slicedData.maxValue;
@@ -2589,7 +2709,7 @@ d3.ez.chart.radialBar = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartRadialBar", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", width).attr("height", height);
+            chart.classed("chartRadialBar", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
             var barRadial = d3.ez.component.barRadial().width(chartW).height(chartH).radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".barChart").datum(data).call(barRadial);
@@ -2609,19 +2729,16 @@ d3.ez.chart.radialBar = function module() {
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.margin = function(_) {
         if (!arguments.length) return margin;
         margin = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.radius = function(_) {
@@ -2697,7 +2814,6 @@ d3.ez.chart.circularHeat = function module() {
     var classed = "chartCircularHeat";
     var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     var radius = undefined;
-    var innerRadius = undefined;
     // Data Options (Populated by 'init' function)
     var minValue = 0;
     var maxValue = 0;
@@ -2708,20 +2824,30 @@ d3.ez.chart.circularHeat = function module() {
     var segmentHeight = 0;
     var colorScale = undefined;
     var thresholds = undefined;
+    var groupNames = [];
     var categoryNames = [];
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
+        var maxValue = slicedData.maxValue;
+        var minValue = slicedData.minValue;
         categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {
             var thresholds = slicedData.thresholds;
         }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(groupNames).rangeRound([ innerRadius, radius ]).padding(.05);
         // Colour Scale
         colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
     }
@@ -2741,16 +2867,23 @@ d3.ez.chart.circularHeat = function module() {
                 }(d3.select(this));
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("circleLabels", true);
             } else {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
             chart.classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
-            var heatMap = d3.ez.component.heatCircle().width(chartW).height(chartH).colorScale(colorScale).radius(radius).innerRadius(innerRadius).dispatch(dispatch);
-            chart.datum(data).call(heatMap);
+            var heatRing = d3.ez.component.heatRing().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var series = chart.selectAll(".series").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "series");
+            series.datum(function(d) {
+                return d;
+            }).call(heatRing);
+            series.exit().remove();
             // Circular Labels
             var circularLabels = d3.ez.component.circularLabels().width(chartW).height(chartH).radius(radius);
-            chart.datum(categoryNames).call(circularLabels);
+            chart.select(".circleLabels").datum(categoryNames).call(circularLabels);
         });
     }
     // Configuration Getters & Setters
@@ -2995,6 +3128,9 @@ d3.ez.chart.donut = function module() {
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
         var categoryNames = slicedData.categoryNames;

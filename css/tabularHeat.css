@@ -1,11 +1,11 @@
 /* === Tabular Heat Chart Styles === */
 
-.chartTabularHeat rect.card {
+.chartTabularHeat rect.cell {
   stroke: #999999;
   stroke-width: 1px;
 }
 
-.chartTabularHeat rect.card:hover {
+.chartTabularHeat rect.cell:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;
