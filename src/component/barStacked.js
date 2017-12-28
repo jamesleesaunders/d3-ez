@@ -33,7 +33,7 @@ d3.ez.component.barStacked = function module() {
             y0 += d.value;
           });
 
-          data = {key: data.key, values: series};
+          data = { key: data.key, values: series };
           return [data];
         })
         .enter()

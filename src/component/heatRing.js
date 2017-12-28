@@ -23,7 +23,6 @@ d3.ez.component.heatRing = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
-
       numSegments = data.values.length;
 
       // Arc Generator
@@ -34,23 +33,12 @@ d3.ez.component.heatRing = function module() {
           return (i * 2 * Math.PI) / numSegments;
         })
         .endAngle(function(d, i) {
-          return((i + 1) * 2 * Math.PI) / numSegments;
+          return ((i + 1) * 2 * Math.PI) / numSegments;
         });
 
       // Create chart group
       var heatRing = selection.selectAll('.heatRing')
-        .data(function(d) {
-          ret = [];
-          var series = d.key;
-          d.values.forEach(function(d, i) {
-            ret[i] = {
-              key: d.key,
-              value: d.value,
-              series: series
-            };
-          });
-          return [{key: series, values: ret}];
-        })
+        .data(function(d) { return [d]; })
         .enter()
         .append("g")
         .classed("heatRing", true)
@@ -72,7 +60,6 @@ d3.ez.component.heatRing = function module() {
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       segments.exit().remove();
-
     });
 
   }
