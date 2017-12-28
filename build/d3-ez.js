@@ -1688,30 +1688,14 @@ d3.ez.component.heatRing = function module() {
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
             numSegments = data.values.length;
             // Arc Generator
-            var arc = d3.arc().innerRadius(function(d) {
-                return yScale(d.jim);
-            }).outerRadius(function(d, i) {
-                return yScale(d.jim) + yScale.bandwidth();
-            }).startAngle(function(d, i) {
+            var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).startAngle(function(d, i) {
                 return i * 2 * Math.PI / numSegments;
             }).endAngle(function(d, i) {
                 return (i + 1) * 2 * Math.PI / numSegments;
             });
             // Create chart group
             var heatRing = selection.selectAll(".heatRing").data(function(d) {
-                ret = [];
-                var jim = d.key;
-                d.values.forEach(function(d, i) {
-                    ret[i] = {
-                        key: d.key,
-                        value: d.value,
-                        jim: jim
-                    };
-                });
-                return [ {
-                    key: jim,
-                    values: ret
-                } ];
+                return [ d ];
             }).enter().append("g").classed("heatRing", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
@@ -2873,9 +2857,29 @@ d3.ez.chart.circularHeat = function module() {
             }
             // Update the chart dimensions
             chart.classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
-            var heatRing = d3.ez.component.heatRing().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var heatRing = d3.ez.component.heatRing().radius(function(d) {
+                return yScale(d.series);
+            }).innerRadius(function(d) {
+                return yScale(d.series) + yScale.bandwidth();
+            }).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             var series = chart.selectAll(".series").data(function(d) {
-                return d;
+                var data = [];
+                d3.map(d).values().forEach(function(d, i) {
+                    var seriesName = d.key;
+                    var seriesValues = [];
+                    d.values.forEach(function(d, i) {
+                        seriesValues[i] = {
+                            series: seriesName,
+                            key: d.key,
+                            value: d.value
+                        };
+                    });
+                    data[i] = {
+                        key: seriesName,
+                        values: seriesValues
+                    };
+                });
+                return data;
             }).enter().append("g").attr("class", "series");
             series.datum(function(d) {
                 return d;
@@ -3128,7 +3132,7 @@ d3.ez.chart.donut = function module() {
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
-        var defaultRadius = Math.min(width, height) / 2;
+        var defaultRadius = Math.min(chartW, chartH) / 2;
         radius = typeof radius === "undefined" ? defaultRadius : radius;
         innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
         // Slice Data, calculate totals, max etc.
