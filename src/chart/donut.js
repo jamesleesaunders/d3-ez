@@ -37,7 +37,7 @@ d3.ez.chart.donut = function module() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(width, height) / 2;
+    var defaultRadius = Math.min(chartW, chartH) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 

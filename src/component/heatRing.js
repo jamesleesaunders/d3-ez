@@ -29,10 +29,10 @@ d3.ez.component.heatRing = function module() {
       // Arc Generator
       var arc = d3.arc()
         .innerRadius(function(d) {
-          return yScale(d.jim);
+          return yScale(d.series);
         })
         .outerRadius(function(d, i) {
-          return yScale(d.jim) + yScale.bandwidth();
+          return yScale(d.series) + yScale.bandwidth();
         })
         .startAngle(function(d, i) {
           return (i * 2 * Math.PI) / numSegments;
@@ -45,15 +45,15 @@ d3.ez.component.heatRing = function module() {
       var heatRing = selection.selectAll('.heatRing')
         .data(function(d) {
           ret = [];
-          var jim = d.key;
+          var series = d.key;
           d.values.forEach(function(d, i) {
             ret[i] = {
               key: d.key,
               value: d.value,
-              jim: jim
+              series: series
             };
           });
-          return [{key: jim, values: ret}];
+          return [{key: series, values: ret}];
         })
         .enter()
         .append("g")
