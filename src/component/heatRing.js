@@ -28,12 +28,8 @@ d3.ez.component.heatRing = function module() {
 
       // Arc Generator
       var arc = d3.arc()
-        .innerRadius(function(d) {
-          return yScale(d.series);
-        })
-        .outerRadius(function(d, i) {
-          return yScale(d.series) + yScale.bandwidth();
-        })
+        .outerRadius(radius)
+        .innerRadius(innerRadius)
         .startAngle(function(d, i) {
           return (i * 2 * Math.PI) / numSegments;
         })
