@@ -4,7 +4,6 @@
 include('../src/header.js');
 include('../src/baseFunctions.js');
 include('../src/chart.js');
-include('../src/vega.js');
 include('../src/colors.js');
 include('../src/component/barGrouped.js');
 include('../src/component/barStacked.js');
