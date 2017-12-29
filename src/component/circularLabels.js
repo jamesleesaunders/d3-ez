@@ -17,7 +17,7 @@ d3.ez.component.circularLabels = function module() {
     selection.each(function(data) {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-      var labelRadius = radius * 1.050;
+      var labelRadius = radius * 1.020;
 
       var circularLabels = selection.selectAll('.circularLabels')
         .data(function(d) { return [d]; })

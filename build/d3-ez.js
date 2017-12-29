@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.7",
+    version: "2.1.8",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -313,167 +313,6 @@ d3.ez.chart = function module() {
     my.chart = function(_) {
         if (!arguments.length) return chart;
         chart = _;
-        return this;
-    };
-    my.legend = function(_) {
-        if (!arguments.length) return legend;
-        legend = _;
-        return this;
-    };
-    my.title = function(_) {
-        if (!arguments.length) return title;
-        if (typeof _ === "string") {
-            // If the caller has passed a plain string convert it to a title object.
-            title = d3.ez.title().mainText(_).subText("");
-        } else {
-            title = _;
-        }
-        return this;
-    };
-    my.yAxisLabel = function(_) {
-        if (!arguments.length) return yAxisLabel;
-        yAxisLabel = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Vega
- *
- * @example
- * @todo
- */
-d3.ez.vega = function module() {
-    // SVG and Canvas containers (Populated by 'my' function)
-    var svg;
-    var canvas;
-    // Default Options (Configurable via setters)
-    var width = 1e3;
-    var height = 600;
-    var margin = {
-        top: 30,
-        right: 30,
-        bottom: 30,
-        left: 30
-    };
-    var padding = 20;
-    var canvasW = 580;
-    var canvasH = 380;
-    var chartTop = 0;
-    var classed = "d3ez";
-    var chart = undefined;
-    var yScale = undefined;
-    var yAxis = undefined;
-    var xScale = undefined;
-    var xAxis = undefined;
-    var legend = undefined;
-    var title = undefined;
-    var creditTag = d3.ez.component.creditTag();
-    var yAxisLabel = "";
-    // Colours
-    var colorScale = undefined;
-    // Dispatch (custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function init(data) {
-        canvasW = width - (margin.left + margin.right);
-        canvasH = height - (margin.top + margin.bottom);
-        // Init Chart
-        chart.colorScale(colorScale).xScale(xScale).yScale(yScale).width(canvasW).height(canvasH).dispatch(dispatch);
-        // Init Legend
-        if (legend) {
-            legend.width(120).height(200);
-            chart.width(chart.width() - legend.width() - padding);
-        }
-        // Init Title
-        if (title) {
-            chartTop = title.height() + padding;
-            chart.height(chart.height() - title.height() - padding);
-        }
-        // Have we changed the graph size?
-        xScale.range([ chart.width(), 0 ]);
-        yScale.range([ chart.height(), 0 ]);
-        // Init Axis
-        xAxis = d3.axisBottom(xScale);
-        yAxis = d3.axisLeft(yScale);
-        // Init Credit Tag
-        creditTag.text("d3-ez.net").href("http://d3-ez.net");
-    }
-    function my(selection) {
-        selection.each(function(data) {
-            init(data);
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = d3.select(this).append("svg").classed(classed, true).attr("width", width).attr("height", height);
-                canvas = svg.append("g").classed("canvas", true);
-                canvas.append("g").classed("chartbox", true);
-                canvas.select(".chartbox").append("g").classed("x-axis axis", true);
-                canvas.select(".chartbox").append("g").classed("y-axis axis", true);
-                canvas.append("g").classed("legendbox", true);
-                canvas.append("g").classed("titlebox", true);
-                svg.append("g").classed("creditbox", true);
-            } else {
-                canvas = svg.select(".canvas");
-            }
-            // Update the canvas dimensions
-            canvas.attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", canvasW).attr("height", canvasH);
-            // Add Chart
-            canvas.select(".chartbox").attr("transform", "translate(0," + chartTop + ")").datum(data).call(chart);
-            canvas.select(".y-axis").call(yAxis);
-            canvas.select(".x-axis").attr("transform", "translate(0," + chart.height() + ")").call(xAxis);
-            // Add Title
-            if (title) {
-                canvas.select(".titlebox").attr("transform", "translate(" + width / 2 + "," + 0 + ")").call(title);
-            }
-            // Add Legend
-            if (legend && (typeof chart.colorScale === "function" || typeof chart.sizeScale === "function")) {
-                if (typeof chart.colorScale === "function") {
-                    legend.colorScale(chart.colorScale());
-                }
-                if (typeof chart.sizeScale === "function") {
-                    legend.sizeScale(chart.sizeScale());
-                }
-                canvas.select(".legendbox").attr("transform", "translate(" + (canvasW - legend.width()) + "," + chartTop + ")").call(legend);
-            }
-            // Add Credit Tag
-            if (creditTag) {
-                svg.select(".creditbox").attr("transform", "translate(" + (width - 10) + "," + (height - 5) + ")").call(creditTag);
-            }
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.chart = function(_) {
-        if (!arguments.length) return chart;
-        chart = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return this;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return this;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
         return this;
     };
     my.legend = function(_) {
@@ -909,10 +748,12 @@ d3.ez.component.donut = function module() {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
+            // Pie Generator
             var pie = d3.pie().value(function(d) {
                 return d.value;
-            }).sort(null);
-            var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius).cornerRadius(3).padAngle(.015);
+            }).sort(null).padAngle(.015);
+            // Arc Generators
+            var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius).cornerRadius(2);
             var outerArc = d3.arc().innerRadius(radius * .9).outerRadius(radius * .9);
             function arcTween(d) {
                 var i = d3.interpolate(this._current, d);
@@ -1461,8 +1302,8 @@ d3.ez.component.lineChart = function module() {
  */
 d3.ez.component.heatMap = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
     var width = 300;
+    var height = 100;
     var colorScale = undefined;
     var xScale = undefined;
     var yScale = undefined;
@@ -1475,24 +1316,24 @@ d3.ez.component.heatMap = function module() {
         selection.each(function(data) {
             var cellHeight = yScale.bandwidth();
             var cellWidth = xScale.bandwidth();
-            selection.selectAll(".deck").data(function(d) {
+            var heatMap = selection.selectAll(".heatMap").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("deck", true).on("click", function(d) {
+            }).enter().append("g").classed("heatMap", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            var deck = selection.selectAll(".deck");
-            var cards = deck.selectAll(".card").data(function(d) {
+            heatMap = selection.selectAll(".heatMap").merge(heatMap);
+            var cells = heatMap.selectAll(".cell").data(function(d) {
                 return d.values;
             });
-            cards.enter().append("rect").attr("x", function(d, i) {
+            cells.enter().append("rect").attr("x", function(d, i) {
                 return xScale(d.key);
-            }).attr("y", 0).attr("rx", 3).attr("ry", 3).attr("class", "card").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(cards).transition().duration(1e3).attr("fill", function(d) {
+            }).merge(cells).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);
             });
-            cards.exit().remove();
-            cards.select("title").text(function(d) {
+            cells.exit().remove();
+            cells.select("title").text(function(d) {
                 return d.value;
             });
         });
@@ -1536,18 +1377,20 @@ d3.ez.component.heatMap = function module() {
 };
 
 /**
- * Reusable Circular Heat Map
+ * Reusable Circular Heat Ring
  *
  * @example
- * var myBars = d3.ez.component.heatCircle()
+ * var myBars = d3.ez.component.heatRing()
  *     .colorScale(**D3 Scale Object**);
  * d3.select("svg").call(myBars);
  */
-d3.ez.component.heatCircle = function module() {
+d3.ez.component.heatRing = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 300;
     var colorScale = undefined;
+    var xScale = undefined;
+    var yScale = undefined;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
@@ -1557,68 +1400,37 @@ d3.ez.component.heatCircle = function module() {
     var innerRadius = undefined;
     function my(selection) {
         selection.each(function(data) {
-            // Slice Data, calculate totals, max etc.
-            var slicedData = d3.ez.dataParse(data);
-            groupNames = slicedData.groupNames;
-            numRadials = groupNames.length;
-            categoryNames = slicedData.categoryNames;
-            numSegments = categoryNames.length;
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
-            var segmentHeight = (radius - innerRadius) / numRadials;
+            // Pie Generator
+            var pie = d3.pie().value(function(d) {
+                return 1;
+            }).sort(null).padAngle(.015);
             // Arc Generator
-            var arc = d3.arc().innerRadius(function(d, i) {
-                return innerRadius + segmentHeight * d.ring;
-            }).outerRadius(function(d, i) {
-                return innerRadius + segmentHeight * (d.ring + 1);
-            }).startAngle(function(d, i) {
-                return i * 2 * Math.PI / numSegments;
-            }).endAngle(function(d, i) {
-                return (i + 1) * 2 * Math.PI / numSegments;
-            });
+            var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
             // Create chart group
-            var circularHeat = selection.selectAll(".heatCircle").data(function(d) {
+            var heatRing = selection.selectAll(".heatRing").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("heatCircle", true).on("click", function(d) {
+            }).enter().append("g").classed("heatRing", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            circularHeat.append("g").attr("class", "rings");
-            circularHeat.append("g").attr("class", "radialLabels");
-            var circularHeat = selection.selectAll(".heatCircle").merge(circularHeat);
-            // Rings
-            circularHeat.select(".rings").selectAll("g").data(function(d) {
-                return d;
-            }).enter().append("g").classed("ring", true);
+            heatRing = selection.selectAll(".heatRing").merge(heatRing);
+            var segments = heatRing.selectAll(".segment").data(function(d) {
+                var key = d.key;
+                var data = pie(d.values);
+                data.forEach(function(d, i) {
+                    data[i].key = key;
+                });
+                return data;
+            });
             // Ring Segments
-            circularHeat.selectAll(".ring").selectAll("path").data(function(d, i) {
-                // Add index (used to calculate ring number)
-                for (j = 0; j < numSegments; j++) {
-                    d.values[j].ring = i;
-                }
-                return d.values;
-            }).enter().append("path").attr("d", arc).attr("fill", function(d) {
-                return colorScale(d.value);
+            segments.enter().append("path").attr("d", arc).attr("fill", function(d) {
+                return colorScale(d.data.value);
             }).classed("segment", true).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
+                dispatch.call("customMouseOver", this, d.data);
             });
-            // Radial Labels
-            var lsa = .01;
-            // Label start angle
-            var radialLabels = circularHeat.select(".radialLabels").classed("labels", true);
-            radialLabels.selectAll("def").data(function(d) {
-                return d;
-            }).enter().append("def").append("path").attr("id", function(d, i) {
-                return "radial-label-path-" + i;
-            }).attr("d", function(d, i) {
-                var r = innerRadius + (i + .2) * segmentHeight;
-                return "m" + r * Math.sin(lsa) + " -" + r * Math.cos(lsa) + " a" + r + " " + r + " 0 1 1 -1 0";
-            });
-            radialLabels.selectAll("text").data(groupNames).enter().append("text").append("textPath").attr("xlink:href", function(d, i) {
-                return "#radial-label-path-" + i;
-            }).text(function(d) {
-                return d;
-            });
+            segments.exit().remove();
         });
     }
     // Configuration Getters & Setters
@@ -1645,6 +1457,16 @@ d3.ez.component.heatCircle = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
         return my;
     };
     my.dispatch = function(_) {
@@ -2009,7 +1831,7 @@ d3.ez.component.circularLabels = function module() {
         selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
-            var labelRadius = radius * 1.05;
+            var labelRadius = radius * 1.02;
             var circularLabels = selection.selectAll(".circularLabels").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("circularLabels", true);
@@ -2216,21 +2038,13 @@ d3.ez.component.htmlList = function module() {
 /**
  * Discrete Bar Chart
  *
- * @example
- * var myChart = d3.ez.chart.discreteBar()
- *     .width(400)
- *     .height(300)
- *     .transition({ease: "bounce", duration: 1500})
- *     .colors(d3.scaleCategory10().range());
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.discreteBar = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartDiscreteBar";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2244,37 +2058,38 @@ d3.ez.chart.discreteBar = function module() {
         duration: 500
     };
     var colors = d3.ez.colors.categorical(4);
-    var gap = 0;
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var xScale = undefined;
-    var yScale = undefined;
-    var xAxis = undefined;
-    var yAxis = undefined;
-    var colorScale = undefined;
-    var yAxisLabel = undefined;
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var yAxisLabel = undefined;
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        var categoryNames = slicedData.categoryNames;
-        var maxValue = slicedData.maxValue;
-        var yAxisLabel = slicedData.groupName;
+        categoryNames = slicedData.categoryNames;
+        maxValue = slicedData.maxValue;
+        yAxisLabel = slicedData.groupName;
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
         yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ chartH, 0 ]);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);
         yAxis = d3.axisLeft(yScale);
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
-        }
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2298,7 +2113,7 @@ d3.ez.chart.discreteBar = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartDiscreteBar", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
@@ -2353,21 +2168,13 @@ d3.ez.chart.discreteBar = function module() {
 /**
  * Grouped Bar Chart
  *
- * @example
- * var myChart = d3.ez.chart.groupedBar()
- *     .width(400)
- *     .height(300)
- *     .transition({ease: "bounce", duration: 1500})
- *     .groupType("stacked");
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.groupedBar = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartGroupedBar";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2381,29 +2188,41 @@ d3.ez.chart.groupedBar = function module() {
         duration: 500
     };
     var colors = d3.ez.colors.categorical(4);
-    var gap = 0;
-    var yAxisLabel = null;
-    var groupType = "clustered";
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var xScale = undefined;
-    var xScale2 = undefined;
-    var yScale = undefined;
-    var xAxis = undefined;
-    var yAxis = undefined;
-    var colorScale = undefined;
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var xScale;
+    var xScale2;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
+    // Data Variables
+    var groupNames;
+    var groupTotalsMax;
+    var maxValue;
+    var categoryNames;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var yAxisLabel = null;
+    var groupType = "clustered";
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        var groupNames = slicedData.groupNames;
-        var groupTotalsMax = slicedData.groupTotalsMax;
-        var maxValue = slicedData.maxValue;
-        var categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
+        groupTotalsMax = slicedData.groupTotalsMax;
+        maxValue = slicedData.maxValue;
+        categoryNames = slicedData.categoryNames;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
         yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? groupTotalsMax : maxValue ]);
@@ -2411,8 +2230,6 @@ d3.ez.chart.groupedBar = function module() {
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2436,7 +2253,7 @@ d3.ez.chart.groupedBar = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartGroupedBar", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
@@ -2473,14 +2290,14 @@ d3.ez.chart.groupedBar = function module() {
         margin = _;
         return this;
     };
-    my.yAxisLabel = function(_) {
-        if (!arguments.length) return yAxisLabel;
-        yAxisLabel = _;
-        return this;
-    };
     my.groupType = function(_) {
         if (!arguments.length) return groupType;
         groupType = _;
+        return this;
+    };
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
         return this;
     };
     my.transition = function(_) {
@@ -2513,19 +2330,13 @@ d3.ez.chart.groupedBar = function module() {
 /**
  * Radial Bar Chart
  *
- * @example
- * var myChart = d3.ez.chart.radialBar();
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
- *
- * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.chart.radialBar = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartRadialBar";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2539,31 +2350,44 @@ d3.ez.chart.radialBar = function module() {
         duration: 500
     };
     var colors = d3.ez.colors.categorical(4);
-    var radius = undefined;
-    var capitalizeLabels = false;
-    var colorLabels = false;
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var yScale = undefined;
-    var colorScale = undefined;
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    var radius;
+    var innerRadius;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var yScale2;
+    var colorScale;
+    // Data Variables
     var categoryNames = [];
     var maxValue = 0;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var capitalizeLabels = false;
+    var colorLabels = false;
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        maxValue = slicedData.maxValue;
-        var domain = [ 0, maxValue ];
         categoryNames = slicedData.categoryNames;
+        maxValue = slicedData.maxValue;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
-        yScale = d3.scaleLinear().domain(domain).range([ 0, radius ]);
-        // Colour Scale
-        colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
+        yScale2 = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, -radius ]);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2589,15 +2413,14 @@ d3.ez.chart.radialBar = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartRadialBar", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", width).attr("height", height);
+            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
-            var barRadial = d3.ez.component.barRadial().width(chartW).height(chartH).radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            var barRadial = d3.ez.component.barRadial().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".barChart").datum(data).call(barRadial);
             // Circular Axis
             var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circleAxis").call(circularAxis);
             // Y Axis
-            var yScale2 = d3.scaleLinear().domain(yScale.domain()).range([ 0, -radius ]);
             var yAxis = d3.axisLeft(yScale2);
             chart.select(".axis").call(yAxis);
             // Circular Labels
@@ -2609,19 +2432,16 @@ d3.ez.chart.radialBar = function module() {
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.height = function(_) {
         if (!arguments.length) return height;
         height = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.margin = function(_) {
         if (!arguments.length) return margin;
         margin = _;
-        radius = d3.min([ width - (margin.right + margin.left), height - (margin.top + margin.bottom) ]) / 2;
         return this;
     };
     my.radius = function(_) {
@@ -2669,19 +2489,13 @@ d3.ez.chart.radialBar = function module() {
 /**
  * Circular Heat Chart
  *
- * @example
- * var myChart = d3.ez.chart.circularHeat();
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
- *
- * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.chart.circularHeat = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartCircularHeat";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2694,36 +2508,52 @@ d3.ez.chart.circularHeat = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var classed = "chartCircularHeat";
     var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
-    var radius = undefined;
-    var innerRadius = undefined;
-    // Data Options (Populated by 'init' function)
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    var radius;
+    var innerRadius;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var yScale2;
+    var colorScale;
+    // Data Variables
+    var categoryNames = [];
+    var groupNames = [];
     var minValue = 0;
     var maxValue = 0;
-    var radialLabels = [];
-    var numRadials = 24;
-    var segmentLabels = [];
-    var numSegments = 24;
-    var segmentHeight = 0;
-    var colorScale = undefined;
     var thresholds = undefined;
-    var categoryNames = [];
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
+        maxValue = slicedData.maxValue;
+        minValue = slicedData.minValue;
         categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {
             var thresholds = slicedData.thresholds;
         }
         // Colour Scale
-        colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleThreshold().range(colors).domain(thresholds);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
+        yScale2 = d3.scaleBand().domain(groupNames).rangeRound([ -innerRadius, -radius ]).padding(.1);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2741,16 +2571,32 @@ d3.ez.chart.circularHeat = function module() {
                 }(d3.select(this));
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("circleRings", true);
+                chart.append("g").classed("circleLabels", true);
+                chart.append("g").classed("axis", true);
             } else {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartCircularHeat", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
-            var heatMap = d3.ez.component.heatCircle().width(chartW).height(chartH).colorScale(colorScale).radius(radius).innerRadius(innerRadius).dispatch(dispatch);
-            chart.datum(data).call(heatMap);
+            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
+            var heatRing = d3.ez.component.heatRing().radius(function(d) {
+                return yScale(d.key);
+            }).innerRadius(function(d) {
+                return yScale(d.key) + yScale.bandwidth();
+            }).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var series = chart.select(".circleRings").selectAll(".series").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "series");
+            series.datum(function(d) {
+                return d;
+            }).call(heatRing);
+            series.exit().remove();
             // Circular Labels
             var circularLabels = d3.ez.component.circularLabels().width(chartW).height(chartH).radius(radius);
-            chart.datum(categoryNames).call(circularLabels);
+            chart.select(".circleLabels").datum(categoryNames).call(circularLabels);
+            // Y Axis
+            var yAxis = d3.axisLeft(yScale2);
+            chart.select(".axis").call(yAxis);
         });
     }
     // Configuration Getters & Setters
@@ -2809,38 +2655,40 @@ d3.ez.chart.circularHeat = function module() {
 /**
  * Tabular Heat Chart
  *
- * @example
- * var myChart = d3.ez.chart.tabularHeat();
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.tabularHeat = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
-    var width = 600;
-    var height = 600;
+    var classed = "chartTabularHeat";
+    var width = 400;
+    var height = 300;
     var margin = {
-        top: 50,
-        right: 40,
-        bottom: 40,
-        left: 40
+        top: 45,
+        right: 20,
+        bottom: 20,
+        left: 45
     };
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
     var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var xScale = undefined;
-    var yScale = undefined;
-    var xAxis = undefined;
-    var yAxis = undefined;
-    var colorScale = undefined;
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var colorScale;
+    var xAxis;
+    var yAxis;
+    // Data Variables
+    var groupNames = [];
+    var categoryNames = [];
+    var minValue = 0;
+    var maxValue = 0;
     var thresholds = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -2849,14 +2697,20 @@ d3.ez.chart.tabularHeat = function module() {
         chartH = height - margin.top - margin.bottom;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        var maxValue = slicedData.maxValue;
-        var minValue = slicedData.minValue;
-        var categoryNames = slicedData.categoryNames;
-        var groupNames = slicedData.groupNames;
+        maxValue = slicedData.maxValue;
+        minValue = slicedData.minValue;
+        categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {
             var thresholds = slicedData.thresholds;
+        }
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
         }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
@@ -2864,8 +2718,6 @@ d3.ez.chart.tabularHeat = function module() {
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2889,7 +2741,7 @@ d3.ez.chart.tabularHeat = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartTabularHeat", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
@@ -2936,11 +2788,6 @@ d3.ez.chart.tabularHeat = function module() {
         thresholds = _;
         return this;
     };
-    my.accessor = function(_) {
-        if (!arguments.length) return accessor;
-        accessor = _;
-        return this;
-    };
     my.dispatch = function(_) {
         if (!arguments.length) return dispatch();
         dispatch = _;
@@ -2956,21 +2803,13 @@ d3.ez.chart.tabularHeat = function module() {
 /**
  * Donut Chart
  *
- * @example
- * var myChart = d3.ez.chart.donut()
- *     .width(400)
- *     .height(300)
- *     .radius(200)
- *     .innerRadius(50);
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.donut = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartDonut";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2984,20 +2823,27 @@ d3.ez.chart.donut = function module() {
         duration: 750
     };
     var colors = d3.ez.colors.categorical(4);
-    var radius = undefined;
-    var innerRadius = undefined;
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var colorScale = undefined;
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    var radius;
+    var innerRadius;
+    // Scales and Axis
+    var colorScale;
+    // Data Variables
+    var categoryNames = [];
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - (margin.left + margin.right);
         chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        var categoryNames = slicedData.categoryNames;
+        categoryNames = slicedData.categoryNames;
+        // Colour Scale
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
@@ -3024,9 +2870,9 @@ d3.ez.chart.donut = function module() {
                 chart = svg.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartDonut", true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
-            var donutChart = d3.ez.component.donut().width(chartW).height(chartH).radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
+            var donutChart = d3.ez.component.donut().radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
             chart.datum(data).call(donutChart);
         });
     }
@@ -3084,81 +2930,80 @@ d3.ez.chart.donut = function module() {
 };
 
 /**
- * Punchcard
+ * Punch Card
  *
- * @example
- * var myChart = d3.ez.chart.punchCard()
- *     .width(600)
- *     .height(350)
- *     .color("green")
- *     .minRadius(5)
- *     .maxRadius(19)
- *     .useGlobalScale(true);
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.punchCard = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartPunchCard";
     var width = 400;
     var height = 300;
     var margin = {
-        top: 50,
-        right: 40,
-        bottom: 40,
-        left: 40
+        top: 45,
+        right: 20,
+        bottom: 20,
+        left: 45
     };
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
-    var color = "steelblue";
-    var sizeScale = undefined;
+    var colors = [ d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker() ];
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var sizeScale;
+    var xScale;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
+    // Data Variables
+    var maxValue;
+    var minValue;
+    var categoryNames;
+    var groupNames;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Misc Options
     var minRadius = 2;
     var maxRadius = 20;
     var formatTick = d3.format("0000");
     var useGlobalScale = true;
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var xScale = undefined;
-    var yScale = undefined;
-    var xAxis = undefined;
-    var yAxis = undefined;
-    var colorScale = undefined;
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        var maxValue = slicedData.maxValue;
-        var minValue = slicedData.minValue;
-        var categoryNames = slicedData.categoryNames;
-        var groupNames = slicedData.groupNames;
+        maxValue = slicedData.maxValue;
+        minValue = slicedData.minValue;
+        categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
         valDomain = [ minValue, maxValue ];
         sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
             return d["value"];
         }) ];
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleLinear().domain(valDomain).range(colors);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
         yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        colorScale = d3.scaleLinear().domain(valDomain).range([ d3.rgb(color).brighter(), d3.rgb(color).darker() ]);
         // Size Scale
         sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
     }
     function my(selection) {
         selection.each(function(data) {
-            // If it is a single object, wrap it in an array
-            if (data.constructor !== Array) data = [ data ];
             // Initialise Data
             init(data);
             // Create SVG and Chart containers (if they do not already exist)
@@ -3179,7 +3024,7 @@ d3.ez.chart.punchCard = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartPunchCard", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
@@ -3221,14 +3066,14 @@ d3.ez.chart.punchCard = function module() {
         maxRadius = _;
         return this;
     };
-    my.color = function(_) {
-        if (!arguments.length) return color;
-        color = _;
-        return this;
-    };
     my.sizeScale = function(_) {
         if (!arguments.length) return sizeScale;
         sizeScale = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
         return this;
     };
     my.useGlobalScale = function(_) {
@@ -3251,19 +3096,13 @@ d3.ez.chart.punchCard = function module() {
 /**
  * Multi Series Line Chart
  *
- * @example
- * var myChart = d3.ez.chart.multiSeriesLine()
- *     .width(400)
- *     .height(300);
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.multiSeriesLine = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
+    var classed = "chartMultiSeriesLine";
     var width = 400;
     var height = 300;
     var margin = {
@@ -3272,26 +3111,34 @@ d3.ez.chart.multiSeriesLine = function module() {
         bottom: 40,
         left: 40
     };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
     var colors = d3.ez.colors.categorical(3);
-    var yAxisLabel = null;
-    var groupType = "clustered";
-    // Data Options (Populated by 'init' function)
-    var chartW = 0;
-    var chartH = 0;
-    var xScale = undefined;
-    var yScale = undefined;
-    var xAxis = undefined;
-    var yAxis = undefined;
-    var colorScale = undefined;
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
+    // Data Variables
+    var maxValue;
+    var groupNames;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var yAxisLabel = null;
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
-        var maxValue = slicedData.maxValue;
-        var seriesNames = slicedData.groupNames;
+        maxValue = slicedData.maxValue;
+        groupNames = slicedData.groupNames;
         // Convert dates
         data.forEach(function(d, i) {
             d.values.forEach(function(b, j) {
@@ -3301,14 +3148,18 @@ d3.ez.chart.multiSeriesLine = function module() {
         dateDomain = d3.extent(data[0].values, function(d) {
             return d.key;
         });
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(groupNames);
+        }
         // X & Y Scales
         xScale = d3.scaleTime().range([ 0, chartW ]).domain(dateDomain);
         yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, maxValue * 1.05 ]);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        colorScale = d3.scaleOrdinal().range(colors).domain(seriesNames);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -3332,7 +3183,7 @@ d3.ez.chart.multiSeriesLine = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed("chartMultiSeriesLine", true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
             chart.select(".y-axis").call(yAxis);
@@ -3368,11 +3219,6 @@ d3.ez.chart.multiSeriesLine = function module() {
     my.yAxisLabel = function(_) {
         if (!arguments.length) return yAxisLabel;
         yAxisLabel = _;
-        return this;
-    };
-    my.groupType = function(_) {
-        if (!arguments.length) return groupType;
-        groupType = _;
         return this;
     };
     my.transition = function(_) {

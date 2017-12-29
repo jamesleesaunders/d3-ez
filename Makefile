@@ -3,7 +3,6 @@
 JS_FILES :=        src/header.js \
                    src/baseFunctions.js \
                    src/chart.js \
-                   src/vega.js \
                    src/colors.js \
                    src/component/barGrouped.js \
                    src/component/barStacked.js \
@@ -15,7 +14,7 @@ JS_FILES :=        src/header.js \
                    src/component/legend.js \
                    src/component/lineChart.js \
                    src/component/heatMap.js \
-                   src/component/heatCircle.js \
+                   src/component/heatRing.js \
                    src/component/punchCard.js \
                    src/component/numberCard.js \
                    src/component/title.js \

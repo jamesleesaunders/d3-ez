@@ -2,7 +2,7 @@
 
 .barGrouped rect.bar, .barStacked rect.bar {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .barGrouped rect.bar:hover, .barStacked rect.bar:hover {

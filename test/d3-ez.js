@@ -4,7 +4,6 @@
 include('../src/header.js');
 include('../src/baseFunctions.js');
 include('../src/chart.js');
-include('../src/vega.js');
 include('../src/colors.js');
 include('../src/component/barGrouped.js');
 include('../src/component/barStacked.js');
@@ -15,7 +14,7 @@ include('../src/component/labeledNode.js');
 include('../src/component/legend.js');
 include('../src/component/lineChart.js');
 include('../src/component/heatMap.js');
-include('../src/component/heatCircle.js');
+include('../src/component/heatRing.js');
 include('../src/component/punchCard.js');
 include('../src/component/numberCard.js');
 include('../src/component/scatterPlot.js');

@@ -6,7 +6,7 @@
 
 .chartRadialBar path.segment {
   fill: steelblue;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
   stroke: #999999;
 }
 

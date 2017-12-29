@@ -1,15 +1,6 @@
 /**
  * Donut Chart
  *
- * @example
- * var myChart = d3.ez.chart.donut()
- *     .width(400)
- *     .height(300)
- *     .radius(200)
- *     .innerRadius(50);
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.donut = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -17,18 +8,24 @@ d3.ez.chart.donut = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartDonut";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
   var colors = d3.ez.colors.categorical(4);
-  var radius = undefined;
-  var innerRadius = undefined;
 
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var colorScale = undefined;
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+  var radius;
+  var innerRadius;
+
+  // Scales and Axis
+  var colorScale;
+
+  // Data Variables
+  var categoryNames = [];
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -37,10 +34,15 @@ d3.ez.chart.donut = function module() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
+    var defaultRadius = Math.min(chartW, chartH) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    categoryNames = slicedData.categoryNames;
 
+    // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
@@ -76,15 +78,13 @@ d3.ez.chart.donut = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartDonut", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 
       // Add the chart
       var donutChart = d3.ez.component.donut()
-        .width(chartW)
-        .height(chartH)
         .radius(radius)
         .innerRadius(innerRadius)
         .colorScale(colorScale)
