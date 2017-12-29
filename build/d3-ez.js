@@ -3024,7 +3024,7 @@ d3.ez.chart.punchCard = function module() {
                 chart = selection.select(".chart");
             }
             // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", width).attr("height", height);
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);

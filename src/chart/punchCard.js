@@ -118,8 +118,8 @@ d3.ez.chart.punchCard = function module() {
       // Update the chart dimensions
       chart.classed(classed, true)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("width", chartW)
+        .attr("height", chartH);
 
       // Add axis to chart
       chart.select(".x-axis")
