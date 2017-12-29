@@ -2240,17 +2240,17 @@ d3.ez.chart.discreteBar = function module() {
         categoryNames = slicedData.categoryNames;
         maxValue = slicedData.maxValue;
         yAxisLabel = slicedData.groupName;
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
         yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ chartH, 0 ]);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);
         yAxis = d3.axisLeft(yScale);
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
-        }
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2378,6 +2378,12 @@ d3.ez.chart.groupedBar = function module() {
         groupTotalsMax = slicedData.groupTotalsMax;
         maxValue = slicedData.maxValue;
         categoryNames = slicedData.categoryNames;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
         yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? groupTotalsMax : maxValue ]);
@@ -2385,12 +2391,6 @@ d3.ez.chart.groupedBar = function module() {
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
-        }
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2451,14 +2451,14 @@ d3.ez.chart.groupedBar = function module() {
         margin = _;
         return this;
     };
-    my.yAxisLabel = function(_) {
-        if (!arguments.length) return yAxisLabel;
-        yAxisLabel = _;
-        return this;
-    };
     my.groupType = function(_) {
         if (!arguments.length) return groupType;
         groupType = _;
+        return this;
+    };
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
         return this;
     };
     my.transition = function(_) {
@@ -2539,16 +2539,16 @@ d3.ez.chart.radialBar = function module() {
         var slicedData = d3.ez.dataParse(data);
         categoryNames = slicedData.categoryNames;
         maxValue = slicedData.maxValue;
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
-        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
-        yScale2 = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, -radius ]);
         // Colour Scale
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
             colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
         }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
+        yScale2 = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, -radius ]);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2576,7 +2576,7 @@ d3.ez.chart.radialBar = function module() {
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
-            var barRadial = d3.ez.component.barRadial().width(chartW).height(chartH).radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            var barRadial = d3.ez.component.barRadial().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".barChart").datum(data).call(barRadial);
             // Circular Axis
             var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
@@ -2705,16 +2705,16 @@ d3.ez.chart.circularHeat = function module() {
         if (!thresholds) {
             var thresholds = slicedData.thresholds;
         }
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
-        yScale2 = d3.scaleBand().domain(groupNames).rangeRound([ -innerRadius, -radius ]).padding(.1);
         // Colour Scale
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
             colorScale = d3.scaleThreshold().range(colors).domain(thresholds);
         }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
+        yScale2 = d3.scaleBand().domain(groupNames).rangeRound([ -innerRadius, -radius ]).padding(.1);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2826,10 +2826,10 @@ d3.ez.chart.tabularHeat = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 20,
+        top: 45,
         right: 20,
         bottom: 20,
-        left: 20
+        left: 45
     };
     var transition = {
         ease: d3.easeBounce,
@@ -2867,18 +2867,18 @@ d3.ez.chart.tabularHeat = function module() {
         if (!thresholds) {
             var thresholds = slicedData.thresholds;
         }
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
-        // X & Y Axis
-        xAxis = d3.axisTop(xScale);
-        yAxis = d3.axisLeft(yScale);
         // Colour Scale
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
             colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
         }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
+        // X & Y Axis
+        xAxis = d3.axisTop(xScale);
+        yAxis = d3.axisLeft(yScale);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2949,11 +2949,6 @@ d3.ez.chart.tabularHeat = function module() {
         thresholds = _;
         return this;
     };
-    my.accessor = function(_) {
-        if (!arguments.length) return accessor;
-        accessor = _;
-        return this;
-    };
     my.dispatch = function(_) {
         if (!arguments.length) return dispatch();
         dispatch = _;
@@ -3005,7 +3000,7 @@ d3.ez.chart.donut = function module() {
         chartH = height - (margin.top + margin.bottom);
         var defaultRadius = Math.min(chartW, chartH) / 2;
         radius = typeof radius === "undefined" ? defaultRadius : radius;
-        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
         // Slice Data, calculate totals, max etc.
         var slicedData = d3.ez.dataParse(data);
         categoryNames = slicedData.categoryNames;
@@ -3038,7 +3033,7 @@ d3.ez.chart.donut = function module() {
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Add the chart
-            var donutChart = d3.ez.component.donut().width(chartW).height(chartH).radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
+            var donutChart = d3.ez.component.donut().radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
             chart.datum(data).call(donutChart);
         });
     }
@@ -3108,10 +3103,10 @@ d3.ez.chart.punchCard = function module() {
     var width = 400;
     var height = 300;
     var margin = {
-        top: 50,
-        right: 40,
-        bottom: 40,
-        left: 40
+        top: 45,
+        right: 20,
+        bottom: 20,
+        left: 45
     };
     var transition = {
         ease: d3.easeBounce,
@@ -3153,21 +3148,23 @@ d3.ez.chart.punchCard = function module() {
         sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
             return d["value"];
         }) ];
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleLinear().domain(valDomain).range(colors);
+        }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
         yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        colorScale = d3.scaleLinear().domain(valDomain).range(colours);
         // Size Scale
         sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
     }
     function my(selection) {
         selection.each(function(data) {
-            // If it is a single object, wrap it in an array
-            if (data.constructor !== Array) data = [ data ];
             // Initialise Data
             init(data);
             // Create SVG and Chart containers (if they do not already exist)
@@ -3230,14 +3227,14 @@ d3.ez.chart.punchCard = function module() {
         maxRadius = _;
         return this;
     };
-    my.colors = function(_) {
-        if (!arguments.length) return colors;
-        colors = _;
-        return this;
-    };
     my.sizeScale = function(_) {
         if (!arguments.length) return sizeScale;
         sizeScale = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
         return this;
     };
     my.useGlobalScale = function(_) {
@@ -3312,14 +3309,18 @@ d3.ez.chart.multiSeriesLine = function module() {
         dateDomain = d3.extent(data[0].values, function(d) {
             return d.key;
         });
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(groupNames);
+        }
         // X & Y Scales
         xScale = d3.scaleTime().range([ 0, chartW ]).domain(dateDomain);
         yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, maxValue * 1.05 ]);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
         yAxis = d3.axisLeft(yScale);
-        // Colour Scale
-        colorScale = d3.scaleOrdinal().range(colors).domain(groupNames);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -3379,11 +3380,6 @@ d3.ez.chart.multiSeriesLine = function module() {
     my.yAxisLabel = function(_) {
         if (!arguments.length) return yAxisLabel;
         yAxisLabel = _;
-        return this;
-    };
-    my.groupType = function(_) {
-        if (!arguments.length) return groupType;
-        groupType = _;
         return this;
     };
     my.transition = function(_) {

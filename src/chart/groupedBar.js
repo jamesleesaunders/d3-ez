@@ -59,7 +59,7 @@ d3.ez.chart.groupedBar = function module() {
         .range(colors)
         .domain(categoryNames);
     }
-    
+
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(groupNames)
@@ -178,15 +178,15 @@ d3.ez.chart.groupedBar = function module() {
     return this;
   };
 
-  my.yAxisLabel = function(_) {
-    if (!arguments.length) return yAxisLabel;
-    yAxisLabel = _;
-    return this;
-  };
-
   my.groupType = function(_) {
     if (!arguments.length) return groupType;
     groupType = _;
+    return this;
+  };
+
+  my.yAxisLabel = function(_) {
+    if (!arguments.length) return yAxisLabel;
+    yAxisLabel = _;
     return this;
   };
 

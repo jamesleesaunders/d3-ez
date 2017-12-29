@@ -184,12 +184,6 @@ d3.ez.chart.multiSeriesLine = function module() {
     return this;
   };
 
-  my.groupType = function(_) {
-    if (!arguments.length) return groupType;
-    groupType = _;
-    return this;
-  };
-
   my.transition = function(_) {
     if (!arguments.length) return transition;
     transition = _;

@@ -187,15 +187,15 @@ d3.ez.chart.punchCard = function module() {
     return this;
   };
 
-  my.colors = function(_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
-
   my.sizeScale = function(_) {
     if (!arguments.length) return sizeScale;
     sizeScale = _;
+    return this;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return this;
   };
 

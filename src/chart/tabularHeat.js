@@ -184,12 +184,6 @@ d3.ez.chart.tabularHeat = function module() {
     return this;
   };
 
-  my.accessor = function(_) {
-    if (!arguments.length) return accessor;
-    accessor = _;
-    return this;
-  };
-
   my.dispatch = function(_) {
     if (!arguments.length) return dispatch();
     dispatch = _;

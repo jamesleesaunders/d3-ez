@@ -112,8 +112,6 @@ d3.ez.chart.radialBar = function module() {
 
       // Add the chart
       var barRadial = d3.ez.component.barRadial()
-        .width(chartW)
-        .height(chartH)
         .radius(radius)
         .yScale(yScale)
         .colorScale(colorScale)
