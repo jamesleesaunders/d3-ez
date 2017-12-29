@@ -65,11 +65,16 @@ d3.ez.chart.circularHeat = function module() {
     xScale = d3.scaleBand()
       .domain(categoryNames)
       .rangeRound([0, chartW])
-      .padding(0.05);
+      .padding(0.1);
 
     yScale = d3.scaleBand()
       .domain(groupNames)
       .rangeRound([radius, innerRadius])
+      .padding(0.1);
+
+    yScale2 = d3.scaleBand()
+      .domain(groupNames)
+      .rangeRound([-innerRadius, -radius])
       .padding(0.1);
 
     // Colour Scale
@@ -99,7 +104,9 @@ d3.ez.chart.circularHeat = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
+        chart.append("g").classed("circleRings", true);
         chart.append("g").classed("circleLabels", true);
+        chart.append("g").classed("axis", true);
       } else {
         chart = svg.select(".chart");
       }
@@ -118,10 +125,8 @@ d3.ez.chart.circularHeat = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var series = chart.selectAll(".series")
-        .data(function(d) {
-          return d;
-        })
+      var series = chart.select(".circleRings").selectAll(".series")
+        .data(function(d) { return d; })
         .enter().append("g")
         .attr("class", "series");
 
@@ -139,6 +144,11 @@ d3.ez.chart.circularHeat = function module() {
       chart.select(".circleLabels")
         .datum(categoryNames)
         .call(circularLabels);
+
+      // Y Axis
+      var yAxis = d3.axisLeft(yScale2);
+      chart.select(".axis")
+        .call(yAxis);
 
     });
   }

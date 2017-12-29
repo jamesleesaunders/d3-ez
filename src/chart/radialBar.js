@@ -59,6 +59,10 @@ d3.ez.chart.radialBar = function module() {
       .domain(domain)
       .range([0, radius]);
 
+    yScale2 = d3.scaleLinear()
+      .domain(domain)
+      .range([0, -radius]);
+
     // Colour Scale
     colorScale = d3.scaleOrdinal()
       .range(colors)
@@ -125,7 +129,6 @@ d3.ez.chart.radialBar = function module() {
         .call(circularAxis);
 
       // Y Axis
-      var yScale2 = d3.scaleLinear().domain(yScale.domain()).range([0, -radius]);
       var yAxis = d3.axisLeft(yScale2);
       chart.select(".axis")
         .call(yAxis);
