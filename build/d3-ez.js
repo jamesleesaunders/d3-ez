@@ -653,19 +653,16 @@ d3.ez.component.barRadial = function module() {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             var yDomain = yScale.domain();
-            yDomain[1] = yDomain[1] * 1.05;
             var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
             var axisScale = d3.scaleLinear().domain(yDomain).range([ 0, -radius ]);
+            // Pie Generator
+            var pie = d3.pie().value(function(d) {
+                return 1;
+            }).sort(null).padAngle(0);
             // Arc Generator
-            var arc = d3.arc().innerRadius(0).outerRadius(function(d, i) {
-                return barScale(d.value);
-            }).startAngle(function(d, i, j) {
-                numBars = j.length;
-                return i * 2 * Math.PI / numBars;
-            }).endAngle(function(d, i, j) {
-                numBars = j.length;
-                return (i + 1) * 2 * Math.PI / numBars;
-            });
+            var arc = d3.arc().outerRadius(function(d, i) {
+                return barScale(d.data.value);
+            }).innerRadius(0).cornerRadius(2);
             // Create chart group
             var barRadial = selection.selectAll(".barRadial").data(function(d) {
                 return [ d ];
@@ -675,12 +672,13 @@ d3.ez.component.barRadial = function module() {
             var barRadial = selection.selectAll(".barRadial").merge(barRadial);
             // Segments
             var segments = barRadial.selectAll("path").data(function(d) {
-                return d.values;
+                // return d.values;
+                return pie(d.values);
             });
             segments.enter().append("path").style("fill", function(d, i) {
-                return colorScale(d.key);
+                return colorScale(d.data.key);
             }).classed("segment", true).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
+                dispatch.call("customMouseOver", this, d.data);
             }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             segments.exit().remove();
         });

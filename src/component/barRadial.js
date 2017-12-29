@@ -24,24 +24,22 @@ d3.ez.component.barRadial = function module() {
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
       var yDomain = yScale.domain();
-      yDomain[1] = yDomain[1] * 1.05;
       var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
       var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
 
+      // Pie Generator
+      var pie = d3.pie()
+        .value(function(d) { return 1; })
+        .sort(null)
+        .padAngle(0);
+
       // Arc Generator
       var arc = d3.arc()
-        .innerRadius(0)
         .outerRadius(function(d, i) {
-          return barScale(d.value);
+          return barScale(d.data.value);
         })
-        .startAngle(function(d, i, j) {
-          numBars = j.length;
-          return (i * 2 * Math.PI) / numBars;
-        })
-        .endAngle(function(d, i, j) {
-          numBars = j.length;
-          return ((i + 1) * 2 * Math.PI) / numBars;
-        });
+        .innerRadius(0)
+        .cornerRadius(2);
 
       // Create chart group
       var barRadial = selection.selectAll('.barRadial')
@@ -54,15 +52,18 @@ d3.ez.component.barRadial = function module() {
 
       // Segments
       var segments = barRadial.selectAll("path")
-        .data(function(d) { return d.values; });
+        .data(function(d) {
+          // return d.values;
+          return pie(d.values);
+        });
 
       segments.enter()
         .append("path")
         .style("fill", function(d, i) {
-          return colorScale(d.key);
+          return colorScale(d.data.key);
         })
         .classed("segment", true)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); })
         .merge(segments)
         .transition()
         .ease(transition.ease)
