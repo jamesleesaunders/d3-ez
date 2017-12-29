@@ -1,17 +1,6 @@
 /**
- * Punchcard
+ * Punch Card
  *
- * @example
- * var myChart = d3.ez.chart.punchCard()
- *     .width(600)
- *     .height(350)
- *     .color("green")
- *     .minRadius(5)
- *     .maxRadius(19)
- *     .useGlobalScale(true);
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.punchCard = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -19,28 +8,39 @@ d3.ez.chart.punchCard = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartPunchCard";
   var width = 400;
   var height = 300;
-  var margin = { top: 50, right: 40, bottom: 40, left: 40 };
+  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var color = "steelblue";
-  var sizeScale = undefined;
+  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+
+  // Scales and Axis
+  var sizeScale;
+  var xScale;
+  var yScale;
+  var xAxis;
+  var yAxis;
+  var colorScale;
+
+  // Data Variables
+  var maxValue;
+  var minValue;
+  var categoryNames;
+  var groupNames;
+
+  // Dispatch (Custom events)
+  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
+  // Misc Options
   var minRadius = 2;
   var maxRadius = 20;
   var formatTick = d3.format("0000");
   var useGlobalScale = true;
-
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var xScale = undefined;
-  var yScale = undefined;
-  var xAxis = undefined;
-  var yAxis = undefined;
-  var colorScale = undefined;
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -48,15 +48,24 @@ d3.ez.chart.punchCard = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+    maxValue = slicedData.maxValue;
+    minValue = slicedData.minValue;
+    categoryNames = slicedData.categoryNames;
+    groupNames = slicedData.groupNames;
 
     valDomain = [minValue, maxValue];
     sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
       return d['value'];
     })];
+
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleLinear()
+        .domain(valDomain)
+        .range(colors);
+    }
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -73,11 +82,6 @@ d3.ez.chart.punchCard = function module() {
     xAxis = d3.axisTop(xScale);
     yAxis = d3.axisLeft(yScale);
 
-    // Colour Scale
-    colorScale = d3.scaleLinear()
-      .domain(valDomain)
-      .range([d3.rgb(color).brighter(), d3.rgb(color).darker()]);
-
     // Size Scale
     sizeScale = d3.scaleLinear()
       .domain(sizeDomain)
@@ -86,9 +90,6 @@ d3.ez.chart.punchCard = function module() {
 
   function my(selection) {
     selection.each(function(data) {
-      // If it is a single object, wrap it in an array
-      if (data.constructor !== Array) data = [data];
-
       // Initialise Data
       init(data);
 
@@ -115,7 +116,7 @@ d3.ez.chart.punchCard = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartPunchCard", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", width)
         .attr("height", height);
@@ -186,9 +187,9 @@ d3.ez.chart.punchCard = function module() {
     return this;
   };
 
-  my.color = function(_) {
-    if (!arguments.length) return color;
-    color = _;
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return this;
   };
 

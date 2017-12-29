@@ -1,13 +1,6 @@
 /**
  * Radial Bar Chart
  *
- * @example
- * var myChart = d3.ez.chart.radialBar();
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
- *
- * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.chart.radialBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -15,25 +8,35 @@ d3.ez.chart.radialBar = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartRadialBar";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = d3.ez.colors.categorical(4);
-  var radius = undefined;
-  var capitalizeLabels = false;
-  var colorLabels = false;
 
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var yScale = undefined;
-  var colorScale = undefined;
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+  var radius;
+  var innerRadius;
+
+  // Scales and Axis
+  var xScale
+  var yScale;
+  var yScale2;
+  var colorScale;
+
+  // Data Variables
   var categoryNames = [];
   var maxValue = 0;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
+  // Other Customisation Options
+  var capitalizeLabels = false;
+  var colorLabels = false;
 
   function init(data) {
     chartW = width - (margin.left + margin.right);
@@ -45,9 +48,17 @@ d3.ez.chart.radialBar = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    maxValue = slicedData.maxValue;
-    var domain = [0, maxValue];
     categoryNames = slicedData.categoryNames;
+    maxValue = slicedData.maxValue;
+
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(categoryNames);
+    }
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -56,17 +67,12 @@ d3.ez.chart.radialBar = function module() {
       .padding(0.15);
 
     yScale = d3.scaleLinear()
-      .domain(domain)
+      .domain([0, maxValue])
       .range([0, radius]);
 
     yScale2 = d3.scaleLinear()
-      .domain(domain)
+      .domain([0, maxValue])
       .range([0, -radius]);
-
-    // Colour Scale
-    colorScale = d3.scaleOrdinal()
-      .range(colors)
-      .domain(categoryNames);
   }
 
   function my(selection) {
@@ -99,7 +105,7 @@ d3.ez.chart.radialBar = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartRadialBar", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", chartW)
         .attr("height", chartH);

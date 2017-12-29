@@ -1,15 +1,6 @@
 /**
  * Discrete Bar Chart
  *
- * @example
- * var myChart = d3.ez.chart.discreteBar()
- *     .width(400)
- *     .height(300)
- *     .transition({ease: "bounce", duration: 1500})
- *     .colors(d3.scaleCategory10().range());
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.discreteBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -17,25 +8,29 @@ d3.ez.chart.discreteBar = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartDiscreteBar";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = d3.ez.colors.categorical(4);
-  var gap = 0;
 
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var xScale = undefined;
-  var yScale = undefined;
-  var xAxis = undefined;
-  var yAxis = undefined;
-  var colorScale = undefined;
-  var yAxisLabel = undefined;
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+
+  // Scales and Axis
+  var xScale;
+  var yScale;
+  var xAxis;
+  var yAxis;
+  var colorScale;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
+  // Other Customisation Options
+  var yAxisLabel = undefined;
 
   function init(data) {
     chartW = width - (margin.left + margin.right);
@@ -43,9 +38,17 @@ d3.ez.chart.discreteBar = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
-    var yAxisLabel = slicedData.groupName;
+    categoryNames = slicedData.categoryNames;
+    maxValue = slicedData.maxValue;
+    yAxisLabel = slicedData.groupName;
+
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(categoryNames);
+    }
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -60,14 +63,6 @@ d3.ez.chart.discreteBar = function module() {
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
-
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
   }
 
   function my(selection) {
@@ -98,7 +93,7 @@ d3.ez.chart.discreteBar = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartDiscreteBar", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);

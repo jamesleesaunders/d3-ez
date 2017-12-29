@@ -1,15 +1,6 @@
 /**
  * Grouped Bar Chart
  *
- * @example
- * var myChart = d3.ez.chart.groupedBar()
- *     .width(400)
- *     .height(300)
- *     .transition({ease: "bounce", duration: 1500})
- *     .groupType("stacked");
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.groupedBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -17,27 +8,37 @@ d3.ez.chart.groupedBar = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartGroupedBar";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = d3.ez.colors.categorical(4);
-  var gap = 0;
-  var yAxisLabel = null;
-  var groupType = "clustered";
 
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var xScale = undefined;
-  var xScale2 = undefined;
-  var yScale = undefined;
-  var xAxis = undefined;
-  var yAxis = undefined;
-  var colorScale = undefined;
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+
+  // Scales and Axis
+  var xScale;
+  var xScale2;
+  var yScale;
+  var xAxis;
+  var yAxis;
+  var colorScale;
+
+  // Data Variables
+  var groupNames;
+  var groupTotalsMax;
+  var maxValue;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
+  // Other Customisation Options
+  var yAxisLabel = null;
+  var groupType = "clustered";
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -45,11 +46,20 @@ d3.ez.chart.groupedBar = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var groupNames = slicedData.groupNames;
-    var groupTotalsMax = slicedData.groupTotalsMax;
-    var maxValue = slicedData.maxValue;
-    var categoryNames = slicedData.categoryNames;
+    groupNames = slicedData.groupNames;
+    groupTotalsMax = slicedData.groupTotalsMax;
+    maxValue = slicedData.maxValue;
+    categoryNames = slicedData.categoryNames;
 
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(categoryNames);
+    }
+    
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(groupNames)
@@ -68,11 +78,6 @@ d3.ez.chart.groupedBar = function module() {
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
-
-    // Colour Scale
-    colorScale = d3.scaleOrdinal()
-      .range(colors)
-      .domain(categoryNames);
   }
 
   function my(selection) {
@@ -109,7 +114,7 @@ d3.ez.chart.groupedBar = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartGroupedBar", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);

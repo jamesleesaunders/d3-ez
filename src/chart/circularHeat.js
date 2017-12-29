@@ -1,13 +1,6 @@
 /**
  * Circular Heat Chart
  *
- * @example
- * var myChart = d3.ez.chart.circularHeat();
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
- *
- * Credit: Peter Cook http://animateddata.co.uk/
  */
 d3.ez.chart.circularHeat = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -15,27 +8,31 @@ d3.ez.chart.circularHeat = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartCircularHeat";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var classed = "chartCircularHeat";
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var radius = undefined;
 
-  // Data Options (Populated by 'init' function)
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+  var radius;
+  var innerRadius;
+
+  // Scales and Axis
+  var xScale
+  var yScale;
+  var yScale2;
+  var colorScale;
+
+  // Data Variables
+  var categoryNames = [];
+  var groupNames = [];
   var minValue = 0;
   var maxValue = 0;
-  var radialLabels = [];
-  var numRadials = 24;
-  var segmentLabels = [];
-  var numSegments = 24;
-  var segmentHeight = 0;
-
-  var colorScale = undefined;
   var thresholds = undefined;
-  var groupNames = [];
-  var categoryNames = [];
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -50,8 +47,8 @@ d3.ez.chart.circularHeat = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
+    maxValue = slicedData.maxValue;
+    minValue = slicedData.minValue;
     categoryNames = slicedData.categoryNames;
     groupNames = slicedData.groupNames;
 
@@ -61,6 +58,15 @@ d3.ez.chart.circularHeat = function module() {
       var thresholds = slicedData.thresholds;
     }
 
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleThreshold()
+        .range(colors)
+        .domain(thresholds);
+    }
+    
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
@@ -76,11 +82,6 @@ d3.ez.chart.circularHeat = function module() {
       .domain(groupNames)
       .rangeRound([-innerRadius, -radius])
       .padding(0.1);
-
-    // Colour Scale
-    colorScale = d3.scaleThreshold()
-      .domain(thresholds)
-      .range(colors);
   }
 
   function my(selection) {
@@ -112,7 +113,7 @@ d3.ez.chart.circularHeat = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartCircularHeat", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", chartW)
         .attr("height", chartH);

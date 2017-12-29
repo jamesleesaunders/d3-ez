@@ -1,13 +1,6 @@
 /**
  * Multi Series Line Chart
  *
- * @example
- * var myChart = d3.ez.chart.multiSeriesLine()
- *     .width(400)
- *     .height(300);
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.multiSeriesLine = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -15,24 +8,33 @@ d3.ez.chart.multiSeriesLine = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
+  var classed = "chartMultiSeriesLine";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = d3.ez.colors.categorical(3);
-  var yAxisLabel = null;
-  var groupType = "clustered";
 
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var xScale = undefined;
-  var yScale = undefined;
-  var xAxis = undefined;
-  var yAxis = undefined;
-  var colorScale = undefined;
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+
+  // Scales and Axis
+  var xScale;
+  var yScale;
+  var xAxis;
+  var yAxis;
+  var colorScale;
+
+  // Data Variables
+  var maxValue;
+  var groupNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
+  // Other Customisation Options
+  var yAxisLabel = null;
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -40,8 +42,8 @@ d3.ez.chart.multiSeriesLine = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var seriesNames = slicedData.groupNames;
+    maxValue = slicedData.maxValue;
+    groupNames = slicedData.groupNames;
 
     // Convert dates
     data.forEach(function(d, i) {
@@ -50,6 +52,15 @@ d3.ez.chart.multiSeriesLine = function module() {
       });
     });
     dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(groupNames);
+    }
 
     // X & Y Scales
     xScale = d3.scaleTime()
@@ -64,11 +75,6 @@ d3.ez.chart.multiSeriesLine = function module() {
     xAxis = d3.axisBottom(xScale)
       .tickFormat(d3.timeFormat("%d-%b-%y"));
     yAxis = d3.axisLeft(yScale);
-
-    // Colour Scale
-    colorScale = d3.scaleOrdinal()
-      .range(colors)
-      .domain(seriesNames);
   }
 
   function my(selection) {
@@ -105,7 +111,7 @@ d3.ez.chart.multiSeriesLine = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartMultiSeriesLine", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);

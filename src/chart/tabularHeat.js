@@ -1,11 +1,6 @@
 /**
  * Tabular Heat Chart
  *
- * @example
- * var myChart = d3.ez.chart.tabularHeat();
- * d3.select("#chartholder")
- *     .datum(data)
- *     .call(myChart);
  */
 d3.ez.chart.tabularHeat = function module() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -13,20 +8,29 @@ d3.ez.chart.tabularHeat = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var width = 600;
-  var height = 600;
-  var margin = { top: 50, right: 40, bottom: 40, left: 40 };
+  var classed = "chartTabularHeat";
+  var width = 400;
+  var height = 300;
+  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
-  // Data Options (Populated by 'init' function)
-  var chartW = 0;
-  var chartH = 0;
-  var xScale = undefined;
-  var yScale = undefined;
-  var xAxis = undefined;
-  var yAxis = undefined;
-  var colorScale = undefined;
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+
+  // Scales and Axis
+  var xScale;
+  var yScale;
+  var colorScale;
+  var xAxis;
+  var yAxis;
+
+  // Data Variables
+  var groupNames = [];
+  var categoryNames = [];
+  var minValue = 0;
+  var maxValue = 0;
   var thresholds = undefined;
 
   // Dispatch (Custom events)
@@ -38,15 +42,24 @@ d3.ez.chart.tabularHeat = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+    maxValue = slicedData.maxValue;
+    minValue = slicedData.minValue;
+    categoryNames = slicedData.categoryNames;
+    groupNames = slicedData.groupNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
     if (!thresholds) {
       var thresholds = slicedData.thresholds;
+    }
+
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleThreshold()
+        .domain(thresholds)
+        .range(colors);
     }
 
     // X & Y Scales
@@ -63,11 +76,6 @@ d3.ez.chart.tabularHeat = function module() {
     // X & Y Axis
     xAxis = d3.axisTop(xScale);
     yAxis = d3.axisLeft(yScale);
-
-    // Colour Scale
-    colorScale = d3.scaleThreshold()
-      .domain(thresholds)
-      .range(colors);
   }
 
   function my(selection) {
@@ -98,7 +106,7 @@ d3.ez.chart.tabularHeat = function module() {
       }
 
       // Update the chart dimensions
-      chart.classed("chartTabularHeat", true)
+      chart.classed(classed, true)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
