@@ -23,20 +23,18 @@ d3.ez.component.heatRing = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
-      numSegments = data.values.length;
+
+      // Pie Generator
+      var pie = d3.pie()
+        .value(function(d) { return 1; })
+        .sort(null)
+        .padAngle(0.015);
 
       // Arc Generator
       var arc = d3.arc()
         .outerRadius(radius)
         .innerRadius(innerRadius)
-        .startAngle(function(d, i) {
-          return (i * 2 * Math.PI) / numSegments;
-        })
-        .endAngle(function(d, i) {
-          return ((i + 1) * 2 * Math.PI) / numSegments;
-        })
-        .cornerRadius(3)
-        .padAngle(0.015);
+        .cornerRadius(2);
 
       // Create chart group
       var heatRing = selection.selectAll('.heatRing')
@@ -48,7 +46,15 @@ d3.ez.component.heatRing = function module() {
       heatRing = selection.selectAll('.heatRing').merge(heatRing);
 
       var segments = heatRing.selectAll(".segment")
-        .data(function(d) { return d.values; });
+        .data(function(d) {
+          var key = d.key;
+          var data = pie(d.values);
+          data.forEach(function(d, i) {
+            data[i].key = key;
+          });
+
+          return data;
+        });
 
       // Ring Segments
       segments
@@ -56,10 +62,10 @@ d3.ez.component.heatRing = function module() {
         .append("path")
         .attr("d", arc)
         .attr("fill", function(d) {
-          return colorScale(d.value);
+          return colorScale(d.data.value);
         })
         .classed("segment", true)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); });
 
       segments.exit().remove();
     });

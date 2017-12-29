@@ -2,7 +2,7 @@
 
 .chartPunchCard circle.punchSpot {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .chartPunchCard circle.punchSpot:hover {

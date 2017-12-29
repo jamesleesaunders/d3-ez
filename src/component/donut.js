@@ -22,15 +22,17 @@ d3.ez.component.donut = function module() {
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
       innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
 
+      // Pie Generator
       var pie = d3.pie()
         .value(function(d) { return d.value; })
-        .sort(null);
+        .sort(null)
+        .padAngle(0.015);
 
+      // Arc Generators
       var arc = d3.arc()
         .innerRadius(innerRadius)
         .outerRadius(radius)
-        .cornerRadius(3)
-        .padAngle(0.015);
+        .cornerRadius(2);
 
       var outerArc = d3.arc()
         .innerRadius(radius * 0.9)

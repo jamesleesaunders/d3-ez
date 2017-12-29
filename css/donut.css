@@ -2,7 +2,7 @@
 
 .chartDonut path.slice {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .chartDonut path.slice:hover {

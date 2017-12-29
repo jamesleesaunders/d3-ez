@@ -133,6 +133,9 @@ d3.ez.chart.tabularHeat = function module() {
         .call(heatMap);
 
       series.exit().remove();
+
+
+
     });
   }
 

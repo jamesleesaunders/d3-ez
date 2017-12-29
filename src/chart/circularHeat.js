@@ -69,8 +69,8 @@ d3.ez.chart.circularHeat = function module() {
 
     yScale = d3.scaleBand()
       .domain(groupNames)
-      .rangeRound([innerRadius, radius])
-      .padding(0.05);
+      .rangeRound([radius, innerRadius])
+      .padding(0.1);
 
     // Colour Scale
     colorScale = d3.scaleThreshold()
@@ -111,8 +111,8 @@ d3.ez.chart.circularHeat = function module() {
         .attr("height", chartH);
 
       var heatRing = d3.ez.component.heatRing()
-        .radius(function(d) { return yScale(d.series) + yScale.padding(); })
-        .innerRadius(function(d) { return yScale(d.series) + yScale.bandwidth() ; })
+        .radius(function(d) { return yScale(d.key)  })
+        .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth() ; })
         .colorScale(colorScale)
         .yScale(yScale)
         .xScale(xScale)
@@ -120,21 +120,7 @@ d3.ez.chart.circularHeat = function module() {
 
       var series = chart.selectAll(".series")
         .data(function(d) {
-          var data = [];
-          d3.map(d).values().forEach(function(d, i) {
-            var seriesName = d.key;
-            var seriesValues = [];
-            d.values.forEach(function(d, i) {
-              seriesValues[i] = {
-                series: seriesName,
-                key: d.key,
-                value: d.value
-              };
-            });
-            data[i] = { key: seriesName, values: seriesValues };
-          });
-
-          return data;
+          return d;
         })
         .enter().append("g")
         .attr("class", "series");

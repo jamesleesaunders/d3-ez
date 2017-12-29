@@ -2,7 +2,7 @@
 
 .chartTabularHeat rect.cell {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .chartTabularHeat rect.cell:hover {

@@ -52,7 +52,7 @@
 
 .barGrouped rect.bar, .barStacked rect.bar {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .barGrouped rect.bar:hover, .barStacked rect.bar:hover {
@@ -70,7 +70,7 @@
 
 .chartRadialBar path.segment {
   fill: steelblue;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
   stroke: #999999;
 }
 
@@ -105,7 +105,7 @@
 /* === Circular Heat Chart Styles === */
 
 .chartCircularHeat path.segment {
-  stroke: #B6B6B6;
+  stroke: #999999;
   stroke-width: 0.5px;
 }
 
@@ -131,7 +131,7 @@
 
 .chartTabularHeat rect.cell {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .chartTabularHeat rect.cell:hover {
@@ -149,7 +149,7 @@
 
 .chartDonut path.slice {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .chartDonut path.slice:hover {
@@ -170,7 +170,7 @@
 
 .chartPunchCard circle.punchSpot {
   stroke: #999999;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .chartPunchCard circle.punchSpot:hover {
