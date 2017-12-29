@@ -32,7 +32,7 @@ JS_FILES :=        src/header.js \
                    src/chart/multiSeriesLine.js
 
 CSS_FILES :=       css/global.css \
-                   css/barGrouped.css \
+                   css/groupedBar.css \
                    css/radialBar.css \
                    css/circularHeat.css \
                    css/tabularHeat.css \
