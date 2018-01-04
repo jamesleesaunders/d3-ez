@@ -1,10 +1,6 @@
 /**
  * Reusable Stacked Bar Chart
  *
- * @example
- * var myBars = d3.ez.component.barStacked()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.barStacked = function module() {
   // Default Options (Configurable via setters)
@@ -19,7 +15,7 @@ d3.ez.component.barStacked = function module() {
   function my(selection) {
     selection.each(function(data) {
       // Create chart group
-      selection.selectAll('.barStacked')
+      selection.selectAll('.barSeries')
         .data(function(d) {
           series = [];
           var y0 = 0;
@@ -38,14 +34,14 @@ d3.ez.component.barStacked = function module() {
         })
         .enter()
         .append("g")
-        .classed('barStacked', true)
+        .classed('barSeries', true)
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var barGroup = selection.selectAll('.barStacked');
+      var series = selection.selectAll('.barSeries');
 
       // Add Bars to Group
-      var bars = barGroup.selectAll(".bar")
+      var bars = series.selectAll(".bar")
         .data(function(d) { return d.values; });
 
       bars.enter().append("rect")

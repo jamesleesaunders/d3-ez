@@ -1,11 +1,11 @@
 /* === Bar Chart (Stacked & Grouped) Styles === */
 
-.barGrouped rect.bar, .barStacked rect.bar {
+.chartGroupedBar rect.bar, .chartDiscreteBar rect.bar {
   stroke: #999999;
   stroke-width: 0.5px;
 }
 
-.barGrouped rect.bar:hover, .barStacked rect.bar:hover {
+.chartGroupedBar rect.bar:hover, .chartDiscreteBar rect.bar:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;

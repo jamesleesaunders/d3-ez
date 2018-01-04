@@ -2,9 +2,9 @@
  * Reusable Circular Axis
  *
  * @example
- * var myBars = d3.ez.component.circularAxis()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
+ * var axis = d3.ez.component.circularLabels()
+ *     .radius(60);
+ * d3.select("svg").call(axis);
  */
 d3.ez.component.circularAxis = function module() {
   // Default Options (Configurable via setters)
@@ -20,22 +20,24 @@ d3.ez.component.circularAxis = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
+      yScale2 = d3.scaleLinear()
+        .domain(yScale.domain().reverse())
+        .range(yScale.range().reverse());
+
       // Create chart group
-      var circularAxis = selection.selectAll('.circularAxis')
+      var axis = selection.selectAll('.axis')
         .data([0])
         .enter()
         .append("g")
-        .classed("circularAxis", true)
+        .classed("axis", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-
-      circularAxis.append("g").attr("class", "outerCircle");
-      circularAxis.append("g").attr("class", "tickCircles");
-      circularAxis.append("g").attr("class", "spokes");
-
-      var circularAxis = selection.selectAll('.circularAxis').merge(circularAxis);
+      axis.append("g").attr("class", "outerCircle");
+      axis.append("g").attr("class", "tickCircles");
+      axis.append("g").attr("class", "spokes");
+      var axis = selection.selectAll('.axis').merge(axis);
 
       // Outer circle
-      var outerCircle = circularAxis.select(".outerCircle")
+      var outerCircle = axis.select(".outerCircle")
       outerCircle.selectAll("circle")
         .data([radius])
         .enter()
@@ -44,7 +46,7 @@ d3.ez.component.circularAxis = function module() {
         .style("fill", "none");
 
       // Tick circles
-      var tickCircles = circularAxis.select(".tickCircles")
+      var tickCircles = axis.select(".tickCircles")
         .selectAll("circle")
         .data(yScale.ticks());
 
@@ -61,7 +63,7 @@ d3.ez.component.circularAxis = function module() {
         .remove();
 
       // Spokes
-      var spokes = circularAxis.select(".spokes")
+      var spokes = axis.select(".spokes")
         .selectAll("line")
         .data(xScale.domain())
         .enter()

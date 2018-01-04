@@ -1,10 +1,6 @@
 /**
  * Reusable Line Chart
  *
- * @example
- * var myBars = d3.ez.component.lineChart()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.lineChart = function module() {
   // Default Options (Configurable via setters)
@@ -35,16 +31,16 @@ d3.ez.component.lineChart = function module() {
       }
 
       // Create Line
-      var path = selection.selectAll('.lineSeries')
+      var series = selection.selectAll('.lineSeries')
         .data(function(d) { return [d]; });
 
-      path.enter()
+      series.enter()
         .append("path")
         .attr("class", "lineSeries")
         .attr("stroke-width", 1.5)
         .attr("stroke", function(d) { return colorScale(d.key); })
         .attr("fill", "none")
-        .merge(path)
+        .merge(series)
         .transition()
         .duration(transition.duration)
         .attrTween("d", function(d) { return pathTween(d.values); });

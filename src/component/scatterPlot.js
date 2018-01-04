@@ -1,10 +1,6 @@
 /**
  * Reusable Scatter Plot
  *
- * @example
- * var myBars = d3.ez.component.scatterPlot()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.scatterPlot = function module() {
   // Default Options (Configurable via setters)
@@ -19,7 +15,7 @@ d3.ez.component.scatterPlot = function module() {
   function my(selection) {
     selection.each(function(data) {
       // Create chart group
-      selection.selectAll('.dotSeries')
+      var series = selection.selectAll('.dotSeries')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
@@ -28,15 +24,15 @@ d3.ez.component.scatterPlot = function module() {
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var dotSeries = selection.selectAll('.dotSeries');
+      series = selection.selectAll('.dotSeries').merge(series);
 
       // Add Dots to Group
-      var dots = dotSeries.selectAll(".dot")
+      var dots = series.selectAll(".dot")
         .data(function(d) { return d.values; });
 
       dots.enter()
         .append("circle")
-        .attr("class", function(d) { return d.key + " dot"; })
+        .attr("class", "dot")
         .attr("r", 3)
         .attr("cx", function(d, i) { return xScale(d.key); })
         .attr("cy", height)

@@ -1,10 +1,6 @@
 /**
  * Reusable Circular Heat Ring
  *
- * @example
- * var myBars = d3.ez.component.heatRing()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.heatRing = function module() {
   // Default Options (Configurable via setters)
@@ -37,15 +33,15 @@ d3.ez.component.heatRing = function module() {
         .cornerRadius(2);
 
       // Create chart group
-      var heatRing = selection.selectAll('.heatRing')
+      var series = selection.selectAll('.segmentSeries')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("heatRing", true)
+        .classed("segmentSeries", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      heatRing = selection.selectAll('.heatRing').merge(heatRing);
+      series = selection.selectAll('.segmentSeries').merge(series);
 
-      var segments = heatRing.selectAll(".segment")
+      var segments = series.selectAll(".segment")
         .data(function(d) {
           var key = d.key;
           var data = pie(d.values);

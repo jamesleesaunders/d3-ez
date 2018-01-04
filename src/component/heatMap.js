@@ -1,10 +1,6 @@
 /**
  * Reusable Heat Map
  *
- * @example
- * var myBars = d3.ez.component.heatMap()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.heatMap = function module() {
   // Default Options (Configurable via setters)
@@ -21,15 +17,15 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var heatMap = selection.selectAll('.heatMap')
+      var series = selection.selectAll('.cellSeries')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('heatMap', true)
+        .classed('cellSeries', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      heatMap = selection.selectAll('.heatMap').merge(heatMap);
+      series = selection.selectAll('.cellSeries').merge(series);
 
-      var cells = heatMap.selectAll(".cell")
+      var cells = series.selectAll(".cell")
         .data(function(d) { return d.values; });
 
       cells.enter().append("rect")

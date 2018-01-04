@@ -24,7 +24,6 @@ d3.ez.chart.radialBar = function module() {
   // Scales and Axis
   var xScale
   var yScale;
-  var yScale2;
   var colorScale;
 
   // Data Variables
@@ -69,10 +68,6 @@ d3.ez.chart.radialBar = function module() {
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range([0, radius]);
-
-    yScale2 = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([0, -radius]);
   }
 
   function my(selection) {
@@ -96,10 +91,10 @@ d3.ez.chart.radialBar = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("circleAxis", true);
-        chart.append("g").classed("barChart", true);
-        chart.append("g").classed("axis", true);
-        chart.append("g").classed("circleLabels", true);
+        chart.append("g").classed("circularAxis", true);
+        chart.append("g").classed("barRadial", true);
+        chart.append("g").classed("verticalAxis axis", true);
+        chart.append("g").classed("circularLabels", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -110,17 +105,6 @@ d3.ez.chart.radialBar = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add the chart
-      var barRadial = d3.ez.component.barRadial()
-        .radius(radius)
-        .yScale(yScale)
-        .colorScale(colorScale)
-        .dispatch(dispatch);
-
-      chart.select(".barChart")
-        .datum(data)
-        .call(barRadial);
-
       // Circular Axis
       var circularAxis = d3.ez.component.circularAxis()
         .xScale(xScale)
@@ -129,21 +113,31 @@ d3.ez.chart.radialBar = function module() {
         .height(chartH)
         .radius(radius);
 
-      chart.select(".circleAxis")
+      chart.select(".circularAxis")
         .call(circularAxis);
 
-      // Y Axis
-      var yAxis = d3.axisLeft(yScale2);
-      chart.select(".axis")
-        .call(yAxis);
+      // Radial Bar Chart
+      var barRadial = d3.ez.component.barRadial()
+        .radius(radius)
+        .yScale(yScale)
+        .colorScale(colorScale)
+        .dispatch(dispatch);
+
+      chart.select(".barRadial")
+        .datum(data)
+        .call(barRadial);
+
+      // Vertical Axis
+      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]));
+      chart.select(".verticalAxis")
+        .attr("transform", "translate(0," + -(chartH / 2) + ")")
+        .call(verticalAxis);
 
       // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()
-        .width(chartW)
-        .height(chartH)
-        .radius(radius);
+        .radius(radius * 1.04);
 
-      chart.select(".circleLabels")
+      chart.select(".circularLabels")
         .datum(categoryNames)
         .call(circularLabels);
 
