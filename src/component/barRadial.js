@@ -21,7 +21,7 @@ d3.ez.component.barRadial = function module() {
 
       var yDomain = yScale.domain();
       var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
-      var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
+      // var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
 
       // Pie Generator
       var pie = d3.pie()
@@ -31,7 +31,7 @@ d3.ez.component.barRadial = function module() {
 
       // Arc Generator
       var arc = d3.arc()
-        .outerRadius(function(d, i) {
+        .outerRadius(function(d) {
           return barScale(d.data.value);
         })
         .innerRadius(0)

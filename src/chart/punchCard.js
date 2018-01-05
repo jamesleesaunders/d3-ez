@@ -39,7 +39,6 @@ d3.ez.chart.punchCard = function module() {
   // Misc Options
   var minRadius = 2;
   var maxRadius = 20;
-  var formatTick = d3.format("0000");
   var useGlobalScale = true;
 
   function init(data) {
@@ -146,7 +145,7 @@ d3.ez.chart.punchCard = function module() {
         .data(function(d) { return d; })
         .enter().append("g")
         .attr("class", "series")
-        .attr("transform", function(d, i) { return "translate(0, " + yScale(d.key) + ")"; });
+        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
 
       series.datum(function(d) { return d; })
         .call(punchCard);

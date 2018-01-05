@@ -30,7 +30,7 @@ d3.ez.chart.discreteBar = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   // Other Customisation Options
-  var yAxisLabel = undefined;
+  var yAxisLabel;
 
   function init(data) {
     chartW = width - (margin.left + margin.right);

@@ -15,7 +15,7 @@ d3.ez.component.numberCard = function module() {
 
   function my(selection) {
     selection.each(function(data) {
-      var cellHeight = yScale.bandwidth();
+      // var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
       // Create Number Row
@@ -37,7 +37,7 @@ d3.ez.component.numberCard = function module() {
 
       numbers.enter().append("text")
         .attr("class", "number")
-        .attr("x", function(d, i) { return (xScale(d.key) + cellWidth / 2); })
+        .attr("x", function(d) { return (xScale(d.key) + cellWidth / 2); })
         .attr("y", 0)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")

@@ -22,7 +22,7 @@ d3.ez.chart.circularHeat = function module() {
   var innerRadius;
 
   // Scales and Axis
-  var xScale
+  var xScale;
   var yScale;
   var colorScale;
 
@@ -31,7 +31,7 @@ d3.ez.chart.circularHeat = function module() {
   var groupNames = [];
   var minValue = 0;
   var maxValue = 0;
-  var thresholds = undefined;
+  var thresholds;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -54,7 +54,7 @@ d3.ez.chart.circularHeat = function module() {
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      var thresholds = slicedData.thresholds;
+      thresholds = slicedData.thresholds;
     }
 
     // Colour Scale

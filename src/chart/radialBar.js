@@ -22,7 +22,7 @@ d3.ez.chart.radialBar = function module() {
   var innerRadius;
 
   // Scales and Axis
-  var xScale
+  var xScale;
   var yScale;
   var colorScale;
 

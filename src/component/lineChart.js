@@ -28,7 +28,7 @@ d3.ez.component.lineChart = function module() {
         return function(t) {
           return line(data.slice(0, interpolate(t)));
         };
-      }
+      };
 
       // Create Line
       var series = selection.selectAll('.lineSeries')

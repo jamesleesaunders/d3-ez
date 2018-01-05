@@ -29,7 +29,7 @@ d3.ez.component.heatMap = function module() {
         .data(function(d) { return d.values; });
 
       cells.enter().append("rect")
-        .attr("x", function(d, i) {
+        .attr("x", function(d) {
           return xScale(d.key);
         })
         .attr("y", 0)

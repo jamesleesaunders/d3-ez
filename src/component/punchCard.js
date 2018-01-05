@@ -23,7 +23,7 @@ d3.ez.component.punchCard = function module() {
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .attr("transform", function(d, i) {
+        .attr("transform", function(d) {
           return "translate(0, " + (cellHeight / 2) + ")";
         })
         .classed('spotSeries', true)
@@ -35,7 +35,7 @@ d3.ez.component.punchCard = function module() {
 
       spots.enter().append("circle")
         .attr("class", "punchSpot")
-        .attr("cx", function(d, i) {
+        .attr("cx", function(d) {
           return (cellWidth / 2 + xScale(d.key));
         })
         .attr("cy", 0)

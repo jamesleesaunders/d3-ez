@@ -23,7 +23,7 @@ d3.ez.component.circularLabels = function module() {
         .enter()
         .append("g")
         .classed("circularLabels", true);
-      var labels = selection.selectAll('.circularLabels').merge(labels);
+      labels = selection.selectAll('.circularLabels').merge(labels);
 
       // Labels
       labels.selectAll("def")

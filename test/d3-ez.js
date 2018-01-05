@@ -1,6 +1,7 @@
-// D3.EZ Test File
-// Use before Makefile
-
+/**
+ * d3.ez Test File - Use before Makefile
+ *
+ */
 include('../src/header.js');
 include('../src/baseFunctions.js');
 include('../src/chart.js');

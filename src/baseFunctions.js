@@ -1,3 +1,7 @@
+/**
+ * Base Functions - Data Parse
+ *
+ */
 d3.ez.dataParse = function module(data) {
 
   var levels = (function() {
@@ -76,7 +80,7 @@ d3.ez.dataParse = function module(data) {
     }
 
     return ret;
-  }
+  };
 
   var categoryNames = (function() {
     if (1 == levels) {
@@ -191,7 +195,7 @@ d3.ez.dataParse = function module(data) {
       (match[2] ? +match[2] : 0));
 
       return ret;
-  }
+  };
 
   var maxDecimalPlace = (function() {
     if (1 == levels) {

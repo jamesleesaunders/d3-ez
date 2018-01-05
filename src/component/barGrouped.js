@@ -32,7 +32,7 @@ d3.ez.component.barGrouped = function module() {
         .classed("bar", true)
         .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", xScale.bandwidth())
-        .attr("x", function(d, i) { return xScale(d.key); })
+        .attr("x", function(d) { return xScale(d.key); })
         .attr("y", height)
         .attr("rx", 0)
         .attr("ry", 0)
@@ -42,9 +42,9 @@ d3.ez.component.barGrouped = function module() {
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("x", function(d, i) { return xScale(d.key); })
-        .attr("y", function(d, i) { return yScale(d.value); })
-        .attr("height", function(d, i) { return height - yScale(d.value); });
+        .attr("x", function(d) { return xScale(d.key); })
+        .attr("y", function(d) { return yScale(d.value); })
+        .attr("height", function(d) { return height - yScale(d.value); });
 
       bars.exit()
         .transition()

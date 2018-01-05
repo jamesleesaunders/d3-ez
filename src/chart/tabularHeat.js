@@ -135,7 +135,7 @@ d3.ez.chart.tabularHeat = function module() {
         .data(function(d) { return d; })
         .enter().append("g")
         .attr("class", "series")
-        .attr("transform", function(d, i) { return "translate(0, " + yScale(d.key) + ")"; });
+        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
 
       series.datum(function(d) { return d; })
         .call(heatMap);

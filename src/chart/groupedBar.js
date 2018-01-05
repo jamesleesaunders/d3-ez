@@ -127,12 +127,13 @@ d3.ez.chart.groupedBar = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
+      var barChart;
       if (groupType === "stacked") {
-        var barChart = d3.ez.component.barStacked()
+        barChart = d3.ez.component.barStacked()
           .xScale(xScale);
 
       } else if (groupType === "clustered") {
-        var barChart = d3.ez.component.barGrouped()
+        barChart = d3.ez.component.barGrouped()
           .xScale(xScale2);
       }
 
@@ -140,7 +141,7 @@ d3.ez.chart.groupedBar = function module() {
         .height(chartH)
         .colorScale(colorScale)
         .yScale(yScale)
-        .dispatch(dispatch)
+        .dispatch(dispatch);
 
       // TODO: This is temporary to allow transition between stacked and clustered
       chart.selectAll(".series").data([]).exit().remove();

@@ -34,15 +34,15 @@ d3.ez.component.scatterPlot = function module() {
         .append("circle")
         .attr("class", "dot")
         .attr("r", 3)
-        .attr("cx", function(d, i) { return xScale(d.key); })
+        .attr("cx", function(d) { return xScale(d.key); })
         .attr("cy", height)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(dots)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("cx", function(d, i) { return xScale(d.key); })
-        .attr("cy", function(d, i) { return yScale(d.value); });
+        .attr("cx", function(d) { return xScale(d.key); })
+        .attr("cy", function(d) { return yScale(d.value); });
 
       dots.exit()
         .transition()

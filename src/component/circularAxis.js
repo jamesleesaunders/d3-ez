@@ -34,16 +34,7 @@ d3.ez.component.circularAxis = function module() {
       axis.append("g").attr("class", "outerCircle");
       axis.append("g").attr("class", "tickCircles");
       axis.append("g").attr("class", "spokes");
-      var axis = selection.selectAll('.axis').merge(axis);
-
-      // Outer circle
-      var outerCircle = axis.select(".outerCircle")
-      outerCircle.selectAll("circle")
-        .data([radius])
-        .enter()
-        .append("circle")
-        .attr("r", function(d) { return d; })
-        .style("fill", "none");
+      axis = selection.selectAll('.axis').merge(axis);
 
       // Tick circles
       var tickCircles = axis.select(".tickCircles")
@@ -61,6 +52,15 @@ d3.ez.component.circularAxis = function module() {
 
       tickCircles.exit()
         .remove();
+
+			// Outer circle
+			var outerCircle = axis.select(".outerCircle")
+				.selectAll("circle")
+				.data([radius])
+				.enter()
+				.append("circle")
+				.attr("r", function(d) { return d; })
+				.style("fill", "none");
 
       // Spokes
       var spokes = axis.select(".spokes")
