@@ -1,10 +1,6 @@
 /**
- * Reusable Heat Map
+ * Reusable Punch Card Row
  *
- * @example
- * var myBars = d3.ez.component.punchCard()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.punchCard = function module() {
   // Default Options (Configurable via setters)
@@ -22,24 +18,24 @@ d3.ez.component.punchCard = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      // Add Punch Rows
-      selection.selectAll(".punchCard")
+      // Create Punch Row
+      var series = selection.selectAll(".series")
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .attr("transform", function(d, i) {
+        .attr("transform", function(d) {
           return "translate(0, " + (cellHeight / 2) + ")";
         })
-        .classed('punchCard', true)
+        .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var punchRow = selection.selectAll('.punchCard');
+      series = selection.selectAll('.series').merge(series);
 
-      var circles = punchRow.selectAll(".punchSpot")
+      var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
-      circles.enter().append("circle")
+      spots.enter().append("circle")
         .attr("class", "punchSpot")
-        .attr("cx", function(d, i) {
+        .attr("cx", function(d) {
           return (cellWidth / 2 + xScale(d.key));
         })
         .attr("cy", 0)
@@ -50,16 +46,12 @@ d3.ez.component.punchCard = function module() {
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(circles)
+        .merge(spots)
         .transition()
         .duration(1000)
         .attr("fill", function(d) { return colorScale(d.value); });
 
-      circles.exit().remove();
-
-      circles.select("title").text(function(d) {
-        return d.value;
-      });
+      spots.exit().remove();
 
     });
   }

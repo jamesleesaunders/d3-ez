@@ -20,7 +20,7 @@ d3.ez.component.labeledNode = function module() {
   var label = null;
   var fontSize = 10;
 
-  function my(d, i) {
+  function my(d) {
     var r = sizeAccessor(d);
 
     var node = d3.select(this)

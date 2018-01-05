@@ -30,7 +30,7 @@ d3.ez.chart.discreteBar = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   // Other Customisation Options
-  var yAxisLabel = undefined;
+  var yAxisLabel;
 
   function init(data) {
     chartW = width - (margin.left + margin.right);
@@ -86,8 +86,9 @@ d3.ez.chart.discreteBar = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed('chart', true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
+        chart.append("g").classed("barChart", true);
       } else {
         chart = svg.select(".chart");
       }
@@ -99,15 +100,15 @@ d3.ez.chart.discreteBar = function module() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
       // Add labels to chart
-      ylabel = chart.select(".y-axis")
+      ylabel = chart.select(".yAxis")
         .selectAll(".y-label")
         .data([data.key]);
 
@@ -134,7 +135,8 @@ d3.ez.chart.discreteBar = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      chart.datum(data)
+      chart.select(".barChart")
+        .datum(data)
         .call(barChart);
     });
   }

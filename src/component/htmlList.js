@@ -66,7 +66,7 @@ d3.ez.component.htmlList = function module() {
           .on("click", expand);
       }
 
-      function collapse(d) {
+      function collapse() {
         d3.event.stopPropagation();
         d3.select(this)
           .on("click", expand)

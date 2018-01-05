@@ -2,9 +2,9 @@
  * Reusable Circular Labels
  *
  * @example
- * var tmp = d3.ez.component.circularLabels()
+ * var labels = d3.ez.component.circularLabels()
  *     .radius(60);
- * d3.select("svg").call(tmp);
+ * d3.select("svg").call(labels);
  */
 d3.ez.component.circularLabels = function module() {
   // Default Options (Configurable via setters)
@@ -17,18 +17,17 @@ d3.ez.component.circularLabels = function module() {
     selection.each(function(data) {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-      var labelRadius = radius * 1.020;
 
-      var circularLabels = selection.selectAll('.circularLabels')
+      var labels = selection.selectAll('.circularLabels')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
         .classed("circularLabels", true);
-      var circularLabels = selection.selectAll('.circularLabels').merge(circularLabels);
+      labels = selection.selectAll('.circularLabels').merge(labels);
 
       // Labels
-      circularLabels.selectAll("def")
-        .data([labelRadius])
+      labels.selectAll("def")
+        .data([radius])
         .enter()
         .append("def")
         .append("path")
@@ -37,7 +36,7 @@ d3.ez.component.circularLabels = function module() {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         });
 
-      circularLabels.selectAll("text")
+      labels.selectAll("text")
         .data(function(d) { return d; })
         .enter()
         .append("text")

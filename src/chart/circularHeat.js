@@ -22,9 +22,8 @@ d3.ez.chart.circularHeat = function module() {
   var innerRadius;
 
   // Scales and Axis
-  var xScale
+  var xScale;
   var yScale;
-  var yScale2;
   var colorScale;
 
   // Data Variables
@@ -32,7 +31,7 @@ d3.ez.chart.circularHeat = function module() {
   var groupNames = [];
   var minValue = 0;
   var maxValue = 0;
-  var thresholds = undefined;
+  var thresholds;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -55,7 +54,7 @@ d3.ez.chart.circularHeat = function module() {
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      var thresholds = slicedData.thresholds;
+      thresholds = slicedData.thresholds;
     }
 
     // Colour Scale
@@ -76,11 +75,6 @@ d3.ez.chart.circularHeat = function module() {
     yScale = d3.scaleBand()
       .domain(groupNames)
       .rangeRound([radius, innerRadius])
-      .padding(0.1);
-
-    yScale2 = d3.scaleBand()
-      .domain(groupNames)
-      .rangeRound([-innerRadius, -radius])
       .padding(0.1);
   }
 
@@ -126,29 +120,29 @@ d3.ez.chart.circularHeat = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var series = chart.select(".circleRings").selectAll(".series")
+      var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
         .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "series");
+        .enter()
+        .append("g")
+        .attr("class", "seriesGroup");
 
-      series.datum(function(d) { return d; })
+      seriesGroup.datum(function(d) { return d; })
         .call(heatRing);
 
-      series.exit().remove();
+      seriesGroup.exit().remove();
 
       // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()
-        .width(chartW)
-        .height(chartH)
-        .radius(radius);
+        .radius(radius * 1.04);
 
       chart.select(".circleLabels")
         .datum(categoryNames)
         .call(circularLabels);
 
       // Y Axis
-      var yAxis = d3.axisLeft(yScale2);
+      var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
       chart.select(".axis")
+        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
         .call(yAxis);
 
     });

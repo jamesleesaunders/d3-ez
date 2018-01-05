@@ -1,10 +1,6 @@
 /**
  * Reusable Radial Bar Chart
  *
- * @example
- * var myBars = d3.ez.component.barRadial()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.barRadial = function module() {
   // Default Options (Configurable via setters)
@@ -25,7 +21,7 @@ d3.ez.component.barRadial = function module() {
 
       var yDomain = yScale.domain();
       var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
-      var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
+      // var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
 
       // Pie Generator
       var pie = d3.pie()
@@ -35,34 +31,29 @@ d3.ez.component.barRadial = function module() {
 
       // Arc Generator
       var arc = d3.arc()
-        .outerRadius(function(d, i) {
+        .outerRadius(function(d) {
           return barScale(d.data.value);
         })
         .innerRadius(0)
         .cornerRadius(2);
 
-      // Create chart group
-      var barRadial = selection.selectAll('.barRadial')
+      // Create series group
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("barRadial", true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var barRadial = selection.selectAll('.barRadial').merge(barRadial);
+      series = selection.selectAll(".series").merge(series);
 
-      // Segments
-      var segments = barRadial.selectAll("path")
-        .data(function(d) {
-          // return d.values;
-          return pie(d.values);
-        });
+      // Add segments to series
+      var segments = series.selectAll(".segment")
+        .data(function(d) { return pie(d.values); });
 
       segments.enter()
         .append("path")
-        .style("fill", function(d, i) {
-          return colorScale(d.data.key);
-        })
         .classed("segment", true)
+        .style("fill", function(d) { return colorScale(d.data.key); })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); })
         .merge(segments)
         .transition()
@@ -71,8 +62,9 @@ d3.ez.component.barRadial = function module() {
         .attr("d", arc);
 
       segments.exit()
+        .transition()
+        .style("opacity", 0)
         .remove();
-
     });
   }
 

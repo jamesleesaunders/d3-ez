@@ -1,10 +1,6 @@
 /**
  * Reusable Grouped Bar Chart
  *
- * @example
- * var myBars = d3.ez.component.barGrouped()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.barGrouped = function module() {
   // Default Options (Configurable via setters)
@@ -18,28 +14,25 @@ d3.ez.component.barGrouped = function module() {
 
   function my(selection) {
     selection.each(function(data) {
-      var barW = xScale.bandwidth();
-
-      // Create chart group
-      selection.selectAll('.barGrouped')
+      // Create series group
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('barGrouped', true)
-        .attr("width", width)
-        .attr("height", height)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var barGroup = selection.selectAll('.barGrouped');
+      series = selection.selectAll(".series").merge(series);
 
-      // Add Bars to Group
-      var bars = barGroup.selectAll(".bar")
+      // Add bars to series
+      var bars = series.selectAll(".bar")
         .data(function(d) { return d.values; });
 
-      bars.enter().append("rect")
+      bars.enter()
+        .append("rect")
         .classed("bar", true)
         .attr("fill", function(d) { return colorScale(d.key); })
-        .attr("width", barW)
-        .attr("x", function(d, i) { return xScale(d.key); })
+        .attr("width", xScale.bandwidth())
+        .attr("x", function(d) { return xScale(d.key); })
         .attr("y", height)
         .attr("rx", 0)
         .attr("ry", 0)
@@ -49,9 +42,9 @@ d3.ez.component.barGrouped = function module() {
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("x", function(d, i) { return xScale(d.key); })
-        .attr("y", function(d, i) { return yScale(d.value); })
-        .attr("height", function(d, i) { return height - yScale(d.value); });
+        .attr("x", function(d) { return xScale(d.key); })
+        .attr("y", function(d) { return yScale(d.value); })
+        .attr("height", function(d) { return height - yScale(d.value); });
 
       bars.exit()
         .transition()

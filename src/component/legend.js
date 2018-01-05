@@ -8,6 +8,7 @@
  *     .colorScale(**D3 Scale Object**)
  *     .colorLabel('Label for Colours')
  *     .position('top-right');
+ * d3.select("svg").call(myLegend);
  */
 d3.ez.component.legend = function module() {
   // Default Options (Configurable via setters)

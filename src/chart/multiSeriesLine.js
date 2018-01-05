@@ -137,7 +137,7 @@ d3.ez.chart.multiSeriesLine = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var dots = d3.ez.component.scatterPlot()
+      var scatterPlot = d3.ez.component.scatterPlot()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -145,17 +145,27 @@ d3.ez.chart.multiSeriesLine = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var series = chart.selectAll(".series")
+      var lineGroup = chart.selectAll(".lineGroup")
         .data(function(d) { return d; })
         .enter().append("g")
-        .attr("class", "series")
+        .attr("class", "lineGroup")
         .style("fill", function(d) { return colorScale(d.key); });
 
-      series.datum(function(d) { return d; })
-        .call(dots)
-        .call(lineChart);
+      lineGroup.datum(function(d) { return d; })
+        .call(lineChart).call(scatterPlot);
 
-      series.exit().remove();
+      lineGroup.exit().remove();
+
+      var dotGroup = chart.selectAll(".dotGroup")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "dotGroup")
+        .style("fill", function(d) { return colorScale(d.key); });
+
+      dotGroup.datum(function(d) { return d; })
+        .call(scatterPlot);
+
+      dotGroup.exit().remove();
     });
   }
 

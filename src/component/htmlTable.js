@@ -81,7 +81,7 @@ d3.ez.component.htmlTable = function module() {
         .attr("class", function(d) {
           return d.key;
         })
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
 
       // Add the first column of headings (categories)
       rows.append("th")

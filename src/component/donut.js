@@ -1,10 +1,6 @@
 /**
  * Reusable Donut Chart
  *
- * @example
- * var myBars = d3.ez.component.donut()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.donut = function module() {
   // Default Options (Configurable via setters)
@@ -51,21 +47,19 @@ d3.ez.component.donut = function module() {
       }
 
       // Create chart group
-      var chartDonut = selection.selectAll('.donut')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("donut", true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-
-      chartDonut.append("g").attr("class", "slices");
-      chartDonut.append("g").attr("class", "labels");
-      chartDonut.append("g").attr("class", "lines");
-
-      var chartDonut = selection.selectAll('.donut');
+      series.append("g").attr("class", "slices");
+      series.append("g").attr("class", "labels");
+      series.append("g").attr("class", "lines");
+      series = selection.selectAll('.series').merge(series);
 
       // Slices
-      var slices = chartDonut.select(".slices")
+      var slices = series.select(".slices")
         .selectAll("path.slice")
         .data(function(d) {
           return pie(d.values);
@@ -87,7 +81,7 @@ d3.ez.component.donut = function module() {
         .remove();
 
       // Labels
-      var labels = chartDonut.select(".labels")
+      var labels = series.select(".labels")
         .selectAll("text.label")
         .data(function(d) {
           return pie(d.values);
@@ -128,7 +122,7 @@ d3.ez.component.donut = function module() {
         .remove();
 
       // Slice to Label Lines
-      var lines = chartDonut.select(".lines")
+      var lines = series.select(".lines")
         .selectAll("polyline.line")
         .data(function(d) {
           return pie(d.values);

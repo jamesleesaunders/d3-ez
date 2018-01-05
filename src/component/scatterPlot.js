@@ -1,10 +1,6 @@
 /**
  * Reusable Scatter Plot
  *
- * @example
- * var myBars = d3.ez.component.scatterPlot()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.scatterPlot = function module() {
   // Default Options (Configurable via setters)
@@ -19,34 +15,34 @@ d3.ez.component.scatterPlot = function module() {
   function my(selection) {
     selection.each(function(data) {
       // Create chart group
-      selection.selectAll('.dotSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('dotSeries', true)
+        .classed('series', true)
         .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var dotSeries = selection.selectAll('.dotSeries');
+      series = selection.selectAll('.series').merge(series);
 
       // Add Dots to Group
-      var dots = dotSeries.selectAll(".dot")
+      var dots = series.selectAll(".dot")
         .data(function(d) { return d.values; });
 
       dots.enter()
         .append("circle")
-        .attr("class", function(d) { return d.key + " dot"; })
+        .attr("class", "dot")
         .attr("r", 3)
-        .attr("cx", function(d, i) { return xScale(d.key); })
+        .attr("cx", function(d) { return xScale(d.key); })
         .attr("cy", height)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(dots)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("cx", function(d, i) { return xScale(d.key); })
-        .attr("cy", function(d, i) { return yScale(d.value); });
+        .attr("cx", function(d) { return xScale(d.key); })
+        .attr("cy", function(d) { return yScale(d.value); });
 
       dots.exit()
         .transition()

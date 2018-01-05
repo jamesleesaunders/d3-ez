@@ -1,10 +1,6 @@
 /**
- * Reusable Heat Map
+ * Reusable Number Row
  *
- * @example
- * var myBars = d3.ez.component.numberCard()
- *     .colorScale(**D3 Scale Object**);
- * d3.select("svg").call(myBars);
  */
 d3.ez.component.numberCard = function module() {
   // Default Options (Configurable via setters)
@@ -19,37 +15,29 @@ d3.ez.component.numberCard = function module() {
 
   function my(selection) {
     selection.each(function(data) {
-      var cellHeight = yScale.bandwidth();
+      // var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      // Create Number Card
-      selection.selectAll('.chartPunchCard')
+      // Create Number Row
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('chartPunchCard', true)
+        .classed('series', true)
         .attr("width", width)
         .attr("height", height)
+        //.attr("transform", function(d, i) {
+        //  return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
+        //})
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var chartPunchCard = selection.selectAll('.chartPunchCard');
+      series = selection.selectAll('.series').merge(series);
 
-      var punchRows = chartPunchCard.selectAll(".punchRow")
-        .data(function(d) { return d; });
-
-      var punchRow = punchRows.enter().append("g")
-        .attr("class", "punchRow")
-        .attr("transform", function(d, i) {
-          return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
-        })
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      punchRow.exit().remove();
-
-      var circles = punchRow.selectAll(".circle")
+      var numbers = series.selectAll(".number")
         .data(function(d) { return d.values; });
 
-      circles.enter().append("text")
-        .attr("class", "punchValue")
-        .attr("x", function(d, i) { return (xScale(d.key) + cellWidth / 2); })
+      numbers.enter().append("text")
+        .attr("class", "number")
+        .attr("x", function(d) { return (xScale(d.key) + cellWidth / 2); })
         .attr("y", 0)
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
@@ -58,17 +46,12 @@ d3.ez.component.numberCard = function module() {
         })
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(circles)
+        .merge(numbers)
         .transition()
         .duration(1000)
         .attr("fill", function(d) { return colorScale(d.value); });
 
-      circles.exit().remove();
-
-      circles.select("title").text(function(d) {
-        return d.value;
-      });
-
+      numbers.exit().remove();
     });
   }
 

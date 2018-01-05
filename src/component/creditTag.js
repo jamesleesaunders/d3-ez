@@ -2,11 +2,11 @@
  * Credit Tag
  *
  * @example
- * var myCredit = d3.ez.component.creditTag()
+ * var creditTag = d3.ez.component.creditTag()
  *     .enabled(true)
  *     .text("d3-ez.net")
  *     .href("http://d3-ez.net");
- * d3.select("svg").call(myCredit);
+ * d3.select("svg").call(creditTag);
  */
 d3.ez.component.creditTag = function module() {
   // Default Options (Configurable via setters)
