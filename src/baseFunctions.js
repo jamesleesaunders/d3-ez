@@ -98,7 +98,6 @@ d3.ez.dataParse = function module(data) {
         });
 
         ret = union(tmp, ret);
-        console.log(ret);
       });
     }
 
