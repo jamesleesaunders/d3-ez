@@ -5,7 +5,7 @@
 d3.ez.dataParse = function module(data) {
 
   var levels = (function() {
-    if(data['key'] != undefined) {
+    if (data['key'] != undefined) {
       return 1;
     } else {
       return 2;
@@ -63,41 +63,42 @@ d3.ez.dataParse = function module(data) {
     return ret;
   })();
 
-  var union = function() {
-    var arrs = [].slice.call(arguments);
+  var union = function(array1, array2) {
     var ret = [];
-    for (var i = 0, l = arrs.length; i < l; i++) {
-      for (var j = 0, jl = arrs[i].length; j < jl; j++) {
-        var currEl = arrs[i][j];
-        if (ret.indexOf(currEl) === -1) {
-          if (j - 1 !== -1 && ret.indexOf(arrs[i][j - 1]) > -1) {
-            ret.splice(ret.indexOf(arrs[i][j - 1]) + 1, 0, currEl);
-          } else {
-            ret.push(currEl);
-          }
-        }
+    var arr = array1.concat(array2);
+    var len = arr.length;
+    var assoc = {};
+
+    while (len--) {
+      var item = arr[len];
+
+      if (!assoc[item]) {
+        ret.unshift(item);
+        assoc[item] = true;
       }
     }
 
     return ret;
-  };
+  }
 
   var categoryNames = (function() {
+    var ret = [];
     if (1 == levels) {
-      var ret = d3.values(data)[1].map(function(d) {
+      ret = d3.values(data)[1].map(function(d) {
         return d.key;
       });
 
     } else {
-      var ret = [];
       d3.map(data).values().forEach(function(d, i) {
+        var tmp = [];
         var groupName = d.key;
         d.values.forEach(function(d, i) {
           categoryName = d.key;
-          ret[i] = categoryName;
+          tmp[i] = categoryName;
         });
 
-        ret = union(ret);
+        ret = union(tmp, ret);
+        console.log(ret);
       });
     }
 
@@ -194,7 +195,7 @@ d3.ez.dataParse = function module(data) {
       -
       (match[2] ? +match[2] : 0));
 
-      return ret;
+    return ret;
   };
 
   var maxDecimalPlace = (function() {
