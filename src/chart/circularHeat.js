@@ -120,15 +120,16 @@ d3.ez.chart.circularHeat = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var series = chart.select(".circleRings").selectAll(".series")
+      var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
         .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "series");
+        .enter()
+        .append("g")
+        .attr("class", "seriesGroup");
 
-      series.datum(function(d) { return d; })
+      seriesGroup.datum(function(d) { return d; })
         .call(heatRing);
 
-      series.exit().remove();
+      seriesGroup.exit().remove();
 
       // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()

@@ -38,13 +38,13 @@ d3.ez.component.barRadial = function module() {
         .cornerRadius(2);
 
       // Create series group
-      var series = selection.selectAll('.segmentSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("segmentSeries", true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll(".segmentSeries").merge(series);
+      series = selection.selectAll(".series").merge(series);
 
       // Add segments to series
       var segments = series.selectAll(".segment")

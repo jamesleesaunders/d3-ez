@@ -17,13 +17,13 @@ d3.ez.component.heatMap = function module() {
       var cellHeight = yScale.bandwidth();
       var cellWidth = xScale.bandwidth();
 
-      var series = selection.selectAll('.cellSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('cellSeries', true)
+        .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.cellSeries').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       var cells = series.selectAll(".cell")
         .data(function(d) { return d.values; });

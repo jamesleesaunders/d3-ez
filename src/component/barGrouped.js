@@ -15,13 +15,13 @@ d3.ez.component.barGrouped = function module() {
   function my(selection) {
     selection.each(function(data) {
       // Create series group
-      var series = selection.selectAll('.barSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("barSeries", true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll(".barSeries").merge(series);
+      series = selection.selectAll(".series").merge(series);
 
       // Add bars to series
       var bars = series.selectAll(".bar")

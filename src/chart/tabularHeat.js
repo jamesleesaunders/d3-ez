@@ -131,16 +131,16 @@ d3.ez.chart.tabularHeat = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var series = chart.selectAll(".series")
+      var seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; })
         .enter().append("g")
-        .attr("class", "series")
+        .attr("class", "seriesGroup")
         .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
 
-      series.datum(function(d) { return d; })
+      seriesGroup.datum(function(d) { return d; })
         .call(heatMap);
 
-      series.exit().remove();
+      seriesGroup.exit().remove();
 
 
 

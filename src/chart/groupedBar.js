@@ -144,15 +144,15 @@ d3.ez.chart.groupedBar = function module() {
         .dispatch(dispatch);
 
       // TODO: This is temporary to allow transition between stacked and clustered
-      chart.selectAll(".series").data([]).exit().remove();
+      chart.selectAll(".seriesGroup").data([]).exit().remove();
 
       // Create bar group
-      var series = chart.selectAll(".series")
+      var seriesGroup = chart.selectAll(".seriesGroup")
         .data(data);
 
-      series.enter()
+      seriesGroup.enter()
         .append("g")
-        .classed("series", true)
+        .classed("seriesGroup", true)
         .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
         .datum(function(d) { return d; })
         .call(barChart);

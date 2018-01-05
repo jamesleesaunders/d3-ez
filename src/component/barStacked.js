@@ -15,7 +15,7 @@ d3.ez.component.barStacked = function module() {
   function my(selection) {
     selection.each(function(data) {
       // Create chart group
-      selection.selectAll('.barSeries')
+      selection.selectAll('.series')
         .data(function(d) {
           series = [];
           var y0 = 0;
@@ -34,11 +34,11 @@ d3.ez.component.barStacked = function module() {
         })
         .enter()
         .append("g")
-        .classed('barSeries', true)
+        .classed('series', true)
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var series = selection.selectAll('.barSeries');
+      var series = selection.selectAll('.series');
 
       // Add Bars to Group
       var bars = series.selectAll(".bar")

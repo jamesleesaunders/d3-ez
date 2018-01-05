@@ -15,16 +15,16 @@ d3.ez.component.scatterPlot = function module() {
   function my(selection) {
     selection.each(function(data) {
       // Create chart group
-      var series = selection.selectAll('.dotSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('dotSeries', true)
+        .classed('series', true)
         .attr("fill", function(d) { return colorScale(d.key); })
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.dotSeries').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       // Add Dots to Group
       var dots = series.selectAll(".dot")

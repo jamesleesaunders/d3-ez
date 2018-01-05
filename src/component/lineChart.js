@@ -31,12 +31,12 @@ d3.ez.component.lineChart = function module() {
       };
 
       // Create Line
-      var series = selection.selectAll('.lineSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
       series.enter()
         .append("path")
-        .attr("class", "lineSeries")
+        .attr("class", "series")
         .attr("stroke-width", 1.5)
         .attr("stroke", function(d) { return colorScale(d.key); })
         .attr("fill", "none")

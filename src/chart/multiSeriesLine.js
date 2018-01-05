@@ -145,17 +145,27 @@ d3.ez.chart.multiSeriesLine = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      var lineGroup = chart.selectAll(".lineGroup")
         .data(function(d) { return d; })
         .enter().append("g")
-        .attr("class", "seriesGroup")
+        .attr("class", "lineGroup")
         .style("fill", function(d) { return colorScale(d.key); });
 
-      seriesGroup.datum(function(d) { return d; })
-        .call(lineChart)
+      lineGroup.datum(function(d) { return d; })
+        .call(lineChart).call(scatterPlot);
+
+      lineGroup.exit().remove();
+
+      var dotGroup = chart.selectAll(".dotGroup")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "dotGroup")
+        .style("fill", function(d) { return colorScale(d.key); });
+
+      dotGroup.datum(function(d) { return d; })
         .call(scatterPlot);
 
-      seriesGroup.exit().remove();
+      dotGroup.exit().remove();
     });
   }
 

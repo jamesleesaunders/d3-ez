@@ -47,16 +47,16 @@ d3.ez.component.donut = function module() {
       }
 
       // Create chart group
-      var series = selection.selectAll('.sliceSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("sliceSeries", true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       series.append("g").attr("class", "slices");
       series.append("g").attr("class", "labels");
       series.append("g").attr("class", "lines");
-      series = selection.selectAll('.sliceSeries').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       // Slices
       var slices = series.select(".slices")

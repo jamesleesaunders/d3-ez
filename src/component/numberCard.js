@@ -19,18 +19,18 @@ d3.ez.component.numberCard = function module() {
       var cellWidth = xScale.bandwidth();
 
       // Create Number Row
-      var series = selection.selectAll('.numberSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('numberSeries', true)
+        .classed('series', true)
         .attr("width", width)
         .attr("height", height)
         //.attr("transform", function(d, i) {
         //  return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
         //})
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.numberSeries').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       var numbers = series.selectAll(".number")
         .data(function(d) { return d.values; });

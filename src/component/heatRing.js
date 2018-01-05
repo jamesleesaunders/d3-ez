@@ -33,13 +33,13 @@ d3.ez.component.heatRing = function module() {
         .cornerRadius(2);
 
       // Create chart group
-      var series = selection.selectAll('.segmentSeries')
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("segmentSeries", true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.segmentSeries').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       var segments = series.selectAll(".segment")
         .data(function(d) {

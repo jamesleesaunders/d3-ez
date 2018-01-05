@@ -19,16 +19,16 @@ d3.ez.component.punchCard = function module() {
       var cellWidth = xScale.bandwidth();
 
       // Create Punch Row
-      var series = selection.selectAll(".spotSeries")
+      var series = selection.selectAll(".series")
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
         .attr("transform", function(d) {
           return "translate(0, " + (cellHeight / 2) + ")";
         })
-        .classed('spotSeries', true)
+        .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.spotSeries').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
