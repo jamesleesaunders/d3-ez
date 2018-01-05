@@ -14,7 +14,7 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.json("data/town2town.json", function(error, json) {
+    d3.json("data/netflix_isp_speed_index.json", function(error, json) {
       // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
       var colors = ["#fb0007", "#fdb409", "#ffff0b", "#c3ff28"];
@@ -24,8 +24,8 @@
 
       // Create chart object
       var myChart = d3.ez.chart()
-        .width(700)
-        .height(550)
+        .width(750)
+        .height(400)
         .chart(chart)
         .legend(legend)
         .title(title)
@@ -38,11 +38,11 @@
 
       // Convert json to d3-ez data format
       var data = d3.nest().key(function(d) {
-        return d.TownA;
+        return d.ISP;
       }).entries(json.Data).map(function(obj) {
         obj.values = obj.values.map(function(values) {
           return {
-            key: values.TownB,
+            key: values.Month,
             value: values.Value
           };
         });
