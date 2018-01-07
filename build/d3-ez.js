@@ -1278,7 +1278,7 @@ d3.ez.component.heatMap = function module() {
     var yScale = undefined;
     var transition = {
         ease: d3.easeBounce,
-        duration: 500
+        duration: 1e3
     };
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
@@ -1290,21 +1290,18 @@ d3.ez.component.heatMap = function module() {
             }).enter().append("g").classed("series", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            selection.selectAll(".series").merge(series);
             var cells = series.selectAll(".cell").data(function(d) {
                 return d.values;
             });
             cells.enter().append("rect").attr("x", function(d) {
                 return xScale(d.key);
-            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(cells).transition().duration(1e3).attr("fill", function(d) {
+            }).merge(cells).transition().duration(transition.duration).attr("fill", function(d) {
                 return colorScale(d.value);
             });
             cells.exit().remove();
-            cells.select("title").text(function(d) {
-                return d.value;
-            });
         });
     }
     // Configuration Getters & Setters
@@ -1481,12 +1478,12 @@ d3.ez.component.punchCard = function module() {
             });
             spots.enter().append("circle").attr("class", "punchSpot").attr("cx", function(d) {
                 return cellWidth / 2 + xScale(d.key);
-            }).attr("cy", 0).attr("r", function(d) {
-                return sizeScale(d["value"]);
-            }).attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("cy", 0).attr("r", 0).attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(spots).transition().duration(1e3).attr("fill", function(d) {
+            }).merge(spots).transition().duration(transition.duration).attr("fill", function(d) {
                 return colorScale(d.value);
+            }).attr("r", function(d) {
+                return sizeScale(d["value"]);
             });
             spots.exit().remove();
         });
@@ -2640,7 +2637,6 @@ d3.ez.chart.tabularHeat = function module() {
         minValue = slicedData.minValue;
         categoryNames = slicedData.categoryNames;
         groupNames = slicedData.groupNames;
-        console.log(groupNames);
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {
@@ -2653,8 +2649,8 @@ d3.ez.chart.tabularHeat = function module() {
             colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.05);
+        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.1);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
@@ -2933,8 +2929,8 @@ d3.ez.chart.punchCard = function module() {
             colorScale = d3.scaleLinear().domain(valDomain).range(colors);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
+        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.05);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
