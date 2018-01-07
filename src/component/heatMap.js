@@ -9,7 +9,7 @@ d3.ez.component.heatMap = function module() {
   var colorScale = undefined;
   var xScale = undefined;
   var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 1000 };
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
@@ -23,7 +23,7 @@ d3.ez.component.heatMap = function module() {
         .append("g")
         .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.series').merge(series);
+      selection.selectAll('.series').merge(series);
 
       var cells = series.selectAll(".cell")
         .data(function(d) { return d.values; });
@@ -35,6 +35,7 @@ d3.ez.component.heatMap = function module() {
         .attr("y", 0)
         .attr("rx", 2)
         .attr("ry", 2)
+        .attr("fill", 'black')
         .attr("class", "cell")
         .attr("width", cellWidth)
         .attr("height", cellHeight)
@@ -42,15 +43,10 @@ d3.ez.component.heatMap = function module() {
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(cells)
         .transition()
-        .duration(1000)
+        .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); });
 
       cells.exit().remove();
-
-      cells.select("title").text(function(d) {
-        return d.value;
-      });
-
     });
   }
 

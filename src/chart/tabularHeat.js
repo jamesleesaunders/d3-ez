@@ -65,13 +65,13 @@ d3.ez.chart.tabularHeat = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartW])
-      .padding(0.05);
+      .range([0, chartW])
+      .padding(0.1);
 
     yScale = d3.scaleBand()
       .domain(groupNames)
-      .rangeRound([0, chartH])
-      .padding(0.05);
+      .range([0, chartH])
+      .padding(0.1);
 
     // X & Y Axis
     xAxis = d3.axisTop(xScale);

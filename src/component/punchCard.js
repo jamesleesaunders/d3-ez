@@ -39,17 +39,18 @@ d3.ez.component.punchCard = function module() {
           return (cellWidth / 2 + xScale(d.key));
         })
         .attr("cy", 0)
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        })
+        .attr("r", 0)
         .attr("width", cellWidth)
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(spots)
         .transition()
-        .duration(1000)
-        .attr("fill", function(d) { return colorScale(d.value); });
+        .duration(transition.duration)
+        .attr("fill", function(d) { return colorScale(d.value); })
+        .attr("r", function(d) {
+          return sizeScale(d['value']);
+        });
 
       spots.exit().remove();
 

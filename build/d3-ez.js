@@ -2640,6 +2640,7 @@ d3.ez.chart.tabularHeat = function module() {
         minValue = slicedData.minValue;
         categoryNames = slicedData.categoryNames;
         groupNames = slicedData.groupNames;
+        console.log(groupNames);
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {
@@ -2652,8 +2653,8 @@ d3.ez.chart.tabularHeat = function module() {
             colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartH ]).padding(.05);
+        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.05);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);

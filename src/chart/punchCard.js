@@ -69,12 +69,12 @@ d3.ez.chart.punchCard = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartW])
+      .range([0, chartW])
       .padding(0.05);
 
     yScale = d3.scaleBand()
       .domain(groupNames)
-      .rangeRound([0, chartH])
+      .range([0, chartH])
       .padding(0.05);
 
     // X & Y Axis
