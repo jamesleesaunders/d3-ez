@@ -448,18 +448,18 @@ d3.ez.colors = {
  */
 d3.ez.component.barGrouped = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
+    var width = 400;
+    var height = 400;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
+        selection.each(function() {
             // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
@@ -488,14 +488,14 @@ d3.ez.component.barGrouped = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -531,43 +531,43 @@ d3.ez.component.barGrouped = function module() {
  */
 d3.ez.component.barStacked = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 50;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
+    var width = 100;
+    var height = 400;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
-            // Create chart group
-            selection.selectAll(".series").data(function(d) {
-                series = [];
-                var y0 = 0;
-                d3.map(d.values).values().forEach(function(d, i) {
-                    series[i] = {
-                        name: d.key,
-                        value: d.value,
-                        y0: y0,
-                        y1: y0 + d.value
-                    };
-                    y0 += d.value;
-                });
-                data = {
-                    key: data.key,
-                    values: series
+        // Stack Generator
+        var stacker = function(data) {
+            series = [];
+            var y0 = 0;
+            data.forEach(function(d, i) {
+                series[i] = {
+                    name: d.key,
+                    value: d.value,
+                    y0: y0,
+                    y1: y0 + d.value
                 };
-                return [ data ];
+                y0 += d.value;
+            });
+            return series;
+        };
+        selection.each(function() {
+            // Create series group
+            selection.selectAll(".series").data(function(d) {
+                return [ d ];
             }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
             var series = selection.selectAll(".series");
             // Add Bars to Group
             var bars = series.selectAll(".bar").data(function(d) {
-                return d.values;
+                return stacker(d.values);
             });
             bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).attr("fill", function(d) {
                 return colorScale(d.name);
@@ -582,14 +582,14 @@ d3.ez.component.barStacked = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -625,33 +625,28 @@ d3.ez.component.barStacked = function module() {
  */
 d3.ez.component.barRadial = function module() {
     // Default Options (Configurable via setters)
-    var width = 400;
+    var width = 300;
     var height = 300;
-    var colorScale = undefined;
-    var yScale = undefined;
+    var radius = 150;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    var radius = undefined;
-    var capitalizeLabels = false;
-    var colorLabels = false;
     function my(selection) {
-        selection.each(function(data) {
-            var defaultRadius = Math.min(width, height) / 2;
-            radius = typeof radius === "undefined" ? defaultRadius : radius;
-            var yDomain = yScale.domain();
-            var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
-            // var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
-            // Pie Generator
-            var pie = d3.pie().value(function(d) {
-                return 1;
-            }).sort(null).padAngle(0);
-            // Arc Generator
-            var arc = d3.arc().outerRadius(function(d) {
-                return barScale(d.data.value);
-            }).innerRadius(0).cornerRadius(2);
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        var yDomain = yScale.domain();
+        var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
+        // Pie Generator
+        var pie = d3.pie().value(1).sort(null).padAngle(0);
+        // Arc Generator
+        var arc = d3.arc().outerRadius(function(d) {
+            return barScale(d.data.value);
+        }).innerRadius(0).cornerRadius(2);
+        selection.each(function() {
             // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
@@ -672,14 +667,14 @@ d3.ez.component.barRadial = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.radius = function(_) {
@@ -715,38 +710,38 @@ d3.ez.component.barRadial = function module() {
  */
 d3.ez.component.donut = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
     var width = 300;
-    var colorScale = undefined;
+    var height = 300;
+    var radius = 150;
+    var innerRadius;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    var radius = undefined;
-    var innerRadius = undefined;
     function my(selection) {
-        selection.each(function(data) {
-            var defaultRadius = Math.min(width, height) / 2;
-            radius = typeof radius === "undefined" ? defaultRadius : radius;
-            innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
-            // Pie Generator
-            var pie = d3.pie().value(function(d) {
-                return d.value;
-            }).sort(null).padAngle(.015);
-            // Arc Generators
-            var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius).cornerRadius(2);
-            var outerArc = d3.arc().innerRadius(radius * .9).outerRadius(radius * .9);
-            function arcTween(d) {
-                var i = d3.interpolate(this._current, d);
-                this._current = i(0);
-                return function(t) {
-                    return arc(i(t));
-                };
-            }
-            function midAngle(d) {
-                return d.startAngle + (d.endAngle - d.startAngle) / 2;
-            }
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 2 : innerRadius;
+        // Pie Generator
+        var pie = d3.pie().value(function(d) {
+            return d.value;
+        }).sort(null).padAngle(.015);
+        // Arc Generators
+        var arc = d3.arc().innerRadius(innerRadius).outerRadius(radius).cornerRadius(2);
+        var outerArc = d3.arc().innerRadius(radius * .9).outerRadius(radius * .9);
+        var arcTween = function(d) {
+            var i = d3.interpolate(this._current, d);
+            this._current = i(0);
+            return function(t) {
+                return arc(i(t));
+            };
+        };
+        var midAngle = function(d) {
+            return d.startAngle + (d.endAngle - d.startAngle) / 2;
+        };
+        selection.each(function() {
             // Create chart group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
@@ -771,7 +766,7 @@ d3.ez.component.donut = function module() {
             var labels = series.select(".labels").selectAll("text.label").data(function(d) {
                 return pie(d.values);
             });
-            labels.enter().append("text").attr("class", "label").attr("dy", ".35em").merge(labels).transition().duration(transition.duration).text(function(d, i) {
+            labels.enter().append("text").attr("class", "label").attr("dy", ".35em").merge(labels).transition().duration(transition.duration).text(function(d) {
                 return d.data.key;
             }).attrTween("transform", function(d) {
                 this._current = this._current || d;
@@ -812,14 +807,14 @@ d3.ez.component.donut = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.radius = function(_) {
@@ -957,19 +952,19 @@ d3.ez.component.labeledNode = function module() {
  */
 d3.ez.component.scatterPlot = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
+    var width = 400;
+    var height = 400;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
-            // Create chart group
+        selection.each(function() {
+            // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("series", true).attr("fill", function(d) {
@@ -995,14 +990,14 @@ d3.ez.component.scatterPlot = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -1191,32 +1186,32 @@ d3.ez.component.legend = function module() {
  */
 d3.ez.component.lineChart = function module() {
     // Default Options (Configurable via setters)
-    var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
+    var width = 400;
+    var height = 400;
     var transition = {
         ease: d3.easeBounce,
         duration: 1500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
-            // Line generation function
-            var line = d3.line().curve(d3.curveCardinal).x(function(d) {
-                return xScale(d.key);
-            }).y(function(d) {
-                return yScale(d.value);
-            });
-            // Line animation tween
-            var pathTween = function(data) {
-                var interpolate = d3.scaleQuantile().domain([ 0, 1 ]).range(d3.range(1, data.length + 1));
-                return function(t) {
-                    return line(data.slice(0, interpolate(t)));
-                };
+        // Line generation function
+        var line = d3.line().curve(d3.curveCardinal).x(function(d) {
+            return xScale(d.key);
+        }).y(function(d) {
+            return yScale(d.value);
+        });
+        // Line animation tween
+        var pathTween = function(data) {
+            var interpolate = d3.scaleQuantile().domain([ 0, 1 ]).range(d3.range(1, data.length + 1));
+            return function(t) {
+                return line(data.slice(0, interpolate(t)));
             };
-            // Create Line
+        };
+        selection.each(function() {
+            // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             });
@@ -1228,14 +1223,14 @@ d3.ez.component.lineChart = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -1271,20 +1266,21 @@ d3.ez.component.lineChart = function module() {
  */
 d3.ez.component.heatMap = function module() {
     // Default Options (Configurable via setters)
-    var width = 300;
+    var width = 400;
     var height = 100;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
     var transition = {
         ease: d3.easeBounce,
         duration: 1e3
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
-            var cellHeight = yScale.bandwidth();
-            var cellWidth = xScale.bandwidth();
+        var cellHeight = yScale.bandwidth();
+        var cellWidth = xScale.bandwidth();
+        selection.each(function() {
+            // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("series", true).on("click", function(d) {
@@ -1305,14 +1301,14 @@ d3.ez.component.heatMap = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -1348,29 +1344,27 @@ d3.ez.component.heatMap = function module() {
  */
 d3.ez.component.heatRing = function module() {
     // Default Options (Configurable via setters)
-    var width = 400;
+    var width = 300;
     var height = 300;
-    var colorScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
+    var radius = 150;
+    var innerRadius = 20;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    var radius = undefined;
-    var innerRadius = undefined;
     function my(selection) {
-        selection.each(function(data) {
-            var defaultRadius = Math.min(width, height) / 2;
-            radius = typeof radius === "undefined" ? defaultRadius : radius;
-            innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
-            // Pie Generator
-            var pie = d3.pie().value(function(d) {
-                return 1;
-            }).sort(null).padAngle(.015);
-            // Arc Generator
-            var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        // Pie Generator
+        var pie = d3.pie().value(1).sort(null).padAngle(.015);
+        // Arc Generator
+        var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
+        selection.each(function() {
             // Create chart group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
@@ -1396,14 +1390,14 @@ d3.ez.component.heatRing = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.radius = function(_) {
@@ -1449,22 +1443,22 @@ d3.ez.component.heatRing = function module() {
  */
 d3.ez.component.punchCard = function module() {
     // Default Options (Configurable via setters)
+    var width = 400;
     var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var sizeScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
+    var sizeScale;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
-            var cellHeight = yScale.bandwidth();
-            var cellWidth = xScale.bandwidth();
-            // Create Punch Row
+        var cellHeight = yScale.bandwidth();
+        var cellWidth = xScale.bandwidth();
+        selection.each(function() {
+            // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             }).enter().append("g").attr("transform", function(d) {
@@ -1478,7 +1472,7 @@ d3.ez.component.punchCard = function module() {
             });
             spots.enter().append("circle").attr("class", "punchSpot").attr("cx", function(d) {
                 return cellWidth / 2 + xScale(d.key);
-            }).attr("cy", 0).attr("r", 0).attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("cy", 0).attr("r", 0).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
             }).merge(spots).transition().duration(transition.duration).attr("fill", function(d) {
                 return colorScale(d.value);
@@ -1489,14 +1483,14 @@ d3.ez.component.punchCard = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
         return this;
     };
     my.colorScale = function(_) {
@@ -1537,22 +1531,21 @@ d3.ez.component.punchCard = function module() {
  */
 d3.ez.component.numberCard = function module() {
     // Default Options (Configurable via setters)
+    var width = 400;
     var height = 100;
-    var width = 300;
-    var colorScale = undefined;
-    var sizeScale = undefined;
-    var xScale = undefined;
-    var yScale = undefined;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
+    var colorScale;
+    var xScale;
+    var yScale;
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
     function my(selection) {
-        selection.each(function(data) {
-            // var cellHeight = yScale.bandwidth();
-            var cellWidth = xScale.bandwidth();
-            // Create Number Row
+        // var cellHeight = yScale.bandwidth();
+        var cellWidth = xScale.bandwidth();
+        selection.each(function() {
+            // Create series group
             var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
@@ -1575,24 +1568,19 @@ d3.ez.component.numberCard = function module() {
         });
     }
     // Configuration Getters & Setters
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
     my.width = function(_) {
         if (!arguments.length) return width;
         width = _;
         return this;
     };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
-        return my;
-    };
-    my.sizeScale = function(_) {
-        if (!arguments.length) return sizeScale;
-        sizeScale = _;
         return my;
     };
     my.xScale = function(_) {
@@ -1677,24 +1665,20 @@ d3.ez.component.title = function module() {
 /**
  * Reusable Circular Axis
  *
- * @example
- * var axis = d3.ez.component.circularLabels()
- *     .radius(60);
- * d3.select("svg").call(axis);
  */
 d3.ez.component.circularAxis = function module() {
     // Default Options (Configurable via setters)
-    var width = 400;
+    var width = 300;
     var height = 300;
-    var xScale = undefined;
-    var yScale = undefined;
+    var radius = 150;
+    var xScale;
+    var yScale;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
-    var radius = undefined;
     function my(selection) {
-        selection.each(function(data) {
+        selection.each(function() {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
             yScale2 = d3.scaleLinear().domain(yScale.domain().reverse()).range(yScale.range().reverse());
@@ -1755,16 +1739,12 @@ d3.ez.component.circularAxis = function module() {
 /**
  * Reusable Circular Labels
  *
- * @example
- * var labels = d3.ez.component.circularLabels()
- *     .radius(60);
- * d3.select("svg").call(labels);
  */
 d3.ez.component.circularLabels = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 300;
-    var radius = undefined;
+    var radius;
     var capitalizeLabels = false;
     function my(selection) {
         selection.each(function(data) {
@@ -1835,7 +1815,7 @@ d3.ez.component.htmlTable = function module() {
     var classed = "htmlTable";
     var width = 800;
     // Data Options (Populated by 'init' function)
-    var rowNames = undefined;
+    var rowNames = [];
     var columnNames = [];
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -1876,8 +1856,8 @@ d3.ez.component.htmlTable = function module() {
             // Add table body
             rows = body.selectAll("tr").data(data).enter().append("tr").attr("class", function(d) {
                 return d.key;
-            }).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
+            }).on("click", function(d) {
+                dispatch.call("customClick", this, d);
             });
             // Add the first column of headings (categories)
             rows.append("th").html(function(d) {
@@ -1890,6 +1870,8 @@ d3.ez.component.htmlTable = function module() {
                 return d.key;
             }).html(function(d) {
                 return d.value;
+            }).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
             });
         });
     }

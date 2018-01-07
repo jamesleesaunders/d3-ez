@@ -1,16 +1,12 @@
 /**
  * Reusable Circular Labels
  *
- * @example
- * var labels = d3.ez.component.circularLabels()
- *     .radius(60);
- * d3.select("svg").call(labels);
  */
 d3.ez.component.circularLabels = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var radius = undefined;
+  var radius;
   var capitalizeLabels = false;
 
   function my(selection) {

@@ -4,21 +4,21 @@
  */
 d3.ez.component.punchCard = function module() {
   // Default Options (Configurable via setters)
-  var height = 100;
-  var width = 300;
-  var colorScale = undefined;
-  var sizeScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+	var width = 400;
+	var height = 100;
+	var sizeScale;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
-      var cellHeight = yScale.bandwidth();
-      var cellWidth = xScale.bandwidth();
+		var cellHeight = yScale.bandwidth();
+		var cellWidth = xScale.bandwidth();
 
-      // Create Punch Row
+    selection.each(function() {
+			// Create series group
       var series = selection.selectAll(".series")
         .data(function(d) { return [d]; })
         .enter()
@@ -40,8 +40,6 @@ d3.ez.component.punchCard = function module() {
         })
         .attr("cy", 0)
         .attr("r", 0)
-        .attr("width", cellWidth)
-        .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         .merge(spots)
@@ -58,15 +56,15 @@ d3.ez.component.punchCard = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

@@ -27,7 +27,7 @@
     // Setup chart components
     myChart1 = d3.ez.component.htmlTable()
       .width(400)
-      .on("customMouseOver", function(d, i) {
+      .on("customClick", function(d) {
         groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");
         myChart5.groupType(groupType);
         update5(data);
@@ -39,7 +39,7 @@
     myChart2 = d3.ez.chart.discreteBar()
       .width(400)
       .height(200)
-      .on("customMouseOver", function(d, i) {
+      .on("customMouseOver", function(d) {
         console.log(d);
       });
 
@@ -56,7 +56,7 @@
       .width(400)
       .height(200)
       .yAxisLabel("Fruit")
-      .on("customClick", function(d, i) {
+      .on("customClick", function(d) {
         update2(d);
         update3(d);
         update4(d);
@@ -78,7 +78,7 @@
       .minRadius(2)
       .useGlobalScale(true)
       .maxRadius(18)
-      .on("customMouseOver", function(d, i) {
+      .on("customMouseOver", function(d) {
         console.log(d);
       });
 

@@ -4,34 +4,34 @@
  */
 d3.ez.component.heatRing = function module() {
   // Default Options (Configurable via setters)
-  var width = 400;
+  var width = 300;
   var height = 300;
-  var colorScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+	var radius = 150;
+	var innerRadius = 20;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-  var radius = undefined;
-  var innerRadius = undefined;
 
   function my(selection) {
-    selection.each(function(data) {
-      var defaultRadius = Math.min(width, height) / 2;
-      radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-      innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+		var defaultRadius = Math.min(width, height) / 2;
+		radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+		innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 
-      // Pie Generator
-      var pie = d3.pie()
-        .value(function(d) { return 1; })
-        .sort(null)
-        .padAngle(0.015);
+		// Pie Generator
+		var pie = d3.pie()
+			.value(1)
+			.sort(null)
+			.padAngle(0.015);
 
-      // Arc Generator
-      var arc = d3.arc()
-        .outerRadius(radius)
-        .innerRadius(innerRadius)
-        .cornerRadius(2);
+		// Arc Generator
+		var arc = d3.arc()
+			.outerRadius(radius)
+			.innerRadius(innerRadius)
+			.cornerRadius(2);
 
+    selection.each(function() {
       // Create chart group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
@@ -69,15 +69,15 @@ d3.ez.component.heatRing = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

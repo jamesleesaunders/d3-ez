@@ -4,33 +4,33 @@
  */
 d3.ez.component.lineChart = function module() {
   // Default Options (Configurable via setters)
-  var height = 100;
-  var width = 300;
-  var colorScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 1500 };
+	var width = 400;
+  var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 1500 };
+  var colorScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
-      // Line generation function
-      var line = d3.line()
-        .curve(d3.curveCardinal)
-        .x(function(d) { return xScale(d.key); })
-        .y(function(d) { return yScale(d.value); });
+		// Line generation function
+		var line = d3.line()
+			.curve(d3.curveCardinal)
+			.x(function(d) { return xScale(d.key); })
+			.y(function(d) { return yScale(d.value); });
 
-      // Line animation tween
-      var pathTween = function(data) {
-        var interpolate = d3.scaleQuantile()
-          .domain([0, 1])
-          .range(d3.range(1, data.length + 1));
-        return function(t) {
-          return line(data.slice(0, interpolate(t)));
-        };
-      };
+		// Line animation tween
+		var pathTween = function(data) {
+			var interpolate = d3.scaleQuantile()
+				.domain([0, 1])
+				.range(d3.range(1, data.length + 1));
+			return function(t) {
+				return line(data.slice(0, interpolate(t)));
+			};
+		};
 
-      // Create Line
+    selection.each(function() {
+			// Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
@@ -48,15 +48,15 @@ d3.ez.component.lineChart = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

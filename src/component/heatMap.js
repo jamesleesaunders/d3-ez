@@ -4,19 +4,20 @@
  */
 d3.ez.component.heatMap = function module() {
   // Default Options (Configurable via setters)
-  var width = 300;
+  var width = 400;
   var height = 100;
-  var colorScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 1000 };
+	var transition = { ease: d3.easeBounce, duration: 1000 };
+  var colorScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
-      var cellHeight = yScale.bandwidth();
-      var cellWidth = xScale.bandwidth();
+		var cellHeight = yScale.bandwidth();
+		var cellWidth = xScale.bandwidth();
 
+    selection.each(function() {
+			// Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
@@ -51,15 +52,15 @@ d3.ez.component.heatMap = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

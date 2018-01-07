@@ -4,21 +4,20 @@
  */
 d3.ez.component.numberCard = function module() {
   // Default Options (Configurable via setters)
-  var height = 100;
-  var width = 300;
-  var colorScale = undefined;
-  var sizeScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+	var width = 400;
+	var height = 100;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
-      // var cellHeight = yScale.bandwidth();
-      var cellWidth = xScale.bandwidth();
+		// var cellHeight = yScale.bandwidth();
+		var cellWidth = xScale.bandwidth();
 
-      // Create Number Row
+    selection.each(function() {
+			// Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
@@ -56,27 +55,21 @@ d3.ez.component.numberCard = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
     return this;
   };
 
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
-
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return my;
-  };
-
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
     return my;
   };
 

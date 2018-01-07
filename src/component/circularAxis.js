@@ -1,22 +1,18 @@
 /**
  * Reusable Circular Axis
  *
- * @example
- * var axis = d3.ez.component.circularLabels()
- *     .radius(60);
- * d3.select("svg").call(axis);
  */
 d3.ez.component.circularAxis = function module() {
   // Default Options (Configurable via setters)
-  var width = 400;
-  var height = 300;
-  var xScale = undefined;
-  var yScale = undefined;
+	var width = 300;
+	var height = 300;
+	var radius = 150;
+  var xScale;
+  var yScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var radius = undefined;
 
   function my(selection) {
-    selection.each(function(data) {
+    selection.each(function() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 

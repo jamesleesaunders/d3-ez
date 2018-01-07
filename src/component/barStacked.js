@@ -4,34 +4,36 @@
  */
 d3.ez.component.barStacked = function module() {
   // Default Options (Configurable via setters)
-  var height = 100;
-  var width = 50;
-  var colorScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+	var width = 100;
+  var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
-      // Create chart group
-      selection.selectAll('.series')
-        .data(function(d) {
-          series = [];
-          var y0 = 0;
-          d3.map(d.values).values().forEach(function(d, i) {
-            series[i] = {
-              name: d.key,
-              value: d.value,
-              y0: y0,
-              y1: y0 + d.value
-            };
-            y0 += d.value;
-          });
+		// Stack Generator
+		var stacker = function(data) {
+			series = [];
+			var y0 = 0;
+			data.forEach(function(d, i) {
+				series[i] = {
+					name: d.key,
+					value: d.value,
+					y0: y0,
+					y1: y0 + d.value
+				};
+				y0 += d.value;
+			});
 
-          data = { key: data.key, values: series };
-          return [data];
-        })
+			return series;
+		};
+
+    selection.each(function() {
+			// Create series group
+      selection.selectAll('.series')
+				.data(function(d) { return [d]; })
         .enter()
         .append("g")
         .classed('series', true)
@@ -42,7 +44,7 @@ d3.ez.component.barStacked = function module() {
 
       // Add Bars to Group
       var bars = series.selectAll(".bar")
-        .data(function(d) { return d.values; });
+        .data(function(d) { return stacker(d.values); });
 
       bars.enter().append("rect")
         .classed("bar", true)
@@ -71,15 +73,15 @@ d3.ez.component.barStacked = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

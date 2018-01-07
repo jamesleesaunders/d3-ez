@@ -4,39 +4,36 @@
  */
 d3.ez.component.barRadial = function module() {
   // Default Options (Configurable via setters)
-  var width = 400;
+  var width = 300;
   var height = 300;
-  var colorScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+	var radius = 150;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-  var radius = undefined;
-  var capitalizeLabels = false;
-  var colorLabels = false;
 
   function my(selection) {
-    selection.each(function(data) {
-      var defaultRadius = Math.min(width, height) / 2;
-      radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+		var defaultRadius = Math.min(width, height) / 2;
+		radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
-      var yDomain = yScale.domain();
-      var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
-      // var axisScale = d3.scaleLinear().domain(yDomain).range([0, -radius]);
+		var yDomain = yScale.domain();
+		var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
 
-      // Pie Generator
-      var pie = d3.pie()
-        .value(function(d) { return 1; })
-        .sort(null)
-        .padAngle(0);
+		// Pie Generator
+		var pie = d3.pie()
+			.value(1)
+			.sort(null)
+			.padAngle(0);
 
-      // Arc Generator
-      var arc = d3.arc()
-        .outerRadius(function(d) {
-          return barScale(d.data.value);
-        })
-        .innerRadius(0)
-        .cornerRadius(2);
+		// Arc Generator
+		var arc = d3.arc()
+			.outerRadius(function(d) {
+				return barScale(d.data.value);
+			})
+			.innerRadius(0)
+			.cornerRadius(2);
 
+    selection.each(function() {
       // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
@@ -69,15 +66,15 @@ d3.ez.component.barRadial = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

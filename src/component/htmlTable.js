@@ -18,7 +18,7 @@ d3.ez.component.htmlTable = function module() {
   var width = 800;
 
   // Data Options (Populated by 'init' function)
-  var rowNames = undefined;
+  var rowNames = [];
   var columnNames = [];
 
   // Dispatch (Custom events)
@@ -81,7 +81,7 @@ d3.ez.component.htmlTable = function module() {
         .attr("class", function(d) {
           return d.key;
         })
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
+				.on("click", function(d) { dispatch.call("customClick", this, d); });
 
       // Add the first column of headings (categories)
       rows.append("th")
@@ -101,7 +101,8 @@ d3.ez.component.htmlTable = function module() {
         })
         .html(function(d) {
           return d.value;
-        });
+        })
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); });
     });
   }
 

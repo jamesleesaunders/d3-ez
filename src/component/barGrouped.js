@@ -4,16 +4,16 @@
  */
 d3.ez.component.barGrouped = function module() {
   // Default Options (Configurable via setters)
-  var height = 100;
-  var width = 300;
-  var colorScale = undefined;
-  var xScale = undefined;
-  var yScale = undefined;
-  var transition = { ease: d3.easeBounce, duration: 500 };
+	var width = 400;
+  var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+  var xScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-    selection.each(function(data) {
+    selection.each(function() {
       // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
@@ -54,15 +54,15 @@ d3.ez.component.barGrouped = function module() {
   }
 
   // Configuration Getters & Setters
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
-    return this;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
     return this;
   };
 

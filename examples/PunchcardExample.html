@@ -29,10 +29,10 @@
         .chart(chart)
         .legend(legend)
         .title(title)
-        .on("customMouseOver", function(d, i) {
+        .on("customMouseOver", function(d) {
           d3.select("#message").text(d.value);
         })
-        .on("customClick", function(d, i) {
+        .on("customClick", function(d) {
           console.log(d);
         });
 
