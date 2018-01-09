@@ -1,5 +1,5 @@
 /**
- * Line Chart (also called: Line Graph, Spline Chart)
+ * Line Chart (also called: Line Graph; Spline Chart)
  *
   @see http://datavizproject.com/data-type/line-chart/
  */

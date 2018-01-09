@@ -1,5 +1,5 @@
 /**
- * Bar Chart (vertical) (also called: Bar Chart, Bar Graph)
+ * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
  *
  * @see http://datavizproject.com/data-type/bar-chart/
  */

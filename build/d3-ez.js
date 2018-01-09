@@ -2442,7 +2442,7 @@ d3.ez.chart.barStacked = function module() {
 };
 
 /**
- * Bar Chart (vertical) (also called: Bar Chart, Bar Graph)
+ * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
  *
  * @see http://datavizproject.com/data-type/bar-chart/
  */
@@ -2574,7 +2574,7 @@ d3.ez.chart.barVertical = function module() {
 };
 
 /**
- * Donut Chart (also called: Doughnut Chart, Pie Chart)
+ * Donut Chart (also called: Doughnut Chart; Pie Chart)
  *
  * @see http://datavizproject.com/data-type/donut-chart/
  */
@@ -2704,7 +2704,7 @@ d3.ez.chart.donut = function module() {
 };
 
 /**
- * Circular Heat Map (also called: Radial heat map)
+ * Circular Heat Map (also called: Radial Heat Map)
  *
  * @see http://datavizproject.com/data-type/radial-heatmap/
  */
@@ -2869,7 +2869,7 @@ d3.ez.chart.heatMapRadial = function module() {
 };
 
 /**
- * Heat Map (also called: Heat Table, Density Table, heat map)
+ * Heat Map (also called: Heat Table; Density Table; Heat Map)
  *
  * @see http://datavizproject.com/data-type/heat-map/
  */
@@ -3018,7 +3018,7 @@ d3.ez.chart.heatMapTable = function module() {
 };
 
 /**
- * Line Chart (also called: Line Graph, Spline Chart)
+ * Line Chart (also called: Line Graph; Spline Chart)
  *
   @see http://datavizproject.com/data-type/line-chart/
  */

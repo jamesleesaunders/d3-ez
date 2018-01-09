@@ -1,5 +1,5 @@
 /**
- * Heat Map (also called: Heat Table, Density Table, heat map)
+ * Heat Map (also called: Heat Table; Density Table; Heat Map)
  *
  * @see http://datavizproject.com/data-type/heat-map/
  */

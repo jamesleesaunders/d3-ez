@@ -1,5 +1,5 @@
 /**
- * Donut Chart (also called: Doughnut Chart, Pie Chart)
+ * Donut Chart (also called: Doughnut Chart; Pie Chart)
  *
  * @see http://datavizproject.com/data-type/donut-chart/
  */

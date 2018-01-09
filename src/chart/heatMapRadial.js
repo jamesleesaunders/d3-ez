@@ -1,5 +1,5 @@
 /**
- * Circular Heat Map (also called: Radial heat map)
+ * Circular Heat Map (also called: Radial Heat Map)
  *
  * @see http://datavizproject.com/data-type/radial-heatmap/
  */
