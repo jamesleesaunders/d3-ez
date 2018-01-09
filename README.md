@@ -163,3 +163,4 @@ For reference here are a few other alternative D3 chart libraries which also fol
 ### Credits
 * Peter Cook http://animateddata.co.uk/ For giving permission to use his Radial Bar and Radial Heat Map charts.
 * Virgin Media http://www.virginmedia.co.uk/ For support in development of the Tabular Heat Map.
+* http://datavizproject.com/
