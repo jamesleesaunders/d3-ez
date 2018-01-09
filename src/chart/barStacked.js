@@ -39,7 +39,6 @@ d3.ez.chart.barStacked = function module() {
 
   // Other Customisation Options
   var yAxisLabel = null;
-  var groupType = "clustered";
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -128,24 +127,13 @@ d3.ez.chart.barStacked = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barChart;
-      if (groupType === "stacked") {
-        barChart = d3.ez.component.barStacked()
-          .xScale(xScale);
-
-      } else if (groupType === "clustered") {
-        barChart = d3.ez.component.barGrouped()
-          .xScale(xScale2);
-      }
-
-      barChart.width(xScale.bandwidth())
+      var barChart = d3.ez.component.barStacked()
+        .xScale(xScale)
+        .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
         .yScale(yScale)
         .dispatch(dispatch);
-
-      // TODO: This is temporary to allow transition between stacked and clustered
-      chart.selectAll(".seriesGroup").data([]).exit().remove();
 
       // Create bar group
       var seriesGroup = chart.selectAll(".seriesGroup")
@@ -177,12 +165,6 @@ d3.ez.chart.barStacked = function module() {
   my.margin = function(_) {
     if (!arguments.length) return margin;
     margin = _;
-    return this;
-  };
-
-  my.groupType = function(_) {
-    if (!arguments.length) return groupType;
-    groupType = _;
     return this;
   };
 
