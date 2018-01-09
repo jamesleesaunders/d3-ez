@@ -24,14 +24,15 @@ include('../src/component/circularAxis.js');
 include('../src/component/circularLabels.js');
 include('../src/component/htmlTable.js');
 include('../src/component/htmlList.js');
-include('../src/chart/discreteBar.js');
-include('../src/chart/groupedBar.js');
-include('../src/chart/radialBar.js');
-include('../src/chart/circularHeat.js');
-include('../src/chart/tabularHeat.js');
-include('../src/chart/donut.js');
+include('../src/chart/barGrouped.js');
+include('../src/chart/barRadial.js');
+include('../src/chart/barStacked.js');
+include('../src/chart/barVertical.js');
+include('../src/chart/donutChart.js');
+include('../src/chart/heatMapRadial.js');
+include('../src/chart/heatMapTable.js');
+include('../src/chart/lineChart.js');
 include('../src/chart/punchCard.js');
-include('../src/chart/multiSeriesLine.js');
 
 function include(file) {
   var loc = document.currentScript.src;

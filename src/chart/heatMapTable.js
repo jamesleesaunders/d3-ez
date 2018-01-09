@@ -3,13 +3,13 @@
  *
  * @see http://datavizproject.com/data-type/heat-map/
  */
-d3.ez.chart.tabularHeat = function module() {
+d3.ez.chart.heatMapTable = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartTabularHeat";
+  var classed = "chartHeatMapTable";
   var width = 400;
   var height = 300;
   var margin = { top: 45, right: 20, bottom: 20, left: 45 };

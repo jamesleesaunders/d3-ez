@@ -1,16 +1,16 @@
 /* === Tabular Heat Chart Styles === */
 
-.chartTabularHeat rect.cell {
+.chartHeatMapTable rect.cell {
   stroke: #999999;
   stroke-width: 0.5px;
 }
 
-.chartTabularHeat rect.cell:hover {
+.chartHeatMapTable rect.cell:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;
 }
 
-.chartTabularHeat .x-axis path, .chartTabularHeat .y-axis path {
+.chartHeatMapTable .x-axis path, .chartHeatMapTable .y-axis path {
   display: none;
 }

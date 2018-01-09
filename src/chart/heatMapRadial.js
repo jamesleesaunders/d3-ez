@@ -3,13 +3,13 @@
  *
  * @see http://datavizproject.com/data-type/radial-heatmap/
  */
-d3.ez.chart.circularHeat = function module() {
+d3.ez.chart.heatMapRadial = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartCircularHeat";
+  var classed = "chartHeatMapRadial";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };

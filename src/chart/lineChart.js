@@ -3,13 +3,13 @@
  *
   @see http://datavizproject.com/data-type/line-chart/
  */
-d3.ez.chart.multiSeriesLine = function module() {
+d3.ez.chart.line = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartMultiSeriesLine";
+  var classed = "chartLine";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };

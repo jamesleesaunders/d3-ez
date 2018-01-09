@@ -3,13 +3,13 @@
  *
  * @see http://datavizproject.com/data-type/radical-histogram/
  */
-d3.ez.chart.radialBar = function module() {
+d3.ez.chart.barRadial = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartRadialBar";
+  var classed = "chartBarRadial";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };

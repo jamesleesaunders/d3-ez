@@ -3,13 +3,13 @@
  *
  * @see http://datavizproject.com/data-type/grouped-bar-chart/
  */
-d3.ez.chart.groupedBar = function module() {
+d3.ez.chart.barGrouped = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartGroupedBar";
+  var classed = "chartBar";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
