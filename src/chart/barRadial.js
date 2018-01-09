@@ -1,6 +1,7 @@
 /**
  * Radial Bar Chart
  *
+ * @see http://datavizproject.com/data-type/radical-histogram/
  */
 d3.ez.chart.radialBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)

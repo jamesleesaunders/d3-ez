@@ -1,19 +1,20 @@
 /**
- * Tabular Heat Chart
+ * Grouped Bar Chart (also called: Multi-set Bar Chart; Clustered Bar Chart)
  *
+ * @see http://datavizproject.com/data-type/grouped-bar-chart/
  */
-d3.ez.chart.tabularHeat = function module() {
+d3.ez.chart.groupedBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartTabularHeat";
+  var classed = "chartGroupedBar";
   var width = 400;
   var height = 300;
-  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  var colors = d3.ez.colors.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -21,20 +22,24 @@ d3.ez.chart.tabularHeat = function module() {
 
   // Scales and Axis
   var xScale;
+  var xScale2;
   var yScale;
-  var colorScale;
   var xAxis;
   var yAxis;
+  var colorScale;
 
   // Data Variables
-  var groupNames = [];
-  var categoryNames = [];
-  var minValue = 0;
-  var maxValue = 0;
-  var thresholds = undefined;
+  var groupNames;
+  var groupTotalsMax;
+  var maxValue;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
+  // Other Customisation Options
+  var yAxisLabel = null;
+  var groupType = "clustered";
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -42,39 +47,37 @@ d3.ez.chart.tabularHeat = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    maxValue = slicedData.maxValue;
-    minValue = slicedData.minValue;
-    categoryNames = slicedData.categoryNames;
     groupNames = slicedData.groupNames;
-
-    // If thresholds values are not already set
-    // attempt to auto-calculate some thresholds.
-    if (!thresholds) {
-      var thresholds = slicedData.thresholds;
-    }
+    groupTotalsMax = slicedData.groupTotalsMax;
+    maxValue = slicedData.maxValue;
+    categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
-      colorScale = d3.scaleThreshold()
-        .domain(thresholds)
-        .range(colors);
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(categoryNames);
     }
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(categoryNames)
-      .range([0, chartW])
+      .domain(groupNames)
+      .rangeRound([0, chartW])
       .padding(0.1);
 
-    yScale = d3.scaleBand()
-      .domain(groupNames)
-      .range([0, chartH])
+    yScale = d3.scaleLinear()
+      .range([chartH, 0])
+      .domain([0, (groupType === "stacked" ? groupTotalsMax : maxValue)]);
+
+    xScale2 = d3.scaleBand()
+      .domain(categoryNames)
+      .rangeRound([0, xScale.bandwidth()])
       .padding(0.1);
 
     // X & Y Axis
-    xAxis = d3.axisTop(xScale);
+    xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -100,7 +103,13 @@ d3.ez.chart.tabularHeat = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("y-axis axis", true)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -35)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text(yAxisLabel);
       } else {
         chart = selection.select(".chart");
       }
@@ -113,36 +122,41 @@ d3.ez.chart.tabularHeat = function module() {
 
       // Add axis to chart
       chart.select(".x-axis")
-        .call(xAxis)
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", -8)
-        .attr("transform", "rotate(60)")
-        .style("text-anchor", "end");
+        .attr("transform", "translate(0," + chartH + ")")
+        .call(xAxis);
 
       chart.select(".y-axis")
         .call(yAxis);
 
-      var heatMap = d3.ez.component.heatMap()
-        .width(chartW)
+      var barChart;
+      if (groupType === "stacked") {
+        barChart = d3.ez.component.barStacked()
+          .xScale(xScale);
+
+      } else if (groupType === "clustered") {
+        barChart = d3.ez.component.barGrouped()
+          .xScale(xScale2);
+      }
+
+      barChart.width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
         .yScale(yScale)
-        .xScale(xScale)
         .dispatch(dispatch);
 
+      // TODO: This is temporary to allow transition between stacked and clustered
+      chart.selectAll(".seriesGroup").data([]).exit().remove();
+
+      // Create bar group
       var seriesGroup = chart.selectAll(".seriesGroup")
-        .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "seriesGroup")
-        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
+        .data(data);
 
-      seriesGroup.datum(function(d) { return d; })
-        .call(heatMap);
-
-      seriesGroup.exit().remove();
-
-
+      seriesGroup.enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
+        .datum(function(d) { return d; })
+        .call(barChart);
 
     });
   }
@@ -166,6 +180,24 @@ d3.ez.chart.tabularHeat = function module() {
     return this;
   };
 
+  my.groupType = function(_) {
+    if (!arguments.length) return groupType;
+    groupType = _;
+    return this;
+  };
+
+  my.yAxisLabel = function(_) {
+    if (!arguments.length) return yAxisLabel;
+    yAxisLabel = _;
+    return this;
+  };
+
+  my.transition = function(_) {
+    if (!arguments.length) return transition;
+    transition = _;
+    return this;
+  };
+
   my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
@@ -175,12 +207,6 @@ d3.ez.chart.tabularHeat = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return this;
-  };
-
-  my.thresholds = function(_) {
-    if (!arguments.length) return thresholds;
-    thresholds = _;
     return this;
   };
 

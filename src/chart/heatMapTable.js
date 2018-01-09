@@ -1,48 +1,45 @@
 /**
- * Circular Heat Chart
+ * Heat Map (also called: Heat Table, Density Table, heat map)
  *
+ * @see http://datavizproject.com/data-type/heat-map/
  */
-d3.ez.chart.circularHeat = function module() {
+d3.ez.chart.tabularHeat = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartCircularHeat";
+  var classed = "chartTabularHeat";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Chart Dimensions
   var chartW;
   var chartH;
-  var radius;
-  var innerRadius;
 
   // Scales and Axis
   var xScale;
   var yScale;
   var colorScale;
+  var xAxis;
+  var yAxis;
 
   // Data Variables
-  var categoryNames = [];
   var groupNames = [];
+  var categoryNames = [];
   var minValue = 0;
   var maxValue = 0;
-  var thresholds;
+  var thresholds = undefined;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function init(data) {
-    chartW = width - (margin.left + margin.right);
-    chartH = height - (margin.top + margin.bottom);
-
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    chartW = width - margin.left - margin.right;
+    chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
@@ -54,7 +51,7 @@ d3.ez.chart.circularHeat = function module() {
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      thresholds = slicedData.thresholds;
+      var thresholds = slicedData.thresholds;
     }
 
     // Colour Scale
@@ -62,20 +59,24 @@ d3.ez.chart.circularHeat = function module() {
       // If the colorScale has not already been passed
       // then attempt to calculate.
       colorScale = d3.scaleThreshold()
-        .range(colors)
-        .domain(thresholds);
+        .domain(thresholds)
+        .range(colors);
     }
 
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartW])
+      .range([0, chartW])
       .padding(0.1);
 
     yScale = d3.scaleBand()
       .domain(groupNames)
-      .rangeRound([radius, innerRadius])
+      .range([0, chartH])
       .padding(0.1);
+
+    // X & Y Axis
+    xAxis = d3.axisTop(xScale);
+    yAxis = d3.axisLeft(yScale);
   }
 
   function my(selection) {
@@ -83,7 +84,7 @@ d3.ez.chart.circularHeat = function module() {
       // Initialise Data
       init(data);
 
-      // Create chart element (if it does not exist already)
+      // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
           var el = selection._groups[0][0];
@@ -99,51 +100,50 @@ d3.ez.chart.circularHeat = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("circleRings", true);
-        chart.append("g").classed("circleLabels", true);
-        chart.append("g").classed("axis", true);
+        chart.append("g").classed("x-axis axis", true);
+        chart.append("g").classed("y-axis axis", true);
       } else {
-        chart = svg.select(".chart");
+        chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatRing = d3.ez.component.heatRing()
-        .radius(function(d) { return yScale(d.key) })
-        .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
+      // Add axis to chart
+      chart.select(".x-axis")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", -8)
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
+
+      chart.select(".y-axis")
+        .call(yAxis);
+
+      var heatMap = d3.ez.component.heatMap()
+        .width(chartW)
+        .height(chartH)
         .colorScale(colorScale)
         .yScale(yScale)
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
+      var seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; })
-        .enter()
-        .append("g")
-        .attr("class", "seriesGroup");
+        .enter().append("g")
+        .attr("class", "seriesGroup")
+        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
 
       seriesGroup.datum(function(d) { return d; })
-        .call(heatRing);
+        .call(heatMap);
 
       seriesGroup.exit().remove();
 
-      // Circular Labels
-      var circularLabels = d3.ez.component.circularLabels()
-        .radius(radius * 1.04);
 
-      chart.select(".circleLabels")
-        .datum(categoryNames)
-        .call(circularLabels);
-
-      // Y Axis
-      var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
-      chart.select(".axis")
-        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
-        .call(yAxis);
 
     });
   }
@@ -167,18 +167,6 @@ d3.ez.chart.circularHeat = function module() {
     return this;
   };
 
-  my.radius = function(_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
-
-  my.innerRadius = function(_) {
-    if (!arguments.length) return innerRadius;
-    innerRadius = _;
-    return this;
-  };
-
   my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
@@ -191,9 +179,9 @@ d3.ez.chart.circularHeat = function module() {
     return this;
   };
 
-  my.transition = function(_) {
-    if (!arguments.length) return transition;
-    transition = _;
+  my.thresholds = function(_) {
+    if (!arguments.length) return thresholds;
+    thresholds = _;
     return this;
   };
 

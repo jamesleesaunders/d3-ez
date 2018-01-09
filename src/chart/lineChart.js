@@ -1,6 +1,7 @@
 /**
- * Multi Series Line Chart
+ * Line Chart (also called: Line Graph, Spline Chart)
  *
+  @see http://datavizproject.com/data-type/line-chart/
  */
 d3.ez.chart.multiSeriesLine = function module() {
   // SVG and Chart containers (Populated by 'my' function)

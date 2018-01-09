@@ -1,50 +1,49 @@
 /**
- * Punch Card
+ * Circular Heat Map (also called: Radial heat map)
  *
- * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
+ * @see http://datavizproject.com/data-type/radial-heatmap/
  */
-d3.ez.chart.punchCard = function module() {
+d3.ez.chart.circularHeat = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartPunchCard";
+  var classed = "chartCircularHeat";
   var width = 400;
   var height = 300;
-  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Chart Dimensions
   var chartW;
   var chartH;
+  var radius;
+  var innerRadius;
 
   // Scales and Axis
-  var sizeScale;
   var xScale;
   var yScale;
-  var xAxis;
-  var yAxis;
   var colorScale;
 
   // Data Variables
-  var maxValue;
-  var minValue;
-  var categoryNames;
-  var groupNames;
+  var categoryNames = [];
+  var groupNames = [];
+  var minValue = 0;
+  var maxValue = 0;
+  var thresholds;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-  // Misc Options
-  var minRadius = 2;
-  var maxRadius = 20;
-  var useGlobalScale = true;
-
   function init(data) {
-    chartW = width - margin.left - margin.right;
-    chartH = height - margin.top - margin.bottom;
+    chartW = width - (margin.left + margin.right);
+    chartH = height - (margin.top + margin.bottom);
+
+    var defaultRadius = Math.min(chartW, chartH) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
@@ -53,39 +52,31 @@ d3.ez.chart.punchCard = function module() {
     categoryNames = slicedData.categoryNames;
     groupNames = slicedData.groupNames;
 
-    valDomain = [minValue, maxValue];
-    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
-      return d['value'];
-    })];
+    // If thresholds values are not already set
+    // attempt to auto-calculate some thresholds.
+    if (!thresholds) {
+      thresholds = slicedData.thresholds;
+    }
 
     // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
-      colorScale = d3.scaleLinear()
-        .domain(valDomain)
-        .range(colors);
+      colorScale = d3.scaleThreshold()
+        .range(colors)
+        .domain(thresholds);
     }
 
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .range([0, chartW])
-      .padding(0.05);
+      .rangeRound([0, chartW])
+      .padding(0.1);
 
     yScale = d3.scaleBand()
       .domain(groupNames)
-      .range([0, chartH])
-      .padding(0.05);
-
-    // X & Y Axis
-    xAxis = d3.axisTop(xScale);
-    yAxis = d3.axisLeft(yScale);
-
-    // Size Scale
-    sizeScale = d3.scaleLinear()
-      .domain(sizeDomain)
-      .range([minRadius, maxRadius]);
+      .rangeRound([radius, innerRadius])
+      .padding(0.1);
   }
 
   function my(selection) {
@@ -93,7 +84,7 @@ d3.ez.chart.punchCard = function module() {
       // Initialise Data
       init(data);
 
-      // Create SVG and Chart containers (if they do not already exist)
+      // Create chart element (if it does not exist already)
       if (!svg) {
         svg = (function(selection) {
           var el = selection._groups[0][0];
@@ -109,49 +100,51 @@ d3.ez.chart.punchCard = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("circleRings", true);
+        chart.append("g").classed("circleLabels", true);
+        chart.append("g").classed("axis", true);
       } else {
-        chart = selection.select(".chart");
+        chart = svg.select(".chart");
       }
 
       // Update the chart dimensions
       chart.classed(classed, true)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
-      chart.select(".x-axis")
-        .call(xAxis)
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", -8)
-        .attr("transform", "rotate(60)")
-        .style("text-anchor", "end");
-
-      chart.select(".y-axis")
-        .call(yAxis);
-
-      var punchCard = d3.ez.component.punchCard()
-        .width(chartW)
-        .height(chartH)
+      var heatRing = d3.ez.component.heatRing()
+        .radius(function(d) { return yScale(d.key) })
+        .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
-        .sizeScale(sizeScale)
         .yScale(yScale)
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
         .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "seriesGroup")
-        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
+        .enter()
+        .append("g")
+        .attr("class", "seriesGroup");
 
       seriesGroup.datum(function(d) { return d; })
-        .call(punchCard);
+        .call(heatRing);
 
       seriesGroup.exit().remove();
+
+      // Circular Labels
+      var circularLabels = d3.ez.component.circularLabels()
+        .radius(radius * 1.04);
+
+      chart.select(".circleLabels")
+        .datum(categoryNames)
+        .call(circularLabels);
+
+      // Y Axis
+      var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
+      chart.select(".axis")
+        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
+        .call(yAxis);
 
     });
   }
@@ -175,21 +168,15 @@ d3.ez.chart.punchCard = function module() {
     return this;
   };
 
-  my.minRadius = function(_) {
-    if (!arguments.length) return minRadius;
-    minRadius = _;
+  my.radius = function(_) {
+    if (!arguments.length) return radius;
+    radius = _;
     return this;
   };
 
-  my.maxRadius = function(_) {
-    if (!arguments.length) return maxRadius;
-    maxRadius = _;
-    return this;
-  };
-
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
+  my.innerRadius = function(_) {
+    if (!arguments.length) return innerRadius;
+    innerRadius = _;
     return this;
   };
 
@@ -199,9 +186,15 @@ d3.ez.chart.punchCard = function module() {
     return this;
   };
 
-  my.useGlobalScale = function(_) {
-    if (!arguments.length) return useGlobalScale;
-    useGlobalScale = _;
+  my.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
+    return this;
+  };
+
+  my.transition = function(_) {
+    if (!arguments.length) return transition;
+    transition = _;
     return this;
   };
 

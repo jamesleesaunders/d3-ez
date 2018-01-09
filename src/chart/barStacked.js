@@ -1,14 +1,15 @@
 /**
- * Discrete Bar Chart
+ * Stacked Bar Chart
  *
+ * @see http://datavizproject.com/data-type/stacked-bar-chart/
  */
-d3.ez.chart.discreteBar = function module() {
+d3.ez.chart.groupedBar = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartDiscreteBar";
+  var classed = "chartGroupedBar";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
@@ -21,27 +22,37 @@ d3.ez.chart.discreteBar = function module() {
 
   // Scales and Axis
   var xScale;
+  var xScale2;
   var yScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
+  // Data Variables
+  var groupNames;
+  var groupTotalsMax;
+  var maxValue;
+  var categoryNames;
+
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   // Other Customisation Options
-  var yAxisLabel;
+  var yAxisLabel = null;
+  var groupType = "clustered";
 
   function init(data) {
-    chartW = width - (margin.left + margin.right);
-    chartH = height - (margin.top + margin.bottom);
+    chartW = width - margin.left - margin.right;
+    chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    categoryNames = slicedData.categoryNames;
+    groupNames = slicedData.groupNames;
+    groupTotalsMax = slicedData.groupTotalsMax;
     maxValue = slicedData.maxValue;
-    yAxisLabel = slicedData.groupName;
+    categoryNames = slicedData.categoryNames;
 
+    // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
@@ -52,13 +63,18 @@ d3.ez.chart.discreteBar = function module() {
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(categoryNames)
+      .domain(groupNames)
       .rangeRound([0, chartW])
-      .padding(0.15);
+      .padding(0.1);
 
     yScale = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([chartH, 0]);
+      .range([chartH, 0])
+      .domain([0, (groupType === "stacked" ? groupTotalsMax : maxValue)]);
+
+    xScale2 = d3.scaleBand()
+      .domain(categoryNames)
+      .rangeRound([0, xScale.bandwidth()])
+      .padding(0.1);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -85,12 +101,17 @@ d3.ez.chart.discreteBar = function module() {
           .attr("width", width)
           .attr("height", height);
 
-        chart = svg.append("g").classed('chart', true);
-        chart.append("g").classed("xAxis axis", true);
-        chart.append("g").classed("yAxis axis", true);
-        chart.append("g").classed("barChart", true);
+        chart = svg.append("g").classed("chart", true);
+        chart.append("g").classed("x-axis axis", true);
+        chart.append("g").classed("y-axis axis", true)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -35)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text(yAxisLabel);
       } else {
-        chart = svg.select(".chart");
+        chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
@@ -100,44 +121,43 @@ d3.ez.chart.discreteBar = function module() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".xAxis")
+      chart.select(".x-axis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
-      chart.select(".yAxis")
+      chart.select(".y-axis")
         .call(yAxis);
 
-      // Add labels to chart
-      ylabel = chart.select(".yAxis")
-        .selectAll(".y-label")
-        .data([data.key]);
+      var barChart;
+      if (groupType === "stacked") {
+        barChart = d3.ez.component.barStacked()
+          .xScale(xScale);
 
-      ylabel.enter()
-        .append("text")
-        .classed("y-label", true)
-        .attr("transform", "rotate(-90)")
-        .attr("y", -40)
-        .attr("dy", ".71em")
-        .attr("fill", "#000000")
-        .style("text-anchor", "end")
-        .merge(ylabel)
-        .transition()
-        .text(function(d) {
-          return (d);
-        });
+      } else if (groupType === "clustered") {
+        barChart = d3.ez.component.barGrouped()
+          .xScale(xScale2);
+      }
 
-      // Add bars to the chart
-      var barChart = d3.ez.component.barGrouped()
-        .width(chartW)
+      barChart.width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
         .yScale(yScale)
-        .xScale(xScale)
         .dispatch(dispatch);
 
-      chart.select(".barChart")
-        .datum(data)
+      // TODO: This is temporary to allow transition between stacked and clustered
+      chart.selectAll(".seriesGroup").data([]).exit().remove();
+
+      // Create bar group
+      var seriesGroup = chart.selectAll(".seriesGroup")
+        .data(data);
+
+      seriesGroup.enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
+        .datum(function(d) { return d; })
         .call(barChart);
+
     });
   }
 
@@ -154,6 +174,30 @@ d3.ez.chart.discreteBar = function module() {
     return this;
   };
 
+  my.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return this;
+  };
+
+  my.groupType = function(_) {
+    if (!arguments.length) return groupType;
+    groupType = _;
+    return this;
+  };
+
+  my.yAxisLabel = function(_) {
+    if (!arguments.length) return yAxisLabel;
+    yAxisLabel = _;
+    return this;
+  };
+
+  my.transition = function(_) {
+    if (!arguments.length) return transition;
+    transition = _;
+    return this;
+  };
+
   my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
@@ -163,12 +207,6 @@ d3.ez.chart.discreteBar = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return this;
-  };
-
-  my.transition = function(_) {
-    if (!arguments.length) return transition;
-    transition = _;
     return this;
   };
 
