@@ -2015,7 +2015,7 @@ d3.ez.chart.barClustered = function module() {
         }
         // X & Y Scales
         xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? groupTotalsMax : maxValue ]);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, maxValue ]);
         xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);
@@ -2323,7 +2323,7 @@ d3.ez.chart.barStacked = function module() {
         }
         // X & Y Scales
         xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? groupTotalsMax : maxValue ]);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupTotalsMax ]);
         xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
         // X & Y Axis
         xAxis = d3.axisBottom(xScale);

@@ -68,7 +68,7 @@ d3.ez.chart.barClustered = function module() {
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (groupType === "stacked" ? groupTotalsMax : maxValue)]);
+      .domain([0, maxValue]);
 
     xScale2 = d3.scaleBand()
       .domain(categoryNames)

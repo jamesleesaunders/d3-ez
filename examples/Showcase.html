@@ -28,15 +28,13 @@
     myChart1 = d3.ez.component.htmlTable()
       .width(400)
       .on("customClick", function(d) {
-        groupType = (myChart5.groupType() === "clustered" ? "stacked" : "clustered");
-        myChart5.groupType(groupType);
         update5(data);
         update2(d);
         update3(d);
         update4(d);
       });
 
-    myChart2 = d3.ez.chart.discreteBar()
+    myChart2 = d3.ez.chart.barVertical()
       .width(400)
       .height(200)
       .on("customMouseOver", function(d) {
@@ -48,11 +46,11 @@
       .height(200)
       .innerRadius(40);
 
-    myChart4 = d3.ez.chart.radialBar()
+    myChart4 = d3.ez.chart.barRadial()
       .width(400)
       .height(200);
 
-    myChart5 = d3.ez.chart.groupedBar()
+    myChart5 = d3.ez.chart.barClustered()
       .width(400)
       .height(200)
       .yAxisLabel("Fruit")
@@ -60,15 +58,14 @@
         update2(d);
         update3(d);
         update4(d);
-      })
-      .groupType("stacked");
+      });
 
-    myChart6 = d3.ez.chart.circularHeat()
+    myChart6 = d3.ez.chart.heatMapRadial()
       .width(400)
       .height(200)
       .innerRadius(5);
 
-    myChart7 = d3.ez.chart.tabularHeat()
+    myChart7 = d3.ez.chart.heatMapTable()
       .width(400)
       .height(200);
 
