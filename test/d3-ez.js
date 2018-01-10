@@ -24,7 +24,7 @@ include('../src/component/circularAxis.js');
 include('../src/component/circularLabels.js');
 include('../src/component/htmlTable.js');
 include('../src/component/htmlList.js');
-include('../src/chart/barGrouped.js');
+include('../src/chart/barClustered.js');
 include('../src/chart/barRadial.js');
 include('../src/chart/barStacked.js');
 include('../src/chart/barVertical.js');

@@ -22,7 +22,7 @@ JS_FILES :=        src/header.js \
                    src/component/circularLabels.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
-                   src/chart/barGrouped.js \
+                   src/chart/barClustered.js \
                    src/chart/barRadial.js \
                    src/chart/barStacked.js \
                    src/chart/barVertical.js \

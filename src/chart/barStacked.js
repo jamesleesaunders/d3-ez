@@ -128,10 +128,10 @@ d3.ez.chart.barStacked = function module() {
         .call(yAxis);
 
       var barChart = d3.ez.component.barStacked()
-        .xScale(xScale)
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
+        .xScale(xScale)
         .yScale(yScale)
         .dispatch(dispatch);
 
