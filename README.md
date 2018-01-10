@@ -102,13 +102,13 @@ var legend = d3.ez.component.legend()
 
 The following charts are currently supported:
 * barClustered()
-* barRadial()
 * barStacked()
 * barVertical()
 * donutChart()
 * heatMapTable()
 * heatMapRadial()
 * lineChart()
+* polarArea()
 * punchCard()
 
 All of the above support the following options:
@@ -135,7 +135,7 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 * [Bar Chart (Vertical)](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
 * [Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
 * [Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
-* [Bar Chart (Radial)](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
+* [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
 * [Heat Chart (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
 * [Heat Chart (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
