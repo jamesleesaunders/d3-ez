@@ -2550,7 +2550,7 @@ d3.ez.chart.barVertical = function module() {
  *
  * @see http://datavizproject.com/data-type/donut-chart/
  */
-d3.ez.chart.donut = function module() {
+d3.ez.chart.donutChart = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
@@ -2994,7 +2994,7 @@ d3.ez.chart.heatMapTable = function module() {
  *
   @see http://datavizproject.com/data-type/line-chart/
  */
-d3.ez.chart.line = function module() {
+d3.ez.chart.lineChart = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;

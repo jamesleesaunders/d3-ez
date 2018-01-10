@@ -25,7 +25,7 @@
       // Historical Exchange Rates Source: https://www.ofx.com/en-gb/forex-news/historical-exchange-rates/
 
       var colors = d3.ez.colors.categorical(3);
-      var chart = d3.ez.chart.line()
+      var chart = d3.ez.chart.lineChart()
         .colors(colors)
         .yAxisLabel("Rate");
       var legend = d3.ez.component.legend().title("Currency");

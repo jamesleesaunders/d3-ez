@@ -3,7 +3,7 @@
  *
  * @see http://datavizproject.com/data-type/donut-chart/
  */
-d3.ez.chart.donut = function module() {
+d3.ez.chart.donutChart = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
