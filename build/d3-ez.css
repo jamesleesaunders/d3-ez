@@ -50,12 +50,12 @@
 
 /* === Bar Chart (Stacked & Grouped) Styles === */
 
-.chartGroupedBar rect.bar, .chartDiscreteBar rect.bar {
+.chartBar rect.bar {
   stroke: #999999;
   stroke-width: 0.5px;
 }
 
-.chartGroupedBar rect.bar:hover, .chartDiscreteBar rect.bar:hover {
+.chartBar rect.bar:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;
@@ -64,84 +64,41 @@
 
 /* === Radial Bar Chart Styles === */
 
-.chartRadialBar path {
+.chartBarRadial path {
   fill: none;
 }
 
-.chartRadialBar path.segment {
+.chartBarRadial path.segment {
   fill: steelblue;
   stroke-width: 0.5px;
   stroke: #999999;
 }
 
-.chartRadialBar path.segment:hover {
+.chartBarRadial path.segment:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;
 }
 
-.chartRadialBar .outerCircle circle {
+.chartBarRadial .outerCircle circle {
   stroke: #aaa;
   stroke-dasharray: 4, 4;
 }
 
-.chartRadialBar .tickCircles circle {
+.chartBarRadial .tickCircles circle {
   stroke: #ddd;
   stroke-dasharray: 2, 2;
 }
 
-.chartRadialBar .spokes line {
+.chartBarRadial .spokes line {
   stroke: #aaa;
   stroke-width: 1px;
 }
 
-.chartRadialBar .circularLabels text {
+.chartBarRadial .circularLabels text {
   font-size: 1.1em;
   font-weight: bold;
   letter-spacing: -0.2px;
-}
-
-
-/* === Circular Heat Chart Styles === */
-
-.chartCircularHeat path.segment {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartCircularHeat path.segment:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartCircularHeat .segmentLabels text {
-  font-size: 1.0em;
-  font-weight: bold;
-}
-
-.chartCircularHeat .circularLabels text {
-  font-size: 1.1em;
-  font-weight: bold;
-  letter-spacing: -0.2px;
-}
-
-
-/* === Tabular Heat Chart Styles === */
-
-.chartTabularHeat rect.cell {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartTabularHeat rect.cell:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartTabularHeat .x-axis path, .chartTabularHeat .y-axis path {
-  display: none;
 }
 
 
@@ -163,6 +120,49 @@
   stroke: black;
   stroke-width: 2px;
   fill: none;
+}
+
+
+/* === Circular Heat Chart Styles === */
+
+.chartHeatMapRadial path.segment {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+.chartHeatMapRadial path.segment:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.chartHeatMapRadial .segmentLabels text {
+  font-size: 1.0em;
+  font-weight: bold;
+}
+
+.chartHeatMapRadial .circularLabels text {
+  font-size: 1.1em;
+  font-weight: bold;
+  letter-spacing: -0.2px;
+}
+
+
+/* === Tabular Heat Chart Styles === */
+
+.chartHeatMapTable rect.cell {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+.chartHeatMapTable rect.cell:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.chartHeatMapTable .x-axis path, .chartHeatMapTable .y-axis path {
+  display: none;
 }
 
 
@@ -196,7 +196,7 @@
   }
 }
 
-.chartMultiSeriesLine .dot:hover {
+.chartLine .dot:hover {
   animation-duration: 0.2s;
   animation-name: circleTransition;
   transform-origin: center center;

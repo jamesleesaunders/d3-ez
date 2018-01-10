@@ -1,19 +1,20 @@
 /**
- * Circular Heat Chart
+ * Donut Chart (also called: Doughnut Chart; Pie Chart)
  *
+ * @see http://datavizproject.com/data-type/donut-chart/
  */
-d3.ez.chart.circularHeat = function module() {
+d3.ez.chart.donut = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartCircularHeat";
+  var classed = "chartDonut";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  var transition = { ease: d3.easeCubic, duration: 750 };
+  var colors = d3.ez.colors.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -22,16 +23,10 @@ d3.ez.chart.circularHeat = function module() {
   var innerRadius;
 
   // Scales and Axis
-  var xScale;
-  var yScale;
   var colorScale;
 
   // Data Variables
   var categoryNames = [];
-  var groupNames = [];
-  var minValue = 0;
-  var maxValue = 0;
-  var thresholds;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -42,40 +37,20 @@ d3.ez.chart.circularHeat = function module() {
 
     var defaultRadius = Math.min(chartW, chartH) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    maxValue = slicedData.maxValue;
-    minValue = slicedData.minValue;
     categoryNames = slicedData.categoryNames;
-    groupNames = slicedData.groupNames;
-
-    // If thresholds values are not already set
-    // attempt to auto-calculate some thresholds.
-    if (!thresholds) {
-      thresholds = slicedData.thresholds;
-    }
 
     // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
-      colorScale = d3.scaleThreshold()
+      colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(thresholds);
+        .domain(categoryNames);
     }
-
-    // X & Y Scales
-    xScale = d3.scaleBand()
-      .domain(categoryNames)
-      .rangeRound([0, chartW])
-      .padding(0.1);
-
-    yScale = d3.scaleBand()
-      .domain(groupNames)
-      .rangeRound([radius, innerRadius])
-      .padding(0.1);
   }
 
   function my(selection) {
@@ -83,7 +58,7 @@ d3.ez.chart.circularHeat = function module() {
       // Initialise Data
       init(data);
 
-      // Create chart element (if it does not exist already)
+      // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
           var el = selection._groups[0][0];
@@ -99,9 +74,6 @@ d3.ez.chart.circularHeat = function module() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("circleRings", true);
-        chart.append("g").classed("circleLabels", true);
-        chart.append("g").classed("axis", true);
       } else {
         chart = svg.select(".chart");
       }
@@ -112,38 +84,15 @@ d3.ez.chart.circularHeat = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatRing = d3.ez.component.heatRing()
-        .radius(function(d) { return yScale(d.key) })
-        .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
+      // Add the chart
+      var donutChart = d3.ez.component.donut()
+        .radius(radius)
+        .innerRadius(innerRadius)
         .colorScale(colorScale)
-        .yScale(yScale)
-        .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
-        .data(function(d) { return d; })
-        .enter()
-        .append("g")
-        .attr("class", "seriesGroup");
-
-      seriesGroup.datum(function(d) { return d; })
-        .call(heatRing);
-
-      seriesGroup.exit().remove();
-
-      // Circular Labels
-      var circularLabels = d3.ez.component.circularLabels()
-        .radius(radius * 1.04);
-
-      chart.select(".circleLabels")
-        .datum(categoryNames)
-        .call(circularLabels);
-
-      // Y Axis
-      var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
-      chart.select(".axis")
-        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
-        .call(yAxis);
+      chart.datum(data)
+        .call(donutChart);
 
     });
   }

@@ -1,19 +1,20 @@
 /**
- * Discrete Bar Chart
+ * Heat Map (also called: Heat Table; Density Table; Heat Map)
  *
+ * @see http://datavizproject.com/data-type/heat-map/
  */
-d3.ez.chart.discreteBar = function module() {
+d3.ez.chart.heatMapTable = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartDiscreteBar";
+  var classed = "chartHeatMapTable";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Chart Dimensions
   var chartW;
@@ -22,46 +23,59 @@ d3.ez.chart.discreteBar = function module() {
   // Scales and Axis
   var xScale;
   var yScale;
+  var colorScale;
   var xAxis;
   var yAxis;
-  var colorScale;
+
+  // Data Variables
+  var groupNames = [];
+  var categoryNames = [];
+  var minValue = 0;
+  var maxValue = 0;
+  var thresholds = undefined;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-  // Other Customisation Options
-  var yAxisLabel;
-
   function init(data) {
-    chartW = width - (margin.left + margin.right);
-    chartH = height - (margin.top + margin.bottom);
+    chartW = width - margin.left - margin.right;
+    chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
-    yAxisLabel = slicedData.groupName;
+    minValue = slicedData.minValue;
+    categoryNames = slicedData.categoryNames;
+    groupNames = slicedData.groupNames;
 
+    // If thresholds values are not already set
+    // attempt to auto-calculate some thresholds.
+    if (!thresholds) {
+      var thresholds = slicedData.thresholds;
+    }
+
+    // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
+      colorScale = d3.scaleThreshold()
+        .domain(thresholds)
+        .range(colors);
     }
 
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartW])
-      .padding(0.15);
+      .range([0, chartW])
+      .padding(0.1);
 
-    yScale = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([chartH, 0]);
+    yScale = d3.scaleBand()
+      .domain(groupNames)
+      .range([0, chartH])
+      .padding(0.1);
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
+    xAxis = d3.axisTop(xScale);
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -85,12 +99,11 @@ d3.ez.chart.discreteBar = function module() {
           .attr("width", width)
           .attr("height", height);
 
-        chart = svg.append("g").classed('chart', true);
-        chart.append("g").classed("xAxis axis", true);
-        chart.append("g").classed("yAxis axis", true);
-        chart.append("g").classed("barChart", true);
+        chart = svg.append("g").classed("chart", true);
+        chart.append("g").classed("x-axis axis", true);
+        chart.append("g").classed("y-axis axis", true);
       } else {
-        chart = svg.select(".chart");
+        chart = selection.select(".chart");
       }
 
       // Update the chart dimensions
@@ -100,34 +113,18 @@ d3.ez.chart.discreteBar = function module() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".xAxis")
-        .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
+      chart.select(".x-axis")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", -8)
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
 
-      chart.select(".yAxis")
+      chart.select(".y-axis")
         .call(yAxis);
 
-      // Add labels to chart
-      ylabel = chart.select(".yAxis")
-        .selectAll(".y-label")
-        .data([data.key]);
-
-      ylabel.enter()
-        .append("text")
-        .classed("y-label", true)
-        .attr("transform", "rotate(-90)")
-        .attr("y", -40)
-        .attr("dy", ".71em")
-        .attr("fill", "#000000")
-        .style("text-anchor", "end")
-        .merge(ylabel)
-        .transition()
-        .text(function(d) {
-          return (d);
-        });
-
-      // Add bars to the chart
-      var barChart = d3.ez.component.barGrouped()
+      var heatMap = d3.ez.component.heatMap()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -135,9 +132,19 @@ d3.ez.chart.discreteBar = function module() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      chart.select(".barChart")
-        .datum(data)
-        .call(barChart);
+      var seriesGroup = chart.selectAll(".seriesGroup")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "seriesGroup")
+        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
+
+      seriesGroup.datum(function(d) { return d; })
+        .call(heatMap);
+
+      seriesGroup.exit().remove();
+
+
+
     });
   }
 
@@ -154,6 +161,12 @@ d3.ez.chart.discreteBar = function module() {
     return this;
   };
 
+  my.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return this;
+  };
+
   my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
@@ -166,9 +179,9 @@ d3.ez.chart.discreteBar = function module() {
     return this;
   };
 
-  my.transition = function(_) {
-    if (!arguments.length) return transition;
-    transition = _;
+  my.thresholds = function(_) {
+    if (!arguments.length) return thresholds;
+    thresholds = _;
     return this;
   };
 

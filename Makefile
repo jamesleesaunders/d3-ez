@@ -22,21 +22,22 @@ JS_FILES :=        src/header.js \
                    src/component/circularLabels.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
-                   src/chart/discreteBar.js \
-                   src/chart/groupedBar.js \
-                   src/chart/radialBar.js \
-                   src/chart/circularHeat.js \
-                   src/chart/tabularHeat.js \
-                   src/chart/donut.js \
-                   src/chart/punchCard.js \
-                   src/chart/multiSeriesLine.js
+                   src/chart/barClustered.js \
+                   src/chart/barRadial.js \
+                   src/chart/barStacked.js \
+                   src/chart/barVertical.js \
+                   src/chart/donutChart.js \
+                   src/chart/heatMapRadial.js \
+                   src/chart/heatMapTable.js \
+                   src/chart/lineChart.js \
+                   src/chart/punchCard.js
 
 CSS_FILES :=       css/global.css \
-                   css/groupedBar.css \
-                   css/radialBar.css \
-                   css/circularHeat.css \
-                   css/tabularHeat.css \
-                   css/donut.css \
+                   css/barChart.css \
+                   css/barRadial.css \
+                   css/donutChart.css \
+                   css/heatMapRadial.css \
+                   css/heatMapTable.css \
                    css/punchCard.css \
                    css/lineChart.css \
                    css/htmlList.css \
