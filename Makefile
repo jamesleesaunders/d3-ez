@@ -23,21 +23,21 @@ JS_FILES :=        src/header.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
                    src/chart/barClustered.js \
-                   src/chart/barRadial.js \
                    src/chart/barStacked.js \
                    src/chart/barVertical.js \
                    src/chart/donutChart.js \
                    src/chart/heatMapRadial.js \
                    src/chart/heatMapTable.js \
                    src/chart/lineChart.js \
+									 src/chart/polarArea.js \
                    src/chart/punchCard.js
 
 CSS_FILES :=       css/global.css \
                    css/barChart.css \
-                   css/barRadial.css \
                    css/donutChart.css \
                    css/heatMapRadial.css \
                    css/heatMapTable.css \
+									 css/polarArea.css \
                    css/punchCard.css \
                    css/lineChart.css \
                    css/htmlList.css \

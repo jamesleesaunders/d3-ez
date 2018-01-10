@@ -1,15 +1,15 @@
 /**
- * Radial Bar Chart
+ * Polar Area Chart (also called: Coxcomb Chart; Rose Chart; Polar Area Chart)
  *
- * @see http://datavizproject.com/data-type/radical-histogram/
+ * @see http://datavizproject.com/data-type/polar-area-chart/
  */
-d3.ez.chart.barRadial = function module() {
+d3.ez.chart.polarArea = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartBarRadial";
+  var classed = "chartPolarArea";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };

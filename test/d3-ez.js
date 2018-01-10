@@ -25,13 +25,13 @@ include('../src/component/circularLabels.js');
 include('../src/component/htmlTable.js');
 include('../src/component/htmlList.js');
 include('../src/chart/barClustered.js');
-include('../src/chart/barRadial.js');
 include('../src/chart/barStacked.js');
 include('../src/chart/barVertical.js');
 include('../src/chart/donutChart.js');
 include('../src/chart/heatMapRadial.js');
 include('../src/chart/heatMapTable.js');
 include('../src/chart/lineChart.js');
+include('../src/chart/polarArea.js');
 include('../src/chart/punchCard.js');
 
 function include(file) {

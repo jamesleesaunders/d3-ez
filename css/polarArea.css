@@ -1,37 +1,37 @@
 /* === Radial Bar Chart Styles === */
 
-.chartBarRadial path {
+.chartPolarArea path {
   fill: none;
 }
 
-.chartBarRadial path.segment {
+.chartPolarArea path.segment {
   fill: steelblue;
   stroke-width: 0.5px;
   stroke: #999999;
 }
 
-.chartBarRadial path.segment:hover {
+.chartPolarArea path.segment:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;
 }
 
-.chartBarRadial .outerCircle circle {
+.chartPolarArea .outerCircle circle {
   stroke: #aaa;
   stroke-dasharray: 4, 4;
 }
 
-.chartBarRadial .tickCircles circle {
+.chartPolarArea .tickCircles circle {
   stroke: #ddd;
   stroke-dasharray: 2, 2;
 }
 
-.chartBarRadial .spokes line {
+.chartPolarArea .spokes line {
   stroke: #aaa;
   stroke-width: 1px;
 }
 
-.chartBarRadial .circularLabels text {
+.chartPolarArea .circularLabels text {
   font-size: 1.1em;
   font-weight: bold;
   letter-spacing: -0.2px;
