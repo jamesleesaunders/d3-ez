@@ -32,7 +32,7 @@ d3.ez.component.barsStacked = function module() {
 
     selection.each(function() {
 			// Create series group
-      selection.selectAll('.series')
+      var series = selection.selectAll('.series')
 				.data(function(d) { return [d]; })
         .enter()
         .append("g")
@@ -40,7 +40,7 @@ d3.ez.component.barsStacked = function module() {
         .attr("width", width)
         .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var series = selection.selectAll('.series');
+      series = selection.selectAll('.series').merge(series);
 
       // Add Bars to Group
       var bars = series.selectAll(".bar")

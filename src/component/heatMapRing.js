@@ -53,15 +53,16 @@ d3.ez.component.heatMapRing = function module() {
         });
 
       // Ring Segments
-      segments
-        .enter()
+      segments.enter()
         .append("path")
         .attr("d", arc)
-        .attr("fill", function(d) {
-          return colorScale(d.data.value);
-        })
+        .attr("fill", 'black')
         .classed("segment", true)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); });
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); })
+        .merge(segments)
+        .transition()
+        .duration(transition.duration)
+        .attr("fill", function(d) { return colorScale(d.data.value); });
 
       segments.exit().remove();
     });

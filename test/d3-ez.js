@@ -15,7 +15,7 @@ include('../src/component/legend.js');
 include('../src/component/lineChart.js');
 include('../src/component/heatMapRow.js');
 include('../src/component/heatMapRing.js');
-include('../src/component/proportionalArea.js');
+include('../src/component/proportionalAreaCircles.js');
 include('../src/component/numberCard.js');
 include('../src/component/polarArea.js');
 include('../src/component/scatterPlot.js');

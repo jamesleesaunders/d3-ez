@@ -6,7 +6,7 @@ d3.ez.component.heatMapRow = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-	var transition = { ease: d3.easeBounce, duration: 1000 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
 	var xScale;
 	var yScale;
@@ -24,15 +24,13 @@ d3.ez.component.heatMapRow = function module() {
         .append("g")
         .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      selection.selectAll('.series').merge(series);
+      series = selection.selectAll('.series').merge(series);
 
       var cells = series.selectAll(".cell")
         .data(function(d) { return d.values; });
 
       cells.enter().append("rect")
-        .attr("x", function(d) {
-          return xScale(d.key);
-        })
+        .attr("x", function(d) { return xScale(d.key); })
         .attr("y", 0)
         .attr("rx", 2)
         .attr("ry", 2)
