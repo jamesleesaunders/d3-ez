@@ -443,10 +443,10 @@ d3.ez.colors = {
 };
 
 /**
- * Reusable Grouped Bar Chart
+ * Reusable Bar Chart Vertical
  *
  */
-d3.ez.component.barGrouped = function module() {
+d3.ez.component.barsVertical = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 400;
@@ -2047,14 +2047,14 @@ d3.ez.chart.barClustered = function module() {
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
-            var barChart = d3.ez.component.barGrouped().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).xScale(xScale2).yScale(yScale).dispatch(dispatch);
+            var barsVertical = d3.ez.component.barsVertical().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).xScale(xScale2).yScale(yScale).dispatch(dispatch);
             // Create bar group
             var seriesGroup = chart.selectAll(".seriesGroup").data(data);
             seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
                 return "translate(" + xScale(d.key) + ", 0)";
             }).datum(function(d) {
                 return d;
-            }).call(barChart);
+            }).call(barsVertical);
         });
     }
     // Configuration Getters & Setters
@@ -2345,8 +2345,8 @@ d3.ez.chart.barVertical = function module() {
                 return d;
             });
             // Add bars to the chart
-            var barChart = d3.ez.component.barGrouped().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.select(".barChart").datum(data).call(barChart);
+            var barsVertical = d3.ez.component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            chart.select(".barChart").datum(data).call(barsVertical);
         });
     }
     // Configuration Getters & Setters
@@ -3086,8 +3086,8 @@ d3.ez.chart.polarArea = function module() {
             var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circularAxis").call(circularAxis);
             // Radial Bar Chart
-            var barRadial = d3.ez.component.barRadial().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
-            chart.select(".barRadial").datum(data).call(barRadial);
+            var polarArea = d3.ez.component.barRadial().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            chart.select(".polarArea").datum(data).call(polarArea);
             // Vertical Axis
             var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));
             chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);

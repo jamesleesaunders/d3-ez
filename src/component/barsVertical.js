@@ -1,8 +1,8 @@
 /**
- * Reusable Grouped Bar Chart
+ * Reusable Bar Chart Vertical
  *
  */
-d3.ez.component.barGrouped = function module() {
+d3.ez.component.barsVertical = function module() {
   // Default Options (Configurable via setters)
 	var width = 400;
   var height = 400;

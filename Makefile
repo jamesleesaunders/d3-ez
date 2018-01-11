@@ -4,7 +4,7 @@ JS_FILES :=        src/header.js \
                    src/baseFunctions.js \
                    src/chart.js \
                    src/colors.js \
-                   src/component/barGrouped.js \
+                   src/component/barsVertical.js \
                    src/component/barStacked.js \
                    src/component/barRadial.js \
                    src/component/donut.js \

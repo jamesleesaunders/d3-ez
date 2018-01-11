@@ -128,7 +128,7 @@ d3.ez.chart.barVertical = function module() {
         });
 
       // Add bars to the chart
-      var barChart = d3.ez.component.barGrouped()
+      var barsVertical = d3.ez.component.barsVertical()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -138,7 +138,7 @@ d3.ez.chart.barVertical = function module() {
 
       chart.select(".barChart")
         .datum(data)
-        .call(barChart);
+        .call(barsVertical);
     });
   }
 

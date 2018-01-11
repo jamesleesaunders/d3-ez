@@ -127,7 +127,7 @@ d3.ez.chart.barClustered = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barChart = d3.ez.component.barGrouped()
+      var barsVertical = d3.ez.component.barsVertical()
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
@@ -144,7 +144,7 @@ d3.ez.chart.barClustered = function module() {
         .classed("seriesGroup", true)
         .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
         .datum(function(d) { return d; })
-        .call(barChart);
+        .call(barsVertical);
 
     });
   }

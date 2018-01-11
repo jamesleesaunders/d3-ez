@@ -118,15 +118,15 @@ d3.ez.chart.polarArea = function module() {
         .call(circularAxis);
 
       // Radial Bar Chart
-      var barRadial = d3.ez.component.barRadial()
+      var polarArea = d3.ez.component.barRadial()
         .radius(radius)
         .yScale(yScale)
         .colorScale(colorScale)
         .dispatch(dispatch);
 
-      chart.select(".barRadial")
+      chart.select(".polarArea")
         .datum(data)
-        .call(barRadial);
+        .call(polarArea);
 
       // Vertical Axis
       var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]));
