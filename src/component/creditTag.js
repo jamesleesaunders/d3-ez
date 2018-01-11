@@ -1,5 +1,5 @@
 /**
- * Credit Tag
+ * Reusable Credit Tag Component
  *
  * @example
  * var creditTag = d3.ez.component.creditTag()

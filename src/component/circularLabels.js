@@ -1,5 +1,5 @@
 /**
- * Reusable Circular Labels
+ * Reusable Circular Labels Component
  *
  */
 d3.ez.component.circularLabels = function module() {

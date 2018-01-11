@@ -113,7 +113,7 @@ d3.ez.chart.heatMapRadial = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatRing = d3.ez.component.heatRing()
+      var heatMapRing = d3.ez.component.heatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
@@ -128,7 +128,7 @@ d3.ez.chart.heatMapRadial = function module() {
         .attr("class", "seriesGroup");
 
       seriesGroup.datum(function(d) { return d; })
-        .call(heatRing);
+        .call(heatMapRing);
 
       seriesGroup.exit().remove();
 

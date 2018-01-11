@@ -1,5 +1,5 @@
 /**
- * Reusable Bar Chart Vertical
+ * Reusable Vertical Bar Chart Component
  *
  */
 d3.ez.component.barsVertical = function module() {

@@ -1,13 +1,12 @@
 /**
- * Reusable Punch Card Row
+ * Reusable Heat Map Table Row Component
  *
  */
-d3.ez.component.punchCard = function module() {
+d3.ez.component.heatMapRow = function module() {
   // Default Options (Configurable via setters)
-	var width = 400;
-	var height = 100;
-	var sizeScale;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var width = 400;
+  var height = 100;
+	var transition = { ease: d3.easeBounce, duration: 1000 };
   var colorScale;
 	var xScale;
 	var yScale;
@@ -19,39 +18,36 @@ d3.ez.component.punchCard = function module() {
 
     selection.each(function() {
 			// Create series group
-      var series = selection.selectAll(".series")
+      var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .attr("transform", function(d) {
-          return "translate(0, " + (cellHeight / 2) + ")";
-        })
         .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.series').merge(series);
+      selection.selectAll('.series').merge(series);
 
-      var spots = series.selectAll(".punchSpot")
+      var cells = series.selectAll(".cell")
         .data(function(d) { return d.values; });
 
-      spots.enter().append("circle")
-        .attr("class", "punchSpot")
-        .attr("cx", function(d) {
-          return (cellWidth / 2 + xScale(d.key));
+      cells.enter().append("rect")
+        .attr("x", function(d) {
+          return xScale(d.key);
         })
-        .attr("cy", 0)
-        .attr("r", 0)
+        .attr("y", 0)
+        .attr("rx", 2)
+        .attr("ry", 2)
+        .attr("fill", 'black')
+        .attr("class", "cell")
+        .attr("width", cellWidth)
+        .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(spots)
+        .merge(cells)
         .transition()
         .duration(transition.duration)
-        .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        });
+        .attr("fill", function(d) { return colorScale(d.value); });
 
-      spots.exit().remove();
-
+      cells.exit().remove();
     });
   }
 
@@ -71,12 +67,6 @@ d3.ez.component.punchCard = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return my;
-  };
-
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
     return my;
   };
 

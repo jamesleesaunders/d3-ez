@@ -124,7 +124,7 @@ d3.ez.chart.heatMapTable = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var heatMap = d3.ez.component.heatMap()
+      var heatMapRow = d3.ez.component.heatMapRow()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -139,7 +139,7 @@ d3.ez.chart.heatMapTable = function module() {
         .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
 
       seriesGroup.datum(function(d) { return d; })
-        .call(heatMap);
+        .call(heatMapRow);
 
       seriesGroup.exit().remove();
 

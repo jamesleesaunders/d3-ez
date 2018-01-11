@@ -1,5 +1,5 @@
 /**
- * Labeled Node
+ * Reusable Labeled Node Component
  *
  * @example
  * var myNode = d3.ez.component.labeledNode()

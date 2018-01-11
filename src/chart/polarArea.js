@@ -1,5 +1,5 @@
 /**
- * Polar Area Chart (also called: Coxcomb Chart; Rose Chart; Polar Area Chart)
+ * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
  *
  * @see http://datavizproject.com/data-type/polar-area-chart/
  */
@@ -93,7 +93,7 @@ d3.ez.chart.polarArea = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circularAxis", true);
-        chart.append("g").classed("barRadial", true);
+        chart.append("g").classed("polarArea", true);
         chart.append("g").classed("verticalAxis axis", true);
         chart.append("g").classed("circularLabels", true);
       } else {
@@ -118,7 +118,7 @@ d3.ez.chart.polarArea = function module() {
         .call(circularAxis);
 
       // Radial Bar Chart
-      var polarArea = d3.ez.component.barRadial()
+      var polarArea = d3.ez.component.polarArea()
         .radius(radius)
         .yScale(yScale)
         .colorScale(colorScale)

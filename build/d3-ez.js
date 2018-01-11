@@ -443,7 +443,7 @@ d3.ez.colors = {
 };
 
 /**
- * Reusable Bar Chart Vertical
+ * Reusable Vertical Bar Chart Component
  *
  */
 d3.ez.component.barsVertical = function module() {
@@ -526,10 +526,10 @@ d3.ez.component.barsVertical = function module() {
 };
 
 /**
- * Reusable Stacked Bar Chart
+ * Reusable Stacked Bar Chart Component
  *
  */
-d3.ez.component.barStacked = function module() {
+d3.ez.component.barsStacked = function module() {
     // Default Options (Configurable via setters)
     var width = 100;
     var height = 400;
@@ -620,10 +620,10 @@ d3.ez.component.barStacked = function module() {
 };
 
 /**
- * Reusable Radial Bar Chart
+ * Reusable Polar Area Chart Component
  *
  */
-d3.ez.component.barRadial = function module() {
+d3.ez.component.polarArea = function module() {
     // Default Options (Configurable via setters)
     var width = 300;
     var height = 300;
@@ -705,7 +705,7 @@ d3.ez.component.barRadial = function module() {
 };
 
 /**
- * Reusable Donut Chart
+ * Reusable Donut Chart Component
  *
  */
 d3.ez.component.donut = function module() {
@@ -845,7 +845,7 @@ d3.ez.component.donut = function module() {
 };
 
 /**
- * Credit Tag
+ * Reusable Credit Tag Component
  *
  * @example
  * var creditTag = d3.ez.component.creditTag()
@@ -882,7 +882,7 @@ d3.ez.component.creditTag = function module() {
 };
 
 /**
- * Labeled Node
+ * Reusable Labeled Node Component
  *
  * @example
  * var myNode = d3.ez.component.labeledNode()
@@ -947,7 +947,7 @@ d3.ez.component.labeledNode = function module() {
 };
 
 /**
- * Reusable Scatter Plot
+ * Reusable Scatter Plot Component
  *
  */
 d3.ez.component.scatterPlot = function module() {
@@ -1028,7 +1028,7 @@ d3.ez.component.scatterPlot = function module() {
 };
 
 /**
- * Legend
+ * Reusable Legend Component
  *
  * @example
  * var myLegend = d3.ez.component.legend()
@@ -1181,7 +1181,7 @@ d3.ez.component.legend = function module() {
 };
 
 /**
- * Reusable Line Chart
+ * Reusable Line Chart Component
  *
  */
 d3.ez.component.lineChart = function module() {
@@ -1261,10 +1261,10 @@ d3.ez.component.lineChart = function module() {
 };
 
 /**
- * Reusable Heat Map
+ * Reusable Heat Map Table Row Component
  *
  */
-d3.ez.component.heatMap = function module() {
+d3.ez.component.heatMapRow = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 100;
@@ -1339,10 +1339,10 @@ d3.ez.component.heatMap = function module() {
 };
 
 /**
- * Reusable Circular Heat Ring
+ * Reusable Heat Map Ring Component
  *
  */
-d3.ez.component.heatRing = function module() {
+d3.ez.component.heatMapRing = function module() {
     // Default Options (Configurable via setters)
     var width = 300;
     var height = 300;
@@ -1438,10 +1438,10 @@ d3.ez.component.heatRing = function module() {
 };
 
 /**
- * Reusable Punch Card Row
+ * Reusable Proportional Area Component
  *
  */
-d3.ez.component.punchCard = function module() {
+d3.ez.component.proportionalArea = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 100;
@@ -1526,7 +1526,7 @@ d3.ez.component.punchCard = function module() {
 };
 
 /**
- * Reusable Number Row
+ * Reusable Number Row Component
  *
  */
 d3.ez.component.numberCard = function module() {
@@ -1606,7 +1606,7 @@ d3.ez.component.numberCard = function module() {
 };
 
 /**
- * Title
+ * Reusable Title Component
  *
  * @example
  * var myTitle = d3.ez.component.title()
@@ -1663,7 +1663,7 @@ d3.ez.component.title = function module() {
 };
 
 /**
- * Reusable Circular Axis
+ * Reusable Circular Axis Component
  *
  */
 d3.ez.component.circularAxis = function module() {
@@ -1737,7 +1737,7 @@ d3.ez.component.circularAxis = function module() {
 };
 
 /**
- * Reusable Circular Labels
+ * Reusable Circular Labels Component
  *
  */
 d3.ez.component.circularLabels = function module() {
@@ -2197,14 +2197,14 @@ d3.ez.chart.barStacked = function module() {
             // Add axis to chart
             chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".y-axis").call(yAxis);
-            var barChart = d3.ez.component.barStacked().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
+            var barsStacked = d3.ez.component.barsStacked().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
             // Create bar group
             var seriesGroup = chart.selectAll(".seriesGroup").data(data);
             seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
                 return "translate(" + xScale(d.key) + ", 0)";
             }).datum(function(d) {
                 return d;
-            }).call(barChart);
+            }).call(barsStacked);
         });
     }
     // Configuration Getters & Setters
@@ -2609,7 +2609,7 @@ d3.ez.chart.heatMapRadial = function module() {
             }
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
-            var heatRing = d3.ez.component.heatRing().radius(function(d) {
+            var heatMapRing = d3.ez.component.heatMapRing().radius(function(d) {
                 return yScale(d.key);
             }).innerRadius(function(d) {
                 return yScale(d.key) + yScale.bandwidth();
@@ -2619,7 +2619,7 @@ d3.ez.chart.heatMapRadial = function module() {
             }).enter().append("g").attr("class", "seriesGroup");
             seriesGroup.datum(function(d) {
                 return d;
-            }).call(heatRing);
+            }).call(heatMapRing);
             seriesGroup.exit().remove();
             // Circular Labels
             var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
@@ -2776,7 +2776,7 @@ d3.ez.chart.heatMapTable = function module() {
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var heatMap = d3.ez.component.heatMap().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var heatMapRow = d3.ez.component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             var seriesGroup = chart.selectAll(".seriesGroup").data(function(d) {
                 return d;
             }).enter().append("g").attr("class", "seriesGroup").attr("transform", function(d) {
@@ -2784,7 +2784,7 @@ d3.ez.chart.heatMapTable = function module() {
             });
             seriesGroup.datum(function(d) {
                 return d;
-            }).call(heatMap);
+            }).call(heatMapRow);
             seriesGroup.exit().remove();
         });
     }
@@ -3074,7 +3074,7 @@ d3.ez.chart.polarArea = function module() {
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("circularAxis", true);
-                chart.append("g").classed("barRadial", true);
+                chart.append("g").classed("polarArea", true);
                 chart.append("g").classed("verticalAxis axis", true);
                 chart.append("g").classed("circularLabels", true);
             } else {
@@ -3086,7 +3086,7 @@ d3.ez.chart.polarArea = function module() {
             var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circularAxis").call(circularAxis);
             // Radial Bar Chart
-            var polarArea = d3.ez.component.barRadial().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            var polarArea = d3.ez.component.polarArea().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".polarArea").datum(data).call(polarArea);
             // Vertical Axis
             var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));
@@ -3253,7 +3253,7 @@ d3.ez.chart.punchCard = function module() {
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var proportionalArea = d3.ez.component.proportionalArea().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             var seriesGroup = chart.selectAll(".seriesGroup").data(function(d) {
                 return d;
             }).enter().append("g").attr("class", "seriesGroup").attr("transform", function(d) {
@@ -3261,7 +3261,7 @@ d3.ez.chart.punchCard = function module() {
             });
             seriesGroup.datum(function(d) {
                 return d;
-            }).call(punchCard);
+            }).call(proportionalArea);
             seriesGroup.exit().remove();
         });
     }

@@ -1,8 +1,8 @@
 /**
- * Reusable Stacked Bar Chart
+ * Reusable Stacked Bar Chart Component
  *
  */
-d3.ez.component.barStacked = function module() {
+d3.ez.component.barsStacked = function module() {
   // Default Options (Configurable via setters)
 	var width = 100;
   var height = 400;

@@ -5,17 +5,17 @@ JS_FILES :=        src/header.js \
                    src/chart.js \
                    src/colors.js \
                    src/component/barsVertical.js \
-                   src/component/barStacked.js \
-                   src/component/barRadial.js \
+                   src/component/barsStacked.js \
+                   src/component/polarArea.js \
                    src/component/donut.js \
                    src/component/creditTag.js \
                    src/component/labeledNode.js \
                    src/component/scatterPlot.js \
                    src/component/legend.js \
                    src/component/lineChart.js \
-                   src/component/heatMap.js \
-                   src/component/heatRing.js \
-                   src/component/punchCard.js \
+                   src/component/heatMapRow.js \
+                   src/component/heatMapRing.js \
+                   src/component/proportionalArea.js \
                    src/component/numberCard.js \
                    src/component/title.js \
                    src/component/circularAxis.js \

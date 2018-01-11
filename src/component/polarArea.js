@@ -1,71 +1,68 @@
 /**
- * Reusable Circular Heat Ring
+ * Reusable Polar Area Chart Component
  *
  */
-d3.ez.component.heatRing = function module() {
+d3.ez.component.polarArea = function module() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
 	var radius = 150;
-	var innerRadius = 20;
 	var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-	var xScale;
-	var yScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
 		var defaultRadius = Math.min(width, height) / 2;
 		radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-		innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+
+		var yDomain = yScale.domain();
+		var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
 
 		// Pie Generator
 		var pie = d3.pie()
 			.value(1)
 			.sort(null)
-			.padAngle(0.015);
+			.padAngle(0);
 
 		// Arc Generator
 		var arc = d3.arc()
-			.outerRadius(radius)
-			.innerRadius(innerRadius)
+			.outerRadius(function(d) {
+				return barScale(d.data.value);
+			})
+			.innerRadius(0)
 			.cornerRadius(2);
 
     selection.each(function() {
-      // Create chart group
+      // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
         .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.series').merge(series);
+      series = selection.selectAll(".series").merge(series);
 
+      // Add segments to series
       var segments = series.selectAll(".segment")
-        .data(function(d) {
-          var key = d.key;
-          var data = pie(d.values);
-          data.forEach(function(d, i) {
-            data[i].key = key;
-          });
+        .data(function(d) { return pie(d.values); });
 
-          return data;
-        });
-
-      // Ring Segments
-      segments
-        .enter()
+      segments.enter()
         .append("path")
-        .attr("d", arc)
-        .attr("fill", function(d) {
-          return colorScale(d.data.value);
-        })
         .classed("segment", true)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); });
+        .style("fill", function(d) { return colorScale(d.data.key); })
+        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); })
+        .merge(segments)
+        .transition()
+        .ease(transition.ease)
+        .duration(transition.duration)
+        .attr("d", arc);
 
-      segments.exit().remove();
+      segments.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
     });
-
   }
 
   // Configuration Getters & Setters
@@ -87,21 +84,9 @@ d3.ez.component.heatRing = function module() {
     return this;
   };
 
-  my.innerRadius = function(_) {
-    if (!arguments.length) return innerRadius;
-    innerRadius = _;
-    return this;
-  };
-
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return my;
-  };
-
-  my.xScale = function(_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
     return my;
   };
 

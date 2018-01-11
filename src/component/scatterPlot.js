@@ -1,5 +1,5 @@
 /**
- * Reusable Scatter Plot
+ * Reusable Scatter Plot Component
  *
  */
 d3.ez.component.scatterPlot = function module() {

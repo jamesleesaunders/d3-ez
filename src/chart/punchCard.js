@@ -133,7 +133,7 @@ d3.ez.chart.punchCard = function module() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var punchCard = d3.ez.component.punchCard()
+      var proportionalArea = d3.ez.component.proportionalArea()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -149,7 +149,7 @@ d3.ez.chart.punchCard = function module() {
         .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
 
       seriesGroup.datum(function(d) { return d; })
-        .call(punchCard);
+        .call(proportionalArea);
 
       seriesGroup.exit().remove();
 

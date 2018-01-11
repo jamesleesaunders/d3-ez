@@ -1,5 +1,5 @@
 /**
- * Reusable Donut Chart
+ * Reusable Donut Chart Component
  *
  */
 d3.ez.component.donut = function module() {
