@@ -1031,7 +1031,7 @@ d3.ez.component.heatMapRow = function module() {
             }).enter().append("g").classed("series", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            selection.selectAll(".series").merge(series);
             var cells = series.selectAll(".cell").data(function(d) {
                 return d.values;
             });

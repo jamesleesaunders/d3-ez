@@ -215,7 +215,7 @@ table.htmlTable {
   cursor: pointer;
 }
 
-.heatMapTable .x-axis path, .chartHeatMapTable .y-axis path {
+.heatMapTable .x-axis path, .heatMapTable .y-axis path {
   display: none;
 }
 
