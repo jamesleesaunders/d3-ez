@@ -1,55 +1,57 @@
 /**
- * Reusable Grouped Bar Chart
+ * Reusable Proportional Area Circles Component
  *
  */
-d3.ez.component.barGrouped = function module() {
+d3.ez.component.proportionalAreaCircles = function module() {
   // Default Options (Configurable via setters)
 	var width = 400;
-  var height = 400;
+	var height = 100;
+	var sizeScale;
 	var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-  var xScale;
-  var yScale;
+	var xScale;
+	var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
+		var cellHeight = yScale.bandwidth();
+		var cellWidth = xScale.bandwidth();
+
     selection.each(function() {
-      // Create series group
-      var series = selection.selectAll('.series')
+			// Create series group
+      var series = selection.selectAll(".series")
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed("series", true)
+        .attr("transform", function(d) {
+          return "translate(0, " + (cellHeight / 2) + ")";
+        })
+        .classed('series', true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll(".series").merge(series);
+      series = selection.selectAll('.series').merge(series);
 
-      // Add bars to series
-      var bars = series.selectAll(".bar")
+      var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
-      bars.enter()
-        .append("rect")
-        .classed("bar", true)
-        .attr("fill", function(d) { return colorScale(d.key); })
-        .attr("width", xScale.bandwidth())
-        .attr("x", function(d) { return xScale(d.key); })
-        .attr("y", height)
-        .attr("rx", 0)
-        .attr("ry", 0)
-        .attr("height", 0)
+      spots.enter().append("circle")
+        .attr("class", "punchSpot")
+        .attr("cx", function(d) {
+          return (cellWidth / 2 + xScale(d.key));
+        })
+        .attr("cy", 0)
+        .attr("r", 0)
+        .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(bars)
+        .merge(spots)
         .transition()
-        .ease(transition.ease)
         .duration(transition.duration)
-        .attr("x", function(d) { return xScale(d.key); })
-        .attr("y", function(d) { return yScale(d.value); })
-        .attr("height", function(d) { return height - yScale(d.value); });
+        .attr("fill", function(d) { return colorScale(d.value); })
+        .attr("r", function(d) {
+          return sizeScale(d['value']);
+        });
 
-      bars.exit()
-        .transition()
-        .style("opacity", 0)
-        .remove();
+      spots.exit().remove();
+
     });
   }
 
@@ -69,6 +71,12 @@ d3.ez.component.barGrouped = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return my;
   };
 

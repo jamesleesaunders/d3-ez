@@ -1,14 +1,15 @@
 /**
- * Circular Heat Chart
+ * Circular Heat Map (also called: Radial Heat Map)
  *
+ * @see http://datavizproject.com/data-type/radial-heatmap/
  */
-d3.ez.chart.circularHeat = function module() {
+d3.ez.chart.heatMapRadial = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartCircularHeat";
+  var classed = "heatMapRadial";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -112,7 +113,7 @@ d3.ez.chart.circularHeat = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatRing = d3.ez.component.heatRing()
+      var heatMapRing = d3.ez.component.heatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
@@ -127,7 +128,7 @@ d3.ez.chart.circularHeat = function module() {
         .attr("class", "seriesGroup");
 
       seriesGroup.datum(function(d) { return d; })
-        .call(heatRing);
+        .call(heatMapRing);
 
       seriesGroup.exit().remove();
 

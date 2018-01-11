@@ -1,5 +1,5 @@
 /**
- * Reusable Number Row
+ * Reusable Number Row Component
  *
  */
 d3.ez.component.numberCard = function module() {

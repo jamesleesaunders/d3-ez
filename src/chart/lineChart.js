@@ -1,27 +1,26 @@
 /**
- * Punch Card
+ * Line Chart (also called: Line Graph; Spline Chart)
  *
- * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
+  @see http://datavizproject.com/data-type/line-chart/
  */
-d3.ez.chart.punchCard = function module() {
+d3.ez.chart.lineChart = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "punchCard";
+  var classed = "lineChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+  var colors = d3.ez.colors.categorical(3);
 
   // Chart Dimensions
   var chartW;
   var chartH;
 
   // Scales and Axis
-  var sizeScale;
   var xScale;
   var yScale;
   var xAxis;
@@ -30,17 +29,13 @@ d3.ez.chart.punchCard = function module() {
 
   // Data Variables
   var maxValue;
-  var minValue;
-  var categoryNames;
   var groupNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-  // Misc Options
-  var minRadius = 2;
-  var maxRadius = 20;
-  var useGlobalScale = true;
+  // Other Customisation Options
+  var yAxisLabel = null;
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -49,43 +44,38 @@ d3.ez.chart.punchCard = function module() {
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     maxValue = slicedData.maxValue;
-    minValue = slicedData.minValue;
-    categoryNames = slicedData.categoryNames;
     groupNames = slicedData.groupNames;
 
-    valDomain = [minValue, maxValue];
-    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
-      return d['value'];
-    })];
+    // Convert dates
+    data.forEach(function(d, i) {
+      d.values.forEach(function(b, j) {
+        data[i].values[j].key = new Date(b.key * 1000);
+      });
+    });
+    dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
     // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
-      colorScale = d3.scaleLinear()
-        .domain(valDomain)
-        .range(colors);
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(groupNames);
     }
 
     // X & Y Scales
-    xScale = d3.scaleBand()
-      .domain(categoryNames)
+    xScale = d3.scaleTime()
       .range([0, chartW])
-      .padding(0.05);
+      .domain(dateDomain);
 
-    yScale = d3.scaleBand()
-      .domain(groupNames)
-      .range([0, chartH])
-      .padding(0.05);
+    yScale = d3.scaleLinear()
+      .range([chartH, 0])
+      .domain([0, (maxValue * 1.05)]);
 
     // X & Y Axis
-    xAxis = d3.axisTop(xScale);
+    xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.timeFormat("%d-%b-%y"));
     yAxis = d3.axisLeft(yScale);
-
-    // Size Scale
-    sizeScale = d3.scaleLinear()
-      .domain(sizeDomain)
-      .range([minRadius, maxRadius]);
   }
 
   function my(selection) {
@@ -110,7 +100,13 @@ d3.ez.chart.punchCard = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("y-axis axis", true)
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", -35)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text(yAxisLabel);
       } else {
         chart = selection.select(".chart");
       }
@@ -123,36 +119,54 @@ d3.ez.chart.punchCard = function module() {
 
       // Add axis to chart
       chart.select(".x-axis")
+        .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis)
         .selectAll("text")
-        .attr("y", 0)
-        .attr("x", -8)
-        .attr("transform", "rotate(60)")
-        .style("text-anchor", "end");
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
 
       chart.select(".y-axis")
         .call(yAxis);
 
-      var proportionalAreaCircles = d3.ez.component.proportionalAreaCircles()
+      var lineChart = d3.ez.component.lineChart()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
-        .sizeScale(sizeScale)
         .yScale(yScale)
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      var scatterPlot = d3.ez.component.scatterPlot()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
+        .dispatch(dispatch);
+
+      var lineGroup = chart.selectAll(".lineGroup")
         .data(function(d) { return d; })
         .enter().append("g")
-        .attr("class", "seriesGroup")
-        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
+        .attr("class", "lineGroup")
+        .style("fill", function(d) { return colorScale(d.key); });
 
-      seriesGroup.datum(function(d) { return d; })
-        .call(proportionalAreaCircles);
+      lineGroup.datum(function(d) { return d; })
+        .call(lineChart).call(scatterPlot);
 
-      seriesGroup.exit().remove();
+      lineGroup.exit().remove();
 
+      var dotGroup = chart.selectAll(".dotGroup")
+        .data(function(d) { return d; })
+        .enter().append("g")
+        .attr("class", "dotGroup")
+        .style("fill", function(d) { return colorScale(d.key); });
+
+      dotGroup.datum(function(d) { return d; })
+        .call(scatterPlot);
+
+      dotGroup.exit().remove();
     });
   }
 
@@ -175,21 +189,15 @@ d3.ez.chart.punchCard = function module() {
     return this;
   };
 
-  my.minRadius = function(_) {
-    if (!arguments.length) return minRadius;
-    minRadius = _;
+  my.yAxisLabel = function(_) {
+    if (!arguments.length) return yAxisLabel;
+    yAxisLabel = _;
     return this;
   };
 
-  my.maxRadius = function(_) {
-    if (!arguments.length) return maxRadius;
-    maxRadius = _;
-    return this;
-  };
-
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
+  my.transition = function(_) {
+    if (!arguments.length) return transition;
+    transition = _;
     return this;
   };
 
@@ -199,9 +207,9 @@ d3.ez.chart.punchCard = function module() {
     return this;
   };
 
-  my.useGlobalScale = function(_) {
-    if (!arguments.length) return useGlobalScale;
-    useGlobalScale = _;
+  my.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
     return this;
   };
 

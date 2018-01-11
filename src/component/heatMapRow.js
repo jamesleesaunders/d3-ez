@@ -1,11 +1,11 @@
 /**
- * Reusable Stacked Bar Chart
+ * Reusable Heat Map Table Row Component
  *
  */
-d3.ez.component.barStacked = function module() {
+d3.ez.component.heatMapRow = function module() {
   // Default Options (Configurable via setters)
-	var width = 100;
-  var height = 400;
+  var width = 400;
+  var height = 100;
 	var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
 	var xScale;
@@ -13,62 +13,39 @@ d3.ez.component.barStacked = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		// Stack Generator
-		var stacker = function(data) {
-			series = [];
-			var y0 = 0;
-			data.forEach(function(d, i) {
-				series[i] = {
-					name: d.key,
-					value: d.value,
-					y0: y0,
-					y1: y0 + d.value
-				};
-				y0 += d.value;
-			});
-
-			return series;
-		};
+		var cellHeight = yScale.bandwidth();
+		var cellWidth = xScale.bandwidth();
 
     selection.each(function() {
 			// Create series group
-      selection.selectAll('.series')
-				.data(function(d) { return [d]; })
+      var series = selection.selectAll('.series')
+        .data(function(d) { return [d]; })
         .enter()
         .append("g")
         .classed('series', true)
-        .attr("width", width)
-        .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      var series = selection.selectAll('.series');
+      series = selection.selectAll('.series').merge(series);
 
-      // Add Bars to Group
-      var bars = series.selectAll(".bar")
-        .data(function(d) { return stacker(d.values); });
+      var cells = series.selectAll(".cell")
+        .data(function(d) { return d.values; });
 
-      bars.enter().append("rect")
-        .classed("bar", true)
-        .attr("width", width)
-        .attr("x", 0)
-        .attr("y", height)
-        .attr("rx", 0)
-        .attr("ry", 0)
-        .attr("height", 0)
-        .attr("fill", function(d) { return colorScale(d.name); })
+      cells.enter().append("rect")
+        .attr("x", function(d) { return xScale(d.key); })
+        .attr("y", 0)
+        .attr("rx", 2)
+        .attr("ry", 2)
+        .attr("fill", 'black')
+        .attr("class", "cell")
+        .attr("width", cellWidth)
+        .attr("height", cellHeight)
+        .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(bars)
+        .merge(cells)
         .transition()
-        .ease(transition.ease)
         .duration(transition.duration)
-        .attr("width", width)
-        .attr("x", 0)
-        .attr("y", function(d) { return yScale(d.y1); })
-        .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
+        .attr("fill", function(d) { return colorScale(d.value); });
 
-      bars.exit()
-        .transition()
-        .style("opacity", 0)
-        .remove();
+      cells.exit().remove();
     });
   }
 

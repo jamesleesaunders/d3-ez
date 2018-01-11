@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.1.9",
+    version: "2.2.0",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -443,10 +443,10 @@ d3.ez.colors = {
 };
 
 /**
- * Reusable Grouped Bar Chart
+ * Reusable Vertical Bar Chart Component
  *
  */
-d3.ez.component.barGrouped = function module() {
+d3.ez.component.barsVertical = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 400;
@@ -526,10 +526,10 @@ d3.ez.component.barGrouped = function module() {
 };
 
 /**
- * Reusable Stacked Bar Chart
+ * Reusable Stacked Bar Chart Component
  *
  */
-d3.ez.component.barStacked = function module() {
+d3.ez.component.barsStacked = function module() {
     // Default Options (Configurable via setters)
     var width = 100;
     var height = 400;
@@ -559,12 +559,12 @@ d3.ez.component.barStacked = function module() {
         };
         selection.each(function() {
             // Create series group
-            selection.selectAll(".series").data(function(d) {
+            var series = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
                 dispatch.call("customClick", this, d);
             });
-            var series = selection.selectAll(".series");
+            series = selection.selectAll(".series").merge(series);
             // Add Bars to Group
             var bars = series.selectAll(".bar").data(function(d) {
                 return stacker(d.values);
@@ -620,10 +620,10 @@ d3.ez.component.barStacked = function module() {
 };
 
 /**
- * Reusable Radial Bar Chart
+ * Reusable Polar Area Chart Component
  *
  */
-d3.ez.component.barRadial = function module() {
+d3.ez.component.polarArea = function module() {
     // Default Options (Configurable via setters)
     var width = 300;
     var height = 300;
@@ -705,7 +705,7 @@ d3.ez.component.barRadial = function module() {
 };
 
 /**
- * Reusable Donut Chart
+ * Reusable Donut Chart Component
  *
  */
 d3.ez.component.donut = function module() {
@@ -845,109 +845,7 @@ d3.ez.component.donut = function module() {
 };
 
 /**
- * Credit Tag
- *
- * @example
- * var creditTag = d3.ez.component.creditTag()
- *     .enabled(true)
- *     .text("d3-ez.net")
- *     .href("http://d3-ez.net");
- * d3.select("svg").call(creditTag);
- */
-d3.ez.component.creditTag = function module() {
-    // Default Options (Configurable via setters)
-    var text = "d3-ez.net";
-    var href = "http://d3-ez.net";
-    function my(selection) {
-        var creditTag = selection.selectAll("#creditTag").data([ 0 ]).enter().append("g").attr("id", "creditTag");
-        var creditText = creditTag.append("text").text(text).attr("xlink:href", href).on("click", function() {
-            window.open(href);
-        });
-        // Right Justify Text
-        var xPos = 0 - d3.select("#creditTag").selectAll("text").node().getBBox().width;
-        creditText.attr("transform", "translate(" + xPos + ", 0)");
-    }
-    // Configuration Getters & Setters
-    my.text = function(_) {
-        if (!arguments.length) return text;
-        text = _;
-        return this;
-    };
-    my.href = function(_) {
-        if (!arguments.length) return href;
-        href = _;
-        return this;
-    };
-    return my;
-};
-
-/**
- * Labeled Node
- *
- * @example
- * var myNode = d3.ez.component.labeledNode()
- *     .color("#FF0000")
- *     .opacity(0.5)
- *     .stroke(1)
- *     .label("Node Label")
- *     .radius(5);
- * d3.selectAll("g").call(myNode);
- */
-d3.ez.component.labeledNode = function module() {
-    // Default Options (Configurable via setters)
-    var color = "steelblue";
-    var opacity = 1;
-    var strokeColor = "#000000";
-    var strokeWidth = 0;
-    var radius = 8;
-    var label = null;
-    var fontSize = 10;
-    function my(d) {
-        var r = sizeAccessor(d);
-        var node = d3.select(this).attr("class", "node");
-        node.append("circle").attr("fill-opacity", opacity).attr("r", r).style("stroke", strokeColor).style("stroke-width", strokeWidth).style("fill", color);
-        node.append("text").text(label).attr("dx", r + 2).attr("dy", r + 6).style("text-anchor", "start").style("font-size", fontSize + "px").attr("class", "nodetext");
-    }
-    // Configuration Getters & Setters
-    my.color = function(_) {
-        if (!arguments.length) return color;
-        color = _;
-        return this;
-    };
-    my.opacity = function(_) {
-        if (!arguments.length) return opacity;
-        opacity = _;
-        return this;
-    };
-    my.radius = function(_) {
-        if (!arguments.length) return radius;
-        radius = _;
-        return this;
-    };
-    my.label = function(_) {
-        if (!arguments.length) return label;
-        label = _;
-        return this;
-    };
-    my.fontSize = function(_) {
-        if (!arguments.length) return fontSize;
-        fontSize = _;
-        return this;
-    };
-    my.stroke = function(_width, _color) {
-        if (!arguments.length) return strokeWidth + ", " + strokeColor;
-        strokeWidth = _width;
-        strokeColor = _color;
-        return this;
-    };
-    function sizeAccessor(_) {
-        return typeof radius === "function" ? radius(_) : radius;
-    }
-    return my;
-};
-
-/**
- * Reusable Scatter Plot
+ * Reusable Scatter Plot Component
  *
  */
 d3.ez.component.scatterPlot = function module() {
@@ -1028,7 +926,526 @@ d3.ez.component.scatterPlot = function module() {
 };
 
 /**
- * Legend
+ * Reusable Line Chart Component
+ *
+ */
+d3.ez.component.lineChart = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 400;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 1500
+    };
+    var colorScale;
+    var xScale;
+    var yScale;
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        // Line generation function
+        var line = d3.line().curve(d3.curveCardinal).x(function(d) {
+            return xScale(d.key);
+        }).y(function(d) {
+            return yScale(d.value);
+        });
+        // Line animation tween
+        var pathTween = function(data) {
+            var interpolate = d3.scaleQuantile().domain([ 0, 1 ]).range(d3.range(1, data.length + 1));
+            return function(t) {
+                return line(data.slice(0, interpolate(t)));
+            };
+        };
+        selection.each(function() {
+            // Create series group
+            var series = selection.selectAll(".series").data(function(d) {
+                return [ d ];
+            });
+            series.enter().append("path").attr("class", "series").attr("stroke-width", 1.5).attr("stroke", function(d) {
+                return colorScale(d.key);
+            }).attr("fill", "none").merge(series).transition().duration(transition.duration).attrTween("d", function(d) {
+                return pathTween(d.values);
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Heat Map Table Row Component
+ *
+ */
+d3.ez.component.heatMapRow = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 100;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colorScale;
+    var xScale;
+    var yScale;
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        var cellHeight = yScale.bandwidth();
+        var cellWidth = xScale.bandwidth();
+        selection.each(function() {
+            // Create series group
+            var series = selection.selectAll(".series").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            series = selection.selectAll(".series").merge(series);
+            var cells = series.selectAll(".cell").data(function(d) {
+                return d.values;
+            });
+            cells.enter().append("rect").attr("x", function(d) {
+                return xScale(d.key);
+            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(cells).transition().duration(transition.duration).attr("fill", function(d) {
+                return colorScale(d.value);
+            });
+            cells.exit().remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Heat Map Ring Component
+ *
+ */
+d3.ez.component.heatMapRing = function module() {
+    // Default Options (Configurable via setters)
+    var width = 300;
+    var height = 300;
+    var radius = 150;
+    var innerRadius = 20;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colorScale;
+    var xScale;
+    var yScale;
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        // Pie Generator
+        var pie = d3.pie().value(1).sort(null).padAngle(.015);
+        // Arc Generator
+        var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
+        selection.each(function() {
+            // Create chart group
+            var series = selection.selectAll(".series").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            series = selection.selectAll(".series").merge(series);
+            var segments = series.selectAll(".segment").data(function(d) {
+                var key = d.key;
+                var data = pie(d.values);
+                data.forEach(function(d, i) {
+                    data[i].key = key;
+                });
+                return data;
+            });
+            // Ring Segments
+            segments.enter().append("path").attr("d", arc).attr("fill", "black").classed("segment", true).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d.data);
+            }).merge(segments).transition().duration(transition.duration).attr("fill", function(d) {
+                return colorScale(d.data.value);
+            });
+            segments.exit().remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Proportional Area Circles Component
+ *
+ */
+d3.ez.component.proportionalAreaCircles = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 100;
+    var sizeScale;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colorScale;
+    var xScale;
+    var yScale;
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        var cellHeight = yScale.bandwidth();
+        var cellWidth = xScale.bandwidth();
+        selection.each(function() {
+            // Create series group
+            var series = selection.selectAll(".series").data(function(d) {
+                return [ d ];
+            }).enter().append("g").attr("transform", function(d) {
+                return "translate(0, " + cellHeight / 2 + ")";
+            }).classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            series = selection.selectAll(".series").merge(series);
+            var spots = series.selectAll(".punchSpot").data(function(d) {
+                return d.values;
+            });
+            spots.enter().append("circle").attr("class", "punchSpot").attr("cx", function(d) {
+                return cellWidth / 2 + xScale(d.key);
+            }).attr("cy", 0).attr("r", 0).on("click", dispatch.customClick).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(spots).transition().duration(transition.duration).attr("fill", function(d) {
+                return colorScale(d.value);
+            }).attr("r", function(d) {
+                return sizeScale(d["value"]);
+            });
+            spots.exit().remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.sizeScale = function(_) {
+        if (!arguments.length) return sizeScale;
+        sizeScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Number Row Component
+ *
+ */
+d3.ez.component.numberCard = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 100;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colorScale;
+    var xScale;
+    var yScale;
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function my(selection) {
+        // var cellHeight = yScale.bandwidth();
+        var cellWidth = xScale.bandwidth();
+        selection.each(function() {
+            // Create series group
+            var series = selection.selectAll(".series").data(function(d) {
+                return [ d ];
+            }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            });
+            series = selection.selectAll(".series").merge(series);
+            var numbers = series.selectAll(".number").data(function(d) {
+                return d.values;
+            });
+            numbers.enter().append("text").attr("class", "number").attr("x", function(d) {
+                return xScale(d.key) + cellWidth / 2;
+            }).attr("y", 0).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function(d) {
+                return d["value"];
+            }).on("click", dispatch.customClick).on("mouseover", function(d) {
+                dispatch.call("customMouseOver", this, d);
+            }).merge(numbers).transition().duration(1e3).attr("fill", function(d) {
+                return colorScale(d.value);
+            });
+            numbers.exit().remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Reusable Title Component
+ *
+ * @example
+ * var myTitle = d3.ez.component.title()
+ *     .enabled(true)
+ *     .mainText("Hello World")
+ *     .subText("This is a test");
+ * d3.select("svg").call(myTitle);
+ */
+d3.ez.component.title = function module() {
+    // Default Options (Configurable via setters)
+    var mainText = "Title";
+    var subText = "Sub Title";
+    var height = 40;
+    var width = 200;
+    function my(selection) {
+        selection.selectAll("#titleGroup").data([ 0 ]).enter().append("g").attr("id", "titleGroup");
+        var titleGroup = selection.select("#titleGroup");
+        titleGroup.selectAll(".title").data([ mainText ]).enter().append("text").classed("title", true).text(function(d) {
+            return d;
+        });
+        var title = titleGroup.select(".title").text(mainText);
+        titleGroup.selectAll(".subTitle").data([ subText ]).enter().append("text").classed("subTitle", true).text(function(d) {
+            return d;
+        });
+        var subTitle = titleGroup.select(".subTitle").text(subText);
+        // Centre Text
+        var titleOffset = 1 - title.node().getBBox().width / 2;
+        var subTitleOffset = 1 - subTitle.node().getComputedTextLength() / 2;
+        title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
+        subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
+    }
+    // Configuration Getters & Setters
+    my.mainText = function(_) {
+        if (!arguments.length) return mainText;
+        mainText = _;
+        return this;
+    };
+    my.subText = function(_) {
+        if (!arguments.length) return subText;
+        subText = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    return my;
+};
+
+/**
+ * Reusable Credit Tag Component
+ *
+ * @example
+ * var creditTag = d3.ez.component.creditTag()
+ *     .enabled(true)
+ *     .text("d3-ez.net")
+ *     .href("http://d3-ez.net");
+ * d3.select("svg").call(creditTag);
+ */
+d3.ez.component.creditTag = function module() {
+    // Default Options (Configurable via setters)
+    var text = "d3-ez.net";
+    var href = "http://d3-ez.net";
+    function my(selection) {
+        var creditTag = selection.selectAll("#creditTag").data([ 0 ]).enter().append("g").attr("id", "creditTag");
+        var creditText = creditTag.append("text").text(text).attr("xlink:href", href).on("click", function() {
+            window.open(href);
+        });
+        // Right Justify Text
+        var xPos = 0 - d3.select("#creditTag").selectAll("text").node().getBBox().width;
+        creditText.attr("transform", "translate(" + xPos + ", 0)");
+    }
+    // Configuration Getters & Setters
+    my.text = function(_) {
+        if (!arguments.length) return text;
+        text = _;
+        return this;
+    };
+    my.href = function(_) {
+        if (!arguments.length) return href;
+        href = _;
+        return this;
+    };
+    return my;
+};
+
+/**
+ * Reusable Legend Component
  *
  * @example
  * var myLegend = d3.ez.component.legend()
@@ -1181,489 +1598,7 @@ d3.ez.component.legend = function module() {
 };
 
 /**
- * Reusable Line Chart
- *
- */
-d3.ez.component.lineChart = function module() {
-    // Default Options (Configurable via setters)
-    var width = 400;
-    var height = 400;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 1500
-    };
-    var colorScale;
-    var xScale;
-    var yScale;
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        // Line generation function
-        var line = d3.line().curve(d3.curveCardinal).x(function(d) {
-            return xScale(d.key);
-        }).y(function(d) {
-            return yScale(d.value);
-        });
-        // Line animation tween
-        var pathTween = function(data) {
-            var interpolate = d3.scaleQuantile().domain([ 0, 1 ]).range(d3.range(1, data.length + 1));
-            return function(t) {
-                return line(data.slice(0, interpolate(t)));
-            };
-        };
-        selection.each(function() {
-            // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
-                return [ d ];
-            });
-            series.enter().append("path").attr("class", "series").attr("stroke-width", 1.5).attr("stroke", function(d) {
-                return colorScale(d.key);
-            }).attr("fill", "none").merge(series).transition().duration(transition.duration).attrTween("d", function(d) {
-                return pathTween(d.values);
-            });
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Reusable Heat Map
- *
- */
-d3.ez.component.heatMap = function module() {
-    // Default Options (Configurable via setters)
-    var width = 400;
-    var height = 100;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 1e3
-    };
-    var colorScale;
-    var xScale;
-    var yScale;
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        var cellHeight = yScale.bandwidth();
-        var cellWidth = xScale.bandwidth();
-        selection.each(function() {
-            // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
-                return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            selection.selectAll(".series").merge(series);
-            var cells = series.selectAll(".cell").data(function(d) {
-                return d.values;
-            });
-            cells.enter().append("rect").attr("x", function(d) {
-                return xScale(d.key);
-            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            }).merge(cells).transition().duration(transition.duration).attr("fill", function(d) {
-                return colorScale(d.value);
-            });
-            cells.exit().remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Reusable Circular Heat Ring
- *
- */
-d3.ez.component.heatRing = function module() {
-    // Default Options (Configurable via setters)
-    var width = 300;
-    var height = 300;
-    var radius = 150;
-    var innerRadius = 20;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colorScale;
-    var xScale;
-    var yScale;
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        var defaultRadius = Math.min(width, height) / 2;
-        radius = typeof radius === "undefined" ? defaultRadius : radius;
-        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
-        // Pie Generator
-        var pie = d3.pie().value(1).sort(null).padAngle(.015);
-        // Arc Generator
-        var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
-        selection.each(function() {
-            // Create chart group
-            var series = selection.selectAll(".series").data(function(d) {
-                return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            series = selection.selectAll(".series").merge(series);
-            var segments = series.selectAll(".segment").data(function(d) {
-                var key = d.key;
-                var data = pie(d.values);
-                data.forEach(function(d, i) {
-                    data[i].key = key;
-                });
-                return data;
-            });
-            // Ring Segments
-            segments.enter().append("path").attr("d", arc).attr("fill", function(d) {
-                return colorScale(d.data.value);
-            }).classed("segment", true).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d.data);
-            });
-            segments.exit().remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.radius = function(_) {
-        if (!arguments.length) return radius;
-        radius = _;
-        return this;
-    };
-    my.innerRadius = function(_) {
-        if (!arguments.length) return innerRadius;
-        innerRadius = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Reusable Punch Card Row
- *
- */
-d3.ez.component.punchCard = function module() {
-    // Default Options (Configurable via setters)
-    var width = 400;
-    var height = 100;
-    var sizeScale;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colorScale;
-    var xScale;
-    var yScale;
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        var cellHeight = yScale.bandwidth();
-        var cellWidth = xScale.bandwidth();
-        selection.each(function() {
-            // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
-                return [ d ];
-            }).enter().append("g").attr("transform", function(d) {
-                return "translate(0, " + cellHeight / 2 + ")";
-            }).classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            series = selection.selectAll(".series").merge(series);
-            var spots = series.selectAll(".punchSpot").data(function(d) {
-                return d.values;
-            });
-            spots.enter().append("circle").attr("class", "punchSpot").attr("cx", function(d) {
-                return cellWidth / 2 + xScale(d.key);
-            }).attr("cy", 0).attr("r", 0).on("click", dispatch.customClick).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            }).merge(spots).transition().duration(transition.duration).attr("fill", function(d) {
-                return colorScale(d.value);
-            }).attr("r", function(d) {
-                return sizeScale(d["value"]);
-            });
-            spots.exit().remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.sizeScale = function(_) {
-        if (!arguments.length) return sizeScale;
-        sizeScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Reusable Number Row
- *
- */
-d3.ez.component.numberCard = function module() {
-    // Default Options (Configurable via setters)
-    var width = 400;
-    var height = 100;
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colorScale;
-    var xScale;
-    var yScale;
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function my(selection) {
-        // var cellHeight = yScale.bandwidth();
-        var cellWidth = xScale.bandwidth();
-        selection.each(function() {
-            // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
-                return [ d ];
-            }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
-            });
-            series = selection.selectAll(".series").merge(series);
-            var numbers = series.selectAll(".number").data(function(d) {
-                return d.values;
-            });
-            numbers.enter().append("text").attr("class", "number").attr("x", function(d) {
-                return xScale(d.key) + cellWidth / 2;
-            }).attr("y", 0).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function(d) {
-                return d["value"];
-            }).on("click", dispatch.customClick).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
-            }).merge(numbers).transition().duration(1e3).attr("fill", function(d) {
-                return colorScale(d.value);
-            });
-            numbers.exit().remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Title
- *
- * @example
- * var myTitle = d3.ez.component.title()
- *     .enabled(true)
- *     .mainText("Hello World")
- *     .subText("This is a test");
- * d3.select("svg").call(myTitle);
- */
-d3.ez.component.title = function module() {
-    // Default Options (Configurable via setters)
-    var mainText = "Title";
-    var subText = "Sub Title";
-    var height = 40;
-    var width = 200;
-    function my(selection) {
-        selection.selectAll("#titleGroup").data([ 0 ]).enter().append("g").attr("id", "titleGroup");
-        var titleGroup = selection.select("#titleGroup");
-        titleGroup.selectAll(".title").data([ mainText ]).enter().append("text").classed("title", true).text(function(d) {
-            return d;
-        });
-        var title = titleGroup.select(".title").text(mainText);
-        titleGroup.selectAll(".subTitle").data([ subText ]).enter().append("text").classed("subTitle", true).text(function(d) {
-            return d;
-        });
-        var subTitle = titleGroup.select(".subTitle").text(subText);
-        // Centre Text
-        var titleOffset = 1 - title.node().getBBox().width / 2;
-        var subTitleOffset = 1 - subTitle.node().getComputedTextLength() / 2;
-        title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
-        subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
-    }
-    // Configuration Getters & Setters
-    my.mainText = function(_) {
-        if (!arguments.length) return mainText;
-        mainText = _;
-        return this;
-    };
-    my.subText = function(_) {
-        if (!arguments.length) return subText;
-        subText = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    return my;
-};
-
-/**
- * Reusable Circular Axis
+ * Reusable Circular Axis Component
  *
  */
 d3.ez.component.circularAxis = function module() {
@@ -1737,7 +1672,7 @@ d3.ez.component.circularAxis = function module() {
 };
 
 /**
- * Reusable Circular Labels
+ * Reusable Circular Labels Component
  *
  */
 d3.ez.component.circularLabels = function module() {
@@ -1794,6 +1729,71 @@ d3.ez.component.circularLabels = function module() {
         yScale = _;
         return my;
     };
+    return my;
+};
+
+/**
+ * Reusable Labeled Node Component
+ *
+ * @example
+ * var myNode = d3.ez.component.labeledNode()
+ *     .color("#FF0000")
+ *     .opacity(0.5)
+ *     .stroke(1)
+ *     .label("Node Label")
+ *     .radius(5);
+ * d3.selectAll("g").call(myNode);
+ */
+d3.ez.component.labeledNode = function module() {
+    // Default Options (Configurable via setters)
+    var color = "steelblue";
+    var opacity = 1;
+    var strokeColor = "#000000";
+    var strokeWidth = 0;
+    var radius = 8;
+    var label = null;
+    var fontSize = 10;
+    function my(d) {
+        var r = sizeAccessor(d);
+        var node = d3.select(this).attr("class", "node");
+        node.append("circle").attr("fill-opacity", opacity).attr("r", r).style("stroke", strokeColor).style("stroke-width", strokeWidth).style("fill", color);
+        node.append("text").text(label).attr("dx", r + 2).attr("dy", r + 6).style("text-anchor", "start").style("font-size", fontSize + "px").attr("class", "nodetext");
+    }
+    // Configuration Getters & Setters
+    my.color = function(_) {
+        if (!arguments.length) return color;
+        color = _;
+        return this;
+    };
+    my.opacity = function(_) {
+        if (!arguments.length) return opacity;
+        opacity = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.label = function(_) {
+        if (!arguments.length) return label;
+        label = _;
+        return this;
+    };
+    my.fontSize = function(_) {
+        if (!arguments.length) return fontSize;
+        fontSize = _;
+        return this;
+    };
+    my.stroke = function(_width, _color) {
+        if (!arguments.length) return strokeWidth + ", " + strokeColor;
+        strokeWidth = _width;
+        strokeColor = _color;
+        return this;
+    };
+    function sizeAccessor(_) {
+        return typeof radius === "function" ? radius(_) : radius;
+    }
     return my;
 };
 
@@ -1956,15 +1956,316 @@ d3.ez.component.htmlList = function module() {
 };
 
 /**
- * Discrete Bar Chart
+ * Clustered Bar Chart (also called: Multi-set Bar Chart; Grouped Bar Chart)
  *
+ * @see http://datavizproject.com/data-type/grouped-bar-chart/
  */
-d3.ez.chart.discreteBar = function module() {
+d3.ez.chart.barChartClustered = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
-    var classed = "chartDiscreteBar";
+    var classed = "barChartClustered";
+    var width = 400;
+    var height = 300;
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 40
+    };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colors = d3.ez.colors.categorical(4);
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var xScale;
+    var xScale2;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
+    // Data Variables
+    var groupNames;
+    var groupTotalsMax;
+    var maxValue;
+    var categoryNames;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var yAxisLabel = null;
+    function init(data) {
+        chartW = width - margin.left - margin.right;
+        chartH = height - margin.top - margin.bottom;
+        // Slice Data, calculate totals, max etc.
+        var slicedData = d3.ez.dataParse(data);
+        groupNames = slicedData.groupNames;
+        groupTotalsMax = slicedData.groupTotalsMax;
+        maxValue = slicedData.maxValue;
+        categoryNames = slicedData.categoryNames;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, maxValue ]);
+        xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
+        // X & Y Axis
+        xAxis = d3.axisBottom(xScale);
+        yAxis = d3.axisLeft(yScale);
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection._groups[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true).attr("width", width).attr("height", height);
+                chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true).append("text").attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end").text(yAxisLabel);
+            } else {
+                chart = selection.select(".chart");
+            }
+            // Update the chart dimensions
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            // Add axis to chart
+            chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
+            chart.select(".y-axis").call(yAxis);
+            var barsVertical = d3.ez.component.barsVertical().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).xScale(xScale2).yScale(yScale).dispatch(dispatch);
+            // Create bar group
+            var seriesGroup = chart.selectAll(".seriesGroup").data(data);
+            seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
+                return "translate(" + xScale(d.key) + ", 0)";
+            }).datum(function(d) {
+                return d;
+            }).call(barsVertical);
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
+        return this;
+    };
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Stacked Bar Chart
+ *
+ * @see http://datavizproject.com/data-type/stacked-bar-chart/
+ */
+d3.ez.chart.barChartStacked = function module() {
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
+    var chart;
+    // Default Options (Configurable via setters)
+    var classed = "barChartStacked";
+    var width = 400;
+    var height = 300;
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 40
+    };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colors = d3.ez.colors.categorical(4);
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var xScale;
+    var xScale2;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
+    // Data Variables
+    var groupNames;
+    var groupTotalsMax;
+    var maxValue;
+    var categoryNames;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var yAxisLabel = null;
+    function init(data) {
+        chartW = width - margin.left - margin.right;
+        chartH = height - margin.top - margin.bottom;
+        // Slice Data, calculate totals, max etc.
+        var slicedData = d3.ez.dataParse(data);
+        groupNames = slicedData.groupNames;
+        groupTotalsMax = slicedData.groupTotalsMax;
+        maxValue = slicedData.maxValue;
+        categoryNames = slicedData.categoryNames;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupTotalsMax ]);
+        xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
+        // X & Y Axis
+        xAxis = d3.axisBottom(xScale);
+        yAxis = d3.axisLeft(yScale);
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection._groups[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true).attr("width", width).attr("height", height);
+                chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true).append("text").attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end").text(yAxisLabel);
+            } else {
+                chart = selection.select(".chart");
+            }
+            // Update the chart dimensions
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            // Add axis to chart
+            chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
+            chart.select(".y-axis").call(yAxis);
+            var barsStacked = d3.ez.component.barsStacked().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
+            // Create bar group
+            var seriesGroup = chart.selectAll(".seriesGroup").data(data);
+            seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
+                return "translate(" + xScale(d.key) + ", 0)";
+            }).datum(function(d) {
+                return d;
+            }).call(barsStacked);
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
+    my.yAxisLabel = function(_) {
+        if (!arguments.length) return yAxisLabel;
+        yAxisLabel = _;
+        return this;
+    };
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
+ *
+ * @see http://datavizproject.com/data-type/bar-chart/
+ */
+d3.ez.chart.barChartVertical = function module() {
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
+    var chart;
+    // Default Options (Configurable via setters)
+    var classed = "barChartVertical";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2044,8 +2345,8 @@ d3.ez.chart.discreteBar = function module() {
                 return d;
             });
             // Add bars to the chart
-            var barChart = d3.ez.component.barGrouped().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            chart.select(".barChart").datum(data).call(barChart);
+            var barsVertical = d3.ez.component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            chart.select(".barChart").datum(data).call(barsVertical);
         });
     }
     // Configuration Getters & Setters
@@ -2087,647 +2388,16 @@ d3.ez.chart.discreteBar = function module() {
 };
 
 /**
- * Grouped Bar Chart
+ * Donut Chart (also called: Doughnut Chart; Pie Chart)
  *
+ * @see http://datavizproject.com/data-type/donut-chart/
  */
-d3.ez.chart.groupedBar = function module() {
+d3.ez.chart.donutChart = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
-    var classed = "chartGroupedBar";
-    var width = 400;
-    var height = 300;
-    var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 40
-    };
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colors = d3.ez.colors.categorical(4);
-    // Chart Dimensions
-    var chartW;
-    var chartH;
-    // Scales and Axis
-    var xScale;
-    var xScale2;
-    var yScale;
-    var xAxis;
-    var yAxis;
-    var colorScale;
-    // Data Variables
-    var groupNames;
-    var groupTotalsMax;
-    var maxValue;
-    var categoryNames;
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    // Other Customisation Options
-    var yAxisLabel = null;
-    var groupType = "clustered";
-    function init(data) {
-        chartW = width - margin.left - margin.right;
-        chartH = height - margin.top - margin.bottom;
-        // Slice Data, calculate totals, max etc.
-        var slicedData = d3.ez.dataParse(data);
-        groupNames = slicedData.groupNames;
-        groupTotalsMax = slicedData.groupTotalsMax;
-        maxValue = slicedData.maxValue;
-        categoryNames = slicedData.categoryNames;
-        // Colour Scale
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
-        }
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(groupNames).rangeRound([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleLinear().range([ chartH, 0 ]).domain([ 0, groupType === "stacked" ? groupTotalsMax : maxValue ]);
-        xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([ 0, xScale.bandwidth() ]).padding(.1);
-        // X & Y Axis
-        xAxis = d3.axisBottom(xScale);
-        yAxis = d3.axisLeft(yScale);
-    }
-    function my(selection) {
-        selection.each(function(data) {
-            // Initialise Data
-            init(data);
-            // Create SVG and Chart containers (if they do not already exist)
-            if (!svg) {
-                svg = function(selection) {
-                    var el = selection._groups[0][0];
-                    if (!!el.ownerSVGElement || el.tagName === "svg") {
-                        return selection;
-                    } else {
-                        return selection.append("svg");
-                    }
-                }(d3.select(this));
-                svg.classed("d3ez", true).attr("width", width).attr("height", height);
-                chart = svg.append("g").classed("chart", true);
-                chart.append("g").classed("x-axis axis", true);
-                chart.append("g").classed("y-axis axis", true).append("text").attr("transform", "rotate(-90)").attr("y", -35).attr("dy", ".71em").style("text-anchor", "end").text(yAxisLabel);
-            } else {
-                chart = selection.select(".chart");
-            }
-            // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
-            // Add axis to chart
-            chart.select(".x-axis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
-            chart.select(".y-axis").call(yAxis);
-            var barChart;
-            if (groupType === "stacked") {
-                barChart = d3.ez.component.barStacked().xScale(xScale);
-            } else if (groupType === "clustered") {
-                barChart = d3.ez.component.barGrouped().xScale(xScale2);
-            }
-            barChart.width(xScale.bandwidth()).height(chartH).colorScale(colorScale).yScale(yScale).dispatch(dispatch);
-            // TODO: This is temporary to allow transition between stacked and clustered
-            chart.selectAll(".seriesGroup").data([]).exit().remove();
-            // Create bar group
-            var seriesGroup = chart.selectAll(".seriesGroup").data(data);
-            seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function(d) {
-                return "translate(" + xScale(d.key) + ", 0)";
-            }).datum(function(d) {
-                return d;
-            }).call(barChart);
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.margin = function(_) {
-        if (!arguments.length) return margin;
-        margin = _;
-        return this;
-    };
-    my.groupType = function(_) {
-        if (!arguments.length) return groupType;
-        groupType = _;
-        return this;
-    };
-    my.yAxisLabel = function(_) {
-        if (!arguments.length) return yAxisLabel;
-        yAxisLabel = _;
-        return this;
-    };
-    my.transition = function(_) {
-        if (!arguments.length) return transition;
-        transition = _;
-        return this;
-    };
-    my.colors = function(_) {
-        if (!arguments.length) return colors;
-        colors = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return this;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Radial Bar Chart
- *
- */
-d3.ez.chart.radialBar = function module() {
-    // SVG and Chart containers (Populated by 'my' function)
-    var svg;
-    var chart;
-    // Default Options (Configurable via setters)
-    var classed = "chartRadialBar";
-    var width = 400;
-    var height = 300;
-    var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 20
-    };
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colors = d3.ez.colors.categorical(4);
-    // Chart Dimensions
-    var chartW;
-    var chartH;
-    var radius;
-    var innerRadius;
-    // Scales and Axis
-    var xScale;
-    var yScale;
-    var colorScale;
-    // Data Variables
-    var categoryNames = [];
-    var maxValue = 0;
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    // Other Customisation Options
-    var capitalizeLabels = false;
-    var colorLabels = false;
-    function init(data) {
-        chartW = width - (margin.left + margin.right);
-        chartH = height - (margin.top + margin.bottom);
-        var defaultRadius = Math.min(chartW, chartH) / 2;
-        radius = typeof radius === "undefined" ? defaultRadius : radius;
-        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
-        // Slice Data, calculate totals, max etc.
-        var slicedData = d3.ez.dataParse(data);
-        categoryNames = slicedData.categoryNames;
-        maxValue = slicedData.maxValue;
-        // Colour Scale
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
-        }
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
-        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
-    }
-    function my(selection) {
-        selection.each(function(data) {
-            // Initialise Data
-            init(data);
-            // Create SVG element (if it does not exist already)
-            if (!svg) {
-                svg = function(selection) {
-                    var el = selection._groups[0][0];
-                    if (!!el.ownerSVGElement || el.tagName === "svg") {
-                        return selection;
-                    } else {
-                        return selection.append("svg");
-                    }
-                }(d3.select(this));
-                svg.classed("d3ez", true).attr("width", width).attr("height", height);
-                chart = svg.append("g").classed("chart", true);
-                chart.append("g").classed("circularAxis", true);
-                chart.append("g").classed("barRadial", true);
-                chart.append("g").classed("verticalAxis axis", true);
-                chart.append("g").classed("circularLabels", true);
-            } else {
-                chart = selection.select(".chart");
-            }
-            // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
-            // Circular Axis
-            var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
-            chart.select(".circularAxis").call(circularAxis);
-            // Radial Bar Chart
-            var barRadial = d3.ez.component.barRadial().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
-            chart.select(".barRadial").datum(data).call(barRadial);
-            // Vertical Axis
-            var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));
-            chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
-            // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
-            chart.select(".circularLabels").datum(categoryNames).call(circularLabels);
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.margin = function(_) {
-        if (!arguments.length) return margin;
-        margin = _;
-        return this;
-    };
-    my.radius = function(_) {
-        if (!arguments.length) return radius;
-        radius = _;
-        return this;
-    };
-    my.colors = function(_) {
-        if (!arguments.length) return colors;
-        colors = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return this;
-    };
-    my.transition = function(_) {
-        if (!arguments.length) return transition;
-        transition = _;
-        return this;
-    };
-    my.capitalizeLabels = function(_) {
-        if (!arguments.length) return capitalizeLabels;
-        capitalizeLabels = _;
-        return this;
-    };
-    my.colorLabels = function(_) {
-        if (!arguments.length) return colorLabels;
-        colorLabels = _;
-        return this;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Circular Heat Chart
- *
- */
-d3.ez.chart.circularHeat = function module() {
-    // SVG and Chart containers (Populated by 'my' function)
-    var svg;
-    var chart;
-    // Default Options (Configurable via setters)
-    var classed = "chartCircularHeat";
-    var width = 400;
-    var height = 300;
-    var margin = {
-        top: 20,
-        right: 20,
-        bottom: 20,
-        left: 20
-    };
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
-    // Chart Dimensions
-    var chartW;
-    var chartH;
-    var radius;
-    var innerRadius;
-    // Scales and Axis
-    var xScale;
-    var yScale;
-    var colorScale;
-    // Data Variables
-    var categoryNames = [];
-    var groupNames = [];
-    var minValue = 0;
-    var maxValue = 0;
-    var thresholds;
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function init(data) {
-        chartW = width - (margin.left + margin.right);
-        chartH = height - (margin.top + margin.bottom);
-        var defaultRadius = Math.min(chartW, chartH) / 2;
-        radius = typeof radius === "undefined" ? defaultRadius : radius;
-        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
-        // Slice Data, calculate totals, max etc.
-        var slicedData = d3.ez.dataParse(data);
-        maxValue = slicedData.maxValue;
-        minValue = slicedData.minValue;
-        categoryNames = slicedData.categoryNames;
-        groupNames = slicedData.groupNames;
-        // If thresholds values are not already set
-        // attempt to auto-calculate some thresholds.
-        if (!thresholds) {
-            thresholds = slicedData.thresholds;
-        }
-        // Colour Scale
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleThreshold().range(colors).domain(thresholds);
-        }
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
-    }
-    function my(selection) {
-        selection.each(function(data) {
-            // Initialise Data
-            init(data);
-            // Create chart element (if it does not exist already)
-            if (!svg) {
-                svg = function(selection) {
-                    var el = selection._groups[0][0];
-                    if (!!el.ownerSVGElement || el.tagName === "svg") {
-                        return selection;
-                    } else {
-                        return selection.append("svg");
-                    }
-                }(d3.select(this));
-                svg.classed("d3ez", true).attr("width", width).attr("height", height);
-                chart = svg.append("g").classed("chart", true);
-                chart.append("g").classed("circleRings", true);
-                chart.append("g").classed("circleLabels", true);
-                chart.append("g").classed("axis", true);
-            } else {
-                chart = svg.select(".chart");
-            }
-            // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
-            var heatRing = d3.ez.component.heatRing().radius(function(d) {
-                return yScale(d.key);
-            }).innerRadius(function(d) {
-                return yScale(d.key) + yScale.bandwidth();
-            }).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup").data(function(d) {
-                return d;
-            }).enter().append("g").attr("class", "seriesGroup");
-            seriesGroup.datum(function(d) {
-                return d;
-            }).call(heatRing);
-            seriesGroup.exit().remove();
-            // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
-            chart.select(".circleLabels").datum(categoryNames).call(circularLabels);
-            // Y Axis
-            var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
-            chart.select(".axis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(yAxis);
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.margin = function(_) {
-        if (!arguments.length) return margin;
-        margin = _;
-        return this;
-    };
-    my.radius = function(_) {
-        if (!arguments.length) return radius;
-        radius = _;
-        return this;
-    };
-    my.innerRadius = function(_) {
-        if (!arguments.length) return innerRadius;
-        innerRadius = _;
-        return this;
-    };
-    my.colors = function(_) {
-        if (!arguments.length) return colors;
-        colors = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return this;
-    };
-    my.transition = function(_) {
-        if (!arguments.length) return transition;
-        transition = _;
-        return this;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Tabular Heat Chart
- *
- */
-d3.ez.chart.tabularHeat = function module() {
-    // SVG and Chart containers (Populated by 'my' function)
-    var svg;
-    var chart;
-    // Default Options (Configurable via setters)
-    var classed = "chartTabularHeat";
-    var width = 400;
-    var height = 300;
-    var margin = {
-        top: 45,
-        right: 20,
-        bottom: 20,
-        left: 45
-    };
-    var transition = {
-        ease: d3.easeBounce,
-        duration: 500
-    };
-    var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
-    // Chart Dimensions
-    var chartW;
-    var chartH;
-    // Scales and Axis
-    var xScale;
-    var yScale;
-    var colorScale;
-    var xAxis;
-    var yAxis;
-    // Data Variables
-    var groupNames = [];
-    var categoryNames = [];
-    var minValue = 0;
-    var maxValue = 0;
-    var thresholds = undefined;
-    // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    function init(data) {
-        chartW = width - margin.left - margin.right;
-        chartH = height - margin.top - margin.bottom;
-        // Slice Data, calculate totals, max etc.
-        var slicedData = d3.ez.dataParse(data);
-        maxValue = slicedData.maxValue;
-        minValue = slicedData.minValue;
-        categoryNames = slicedData.categoryNames;
-        groupNames = slicedData.groupNames;
-        // If thresholds values are not already set
-        // attempt to auto-calculate some thresholds.
-        if (!thresholds) {
-            var thresholds = slicedData.thresholds;
-        }
-        // Colour Scale
-        if (!colorScale) {
-            // If the colorScale has not already been passed
-            // then attempt to calculate.
-            colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
-        }
-        // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.1);
-        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.1);
-        // X & Y Axis
-        xAxis = d3.axisTop(xScale);
-        yAxis = d3.axisLeft(yScale);
-    }
-    function my(selection) {
-        selection.each(function(data) {
-            // Initialise Data
-            init(data);
-            // Create SVG and Chart containers (if they do not already exist)
-            if (!svg) {
-                svg = function(selection) {
-                    var el = selection._groups[0][0];
-                    if (!!el.ownerSVGElement || el.tagName === "svg") {
-                        return selection;
-                    } else {
-                        return selection.append("svg");
-                    }
-                }(d3.select(this));
-                svg.classed("d3ez", true).attr("width", width).attr("height", height);
-                chart = svg.append("g").classed("chart", true);
-                chart.append("g").classed("x-axis axis", true);
-                chart.append("g").classed("y-axis axis", true);
-            } else {
-                chart = selection.select(".chart");
-            }
-            // Update the chart dimensions
-            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
-            // Add axis to chart
-            chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
-            chart.select(".y-axis").call(yAxis);
-            var heatMap = d3.ez.component.heatMap().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
-            var seriesGroup = chart.selectAll(".seriesGroup").data(function(d) {
-                return d;
-            }).enter().append("g").attr("class", "seriesGroup").attr("transform", function(d) {
-                return "translate(0, " + yScale(d.key) + ")";
-            });
-            seriesGroup.datum(function(d) {
-                return d;
-            }).call(heatMap);
-            seriesGroup.exit().remove();
-        });
-    }
-    // Configuration Getters & Setters
-    my.width = function(_) {
-        if (!arguments.length) return width;
-        width = _;
-        return this;
-    };
-    my.height = function(_) {
-        if (!arguments.length) return height;
-        height = _;
-        return this;
-    };
-    my.margin = function(_) {
-        if (!arguments.length) return margin;
-        margin = _;
-        return this;
-    };
-    my.colors = function(_) {
-        if (!arguments.length) return colors;
-        colors = _;
-        return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return this;
-    };
-    my.thresholds = function(_) {
-        if (!arguments.length) return thresholds;
-        thresholds = _;
-        return this;
-    };
-    my.dispatch = function(_) {
-        if (!arguments.length) return dispatch();
-        dispatch = _;
-        return this;
-    };
-    my.on = function() {
-        var value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? my : value;
-    };
-    return my;
-};
-
-/**
- * Donut Chart
- *
- */
-d3.ez.chart.donut = function module() {
-    // SVG and Chart containers (Populated by 'my' function)
-    var svg;
-    var chart;
-    // Default Options (Configurable via setters)
-    var classed = "chartDonut";
+    var classed = "donutChart";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2848,15 +2518,181 @@ d3.ez.chart.donut = function module() {
 };
 
 /**
- * Punch Card
+ * Circular Heat Map (also called: Radial Heat Map)
  *
+ * @see http://datavizproject.com/data-type/radial-heatmap/
  */
-d3.ez.chart.punchCard = function module() {
+d3.ez.chart.heatMapRadial = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
-    var classed = "chartPunchCard";
+    var classed = "heatMapRadial";
+    var width = 400;
+    var height = 300;
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+    };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    var radius;
+    var innerRadius;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var colorScale;
+    // Data Variables
+    var categoryNames = [];
+    var groupNames = [];
+    var minValue = 0;
+    var maxValue = 0;
+    var thresholds;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    function init(data) {
+        chartW = width - (margin.left + margin.right);
+        chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        // Slice Data, calculate totals, max etc.
+        var slicedData = d3.ez.dataParse(data);
+        maxValue = slicedData.maxValue;
+        minValue = slicedData.minValue;
+        categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
+        // If thresholds values are not already set
+        // attempt to auto-calculate some thresholds.
+        if (!thresholds) {
+            thresholds = slicedData.thresholds;
+        }
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleThreshold().range(colors).domain(thresholds);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create chart element (if it does not exist already)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection._groups[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true).attr("width", width).attr("height", height);
+                chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("circleRings", true);
+                chart.append("g").classed("circleLabels", true);
+                chart.append("g").classed("axis", true);
+            } else {
+                chart = svg.select(".chart");
+            }
+            // Update the chart dimensions
+            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
+            var heatMapRing = d3.ez.component.heatMapRing().radius(function(d) {
+                return yScale(d.key);
+            }).innerRadius(function(d) {
+                return yScale(d.key) + yScale.bandwidth();
+            }).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "seriesGroup");
+            seriesGroup.datum(function(d) {
+                return d;
+            }).call(heatMapRing);
+            seriesGroup.exit().remove();
+            // Circular Labels
+            var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
+            chart.select(".circleLabels").datum(categoryNames).call(circularLabels);
+            // Y Axis
+            var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
+            chart.select(".axis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(yAxis);
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Heat Map (also called: Heat Table; Density Table; Heat Map)
+ *
+ * @see http://datavizproject.com/data-type/heat-map/
+ */
+d3.ez.chart.heatMapTable = function module() {
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
+    var chart;
+    // Default Options (Configurable via setters)
+    var classed = "heatMapTable";
     var width = 400;
     var height = 300;
     var margin = {
@@ -2869,28 +2705,24 @@ d3.ez.chart.punchCard = function module() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var colors = [ d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker() ];
+    var colors = [ d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65) ];
     // Chart Dimensions
     var chartW;
     var chartH;
     // Scales and Axis
-    var sizeScale;
     var xScale;
     var yScale;
+    var colorScale;
     var xAxis;
     var yAxis;
-    var colorScale;
     // Data Variables
-    var maxValue;
-    var minValue;
-    var categoryNames;
-    var groupNames;
+    var groupNames = [];
+    var categoryNames = [];
+    var minValue = 0;
+    var maxValue = 0;
+    var thresholds = undefined;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
-    // Misc Options
-    var minRadius = 2;
-    var maxRadius = 20;
-    var useGlobalScale = true;
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;
@@ -2900,24 +2732,23 @@ d3.ez.chart.punchCard = function module() {
         minValue = slicedData.minValue;
         categoryNames = slicedData.categoryNames;
         groupNames = slicedData.groupNames;
-        valDomain = [ minValue, maxValue ];
-        sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
-            return d["value"];
-        }) ];
+        // If thresholds values are not already set
+        // attempt to auto-calculate some thresholds.
+        if (!thresholds) {
+            var thresholds = slicedData.thresholds;
+        }
         // Colour Scale
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
-            colorScale = d3.scaleLinear().domain(valDomain).range(colors);
+            colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.05);
-        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.05);
+        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.1);
+        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.1);
         // X & Y Axis
         xAxis = d3.axisTop(xScale);
         yAxis = d3.axisLeft(yScale);
-        // Size Scale
-        sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -2945,7 +2776,7 @@ d3.ez.chart.punchCard = function module() {
             // Add axis to chart
             chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
             chart.select(".y-axis").call(yAxis);
-            var punchCard = d3.ez.component.punchCard().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var heatMapRow = d3.ez.component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
             var seriesGroup = chart.selectAll(".seriesGroup").data(function(d) {
                 return d;
             }).enter().append("g").attr("class", "seriesGroup").attr("transform", function(d) {
@@ -2953,7 +2784,7 @@ d3.ez.chart.punchCard = function module() {
             });
             seriesGroup.datum(function(d) {
                 return d;
-            }).call(punchCard);
+            }).call(heatMapRow);
             seriesGroup.exit().remove();
         });
     }
@@ -2973,29 +2804,19 @@ d3.ez.chart.punchCard = function module() {
         margin = _;
         return this;
     };
-    my.minRadius = function(_) {
-        if (!arguments.length) return minRadius;
-        minRadius = _;
-        return this;
-    };
-    my.maxRadius = function(_) {
-        if (!arguments.length) return maxRadius;
-        maxRadius = _;
-        return this;
-    };
-    my.sizeScale = function(_) {
-        if (!arguments.length) return sizeScale;
-        sizeScale = _;
-        return this;
-    };
     my.colors = function(_) {
         if (!arguments.length) return colors;
         colors = _;
         return this;
     };
-    my.useGlobalScale = function(_) {
-        if (!arguments.length) return useGlobalScale;
-        useGlobalScale = _;
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+    my.thresholds = function(_) {
+        if (!arguments.length) return thresholds;
+        thresholds = _;
         return this;
     };
     my.dispatch = function(_) {
@@ -3011,15 +2832,16 @@ d3.ez.chart.punchCard = function module() {
 };
 
 /**
- * Multi Series Line Chart
+ * Line Chart (also called: Line Graph; Spline Chart)
  *
+  @see http://datavizproject.com/data-type/line-chart/
  */
-d3.ez.chart.multiSeriesLine = function module() {
+d3.ez.chart.lineChart = function module() {
     // SVG and Chart containers (Populated by 'my' function)
     var svg;
     var chart;
     // Default Options (Configurable via setters)
-    var classed = "chartMultiSeriesLine";
+    var classed = "lineChart";
     var width = 400;
     var height = 300;
     var margin = {
@@ -3160,6 +2982,328 @@ d3.ez.chart.multiSeriesLine = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return this;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
+ *
+ * @see http://datavizproject.com/data-type/polar-area-chart/
+ */
+d3.ez.chart.polarAreaChart = function module() {
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
+    var chart;
+    // Default Options (Configurable via setters)
+    var classed = "chartPolarArea";
+    var width = 400;
+    var height = 300;
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+    };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colors = d3.ez.colors.categorical(4);
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    var radius;
+    var innerRadius;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var colorScale;
+    // Data Variables
+    var categoryNames = [];
+    var maxValue = 0;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Other Customisation Options
+    var capitalizeLabels = false;
+    var colorLabels = false;
+    function init(data) {
+        chartW = width - (margin.left + margin.right);
+        chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        // Slice Data, calculate totals, max etc.
+        var slicedData = d3.ez.dataParse(data);
+        categoryNames = slicedData.categoryNames;
+        maxValue = slicedData.maxValue;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create SVG element (if it does not exist already)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection._groups[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true).attr("width", width).attr("height", height);
+                chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("circularAxis", true);
+                chart.append("g").classed("polarArea", true);
+                chart.append("g").classed("verticalAxis axis", true);
+                chart.append("g").classed("circularLabels", true);
+            } else {
+                chart = selection.select(".chart");
+            }
+            // Update the chart dimensions
+            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
+            // Circular Axis
+            var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
+            chart.select(".circularAxis").call(circularAxis);
+            // Radial Bar Chart
+            var polarArea = d3.ez.component.polarArea().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            chart.select(".polarArea").datum(data).call(polarArea);
+            // Vertical Axis
+            var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));
+            chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
+            // Circular Labels
+            var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
+            chart.select(".circularLabels").datum(categoryNames).call(circularLabels);
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
+        return this;
+    };
+    my.capitalizeLabels = function(_) {
+        if (!arguments.length) return capitalizeLabels;
+        capitalizeLabels = _;
+        return this;
+    };
+    my.colorLabels = function(_) {
+        if (!arguments.length) return colorLabels;
+        colorLabels = _;
+        return this;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Punch Card
+ *
+ * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
+ */
+d3.ez.chart.punchCard = function module() {
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
+    var chart;
+    // Default Options (Configurable via setters)
+    var classed = "punchCard";
+    var width = 400;
+    var height = 300;
+    var margin = {
+        top: 45,
+        right: 20,
+        bottom: 20,
+        left: 45
+    };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colors = [ d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker() ];
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    // Scales and Axis
+    var sizeScale;
+    var xScale;
+    var yScale;
+    var xAxis;
+    var yAxis;
+    var colorScale;
+    // Data Variables
+    var maxValue;
+    var minValue;
+    var categoryNames;
+    var groupNames;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    // Misc Options
+    var minRadius = 2;
+    var maxRadius = 20;
+    var useGlobalScale = true;
+    function init(data) {
+        chartW = width - margin.left - margin.right;
+        chartH = height - margin.top - margin.bottom;
+        // Slice Data, calculate totals, max etc.
+        var slicedData = d3.ez.dataParse(data);
+        maxValue = slicedData.maxValue;
+        minValue = slicedData.minValue;
+        categoryNames = slicedData.categoryNames;
+        groupNames = slicedData.groupNames;
+        valDomain = [ minValue, maxValue ];
+        sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
+            return d["value"];
+        }) ];
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleLinear().domain(valDomain).range(colors);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).range([ 0, chartW ]).padding(.05);
+        yScale = d3.scaleBand().domain(groupNames).range([ 0, chartH ]).padding(.05);
+        // X & Y Axis
+        xAxis = d3.axisTop(xScale);
+        yAxis = d3.axisLeft(yScale);
+        // Size Scale
+        sizeScale = d3.scaleLinear().domain(sizeDomain).range([ minRadius, maxRadius ]);
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create SVG and Chart containers (if they do not already exist)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection._groups[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true).attr("width", width).attr("height", height);
+                chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("x-axis axis", true);
+                chart.append("g").classed("y-axis axis", true);
+            } else {
+                chart = selection.select(".chart");
+            }
+            // Update the chart dimensions
+            chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+            // Add axis to chart
+            chart.select(".x-axis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+            chart.select(".y-axis").call(yAxis);
+            var proportionalAreaCircles = d3.ez.component.proportionalAreaCircles().width(chartW).height(chartH).colorScale(colorScale).sizeScale(sizeScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+            var seriesGroup = chart.selectAll(".seriesGroup").data(function(d) {
+                return d;
+            }).enter().append("g").attr("class", "seriesGroup").attr("transform", function(d) {
+                return "translate(0, " + yScale(d.key) + ")";
+            });
+            seriesGroup.datum(function(d) {
+                return d;
+            }).call(proportionalAreaCircles);
+            seriesGroup.exit().remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
+    my.minRadius = function(_) {
+        if (!arguments.length) return minRadius;
+        minRadius = _;
+        return this;
+    };
+    my.maxRadius = function(_) {
+        if (!arguments.length) return maxRadius;
+        maxRadius = _;
+        return this;
+    };
+    my.sizeScale = function(_) {
+        if (!arguments.length) return sizeScale;
+        sizeScale = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return this;
+    };
+    my.useGlobalScale = function(_) {
+        if (!arguments.length) return useGlobalScale;
+        useGlobalScale = _;
         return this;
     };
     my.dispatch = function(_) {

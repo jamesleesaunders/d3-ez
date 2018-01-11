@@ -9,7 +9,7 @@
   }
 }
 
-.chartMultiSeriesLine .dot:hover {
+.lineChart .dot:hover {
   animation-duration: 0.2s;
   animation-name: circleTransition;
   transform-origin: center center;

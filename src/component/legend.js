@@ -1,5 +1,5 @@
 /**
- * Legend
+ * Reusable Legend Component
  *
  * @example
  * var myLegend = d3.ez.component.legend()

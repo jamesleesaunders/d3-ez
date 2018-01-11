@@ -1,14 +1,15 @@
 /**
- * Donut Chart
+ * Donut Chart (also called: Doughnut Chart; Pie Chart)
  *
+ * @see http://datavizproject.com/data-type/donut-chart/
  */
-d3.ez.chart.donut = function module() {
+d3.ez.chart.donutChart = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartDonut";
+  var classed = "donutChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };

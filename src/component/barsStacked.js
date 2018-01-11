@@ -1,12 +1,11 @@
 /**
- * Reusable Punch Card Row
+ * Reusable Stacked Bar Chart Component
  *
  */
-d3.ez.component.punchCard = function module() {
+d3.ez.component.barsStacked = function module() {
   // Default Options (Configurable via setters)
-	var width = 400;
-	var height = 100;
-	var sizeScale;
+	var width = 100;
+  var height = 400;
 	var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
 	var xScale;
@@ -14,44 +13,62 @@ d3.ez.component.punchCard = function module() {
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		var cellHeight = yScale.bandwidth();
-		var cellWidth = xScale.bandwidth();
+		// Stack Generator
+		var stacker = function(data) {
+			series = [];
+			var y0 = 0;
+			data.forEach(function(d, i) {
+				series[i] = {
+					name: d.key,
+					value: d.value,
+					y0: y0,
+					y1: y0 + d.value
+				};
+				y0 += d.value;
+			});
+
+			return series;
+		};
 
     selection.each(function() {
 			// Create series group
-      var series = selection.selectAll(".series")
-        .data(function(d) { return [d]; })
+      var series = selection.selectAll('.series')
+				.data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .attr("transform", function(d) {
-          return "translate(0, " + (cellHeight / 2) + ")";
-        })
         .classed('series', true)
+        .attr("width", width)
+        .attr("height", height)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
       series = selection.selectAll('.series').merge(series);
 
-      var spots = series.selectAll(".punchSpot")
-        .data(function(d) { return d.values; });
+      // Add Bars to Group
+      var bars = series.selectAll(".bar")
+        .data(function(d) { return stacker(d.values); });
 
-      spots.enter().append("circle")
-        .attr("class", "punchSpot")
-        .attr("cx", function(d) {
-          return (cellWidth / 2 + xScale(d.key));
-        })
-        .attr("cy", 0)
-        .attr("r", 0)
-        .on("click", dispatch.customClick)
+      bars.enter().append("rect")
+        .classed("bar", true)
+        .attr("width", width)
+        .attr("x", 0)
+        .attr("y", height)
+        .attr("rx", 0)
+        .attr("ry", 0)
+        .attr("height", 0)
+        .attr("fill", function(d) { return colorScale(d.name); })
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(spots)
+        .merge(bars)
         .transition()
+        .ease(transition.ease)
         .duration(transition.duration)
-        .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        });
+        .attr("width", width)
+        .attr("x", 0)
+        .attr("y", function(d) { return yScale(d.y1); })
+        .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
 
-      spots.exit().remove();
-
+      bars.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
     });
   }
 
@@ -71,12 +88,6 @@ d3.ez.component.punchCard = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return my;
-  };
-
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
     return my;
   };
 

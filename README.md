@@ -40,7 +40,7 @@ var title = d3.ez.component.title()
 	.mainText("Super Fruit Survey")
 	.subText("Which fruit do you like?");
 
-var chart = d3.ez.chart.discreteBar()
+var chart = d3.ez.chart.barVertical()
 	.colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
 
 var legend = d3.ez.component.legend()
@@ -101,14 +101,15 @@ var legend = d3.ez.component.legend()
 **Chart**
 
 The following charts are currently supported:
-* circularHeat()
-* discreteBar()
-* donut()
-* groupedBar()
-* multiSeriesLine
+* barClustered()
+* barStacked()
+* barVertical()
+* donutChart()
+* heatMapTable()
+* heatMapRadial()
+* lineChart()
+* polarArea()
 * punchCard()
-* radialBar()
-* tabularHeat()
 
 All of the above support the following options:
 * colors()
@@ -131,24 +132,25 @@ The format of the d3-ez data must be in key / value pairs.
 
 ### Examples
 Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. One of the aims of **d3-ez** to make it easier to create visualizations with graphs which are clickable interact with each other, this is done though the use of D3's dispatch, please see the 'Showcase' link below for example:
-* [Discrete Bar Chart](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
+* [Bar Chart (Vertical)](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
+* [Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
+* [Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
 * [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
-* [Grouped Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
-* [Grouped Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
-* [Radial Bar Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
-* [Multi Series Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
-* [PunchCard](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
-* [Circular Heat Chart](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
-* [Tabular Heat Chart](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
+* [Heat Chart (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
+* [Heat Chart (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
+* [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
+* [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
+* [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [HTML List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [Multi Chart Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
 ### What type of chart should I use?
 What type of chart is best for different types of data?
-* Bar Charts are good for quantitive data.
+* Bar Charts are good for quantitative data.
 * Pie Charts for good to represent parts of a whole.
 * Histograms are good for showing distribution.
+For more information on which charts are good for different types of data see the [Data Viz Project](http://datavizproject.com/).
 
 ### Alternatives to d3-ez
 For reference here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:
@@ -163,4 +165,4 @@ For reference here are a few other alternative D3 chart libraries which also fol
 ### Credits
 * Peter Cook http://animateddata.co.uk/ For giving permission to use his Radial Bar and Radial Heat Map charts.
 * Virgin Media http://www.virginmedia.co.uk/ For support in development of the Tabular Heat Map.
-* http://datavizproject.com/
+* Data Viz Project http://datavizproject.com/ For helping me while deciding on naming of chart types.

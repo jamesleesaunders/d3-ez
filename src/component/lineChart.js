@@ -1,5 +1,5 @@
 /**
- * Reusable Line Chart
+ * Reusable Line Chart Component
  *
  */
 d3.ez.component.lineChart = function module() {

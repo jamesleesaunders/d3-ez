@@ -1,53 +1,55 @@
 /**
- * Reusable Heat Map
+ * Reusable Vertical Bar Chart Component
  *
  */
-d3.ez.component.heatMap = function module() {
+d3.ez.component.barsVertical = function module() {
   // Default Options (Configurable via setters)
-  var width = 400;
-  var height = 100;
-	var transition = { ease: d3.easeBounce, duration: 1000 };
+	var width = 400;
+  var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-	var xScale;
-	var yScale;
+  var xScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		var cellHeight = yScale.bandwidth();
-		var cellWidth = xScale.bandwidth();
-
     selection.each(function() {
-			// Create series group
+      // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; })
         .enter()
         .append("g")
-        .classed('series', true)
+        .classed("series", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); });
-      selection.selectAll('.series').merge(series);
+      series = selection.selectAll(".series").merge(series);
 
-      var cells = series.selectAll(".cell")
+      // Add bars to series
+      var bars = series.selectAll(".bar")
         .data(function(d) { return d.values; });
 
-      cells.enter().append("rect")
-        .attr("x", function(d) {
-          return xScale(d.key);
-        })
-        .attr("y", 0)
-        .attr("rx", 2)
-        .attr("ry", 2)
-        .attr("fill", 'black')
-        .attr("class", "cell")
-        .attr("width", cellWidth)
-        .attr("height", cellHeight)
-        .on("click", dispatch.customClick)
+      bars.enter()
+        .append("rect")
+        .classed("bar", true)
+        .attr("fill", function(d) { return colorScale(d.key); })
+        .attr("width", xScale.bandwidth())
+        .attr("x", function(d) { return xScale(d.key); })
+        .attr("y", height)
+        .attr("rx", 0)
+        .attr("ry", 0)
+        .attr("height", 0)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(cells)
+        .merge(bars)
         .transition()
+        .ease(transition.ease)
         .duration(transition.duration)
-        .attr("fill", function(d) { return colorScale(d.value); });
+        .attr("x", function(d) { return xScale(d.key); })
+        .attr("y", function(d) { return yScale(d.value); })
+        .attr("height", function(d) { return height - yScale(d.value); });
 
-      cells.exit().remove();
+      bars.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
     });
   }
 

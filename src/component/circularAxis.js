@@ -1,5 +1,5 @@
 /**
- * Reusable Circular Axis
+ * Reusable Circular Axis Component
  *
  */
 d3.ez.component.circularAxis = function module() {

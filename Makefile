@@ -4,43 +4,44 @@ JS_FILES :=        src/header.js \
                    src/baseFunctions.js \
                    src/chart.js \
                    src/colors.js \
-                   src/component/barGrouped.js \
-                   src/component/barStacked.js \
-                   src/component/barRadial.js \
+                   src/component/barsVertical.js \
+                   src/component/barsStacked.js \
+                   src/component/polarArea.js \
                    src/component/donut.js \
-                   src/component/creditTag.js \
-                   src/component/labeledNode.js \
                    src/component/scatterPlot.js \
-                   src/component/legend.js \
                    src/component/lineChart.js \
-                   src/component/heatMap.js \
-                   src/component/heatRing.js \
-                   src/component/punchCard.js \
+                   src/component/heatMapRow.js \
+                   src/component/heatMapRing.js \
+                   src/component/proportionalAreaCircles.js \
                    src/component/numberCard.js \
                    src/component/title.js \
-                   src/component/circularAxis.js \
+									 src/component/creditTag.js \
+                   src/component/legend.js \
+									 src/component/circularAxis.js \
                    src/component/circularLabels.js \
+                   src/component/labeledNode.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
-                   src/chart/discreteBar.js \
-                   src/chart/groupedBar.js \
-                   src/chart/radialBar.js \
-                   src/chart/circularHeat.js \
-                   src/chart/tabularHeat.js \
-                   src/chart/donut.js \
-                   src/chart/punchCard.js \
-                   src/chart/multiSeriesLine.js
+									 src/chart/barChartClustered.js \
+                   src/chart/barChartStacked.js \
+                   src/chart/barChartVertical.js \
+                   src/chart/donutChart.js \
+                   src/chart/heatMapRadial.js \
+                   src/chart/heatMapTable.js \
+                   src/chart/lineChart.js \
+									 src/chart/polarAreaChart.js \
+                   src/chart/punchCard.js
 
 CSS_FILES :=       css/global.css \
-                   css/groupedBar.css \
-                   css/radialBar.css \
-                   css/circularHeat.css \
-                   css/tabularHeat.css \
-                   css/donut.css \
-                   css/punchCard.css \
-                   css/lineChart.css \
                    css/htmlList.css \
-                   css/htmlTable.css
+                   css/htmlTable.css \
+                   css/barChart.css \
+                   css/donutChart.css \
+                   css/heatMapRadial.css \
+                   css/heatMapTable.css \
+                   css/lineChart.css \
+									 css/polarAreaChart.css \
+                   css/punchCard.css
 
 GENERATED_FILES := build/d3-ez.js \
                    build/d3-ez.min.js \

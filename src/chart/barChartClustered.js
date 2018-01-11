@@ -1,19 +1,20 @@
 /**
- * Multi Series Line Chart
+ * Clustered Bar Chart (also called: Multi-set Bar Chart; Grouped Bar Chart)
  *
+ * @see http://datavizproject.com/data-type/grouped-bar-chart/
  */
-d3.ez.chart.multiSeriesLine = function module() {
+d3.ez.chart.barChartClustered = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartMultiSeriesLine";
+  var classed = "barChartClustered";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(3);
+  var colors = d3.ez.colors.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -21,14 +22,17 @@ d3.ez.chart.multiSeriesLine = function module() {
 
   // Scales and Axis
   var xScale;
+  var xScale2;
   var yScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
   // Data Variables
-  var maxValue;
   var groupNames;
+  var groupTotalsMax;
+  var maxValue;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
@@ -42,16 +46,10 @@ d3.ez.chart.multiSeriesLine = function module() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
-    maxValue = slicedData.maxValue;
     groupNames = slicedData.groupNames;
-
-    // Convert dates
-    data.forEach(function(d, i) {
-      d.values.forEach(function(b, j) {
-        data[i].values[j].key = new Date(b.key * 1000);
-      });
-    });
-    dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+    groupTotalsMax = slicedData.groupTotalsMax;
+    maxValue = slicedData.maxValue;
+    categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -59,21 +57,26 @@ d3.ez.chart.multiSeriesLine = function module() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(groupNames);
+        .domain(categoryNames);
     }
 
     // X & Y Scales
-    xScale = d3.scaleTime()
-      .range([0, chartW])
-      .domain(dateDomain);
+    xScale = d3.scaleBand()
+      .domain(groupNames)
+      .rangeRound([0, chartW])
+      .padding(0.1);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (maxValue * 1.05)]);
+      .domain([0, maxValue]);
+
+    xScale2 = d3.scaleBand()
+      .domain(categoryNames)
+      .rangeRound([0, xScale.bandwidth()])
+      .padding(0.1);
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b-%y"));
+    xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -119,53 +122,30 @@ d3.ez.chart.multiSeriesLine = function module() {
       // Add axis to chart
       chart.select(".x-axis")
         .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");
+        .call(xAxis);
 
       chart.select(".y-axis")
         .call(yAxis);
 
-      var lineChart = d3.ez.component.lineChart()
-        .width(chartW)
+      var barsVertical = d3.ez.component.barsVertical()
+        .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
+        .xScale(xScale2)
         .yScale(yScale)
-        .xScale(xScale)
         .dispatch(dispatch);
 
-      var scatterPlot = d3.ez.component.scatterPlot()
-        .width(chartW)
-        .height(chartH)
-        .colorScale(colorScale)
-        .yScale(yScale)
-        .xScale(xScale)
-        .dispatch(dispatch);
+      // Create bar group
+      var seriesGroup = chart.selectAll(".seriesGroup")
+        .data(data);
 
-      var lineGroup = chart.selectAll(".lineGroup")
-        .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "lineGroup")
-        .style("fill", function(d) { return colorScale(d.key); });
+      seriesGroup.enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
+        .datum(function(d) { return d; })
+        .call(barsVertical);
 
-      lineGroup.datum(function(d) { return d; })
-        .call(lineChart).call(scatterPlot);
-
-      lineGroup.exit().remove();
-
-      var dotGroup = chart.selectAll(".dotGroup")
-        .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "dotGroup")
-        .style("fill", function(d) { return colorScale(d.key); });
-
-      dotGroup.datum(function(d) { return d; })
-        .call(scatterPlot);
-
-      dotGroup.exit().remove();
     });
   }
 

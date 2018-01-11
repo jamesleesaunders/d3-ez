@@ -1,5 +1,5 @@
 /**
- * Title
+ * Reusable Title Component
  *
  * @example
  * var myTitle = d3.ez.component.title()

@@ -48,161 +48,6 @@
 }
 
 
-/* === Bar Chart (Stacked & Grouped) Styles === */
-
-.chartGroupedBar rect.bar, .chartDiscreteBar rect.bar {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartGroupedBar rect.bar:hover, .chartDiscreteBar rect.bar:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-
-/* === Radial Bar Chart Styles === */
-
-.chartRadialBar path {
-  fill: none;
-}
-
-.chartRadialBar path.segment {
-  fill: steelblue;
-  stroke-width: 0.5px;
-  stroke: #999999;
-}
-
-.chartRadialBar path.segment:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartRadialBar .outerCircle circle {
-  stroke: #aaa;
-  stroke-dasharray: 4, 4;
-}
-
-.chartRadialBar .tickCircles circle {
-  stroke: #ddd;
-  stroke-dasharray: 2, 2;
-}
-
-.chartRadialBar .spokes line {
-  stroke: #aaa;
-  stroke-width: 1px;
-}
-
-.chartRadialBar .circularLabels text {
-  font-size: 1.1em;
-  font-weight: bold;
-  letter-spacing: -0.2px;
-}
-
-
-/* === Circular Heat Chart Styles === */
-
-.chartCircularHeat path.segment {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartCircularHeat path.segment:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartCircularHeat .segmentLabels text {
-  font-size: 1.0em;
-  font-weight: bold;
-}
-
-.chartCircularHeat .circularLabels text {
-  font-size: 1.1em;
-  font-weight: bold;
-  letter-spacing: -0.2px;
-}
-
-
-/* === Tabular Heat Chart Styles === */
-
-.chartTabularHeat rect.cell {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartTabularHeat rect.cell:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartTabularHeat .x-axis path, .chartTabularHeat .y-axis path {
-  display: none;
-}
-
-
-/* === Donut Chart Styles === */
-
-.chartDonut path.slice {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartDonut path.slice:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartDonut polyline.line {
-  opacity: .3;
-  stroke: black;
-  stroke-width: 2px;
-  fill: none;
-}
-
-
-/* === PunchCard Styles === */
-
-.chartPunchCard circle.punchSpot {
-  stroke: #999999;
-  stroke-width: 0.5px;
-}
-
-.chartPunchCard circle.punchSpot:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
-}
-
-.chartPunchCard text.punchValue {
-  font-size: 15px;
-  font-weight: bold;
-}
-
-
-/* === Line Chart Styles === */
-
-@keyframes circleTransition {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.5);
-  }
-}
-
-.chartMultiSeriesLine .dot:hover {
-  animation-duration: 0.2s;
-  animation-name: circleTransition;
-  transform-origin: center center;
-}
-
-
 /* === HTML List Styles === */
 
 .htmlList, .htmlList ul {
@@ -294,6 +139,161 @@ table.htmlTable {
 
 .htmlTable tbody tr:hover {
   background-color: #eeeeee;
+}
+
+
+/* === Bar Chart (Stacked & Grouped) Styles === */
+
+[class*="barChart"] rect.bar {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+[class*="barChart"] rect.bar:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+
+/* === Donut Chart Styles === */
+
+.donutChart path.slice {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+.donutChart path.slice:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.donutChart polyline.line {
+  opacity: .3;
+  stroke: black;
+  stroke-width: 2px;
+  fill: none;
+}
+
+
+/* === Circular Heat Chart Styles === */
+
+.heatMapRadial path.segment {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+.heatMapRadial path.segment:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.heatMapRadial .segmentLabels text {
+  font-size: 1.0em;
+  font-weight: bold;
+}
+
+.heatMapRadial .circularLabels text {
+  font-size: 1.1em;
+  font-weight: bold;
+  letter-spacing: -0.2px;
+}
+
+
+/* === Tabular Heat Chart Styles === */
+
+.heatMapTable rect.cell {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+.heatMapTable rect.cell:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.heatMapTable .x-axis path, .chartHeatMapTable .y-axis path {
+  display: none;
+}
+
+
+/* === Line Chart Styles === */
+
+@keyframes circleTransition {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.5);
+  }
+}
+
+.lineChart .dot:hover {
+  animation-duration: 0.2s;
+  animation-name: circleTransition;
+  transform-origin: center center;
+}
+
+
+/* === Polar Area Chart Styles === */
+
+.chartPolarArea path {
+  fill: none;
+}
+
+.chartPolarArea path.segment {
+  fill: steelblue;
+  stroke-width: 0.5px;
+  stroke: #999999;
+}
+
+.chartPolarArea path.segment:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.chartPolarArea .outerCircle circle {
+  stroke: #aaa;
+  stroke-dasharray: 4, 4;
+}
+
+.chartPolarArea .tickCircles circle {
+  stroke: #ddd;
+  stroke-dasharray: 2, 2;
+}
+
+.chartPolarArea .spokes line {
+  stroke: #aaa;
+  stroke-width: 1px;
+}
+
+.chartPolarArea .circularLabels text {
+  font-size: 1.1em;
+  font-weight: bold;
+  letter-spacing: -0.2px;
+}
+
+
+/* === PunchCard Styles === */
+
+.punchCard circle.punchSpot {
+  stroke: #999999;
+  stroke-width: 0.5px;
+}
+
+.punchCard circle.punchSpot:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
+}
+
+.punchCard text.punchValue {
+  font-size: 15px;
+  font-weight: bold;
 }
 
 
