@@ -9,7 +9,7 @@ d3.ez.chart.heatMapTable = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartHeatMapTable";
+  var classed = "heatMapTable";
   var width = 400;
   var height = 300;
   var margin = { top: 45, right: 20, bottom: 20, left: 45 };

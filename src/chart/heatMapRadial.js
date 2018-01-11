@@ -9,7 +9,7 @@ d3.ez.chart.heatMapRadial = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartHeatMapRadial";
+  var classed = "heatMapRadial";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };

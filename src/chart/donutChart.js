@@ -9,7 +9,7 @@ d3.ez.chart.donutChart = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartDonut";
+  var classed = "donutChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };

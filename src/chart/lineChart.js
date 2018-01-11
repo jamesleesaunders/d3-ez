@@ -9,7 +9,7 @@ d3.ez.chart.lineChart = function module() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartLine";
+  var classed = "lineChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
