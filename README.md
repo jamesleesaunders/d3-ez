@@ -101,14 +101,14 @@ var legend = d3.ez.component.legend()
 **Chart**
 
 The following charts are currently supported:
-* barClustered()
-* barStacked()
-* barVertical()
+* barChartClustered()
+* barChartStacked()
+* barChartVertical()
 * donutChart()
 * heatMapTable()
 * heatMapRadial()
 * lineChart()
-* polarArea()
+* polarAreaChart()
 * punchCard()
 
 All of the above support the following options:
@@ -136,8 +136,8 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 * [Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
 * [Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
 * [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
-* [Heat Chart (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
-* [Heat Chart (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
+* [Heat Map (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
+* [Heat Map (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
 * [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
 * [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
