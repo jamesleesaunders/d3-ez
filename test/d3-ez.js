@@ -3,7 +3,7 @@
  *
  */
 include('../src/header.js');
-include('../src/baseFunctions.js');
+include('../src/dataParse.js');
 include('../src/chart.js');
 include('../src/colors.js');
 include('../src/component/barsVertical.js');

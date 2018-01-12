@@ -34,7 +34,7 @@
         update4(d);
       });
 
-    myChart2 = d3.ez.chart.barVertical()
+    myChart2 = d3.ez.chart.barChartVertical()
       .width(400)
       .height(200)
       .on("customMouseOver", function(d) {
@@ -46,11 +46,11 @@
       .height(200)
       .innerRadius(40);
 
-    myChart4 = d3.ez.chart.polarArea()
+    myChart4 = d3.ez.chart.polarAreaChart()
       .width(400)
       .height(200);
 
-    myChart5 = d3.ez.chart.barClustered()
+    myChart5 = d3.ez.chart.barChartClustered()
       .width(400)
       .height(200)
       .yAxisLabel("Fruit")
