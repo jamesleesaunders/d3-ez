@@ -4,49 +4,49 @@
  */
 d3.ez.component.barsStacked = function module() {
   // Default Options (Configurable via setters)
-	var width = 100;
+  var width = 100;
   var height = 400;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-	var xScale;
-	var yScale;
+  var xScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		// Stack Generator
-		var stacker = function(data) {
-			series = [];
-			var y0 = 0;
-			data.forEach(function(d, i) {
-				series[i] = {
-					name: d.key,
-					value: d.value,
-					y0: y0,
-					y1: y0 + d.value
-				};
-				y0 += d.value;
-			});
+    // Stack Generator
+    var stacker = function(data) {
+      series = [];
+      var y0 = 0;
+      data.forEach(function(d, i) {
+        series[i] = {
+          name: d.key,
+          value: d.value,
+          y0: y0,
+          y1: y0 + d.value
+        };
+        y0 += d.value;
+      });
 
-			return series;
-		};
+      return series;
+    };
 
     selection.each(function() {
-			// Create series group
-      var series = selection.selectAll('.series')
-				.data(function(d) { return [d]; })
-        .enter()
+      // Create series group
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .attr("width", width)
-        .attr("height", height)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.series').merge(series);
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(seriesSelect);
 
-      // Add Bars to Group
+      // Add bars to series
       var bars = series.selectAll(".bar")
         .data(function(d) { return stacker(d.values); });
 
-      bars.enter().append("rect")
+      bars.enter()
+        .append("rect")
         .classed("bar", true)
         .attr("width", width)
         .attr("x", 0)
@@ -73,11 +73,11 @@ d3.ez.component.barsStacked = function module() {
   }
 
   // Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
 
   my.height = function(_) {
     if (!arguments.length) return height;

@@ -6,7 +6,7 @@
  * @license GPLv3
  */
 d3.ez = {
-    version: "2.2.0",
+    version: "2.2.1",
     author: "James Saunders",
     copyright: "Copyright (C) 2017 James Saunders",
     license: "GPL-3.0"
@@ -461,12 +461,12 @@ d3.ez.component.barsVertical = function module() {
     function my(selection) {
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
             // Add bars to series
             var bars = series.selectAll(".bar").data(function(d) {
                 return d.values;
@@ -559,13 +559,13 @@ d3.ez.component.barsStacked = function module() {
         };
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
-            // Add Bars to Group
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
+            // Add bars to series
             var bars = series.selectAll(".bar").data(function(d) {
                 return stacker(d.values);
             });
@@ -648,12 +648,12 @@ d3.ez.component.polarArea = function module() {
         }).innerRadius(0).cornerRadius(2);
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
             // Add segments to series
             var segments = series.selectAll(".segment").data(function(d) {
                 return pie(d.values);
@@ -743,15 +743,15 @@ d3.ez.component.donut = function module() {
         };
         selection.each(function() {
             // Create chart group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
             series.append("g").attr("class", "slices");
             series.append("g").attr("class", "labels");
             series.append("g").attr("class", "lines");
-            series = selection.selectAll(".series").merge(series);
             // Slices
             var slices = series.select(".slices").selectAll("path.slice").data(function(d) {
                 return pie(d.values);
@@ -863,15 +863,15 @@ d3.ez.component.scatterPlot = function module() {
     function my(selection) {
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).attr("fill", function(d) {
-                return colorScale(d.key);
-            }).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
-            // Add Dots to Group
+            var series = seriesSelect.enter().append("g").classed("series", true).attr("fill", function(d) {
+                return colorScale(d.key);
+            }).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
+            // Add dots to series
             var dots = series.selectAll(".dot").data(function(d) {
                 return d.values;
             });
@@ -965,6 +965,7 @@ d3.ez.component.lineChart = function module() {
             }).attr("fill", "none").merge(series).transition().duration(transition.duration).attrTween("d", function(d) {
                 return pathTween(d.values);
             });
+            series.exit().transition().style("opacity", 0).remove();
         });
     }
     // Configuration Getters & Setters
@@ -1026,12 +1027,13 @@ d3.ez.component.heatMapRow = function module() {
         var cellWidth = xScale.bandwidth();
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            selection.selectAll(".series").merge(series);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
+            // Add cells to series
             var cells = series.selectAll(".cell").data(function(d) {
                 return d.values;
             });
@@ -1039,10 +1041,10 @@ d3.ez.component.heatMapRow = function module() {
                 return xScale(d.key);
             }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
                 dispatch.call("customMouseOver", this, d);
-            }).merge(cells).transition().duration(transition.duration).attr("fill", function(d) {
+            }).transition().duration(transition.duration).attr("fill", function(d) {
                 return colorScale(d.value);
             });
-            cells.exit().remove();
+            cells.exit().transition().style("opacity", 0).remove();
         });
     }
     // Configuration Getters & Setters
@@ -1110,13 +1112,13 @@ d3.ez.component.heatMapRing = function module() {
         // Arc Generator
         var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
         selection.each(function() {
-            // Create chart group
-            var series = selection.selectAll(".series").data(function(d) {
+            // Create series group
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
             var segments = series.selectAll(".segment").data(function(d) {
                 var key = d.key;
                 var data = pie(d.values);
@@ -1131,7 +1133,7 @@ d3.ez.component.heatMapRing = function module() {
             }).merge(segments).transition().duration(transition.duration).attr("fill", function(d) {
                 return colorScale(d.data.value);
             });
-            segments.exit().remove();
+            segments.exit().transition().style("opacity", 0).remove();
         });
     }
     // Configuration Getters & Setters
@@ -1204,14 +1206,16 @@ d3.ez.component.proportionalAreaCircles = function module() {
         var cellWidth = xScale.bandwidth();
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").attr("transform", function(d) {
-                return "translate(0, " + cellHeight / 2 + ")";
-            }).classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
+            series.attr("transform", function(d) {
+                return "translate(0, " + cellHeight / 2 + ")";
+            });
+            // Add spots to series
             var spots = series.selectAll(".punchSpot").data(function(d) {
                 return d.values;
             });
@@ -1224,7 +1228,7 @@ d3.ez.component.proportionalAreaCircles = function module() {
             }).attr("r", function(d) {
                 return sizeScale(d["value"]);
             });
-            spots.exit().remove();
+            spots.exit().transition().style("opacity", 0).remove();
         });
     }
     // Configuration Getters & Setters
@@ -1291,12 +1295,13 @@ d3.ez.component.numberCard = function module() {
         var cellWidth = xScale.bandwidth();
         selection.each(function() {
             // Create series group
-            var series = selection.selectAll(".series").data(function(d) {
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("series", true).attr("width", width).attr("height", height).on("click", function(d) {
-                dispatch.call("customClick", this, d);
             });
-            series = selection.selectAll(".series").merge(series);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
+                dispatch.call("customClick", this, d);
+            }).merge(seriesSelect);
+            // Add numbers to series
             var numbers = series.selectAll(".number").data(function(d) {
                 return d.values;
             });
@@ -1309,7 +1314,7 @@ d3.ez.component.numberCard = function module() {
             }).merge(numbers).transition().duration(1e3).attr("fill", function(d) {
                 return colorScale(d.value);
             });
-            numbers.exit().remove();
+            numbers.exit().transition().style("opacity", 0).remove();
         });
     }
     // Configuration Getters & Setters

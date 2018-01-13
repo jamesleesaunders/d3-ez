@@ -6,30 +6,33 @@ d3.ez.component.heatMapRow = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-	var xScale;
-	var yScale;
+  var xScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		var cellHeight = yScale.bandwidth();
-		var cellWidth = xScale.bandwidth();
+    var cellHeight = yScale.bandwidth();
+    var cellWidth = xScale.bandwidth();
 
     selection.each(function() {
-			// Create series group
-      var series = selection.selectAll('.series')
-        .data(function(d) { return [d]; })
-        .enter()
+      // Create series group
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      selection.selectAll('.series').merge(series);
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(seriesSelect);
 
+      // Add cells to series
       var cells = series.selectAll(".cell")
         .data(function(d) { return d.values; });
 
-      cells.enter().append("rect")
+      cells.enter()
+        .append("rect")
         .attr("x", function(d) { return xScale(d.key); })
         .attr("y", 0)
         .attr("rx", 2)
@@ -40,21 +43,24 @@ d3.ez.component.heatMapRow = function module() {
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
-        .merge(cells)
+        //.merge(cells)
         .transition()
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); });
 
-      cells.exit().remove();
+      cells.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
     });
   }
 
   // Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
 
   my.height = function(_) {
     if (!arguments.length) return height;

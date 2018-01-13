@@ -4,9 +4,9 @@
  */
 d3.ez.component.barsVertical = function module() {
   // Default Options (Configurable via setters)
-	var width = 400;
+  var width = 400;
   var height = 400;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
@@ -15,13 +15,14 @@ d3.ez.component.barsVertical = function module() {
   function my(selection) {
     selection.each(function() {
       // Create series group
-      var series = selection.selectAll('.series')
-        .data(function(d) { return [d]; })
-        .enter()
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll(".series").merge(series);
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(seriesSelect);
 
       // Add bars to series
       var bars = series.selectAll(".bar")
@@ -54,11 +55,11 @@ d3.ez.component.barsVertical = function module() {
   }
 
   // Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
 
   my.height = function(_) {
     if (!arguments.length) return height;

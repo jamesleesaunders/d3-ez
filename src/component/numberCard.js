@@ -4,33 +4,30 @@
  */
 d3.ez.component.numberCard = function module() {
   // Default Options (Configurable via setters)
-	var width = 400;
-	var height = 100;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var width = 400;
+  var height = 100;
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-	var xScale;
-	var yScale;
+  var xScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		// var cellHeight = yScale.bandwidth();
-		var cellWidth = xScale.bandwidth();
+    // var cellHeight = yScale.bandwidth();
+    var cellWidth = xScale.bandwidth();
 
     selection.each(function() {
-			// Create series group
-      var series = selection.selectAll('.series')
-        .data(function(d) { return [d]; })
-        .enter()
+      // Create series group
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .attr("width", width)
-        .attr("height", height)
-        //.attr("transform", function(d, i) {
-        //  return "translate(0, " + (cellHeight / 2 + yScale(d.key)) + ")";
-        //})
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.series').merge(series);
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(seriesSelect);
 
+      // Add numbers to series
       var numbers = series.selectAll(".number")
         .data(function(d) { return d.values; });
 
@@ -50,16 +47,19 @@ d3.ez.component.numberCard = function module() {
         .duration(1000)
         .attr("fill", function(d) { return colorScale(d.value); });
 
-      numbers.exit().remove();
+      numbers.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
     });
   }
 
   // Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
 
   my.height = function(_) {
     if (!arguments.length) return height;

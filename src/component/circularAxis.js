@@ -4,9 +4,9 @@
  */
 d3.ez.component.circularAxis = function module() {
   // Default Options (Configurable via setters)
-	var width = 300;
-	var height = 300;
-	var radius = 150;
+  var width = 300;
+  var height = 300;
+  var radius = 150;
   var xScale;
   var yScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
@@ -49,14 +49,14 @@ d3.ez.component.circularAxis = function module() {
       tickCircles.exit()
         .remove();
 
-			// Outer circle
-			var outerCircle = axis.select(".outerCircle")
-				.selectAll("circle")
-				.data([radius])
-				.enter()
-				.append("circle")
-				.attr("r", function(d) { return d; })
-				.style("fill", "none");
+      // Outer circle
+      var outerCircle = axis.select(".outerCircle")
+        .selectAll("circle")
+        .data([radius])
+        .enter()
+        .append("circle")
+        .attr("r", function(d) { return d; })
+        .style("fill", "none");
 
       // Spokes
       var spokes = axis.select(".spokes")

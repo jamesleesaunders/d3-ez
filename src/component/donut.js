@@ -4,59 +4,61 @@
  */
 d3.ez.component.donut = function module() {
   // Default Options (Configurable via setters)
-	var width = 300;
+  var width = 300;
   var height = 300;
-	var radius = 150;
-	var innerRadius;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var radius = 150;
+  var innerRadius;
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		var defaultRadius = Math.min(width, height) / 2;
-		radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-		innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
 
-		// Pie Generator
-		var pie = d3.pie()
-			.value(function(d) { return d.value; })
-			.sort(null)
-			.padAngle(0.015);
+    // Pie Generator
+    var pie = d3.pie()
+      .value(function(d) { return d.value; })
+      .sort(null)
+      .padAngle(0.015);
 
-		// Arc Generators
-		var arc = d3.arc()
-			.innerRadius(innerRadius)
-			.outerRadius(radius)
-			.cornerRadius(2);
+    // Arc Generators
+    var arc = d3.arc()
+      .innerRadius(innerRadius)
+      .outerRadius(radius)
+      .cornerRadius(2);
 
-		var outerArc = d3.arc()
-			.innerRadius(radius * 0.9)
-			.outerRadius(radius * 0.9);
+    var outerArc = d3.arc()
+      .innerRadius(radius * 0.9)
+      .outerRadius(radius * 0.9);
 
-		var arcTween = function(d) {
-			var i = d3.interpolate(this._current, d);
-			this._current = i(0);
-			return function(t) {
-				return arc(i(t));
-			};
-		};
+    var arcTween = function(d) {
+      var i = d3.interpolate(this._current, d);
+      this._current = i(0);
+      return function(t) {
+        return arc(i(t));
+      };
+    };
 
-		var midAngle = function(d) {
-			return d.startAngle + (d.endAngle - d.startAngle) / 2;
-		};
+    var midAngle = function(d) {
+      return d.startAngle + (d.endAngle - d.startAngle) / 2;
+    };
 
     selection.each(function() {
       // Create chart group
-      var series = selection.selectAll('.series')
-        .data(function(d) { return [d]; })
-        .enter()
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(seriesSelect);
+
       series.append("g").attr("class", "slices");
       series.append("g").attr("class", "labels");
       series.append("g").attr("class", "lines");
-      series = selection.selectAll('.series').merge(series);
 
       // Slices
       var slices = series.select(".slices")
@@ -153,11 +155,11 @@ d3.ez.component.donut = function module() {
   }
 
   // Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
 
   my.height = function(_) {
     if (!arguments.length) return height;

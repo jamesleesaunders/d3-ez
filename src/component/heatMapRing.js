@@ -6,40 +6,41 @@ d3.ez.component.heatMapRing = function module() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
-	var radius = 150;
-	var innerRadius = 20;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+  var radius = 150;
+  var innerRadius = 20;
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
-	var xScale;
-	var yScale;
+  var xScale;
+  var yScale;
   var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
   function my(selection) {
-		var defaultRadius = Math.min(width, height) / 2;
-		radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-		innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 
-		// Pie Generator
-		var pie = d3.pie()
-			.value(1)
-			.sort(null)
-			.padAngle(0.015);
+    // Pie Generator
+    var pie = d3.pie()
+      .value(1)
+      .sort(null)
+      .padAngle(0.015);
 
-		// Arc Generator
-		var arc = d3.arc()
-			.outerRadius(radius)
-			.innerRadius(innerRadius)
-			.cornerRadius(2);
+    // Arc Generator
+    var arc = d3.arc()
+      .outerRadius(radius)
+      .innerRadius(innerRadius)
+      .cornerRadius(2);
 
     selection.each(function() {
-      // Create chart group
-      var series = selection.selectAll('.series')
-        .data(function(d) { return [d]; })
-        .enter()
+      // Create series group
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      series = selection.selectAll('.series').merge(series);
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(seriesSelect);
 
       var segments = series.selectAll(".segment")
         .data(function(d) {
@@ -64,17 +65,20 @@ d3.ez.component.heatMapRing = function module() {
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.data.value); });
 
-      segments.exit().remove();
+      segments.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
     });
 
   }
 
   // Configuration Getters & Setters
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
 
   my.height = function(_) {
     if (!arguments.length) return height;
