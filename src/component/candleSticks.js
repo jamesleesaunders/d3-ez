@@ -64,7 +64,7 @@ candleSticks = function() {
       });
   };
 
-  var candlestick = function(selection) {
+  var my = function(selection) {
     var series, bars;
 
     selection.each(function(data) {
@@ -96,30 +96,30 @@ candleSticks = function() {
     });
   };
 
-  candlestick.xScale = function(value) {
+  my.xScale = function(value) {
     if (!arguments.length) {
       return xScale;
     }
     xScale = value;
-    return candlestick;
+    return my;
   };
 
-  candlestick.yScale = function(value) {
+  my.yScale = function(value) {
     if (!arguments.length) {
       return yScale;
     }
     yScale = value;
-    return candlestick;
+    return my;
   };
 
-  candlestick.rectangleWidth = function(value) {
+  my.rectangleWidth = function(value) {
     if (!arguments.length) {
       return rectangleWidth;
     }
     rectangleWidth = value;
-    return candlestick;
+    return my;
   };
 
-  return candlestick;
+  return my;
 
 };
