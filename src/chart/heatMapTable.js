@@ -51,7 +51,7 @@ d3.ez.chart.heatMapTable = function module() {
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
     if (!thresholds) {
-      var thresholds = slicedData.thresholds;
+      thresholds = slicedData.thresholds;
     }
 
     // Colour Scale

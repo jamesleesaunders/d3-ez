@@ -41,7 +41,6 @@ d3.ez.component.heatMapRow = function module() {
         .attr("class", "cell")
         .attr("width", cellWidth)
         .attr("height", cellHeight)
-        .on("click", dispatch.customClick)
         .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
         //.merge(cells)
         .transition()
