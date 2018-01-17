@@ -1047,7 +1047,7 @@ d3.ez.component.heatMapRow = function module() {
             });
             cells.enter().append("rect").attr("x", function(d) {
                 return xScale(d.key);
-            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
+            }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("mouseover", function(d) {
                 dispatch.call("customValueMouseOver", this, d);
             }).on("click", function(d) {
                 dispatch.call("customValueClick", this, d);
@@ -2750,7 +2750,7 @@ d3.ez.chart.heatMapTable = function module() {
         // If thresholds values are not already set
         // attempt to auto-calculate some thresholds.
         if (!thresholds) {
-            var thresholds = slicedData.thresholds;
+            thresholds = slicedData.thresholds;
         }
         // Colour Scale
         if (!colorScale) {
