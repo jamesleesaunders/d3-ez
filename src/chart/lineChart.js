@@ -166,7 +166,7 @@ d3.ez.chart.lineChart = function module() {
         .attr("class", "dotGroup")
         .style("fill", function(d) { return colorScale(d.key); })
         .datum(function(d) { return d; })
-        .merge(gotGroup)
+        .merge(dotGroup)
         .call(scatterPlot);
 
       dotGroup.exit()
