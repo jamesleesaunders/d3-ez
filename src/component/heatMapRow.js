@@ -41,7 +41,6 @@ d3.ez.component.heatMapRow = function module() {
           });
         });
 
-
       cells.enter()
         .append("rect")
         .attr("class", "cell")
