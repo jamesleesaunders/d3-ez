@@ -4,8 +4,9 @@
 <head>
   <title>d3-ez : Candle Stick Example</title>
   <script src="https://d3js.org/d3.v3.min.js"></script>
-  <script src="../src/component/candleSticks.js"></script>
+  <script src="../test/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../css/candleStick.css" />
+  <script src="../src/component/candleSticks.js"></script>
 </head>
 
 <body>
@@ -40,7 +41,7 @@
         .scale(yScale)
         .orient('left');
 
-      var series = candleSticks()
+      var series = d3.ez.component.candleSticks()
         .xScale(xScale)
         .yScale(yScale);
 

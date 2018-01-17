@@ -2,7 +2,7 @@
  * Reusable Candle Stick Component
  *
  */
-candleSticks = function() {
+d3.ez.component.candleSticks = function() {
 
   var xScale = d3.time.scale();
   var yScale = d3.scale.linear();
