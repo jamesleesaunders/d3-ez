@@ -246,7 +246,7 @@ d3.ez.chart = function module() {
     // Colours
     var colorScale = undefined;
     // Dispatch (custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick", "customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
         canvasW = width - (margin.left + margin.right);
         canvasH = height - (margin.top + margin.bottom);
@@ -1021,7 +1021,7 @@ d3.ez.component.heatMapRow = function module() {
     var colorScale;
     var xScale;
     var yScale;
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function my(selection) {
         var cellHeight = yScale.bandwidth();
         var cellWidth = xScale.bandwidth();
@@ -1030,17 +1030,27 @@ d3.ez.component.heatMapRow = function module() {
             var seriesSelect = selection.selectAll(".series").data(function(d) {
                 return [ d ];
             });
-            var series = seriesSelect.enter().append("g").classed("series", true).on("click", function(d) {
-                dispatch.call("customClick", this, d);
+            var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function(d) {
+                dispatch.call("customSeriesMouseOver", this, d);
+            }).on("click", function(d) {
+                dispatch.call("customSeriesClick", this, d);
             }).merge(seriesSelect);
             // Add cells to series
             var cells = series.selectAll(".cell").data(function(d) {
-                return d.values;
+                var seriesName = d.key;
+                var seriesValues = d.values;
+                return seriesValues.map(function(el) {
+                    var o = Object.assign({}, el);
+                    o.series = seriesName;
+                    return o;
+                });
             });
             cells.enter().append("rect").attr("x", function(d) {
                 return xScale(d.key);
             }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("class", "cell").attr("width", cellWidth).attr("height", cellHeight).on("click", dispatch.customClick).on("mouseover", function(d) {
-                dispatch.call("customMouseOver", this, d);
+                dispatch.call("customValueMouseOver", this, d);
+            }).on("click", function(d) {
+                dispatch.call("customValueClick", this, d);
             }).transition().duration(transition.duration).attr("fill", function(d) {
                 return colorScale(d.value);
             });
@@ -2727,7 +2737,7 @@ d3.ez.chart.heatMapTable = function module() {
     var maxValue = 0;
     var thresholds = undefined;
     // Dispatch (Custom events)
-    var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+    var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
         chartW = width - margin.left - margin.right;
         chartH = height - margin.top - margin.bottom;

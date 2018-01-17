@@ -35,7 +35,7 @@ d3.ez.chart.heatMapTable = function module() {
   var thresholds = undefined;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function init(data) {
     chartW = width - margin.left - margin.right;

@@ -10,7 +10,7 @@ d3.ez.component.heatMapRow = function module() {
   var colorScale;
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     var cellHeight = yScale.bandwidth();
@@ -24,12 +24,22 @@ d3.ez.component.heatMapRow = function module() {
       var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       // Add cells to series
       var cells = series.selectAll(".cell")
-        .data(function(d) { return d.values; });
+        .data(function(d) {
+        	var seriesName = d.key;
+        	var seriesValues = d.values;
+
+					return seriesValues.map(function(el) {
+						var o = Object.assign({}, el);
+						o.series = seriesName;
+						return o;
+					});
+        });
 
       cells.enter()
         .append("rect")
@@ -42,7 +52,8 @@ d3.ez.component.heatMapRow = function module() {
         .attr("width", cellWidth)
         .attr("height", cellHeight)
         .on("click", dispatch.customClick)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
         //.merge(cells)
         .transition()
         .duration(transition.duration)
