@@ -133,17 +133,17 @@ d3.ez.chart.heatMapTable = function module() {
         .dispatch(dispatch);
 
       var seriesGroup = chart.selectAll(".seriesGroup")
-        .data(function(d) { return d; })
-        .enter().append("g")
-        .attr("class", "seriesGroup")
-        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
+        .data(function(d) { return d; });
 
-      seriesGroup.datum(function(d) { return d; })
+			seriesGroup.enter().append("g")
+        .attr("class", "seriesGroup")
+        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
+				.datum(function(d) { return d; })
+				.merge(seriesGroup)
         .call(heatMapRow);
 
-      seriesGroup.exit().remove();
-
-
+      seriesGroup.exit()
+				.remove();
 
     });
   }
