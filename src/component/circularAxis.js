@@ -20,7 +20,7 @@ d3.ez.component.circularAxis = function module() {
         .domain(yScale.domain().reverse())
         .range(yScale.range().reverse());
 
-      // Create chart group
+      // Create axis group
       var axis = selection.selectAll('.axis')
         .data([0])
         .enter()

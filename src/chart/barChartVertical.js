@@ -28,7 +28,7 @@ d3.ez.chart.barChartVertical = function module() {
   var colorScale;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Other Customisation Options
   var yAxisLabel;

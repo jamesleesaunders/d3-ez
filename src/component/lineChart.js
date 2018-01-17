@@ -10,7 +10,7 @@ d3.ez.component.lineChart = function module() {
   var colorScale;
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     // Line generation function

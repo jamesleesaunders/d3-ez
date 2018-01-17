@@ -29,12 +29,12 @@
         .chart(chart)
         .legend(legend)
         .title(title)
-        .on("customMouseOver", function(d) {
-          d3.select("#message").text(d.value);
-        })
-        .on("customClick", function(d) {
-          console.log(d);
-        });
+				.on("customValueMouseOver", function(d) {
+					d3.select("#message").text(d.value);
+				})
+				.on("customSeriesClick", function(d) {
+					console.log(d);
+				});
 
       // Convert json to d3-ez data format
       var data = d3.nest().key(function(d) {

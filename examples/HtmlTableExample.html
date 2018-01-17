@@ -23,10 +23,10 @@
     // Create chart object
     var myTable = d3.ez.component.htmlTable()
       .width(600)
-			.on("customMouseOver", function(d) {
+			.on("customValueMouseOver", function(d) {
 				d3.select("#message").text(d.value);
 			})
-			.on("customClick", function(d) {
+			.on("customSeriesClick", function(d) {
 				console.log(d);
 			});
 

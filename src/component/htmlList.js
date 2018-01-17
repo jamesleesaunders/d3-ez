@@ -16,7 +16,7 @@ d3.ez.component.htmlList = function module() {
   var classed = "htmlList";
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     selection.each(function(data) {
@@ -42,7 +42,7 @@ d3.ez.component.htmlList = function module() {
 
       function expand(d) {
         d3.event.stopPropagation();
-        dispatch.call("customMouseOver", this, d);
+        dispatch.call("customMouseSeriesOver", this, d);
 
         if (typeof d.values === "undefined") {
           return 0;

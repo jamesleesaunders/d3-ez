@@ -35,7 +35,7 @@ d3.ez.chart.barChartClustered = function module() {
   var categoryNames;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Other Customisation Options
   var yAxisLabel = null;
@@ -144,8 +144,11 @@ d3.ez.chart.barChartClustered = function module() {
         .classed("seriesGroup", true)
         .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
         .datum(function(d) { return d; })
+				.merge(seriesGroup)
         .call(barsVertical);
 
+			seriesGroup.exit()
+				.remove();
     });
   }
 

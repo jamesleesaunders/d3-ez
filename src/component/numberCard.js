@@ -10,7 +10,7 @@ d3.ez.component.numberCard = function module() {
   var colorScale;
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     // var cellHeight = yScale.bandwidth();
@@ -24,7 +24,8 @@ d3.ez.component.numberCard = function module() {
       var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       // Add numbers to series
@@ -40,8 +41,8 @@ d3.ez.component.numberCard = function module() {
         .text(function(d) {
           return d['value'];
         })
-        .on("click", dispatch.customClick)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(numbers)
         .transition()
         .duration(1000)

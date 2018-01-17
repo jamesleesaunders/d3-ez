@@ -12,7 +12,7 @@ d3.ez.component.heatMapRing = function module() {
   var colorScale;
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
@@ -39,7 +39,8 @@ d3.ez.component.heatMapRing = function module() {
       var series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       var segments = series.selectAll(".segment")
@@ -59,7 +60,8 @@ d3.ez.component.heatMapRing = function module() {
         .attr("d", arc)
         .attr("fill", 'black')
         .classed("segment", true)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d.data); })
+				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(segments)
         .transition()
         .duration(transition.duration)

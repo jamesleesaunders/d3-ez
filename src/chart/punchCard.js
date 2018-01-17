@@ -35,7 +35,7 @@ d3.ez.chart.punchCard = function module() {
   var groupNames;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Misc Options
   var minRadius = 2;
@@ -143,15 +143,17 @@ d3.ez.chart.punchCard = function module() {
         .dispatch(dispatch);
 
       var seriesGroup = chart.selectAll(".seriesGroup")
-        .data(function(d) { return d; })
-        .enter().append("g")
+        .data(function(d) { return d; });
+
+			seriesGroup.enter().append("g")
         .attr("class", "seriesGroup")
-        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; });
+        .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
+				.datum(function(d) { return d; })
+				.merge(seriesGroup)
+				.call(proportionalAreaCircles);
 
-      seriesGroup.datum(function(d) { return d; })
-        .call(proportionalAreaCircles);
-
-      seriesGroup.exit().remove();
+      seriesGroup.exit()
+				.remove();
 
     });
   }

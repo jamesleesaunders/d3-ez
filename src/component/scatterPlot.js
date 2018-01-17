@@ -10,7 +10,7 @@ d3.ez.component.scatterPlot = function module() {
   var colorScale;
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     selection.each(function() {
@@ -22,7 +22,8 @@ d3.ez.component.scatterPlot = function module() {
         .append("g")
         .classed('series', true)
         .attr("fill", function(d) { return colorScale(d.key); })
-        .on("click", function(d) { dispatch.call("customClick", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       // Add dots to series
@@ -35,7 +36,8 @@ d3.ez.component.scatterPlot = function module() {
         .attr("r", 3)
         .attr("cx", function(d) { return xScale(d.key); })
         .attr("cy", height)
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(dots)
         .transition()
         .ease(transition.ease)

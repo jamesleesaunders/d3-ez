@@ -35,7 +35,7 @@ d3.ez.chart.heatMapRadial = function module() {
   var thresholds;
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function init(data) {
     chartW = width - (margin.left + margin.right);
@@ -122,15 +122,17 @@ d3.ez.chart.heatMapRadial = function module() {
         .dispatch(dispatch);
 
       var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
-        .data(function(d) { return d; })
-        .enter()
-        .append("g")
-        .attr("class", "seriesGroup");
+        .data(function(d) { return d; });
 
-      seriesGroup.datum(function(d) { return d; })
+			seriesGroup.enter()
+        .append("g")
+        .attr("class", "seriesGroup")
+				.merge(seriesGroup)
+				.datum(function(d) { return d; })
         .call(heatMapRing);
 
-      seriesGroup.exit().remove();
+      seriesGroup.exit()
+				.remove();
 
       // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()

@@ -27,7 +27,7 @@
     // Setup chart components
     myChart1 = d3.ez.component.htmlTable()
       .width(400)
-      .on("customClick", function(d) {
+      .on("customSeriesClick", function(d) {
         update5(data);
         update2(d);
         update3(d);
@@ -37,7 +37,7 @@
     myChart2 = d3.ez.chart.barChartVertical()
       .width(400)
       .height(200)
-      .on("customMouseOver", function(d) {
+      .on("customValueMouseOver", function(d) {
         console.log(d);
       });
 
@@ -54,7 +54,7 @@
       .width(400)
       .height(200)
       .yAxisLabel("Fruit")
-      .on("customClick", function(d) {
+      .on("customSeriesClick", function(d) {
         update2(d);
         update3(d);
         update4(d);
@@ -75,7 +75,7 @@
       .minRadius(2)
       .useGlobalScale(true)
       .maxRadius(18)
-      .on("customMouseOver", function(d) {
+      .on("customValueMouseOver", function(d) {
         console.log(d);
       });
 

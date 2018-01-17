@@ -10,7 +10,7 @@ d3.ez.component.barsStacked = function module() {
   var colorScale;
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     // Stack Generator
@@ -38,7 +38,8 @@ d3.ez.component.barsStacked = function module() {
       var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       // Add bars to series
@@ -55,7 +56,8 @@ d3.ez.component.barsStacked = function module() {
         .attr("ry", 0)
         .attr("height", 0)
         .attr("fill", function(d) { return colorScale(d.name); })
-        .on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
+				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(bars)
         .transition()
         .ease(transition.ease)

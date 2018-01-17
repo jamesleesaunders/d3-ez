@@ -28,12 +28,12 @@
         .chart(chart)
         .legend(legend)
         .title(title)
-        .on("customMouseOver", function(d) {
-          d3.select("#message").text(d.value);
-        })
-        .on("customClick", function(d) {
-          console.log(d);
-        });
+				.on("customValueMouseOver", function(d) {
+					d3.select("#message").text(d.value);
+				})
+				.on("customSeriesClick", function(d) {
+					console.log(d);
+				});
 
       // Add to page
       function update() {
