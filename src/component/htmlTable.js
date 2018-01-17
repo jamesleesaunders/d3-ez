@@ -22,7 +22,7 @@ d3.ez.component.htmlTable = function module() {
   var columnNames = [];
 
   // Dispatch (Custom events)
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function init(data) {
     // Cut the data in different ways....
@@ -74,14 +74,16 @@ d3.ez.component.htmlTable = function module() {
         });
 
       // Add table body
-      rows = body.selectAll("tr")
-        .data(data)
-        .enter()
+      var rowsSelect = body.selectAll("tr")
+        .data(data);
+
+      var rows = rowsSelect.enter()
         .append("tr")
         .attr("class", function(d) {
           return d.key;
         })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
+        .merge(rowsSelect);
 
       // Add the first column of headings (categories)
       rows.append("th")

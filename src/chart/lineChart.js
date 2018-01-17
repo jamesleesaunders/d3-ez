@@ -32,7 +32,7 @@ d3.ez.chart.lineChart = function module() {
   var groupNames;
 
   // Dispatch (Custom events)
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Other Customisation Options
   var yAxisLabel = null;
@@ -149,28 +149,28 @@ d3.ez.chart.lineChart = function module() {
       var lineGroup = chart.selectAll(".lineGroup")
         .data(function(d) { return d; });
 
-			lineGroup.enter().append("g")
+      lineGroup.enter().append("g")
         .attr("class", "lineGroup")
         .style("fill", function(d) { return colorScale(d.key); })
-				.datum(function(d) { return d; })
-				.merge(lineGroup)
-				.call(lineChart).call(scatterPlot);
+        .datum(function(d) { return d; })
+        .merge(lineGroup)
+        .call(lineChart).call(scatterPlot);
 
       lineGroup.exit()
-				.remove();
+        .remove();
 
       var dotGroup = chart.selectAll(".dotGroup")
         .data(function(d) { return d; });
 
-			dotGroup.enter().append("g")
+      dotGroup.enter().append("g")
         .attr("class", "dotGroup")
         .style("fill", function(d) { return colorScale(d.key); })
-				.datum(function(d) { return d; })
-				.merge(gotGroup)
-				.call(scatterPlot);
+        .datum(function(d) { return d; })
+        .merge(gotGroup)
+        .call(scatterPlot);
 
       dotGroup.exit()
-				.remove();
+        .remove();
     });
   }
 

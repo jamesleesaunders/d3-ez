@@ -1901,11 +1901,12 @@ d3.ez.component.htmlTable = function module() {
                 return d;
             });
             // Add table body
-            rows = body.selectAll("tr").data(data).enter().append("tr").attr("class", function(d) {
+            var rowsSelect = body.selectAll("tr").data(data);
+            var rows = rowsSelect.enter().append("tr").attr("class", function(d) {
                 return d.key;
             }).on("click", function(d) {
                 dispatch.call("customSeriesClick", this, d);
-            });
+            }).merge(rowsSelect);
             // Add the first column of headings (categories)
             rows.append("th").html(function(d) {
                 return d.key;
@@ -1970,7 +1971,7 @@ d3.ez.component.htmlList = function module() {
             }).on("click", expand);
             function expand(d) {
                 d3.event.stopPropagation();
-                dispatch.call("customMouseSeriesOver", this, d);
+                dispatch.call("customValueMouseOver", this, d);
                 if (typeof d.values === "undefined") {
                     return 0;
                 }

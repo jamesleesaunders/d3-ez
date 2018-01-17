@@ -64,12 +64,12 @@
         .chart(chart)
         .legend(legend)
         .title(title)
-				.on("customValueMouseOver", function(d) {
-					d3.select("#message").text(d.value);
-				})
-				.on("customSeriesClick", function(d) {
-					console.log(d);
-				});
+        .on("customValueMouseOver", function(d) {
+          d3.select("#message").text(d.value);
+        })
+        .on("customSeriesClick", function(d) {
+          console.log(d);
+        });
 
       d3.select('#chartholder')
         .datum(data)

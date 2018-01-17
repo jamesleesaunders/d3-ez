@@ -35,7 +35,7 @@ d3.ez.chart.heatMapTable = function module() {
   var thresholds = undefined;
 
   // Dispatch (Custom events)
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function init(data) {
     chartW = width - margin.left - margin.right;
@@ -135,15 +135,15 @@ d3.ez.chart.heatMapTable = function module() {
       var seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; });
 
-			seriesGroup.enter().append("g")
+      seriesGroup.enter().append("g")
         .attr("class", "seriesGroup")
         .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
-				.datum(function(d) { return d; })
-				.merge(seriesGroup)
+        .datum(function(d) { return d; })
+        .merge(seriesGroup)
         .call(heatMapRow);
 
       seriesGroup.exit()
-				.remove();
+        .remove();
 
     });
   }

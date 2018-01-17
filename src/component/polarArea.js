@@ -10,7 +10,7 @@ d3.ez.component.polarArea = function module() {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var yScale;
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
@@ -41,8 +41,8 @@ d3.ez.component.polarArea = function module() {
       var series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
-				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       // Add segments to series
@@ -53,8 +53,8 @@ d3.ez.component.polarArea = function module() {
         .append("path")
         .classed("segment", true)
         .style("fill", function(d) { return colorScale(d.data.key); })
-				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(segments)
         .transition()
         .ease(transition.ease)

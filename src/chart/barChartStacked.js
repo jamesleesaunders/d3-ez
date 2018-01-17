@@ -35,7 +35,7 @@ d3.ez.chart.barChartStacked = function module() {
   var categoryNames;
 
   // Dispatch (Custom events)
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Other Customisation Options
   var yAxisLabel = null;
@@ -144,11 +144,11 @@ d3.ez.chart.barChartStacked = function module() {
         .classed("seriesGroup", true)
         .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
         .datum(function(d) { return d; })
-				.merge(seriesGroup)
+        .merge(seriesGroup)
         .call(barsStacked);
 
-			seriesGroup.exit()
-				.remove();
+      seriesGroup.exit()
+        .remove();
     });
   }
 

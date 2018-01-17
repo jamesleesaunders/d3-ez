@@ -46,7 +46,6 @@
 				.legend(legend)
 				.title(title)
 				.on("customValueMouseOver", function (d) {
-					console.log(d);
 					// Show Tooltip
 					div.transition()
 						.duration(100)
@@ -63,26 +62,8 @@
 						.style("opacity", 0);
 				})
 				.on("customValueClick", function (d) {
-					console.log(d);
 					redraw();
 				});
-
-			// Convert json to d3-ez data format
-			var randData = function() {
-				return d3.nest().key(function (d) {
-					return d.TownA;
-				}).entries(json.Data).map(function (obj) {
-					obj.values = obj.values.map(function (values) {
-						return {
-							key: values.TownB,
-							// value: values.Value,
-							value: Math.floor(Math.random() * 6) + 1
-						};
-					});
-					return obj;
-				});
-			};
-
 
 			var redraw = function() {
 				var randData = d3.nest().key(function (d) {
@@ -104,7 +85,6 @@
 			};
 
 			redraw();
-
     });
   </script>
 </body>
