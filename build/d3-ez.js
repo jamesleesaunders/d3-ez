@@ -671,9 +671,9 @@ d3.ez.component.polarArea = function module() {
             segments.enter().append("path").classed("segment", true).style("fill", function(d) {
                 return colorScale(d.data.key);
             }).on("mouseover", function(d) {
-                dispatch.call("customValueMouseOver", this, d);
+                dispatch.call("customValueMouseOver", this, d.data);
             }).on("click", function(d) {
-                dispatch.call("customValueClick", this, d);
+                dispatch.call("customValueClick", this, d.data);
             }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
             segments.exit().transition().style("opacity", 0).remove();
         });
