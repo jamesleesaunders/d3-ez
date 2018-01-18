@@ -5,6 +5,8 @@
  * @copyright Copyright (C) 2018 James Saunders
  * @license GPLv3
  */
+"use strict";
+
 d3.ez = {
     version: "2.2.3",
     author: "James Saunders",
@@ -22,38 +24,35 @@ d3.ez.component = {
  */
 d3.ez.dataParse = function module(data) {
     var levels = function() {
-        if (data["key"] != undefined) {
+        if (data["key"] !== undefined) {
             return 1;
         } else {
             return 2;
         }
     }();
     var groupName = function() {
-        if (1 == levels) {
-            var ret = d3.values(data)[0];
-        } else {
-            var ret = undefined;
+        var ret;
+        if (1 === levels) {
+            ret = d3.values(data)[0];
         }
         return ret;
     }();
     var groupNames = function() {
-        if (1 == levels) {
-            ret = undefined;
-        } else {
-            var ret = data.map(function(d) {
+        var ret;
+        if (levels > 1) {
+            ret = data.map(function(d) {
                 return d.key;
             });
         }
         return ret;
     }();
     var groupTotals = function() {
-        if (1 == levels) {
-            var ret = undefined;
-        } else {
-            var ret = {};
-            d3.map(data).values().forEach(function(d, i) {
+        var ret;
+        if (levels > 1) {
+            ret = {};
+            d3.map(data).values().forEach(function(d) {
                 var groupName = d.key;
-                d.values.forEach(function(d, i) {
+                d.values.forEach(function(d) {
                     var categoryValue = +d.value;
                     ret[groupName] = typeof ret[groupName] === "undefined" ? 0 : ret[groupName];
                     ret[groupName] += categoryValue;
@@ -63,10 +62,9 @@ d3.ez.dataParse = function module(data) {
         return ret;
     }();
     var groupTotalsMax = function() {
-        if (1 == levels) {
-            var ret = undefined;
-        } else {
-            var ret = d3.max(d3.values(groupTotals));
+        var ret;
+        if (levels > 1) {
+            ret = d3.max(d3.values(groupTotals));
         }
         return ret;
     }();
@@ -86,16 +84,15 @@ d3.ez.dataParse = function module(data) {
     };
     var categoryNames = function() {
         var ret = [];
-        if (1 == levels) {
+        if (1 === levels) {
             ret = d3.values(data)[1].map(function(d) {
                 return d.key;
             });
         } else {
-            d3.map(data).values().forEach(function(d, i) {
+            d3.map(data).values().forEach(function(d) {
                 var tmp = [];
-                var groupName = d.key;
                 d.values.forEach(function(d, i) {
-                    categoryName = d.key;
+                    var categoryName = d.key;
                     tmp[i] = categoryName;
                 });
                 ret = union(tmp, ret);
@@ -104,23 +101,20 @@ d3.ez.dataParse = function module(data) {
         return ret;
     }();
     var categoryTotal = function() {
-        if (1 == levels) {
-            var ret = d3.sum(data.values, function(d) {
+        var ret;
+        if (1 === levels) {
+            ret = d3.sum(data.values, function(d) {
                 return d.value;
             });
-        } else {
-            var ret = undefined;
         }
         return ret;
     }();
     var categoryTotals = function() {
-        if (1 == levels) {
-            var ret = undefined;
-        } else {
-            var ret = {};
-            d3.map(data).values().forEach(function(d, i) {
-                var groupName = d.key;
-                d.values.forEach(function(d, i) {
+        var ret;
+        if (levels > 1) {
+            ret = {};
+            d3.map(data).values().forEach(function(d) {
+                d.values.forEach(function(d) {
                     var categoryName = d.key;
                     var categoryValue = +d.value;
                     ret[categoryName] = typeof ret[categoryName] === "undefined" ? 0 : ret[categoryName];
@@ -131,22 +125,21 @@ d3.ez.dataParse = function module(data) {
         return ret;
     }();
     var categoryTotalsMax = function() {
-        if (1 == levels) {
-            var ret = undefined;
-        } else {
-            var ret = d3.max(d3.values(categoryTotals));
+        var ret;
+        if (levels > 1) {
+            ret = d3.max(d3.values(categoryTotals));
         }
         return ret;
     }();
     var minValue = function() {
-        if (1 == levels) {
-            var ret = d3.min(data.values, function(d) {
+        var ret;
+        if (1 === levels) {
+            ret = d3.min(data.values, function(d) {
                 return d.value;
             });
         } else {
-            var ret = undefined;
-            d3.map(data).values().forEach(function(d, i) {
-                d.values.forEach(function(d, i) {
+            d3.map(data).values().forEach(function(d) {
+                d.values.forEach(function(d) {
                     ret = typeof ret === "undefined" ? d.value : d3.min([ ret, d.value ]);
                 });
             });
@@ -154,14 +147,14 @@ d3.ez.dataParse = function module(data) {
         return +ret;
     }();
     var maxValue = function() {
-        if (1 == levels) {
-            var ret = d3.max(data.values, function(d) {
+        var ret;
+        if (1 === levels) {
+            ret = d3.max(data.values, function(d) {
                 return d.value;
             });
         } else {
-            var ret = undefined;
-            d3.map(data).values().forEach(function(d, i) {
-                d.values.forEach(function(d, i) {
+            d3.map(data).values().forEach(function(d) {
+                d.values.forEach(function(d) {
                     ret = typeof ret === "undefined" ? d.value : d3.max([ ret, d.value ]);
                 });
             });
@@ -173,15 +166,13 @@ d3.ez.dataParse = function module(data) {
         if (!match) {
             return 0;
         }
-        ret = Math.max(0, // Number of digits right of decimal point.
+        var ret = Math.max(0, // Number of digits right of decimal point.
         (match[1] ? match[1].length : 0) - (match[2] ? +match[2] : 0));
         return ret;
     };
     var maxDecimalPlace = function() {
-        if (1 == levels) {
-            var ret = undefined;
-        } else {
-            var ret = 0;
+        var ret = 0;
+        if (levels > 1) {
             d3.map(data).values().forEach(function(d) {
                 d.values.forEach(function(d) {
                     ret = d3.max([ ret, decimalPlaces(d.value) ]);
@@ -403,7 +394,7 @@ d3.ez.colors = {
         var lumScale = d3.scale.linear().domain([ 1, count ]).range([ lumMin, lumMax ]);
         var result = [];
         for (var i = 1; i <= count; i++) {
-            lum = lumScale(i);
+            var lum = lumScale(i);
             // Validate and normalise Hex value.
             origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
             if (origHex.length < 6) {
@@ -548,7 +539,7 @@ d3.ez.component.barsStacked = function module() {
     function my(selection) {
         // Stack Generator
         var stacker = function(data) {
-            series = [];
+            var series = [];
             var y0 = 0;
             data.forEach(function(d, i) {
                 series[i] = {
@@ -1523,25 +1514,25 @@ d3.ez.component.legend = function module() {
         // Legend Box
         var legendBox = selection.selectAll("#legendBox").data([ 0 ]).enter().append("g").attr("id", "legendBox");
         legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", fill).attr("stroke-width", strokewidth).attr("stroke", stroke);
-        legendTitle = legendBox.append("g").attr("transform", "translate(5, 15)");
+        var legendTitle = legendBox.append("g").attr("transform", "translate(5, 15)");
         legendTitle.append("text").style("font-weight", "bold").text(title);
         var y = 10;
         // Size Key
         if (typeof sizeScale !== "undefined") {
             // Calcualate a range of 5 numbers between min and max of range
-            min = d3.min(sizeScale.range());
-            max = d3.max(sizeScale.range());
-            diff = max - min;
-            step = diff / 4;
+            var min = d3.min(sizeScale.range());
+            var max = d3.max(sizeScale.range());
+            var diff = max - min;
+            var step = diff / 4;
             var range = [];
             range[0] = min;
             for (var s = 1; s < 5; s++) {
                 range[s] = range[s - 1] + step;
             }
             sizeScale.range(range);
-            numElements = sizeScale.range().length;
-            elementHeight = (height - 45) / numElements;
-            sizeKey = legendBox.append("g").attr("transform", "translate(5, 20)");
+            var numElements = sizeScale.range().length;
+            var elementHeight = (height - 45) / numElements;
+            var sizeKey = legendBox.append("g").attr("transform", "translate(5, 20)");
             for (var index = 0; index < numElements; index++) {
                 sizeKey.append("circle").attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("r", sizeScale.range()[index]);
                 text = keyScaleRange("size", index);
@@ -1553,14 +1544,14 @@ d3.ez.component.legend = function module() {
         if (typeof colorScale !== "undefined") {
             numElements = colorScale.domain().length;
             elementHeight = (height - 45) / numElements - 5;
-            colorKey = legendBox.append("g").attr("transform", "translate(5, 20)");
+            var colorKey = legendBox.append("g").attr("transform", "translate(5, 20)");
             for (var index = 0; index < numElements; index++) {
                 colorKey.append("rect").attr("x", 10).attr("y", y).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", .8).attr("width", 20).attr("height", elementHeight);
                 if (!isNaN(colorScale.domain()[index])) {
                     // If the scale is a threshold scale.
-                    text = keyScaleRange("threshold", index);
+                    var text = keyScaleRange("threshold", index);
                 } else {
-                    text = colorScale.domain()[index];
+                    var text = colorScale.domain()[index];
                 }
                 colorKey.append("text").attr("x", 40).attr("y", y + 10).text(text);
                 y = y + (elementHeight + spacing);
@@ -1585,8 +1576,8 @@ d3.ez.component.legend = function module() {
             break;
 
           case "threshold":
-            min = colorScale.domain()[position];
-            max = colorScale.domain()[position + 1];
+            var min = colorScale.domain()[position];
+            var max = colorScale.domain()[position + 1];
             rangeStr = isNaN(max) ? "> " + min : min + " - " + max;
             return rangeStr;
             break;
@@ -1596,7 +1587,7 @@ d3.ez.component.legend = function module() {
         var range = [];
         var rangeStart = domainMin;
         var rangeEnd = domainMin + rangeIncrement;
-        for (i = 0; i < rangeLength; i++) {
+        for (var i = 0; i < rangeLength; i++) {
             range = [ rangeStart, rangeEnd ];
             ranges.push(range);
             rangeStart = rangeEnd;
@@ -1663,7 +1654,7 @@ d3.ez.component.circularAxis = function module() {
         selection.each(function() {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
-            yScale2 = d3.scaleLinear().domain(yScale.domain().reverse()).range(yScale.range().reverse());
+            var yScale2 = d3.scaleLinear().domain(yScale.domain().reverse()).range(yScale.range().reverse());
             // Create axis group
             var axis = selection.selectAll(".axis").data([ 0 ]).enter().append("g").classed("axis", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
@@ -1684,7 +1675,7 @@ d3.ez.component.circularAxis = function module() {
             }).style("fill", "none");
             // Spokes
             var spokes = axis.select(".spokes").selectAll("line").data(xScale.domain()).enter().append("line").attr("y2", -radius).attr("transform", function(d, i, j) {
-                numBars = j.length;
+                var numBars = j.length;
                 return "rotate(" + i * 360 / numBars + ")";
             });
         });
@@ -1743,7 +1734,7 @@ d3.ez.component.circularLabels = function module() {
             labels.selectAll("text").data(function(d) {
                 return d;
             }).enter().append("text").style("text-anchor", "middle").append("textPath").attr("xlink:href", "#label-path").attr("startOffset", function(d, i, j) {
-                numBars = j.length;
+                var numBars = j.length;
                 return i * 100 / numBars + 50 / numBars + "%";
             }).text(function(d) {
                 return capitalizeLabels ? d.toUpperCase() : d;
@@ -1765,16 +1756,6 @@ d3.ez.component.circularLabels = function module() {
         if (!arguments.length) return radius;
         radius = _;
         return this;
-    };
-    my.colorScale = function(_) {
-        if (!arguments.length) return colorScale;
-        colorScale = _;
-        return my;
-    };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
-        return my;
     };
     return my;
 };
@@ -1892,7 +1873,7 @@ d3.ez.component.htmlTable = function module() {
             var foot = tableEl.append("tfoot");
             var body = tableEl.append("tbody");
             // Add table headings
-            hdr = head.append("tr");
+            var hdr = head.append("tr");
             hdr.selectAll("th").data(function() {
                 // Tack on a blank cell at the beginning,
                 // this is for the top of the first column.
@@ -2338,6 +2319,9 @@ d3.ez.chart.barChartVertical = function module() {
     var xAxis;
     var yAxis;
     var colorScale;
+    // Data Variables
+    var maxValue;
+    var categoryNames;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     // Other Customisation Options
@@ -2349,7 +2333,9 @@ d3.ez.chart.barChartVertical = function module() {
         var slicedData = d3.ez.dataParse(data);
         categoryNames = slicedData.categoryNames;
         maxValue = slicedData.maxValue;
-        yAxisLabel = slicedData.groupName;
+        if (!yAxisLabel) {
+            yAxisLabel = slicedData.groupName;
+        }
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
@@ -2390,7 +2376,7 @@ d3.ez.chart.barChartVertical = function module() {
             chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
             chart.select(".yAxis").call(yAxis);
             // Add labels to chart
-            ylabel = chart.select(".yAxis").selectAll(".y-label").data([ data.key ]);
+            var ylabel = chart.select(".yAxis").selectAll(".y-label").data([ data.key ]);
             ylabel.enter().append("text").classed("y-label", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function(d) {
                 return d;
             });
@@ -2934,7 +2920,7 @@ d3.ez.chart.lineChart = function module() {
                 data[i].values[j].key = new Date(b.key * 1e3);
             });
         });
-        dateDomain = d3.extent(data[0].values, function(d) {
+        var dateDomain = d3.extent(data[0].values, function(d) {
             return d.key;
         });
         // Colour Scale
@@ -3258,8 +3244,8 @@ d3.ez.chart.punchCard = function module() {
         minValue = slicedData.minValue;
         categoryNames = slicedData.categoryNames;
         groupNames = slicedData.groupNames;
-        valDomain = [ minValue, maxValue ];
-        sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
+        var valDomain = [ minValue, maxValue ];
+        var sizeDomain = useGlobalScale ? valDomain : [ 0, d3.max(data[1]["values"], function(d) {
             return d["value"];
         }) ];
         // Colour Scale

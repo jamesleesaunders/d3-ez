@@ -40,7 +40,7 @@ d3.ez.component.circularLabels = function module() {
         .append("textPath")
         .attr("xlink:href", "#label-path")
         .attr("startOffset", function(d, i, j) {
-          numBars = j.length;
+          var numBars = j.length;
           return i * 100 / numBars + 50 / numBars + "%";
         })
         .text(function(d) {
@@ -66,18 +66,6 @@ d3.ez.component.circularLabels = function module() {
     if (!arguments.length) return radius;
     radius = _;
     return this;
-  };
-
-  my.colorScale = function(_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
-
-  my.yScale = function(_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
   };
 
   return my;

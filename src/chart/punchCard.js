@@ -53,8 +53,8 @@ d3.ez.chart.punchCard = function module() {
     categoryNames = slicedData.categoryNames;
     groupNames = slicedData.groupNames;
 
-    valDomain = [minValue, maxValue];
-    sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
+    var valDomain = [minValue, maxValue];
+    var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
       return d['value'];
     })];
 

@@ -5,6 +5,8 @@
  * @copyright Copyright (C) 2018 James Saunders
  * @license GPLv3
  */
+"use strict";
+
 d3.ez = {
   version: "2.2.3",
   author: "James Saunders",

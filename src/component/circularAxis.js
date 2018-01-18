@@ -16,7 +16,7 @@ d3.ez.component.circularAxis = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
-      yScale2 = d3.scaleLinear()
+      var yScale2 = d3.scaleLinear()
         .domain(yScale.domain().reverse())
         .range(yScale.range().reverse());
 
@@ -66,7 +66,7 @@ d3.ez.component.circularAxis = function module() {
         .append("line")
         .attr("y2", -radius)
         .attr("transform", function(d, i, j) {
-          numBars = j.length;
+          var numBars = j.length;
           return "rotate(" + (i * 360 / numBars) + ")";
         });
 

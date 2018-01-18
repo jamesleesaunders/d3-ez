@@ -58,7 +58,7 @@ d3.ez.colors = {
 
     var result = [];
     for (var i = 1; i <= count; i++) {
-      lum = lumScale(i);
+      var lum = lumScale(i);
 
       // Validate and normalise Hex value.
       origHex = String(origHex).replace(/[^0-9a-f]/gi, "");

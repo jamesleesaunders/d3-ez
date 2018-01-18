@@ -5,7 +5,7 @@
 d3.ez.dataParse = function module(data) {
 
   var levels = (function() {
-    if (data['key'] != undefined) {
+    if (data['key'] !== undefined) {
       return 1;
     } else {
       return 2;
@@ -13,20 +13,18 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupName = (function() {
-    if (1 == levels) {
-      var ret = d3.values(data)[0];
-    } else {
-      var ret = undefined;
+  	var ret;
+    if (1 === levels) {
+      ret = d3.values(data)[0];
     }
 
     return ret;
   })();
 
   var groupNames = (function() {
-    if (1 == levels) {
-      ret = undefined;
-    } else {
-      var ret = data.map(function(d) {
+  	var ret;
+    if (levels > 1) {
+      ret = data.map(function(d) {
         return d.key;
       });
     }
@@ -35,13 +33,12 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupTotals = (function() {
-    if (1 == levels) {
-      var ret = undefined;
-    } else {
-      var ret = {};
-      d3.map(data).values().forEach(function(d, i) {
+		var ret;
+    if (levels > 1) {
+			ret = {};
+      d3.map(data).values().forEach(function(d) {
         var groupName = d.key;
-        d.values.forEach(function(d, i) {
+        d.values.forEach(function(d) {
           var categoryValue = +d.value;
 
           ret[groupName] = (typeof(ret[groupName]) === "undefined" ? 0 : ret[groupName]);
@@ -54,10 +51,9 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupTotalsMax = (function() {
-    if (1 == levels) {
-      var ret = undefined;
-    } else {
-      var ret = d3.max(d3.values(groupTotals));
+		var ret;
+    if (levels > 1) {
+      ret = d3.max(d3.values(groupTotals));
     }
 
     return ret;
@@ -79,21 +75,20 @@ d3.ez.dataParse = function module(data) {
     }
 
     return ret;
-  }
+  };
 
   var categoryNames = (function() {
     var ret = [];
-    if (1 == levels) {
+    if (1 === levels) {
       ret = d3.values(data)[1].map(function(d) {
         return d.key;
       });
 
     } else {
-      d3.map(data).values().forEach(function(d, i) {
+      d3.map(data).values().forEach(function(d) {
         var tmp = [];
-        var groupName = d.key;
         d.values.forEach(function(d, i) {
-          categoryName = d.key;
+          var categoryName = d.key;
           tmp[i] = categoryName;
         });
 
@@ -105,26 +100,22 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var categoryTotal = (function() {
-    if (1 == levels) {
-      var ret = d3.sum(data.values, function(d) {
+  	var ret;
+    if (1 === levels) {
+      ret = d3.sum(data.values, function(d) {
         return d.value;
       });
-    } else {
-      var ret = undefined;
     }
 
     return ret;
   })();
 
   var categoryTotals = (function() {
-    if (1 == levels) {
-      var ret = undefined;
-
-    } else {
-      var ret = {};
-      d3.map(data).values().forEach(function(d, i) {
-        var groupName = d.key;
-        d.values.forEach(function(d, i) {
+  	var ret;
+    if (levels > 1) {
+      ret = {};
+      d3.map(data).values().forEach(function(d) {
+        d.values.forEach(function(d) {
           var categoryName = d.key;
           var categoryValue = +d.value;
 
@@ -138,25 +129,23 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var categoryTotalsMax = (function() {
-    if (1 == levels) {
-      var ret = undefined;
-
-    } else {
-      var ret = d3.max(d3.values(categoryTotals));
+  	var ret;
+    if (levels > 1) {
+      ret = d3.max(d3.values(categoryTotals));
     }
 
     return ret;
   })();
 
   var minValue = (function() {
-    if (1 == levels) {
-      var ret = d3.min(data.values, function(d) {
+  	var ret;
+    if (1 === levels) {
+      ret = d3.min(data.values, function(d) {
         return d.value;
       });
     } else {
-      var ret = undefined;
-      d3.map(data).values().forEach(function(d, i) {
-        d.values.forEach(function(d, i) {
+      d3.map(data).values().forEach(function(d) {
+        d.values.forEach(function(d) {
           ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, d.value]));
         });
       });
@@ -166,15 +155,15 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var maxValue = (function() {
-    if (1 == levels) {
-      var ret = d3.max(data.values, function(d) {
+  	var ret;
+    if (1 === levels) {
+      ret = d3.max(data.values, function(d) {
         return d.value;
       });
 
     } else {
-      var ret = undefined;
-      d3.map(data).values().forEach(function(d, i) {
-        d.values.forEach(function(d, i) {
+      d3.map(data).values().forEach(function(d) {
+        d.values.forEach(function(d) {
           ret = (typeof(ret) === "undefined" ? d.value : d3.max([ret, d.value]));
         });
       });
@@ -186,7 +175,7 @@ d3.ez.dataParse = function module(data) {
   var decimalPlaces = function(num) {
     var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
-    ret = Math.max(
+    var ret = Math.max(
       0,
       // Number of digits right of decimal point.
       (match[1] ? match[1].length : 0)
@@ -198,11 +187,8 @@ d3.ez.dataParse = function module(data) {
   };
 
   var maxDecimalPlace = (function() {
-    if (1 == levels) {
-      var ret = undefined;
-
-    } else {
-      var ret = 0;
+  	var ret = 0;
+    if (levels > 1) {
       d3.map(data).values().forEach(function(d) {
         d.values.forEach(function(d) {
           ret = d3.max([ret, decimalPlaces(d.value)])

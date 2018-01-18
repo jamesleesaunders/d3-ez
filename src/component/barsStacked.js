@@ -15,7 +15,7 @@ d3.ez.component.barsStacked = function module() {
   function my(selection) {
     // Stack Generator
     var stacker = function(data) {
-      series = [];
+      var series = [];
       var y0 = 0;
       data.forEach(function(d, i) {
         series[i] = {

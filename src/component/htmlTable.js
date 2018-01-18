@@ -59,7 +59,7 @@ d3.ez.component.htmlTable = function module() {
       var body = tableEl.append("tbody");
 
       // Add table headings
-      hdr = head.append("tr");
+     var hdr = head.append("tr");
 
       hdr.selectAll("th")
         .data(function() {

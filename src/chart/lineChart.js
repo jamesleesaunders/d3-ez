@@ -52,7 +52,7 @@ d3.ez.chart.lineChart = function module() {
         data[i].values[j].key = new Date(b.key * 1000);
       });
     });
-    dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+    var dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
     // Colour Scale
     if (!colorScale) {

@@ -35,6 +35,7 @@ d3.ez.component.legend = function module() {
       .enter()
       .append("g")
       .attr("id", "legendBox");
+
     legendBox.append("rect")
       .attr("width", width)
       .attr("height", height)
@@ -43,9 +44,10 @@ d3.ez.component.legend = function module() {
       .attr("stroke-width", strokewidth)
       .attr("stroke", stroke);
 
-    legendTitle = legendBox.append('g')
+    var legendTitle = legendBox.append('g')
       .attr("transform", "translate(5, 15)");
-    legendTitle.append('text')
+
+		legendTitle.append('text')
       .style("font-weight", "bold")
       .text(title);
 
@@ -53,10 +55,10 @@ d3.ez.component.legend = function module() {
     // Size Key
     if (typeof sizeScale !== "undefined") {
       // Calcualate a range of 5 numbers between min and max of range
-      min = d3.min(sizeScale.range());
-      max = d3.max(sizeScale.range());
-      diff = max - min;
-      step = diff / 4;
+      var min = d3.min(sizeScale.range());
+      var max = d3.max(sizeScale.range());
+      var diff = max - min;
+      var step = diff / 4;
       var range = [];
       range[0] = min;
       for (var s = 1; s < 5; s++) {
@@ -64,10 +66,10 @@ d3.ez.component.legend = function module() {
       }
       sizeScale.range(range);
 
-      numElements = sizeScale.range().length;
-      elementHeight = ((height - 45) / numElements);
+      var numElements = sizeScale.range().length;
+      var elementHeight = ((height - 45) / numElements);
 
-      sizeKey = legendBox.append('g')
+      var sizeKey = legendBox.append('g')
         .attr("transform", "translate(5, 20)");
 
       for (var index = 0; index < numElements; index++) {
@@ -96,7 +98,7 @@ d3.ez.component.legend = function module() {
       numElements = colorScale.domain().length;
       elementHeight = ((height - 45) / numElements) - 5;
 
-      colorKey = legendBox.append('g')
+      var colorKey = legendBox.append('g')
         .attr("transform", "translate(5, 20)");
 
       for (var index = 0; index < numElements; index++) {
@@ -112,9 +114,9 @@ d3.ez.component.legend = function module() {
 
         if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
-          text = keyScaleRange('threshold', index);
+          var text = keyScaleRange('threshold', index);
         } else {
-          text = colorScale.domain()[index];
+          var text = colorScale.domain()[index];
         }
 
         colorKey.append('text')
@@ -142,8 +144,8 @@ d3.ez.component.legend = function module() {
         var rangeLength = colorScale.range().length;
         break;
       case 'threshold':
-        min = colorScale.domain()[position];
-        max = colorScale.domain()[position + 1];
+        var min = colorScale.domain()[position];
+				var max = colorScale.domain()[position + 1];
         rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max);
         return rangeStr;
         break;
@@ -154,7 +156,7 @@ d3.ez.component.legend = function module() {
     var rangeStart = domainMin;
     var rangeEnd = domainMin + rangeIncrement;
 
-    for (i = 0; i < rangeLength; i++) {
+    for (var i = 0; i < rangeLength; i++) {
       range = [rangeStart, rangeEnd];
       ranges.push(range);
       rangeStart = rangeEnd;
