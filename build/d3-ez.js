@@ -2994,7 +2994,7 @@ d3.ez.chart.lineChart = function module() {
                 return colorScale(d.key);
             }).datum(function(d) {
                 return d;
-            }).merge(gotGroup).call(scatterPlot);
+            }).merge(dotGroup).call(scatterPlot);
             dotGroup.exit().remove();
         });
     }

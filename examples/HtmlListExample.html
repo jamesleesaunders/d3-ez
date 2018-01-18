@@ -20,7 +20,6 @@
       var myList = d3.ez.component.htmlList()
         .classed("htmlList")
         .on("customValueMouseOver", function(d) {
-          console.log(d);
           d3.select("#message").text(d.value);
         })
         .on("customSeriesClick", function(d) {
