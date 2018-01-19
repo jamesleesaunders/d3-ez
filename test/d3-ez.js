@@ -1,7 +1,12 @@
 /**
- * d3.ez Test File - Use before Makefile
+ * d3-ez Test File (use before make)
  *
+ * @author James Saunders [james@saunders-family.net]
+ * @copyright Copyright (C) 2018 James Saunders
+ * @license GPLv3
  */
+"use strict";
+
 include('../src/header.js');
 include('../src/dataParse.js');
 include('../src/chart.js');
@@ -13,6 +18,7 @@ include('../src/component/creditTag.js');
 include('../src/component/labeledNode.js');
 include('../src/component/legend.js');
 include('../src/component/lineChart.js');
+include('../src/component/candleSticks.js');
 include('../src/component/heatMapRow.js');
 include('../src/component/heatMapRing.js');
 include('../src/component/proportionalAreaCircles.js');

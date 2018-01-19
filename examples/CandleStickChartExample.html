@@ -2,11 +2,10 @@
 <html>
 
 <head>
-  <title>d3-ez : Candle Stick Example</title>
+  <title>d3-ez : Candle Stick Chart Example</title>
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="../test/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../css/candleStick.css" />
-  <script src="../src/component/candleSticks.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
 </head>
 
 <body>
@@ -16,11 +15,11 @@
     d3.json("data/candle.json", function(error, data1) {
 
       var data = data1.values;
+      var classed = "candlestickChart";
 
       data.forEach(function(d, i) {
         data[i].date = Date.parse(d.date);
       });
-      console.log(data);
 
       var margin = {
         top: 20,
@@ -50,7 +49,7 @@
       // Create svg element
       var svg = d3.select('#chartholder')
         .classed('d3ez', true)
-        .classed('chart', true)
+        .classed(classed, true)
         .append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom);

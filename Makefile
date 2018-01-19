@@ -10,6 +10,7 @@ JS_FILES :=        src/header.js \
                    src/component/donut.js \
                    src/component/scatterPlot.js \
                    src/component/lineChart.js \
+                   src/component/candleSticks.js \
                    src/component/heatMapRow.js \
                    src/component/heatMapRing.js \
                    src/component/proportionalAreaCircles.js \
@@ -36,6 +37,7 @@ CSS_FILES :=       css/global.css \
                    css/htmlList.css \
                    css/htmlTable.css \
                    css/barChart.css \
+                   css/candlestickChart.css \
                    css/donutChart.css \
                    css/heatMapRadial.css \
                    css/heatMapTable.css \
