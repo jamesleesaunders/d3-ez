@@ -12,79 +12,79 @@
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-		var div = d3.select('body').append('div')
-			.attr('class', 'tooltip')
-			.style('opacity', 0)
-			.style('position', 'absolute')
-			.style('text-align', 'left')
-			.style('font-family', 'Verdana,Arial,Helvetica,Serif')
-			.style('font-size', '8pt')
-			.style('width', '140px')
-			.style('height', '50px')
-			.style('padding', '5px')
-			.style('background', 'lightsteelblue')
-			.style('border', '0px')
-			.style('border-radius', '5px')
-			.style('pointer-events', 'none')
-			.style('z-index', '9999');
+    var div = d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0)
+      .style('position', 'absolute')
+      .style('text-align', 'left')
+      .style('font-family', 'Verdana,Arial,Helvetica,Serif')
+      .style('font-size', '8pt')
+      .style('width', '140px')
+      .style('height', '50px')
+      .style('padding', '5px')
+      .style('background', 'lightsteelblue')
+      .style('border', '0px')
+      .style('border-radius', '5px')
+      .style('pointer-events', 'none')
+      .style('z-index', '9999');
 
     d3.json("data/town2town.json", function(error, json) {
-			// Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
-			// Possibly move to http://www.holiday-weather.com/new_york_city/averages/ ?
+      // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
+      // Possibly move to http://www.holiday-weather.com/new_york_city/averages/ ?
 
-			// var colors = ["#fb0007", "#fdb409", "#ffff0b", "#c3ff28"];
-			var colors = ["#c3ff28", "#fdb409", "#f38337", "#fb0007"];
-			var chart = d3.ez.chart.heatMapTable().colors(colors);
-			var legend = d3.ez.component.legend().title('Speed Index');
-			var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
+      // var colors = ["#fb0007", "#fdb409", "#ffff0b", "#c3ff28"];
+      var colors = ["#c3ff28", "#fdb409", "#f38337", "#fb0007"];
+      var chart = d3.ez.chart.heatMapTable().colors(colors);
+      var legend = d3.ez.component.legend().title('Speed Index');
+      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
 
-			// Create chart object
-			var myChart = d3.ez.chart()
-				.width(750)
-				.height(600)
-				.chart(chart)
-				.legend(legend)
-				.title(title)
-				.on("customValueMouseOver", function (d) {
-					// Show Tooltip
-					div.transition()
-						.duration(100)
-						.style("opacity", 0.8);
+      // Create chart object
+      var myChart = d3.ez.chart()
+        .width(750)
+        .height(600)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customValueMouseOver", function(d) {
+          // Show Tooltip
+          div.transition()
+            .duration(100)
+            .style("opacity", 0.8);
 
-					div.html("<p><b>Town A:</b> " + d.key + "<br /><b>Town B:</b> " + d.series + "<br /><b>Value:</b> " + d.value + "</p>")
-						.style("left", (d3.event.pageX) + "px")
-						.style("top", (d3.event.pageY) + "px");
-				})
-				.on("customValueMouseOut", function (d) {
-					// Hide Tooltip
-					div.transition()
-						.duration(500)
-						.style("opacity", 0);
-				})
-				.on("customValueClick", function (d) {
-					redraw();
-				});
+          div.html("<p><b>Town A:</b> " + d.key + "<br /><b>Town B:</b> " + d.series + "<br /><b>Value:</b> " + d.value + "</p>")
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY) + "px");
+        })
+        .on("customValueMouseOut", function(d) {
+          // Hide Tooltip
+          div.transition()
+            .duration(500)
+            .style("opacity", 0);
+        })
+        .on("customValueClick", function(d) {
+          redraw();
+        });
 
-			var redraw = function() {
-				var randData = d3.nest().key(function (d) {
-					return d.TownA;
-				}).entries(json.Data).map(function (obj) {
-					obj.values = obj.values.map(function (values) {
-						return {
-							key: values.TownB,
-							// value: values.Value,
-							value: Math.floor(Math.random() * 6) + 1
-						};
-					});
-					return obj;
-				});
+      var redraw = function() {
+        var randData = d3.nest().key(function(d) {
+          return d.TownA;
+        }).entries(json.Data).map(function(obj) {
+          obj.values = obj.values.map(function(values) {
+            return {
+              key: values.TownB,
+              // value: values.Value,
+              value: Math.floor(Math.random() * 6) + 1
+            };
+          });
+          return obj;
+        });
 
-				d3.select('#chartholder')
-					.datum(randData)
-					.call(myChart);
-			};
+        d3.select('#chartholder')
+          .datum(randData)
+          .call(myChart);
+      };
 
-			redraw();
+      redraw();
     });
   </script>
 </body>

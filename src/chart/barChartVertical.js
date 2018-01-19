@@ -27,9 +27,9 @@ d3.ez.chart.barChartVertical = function module() {
   var yAxis;
   var colorScale;
 
-	// Data Variables
-	var maxValue;
-	var categoryNames;
+  // Data Variables
+  var maxValue;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -46,9 +46,9 @@ d3.ez.chart.barChartVertical = function module() {
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
 
-		if (!yAxisLabel) {
-			yAxisLabel = slicedData.groupName;
-		}
+    if (!yAxisLabel) {
+      yAxisLabel = slicedData.groupName;
+    }
 
     if (!colorScale) {
       // If the colorScale has not already been passed

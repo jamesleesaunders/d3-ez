@@ -13,7 +13,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupName = (function() {
-  	var ret;
+    var ret;
     if (1 === levels) {
       ret = d3.values(data)[0];
     }
@@ -22,7 +22,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupNames = (function() {
-  	var ret;
+    var ret;
     if (levels > 1) {
       ret = data.map(function(d) {
         return d.key;
@@ -33,9 +33,9 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupTotals = (function() {
-		var ret;
+    var ret;
     if (levels > 1) {
-			ret = {};
+      ret = {};
       d3.map(data).values().forEach(function(d) {
         var groupName = d.key;
         d.values.forEach(function(d) {
@@ -51,7 +51,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var groupTotalsMax = (function() {
-		var ret;
+    var ret;
     if (levels > 1) {
       ret = d3.max(d3.values(groupTotals));
     }
@@ -100,7 +100,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var categoryTotal = (function() {
-  	var ret;
+    var ret;
     if (1 === levels) {
       ret = d3.sum(data.values, function(d) {
         return d.value;
@@ -111,7 +111,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var categoryTotals = (function() {
-  	var ret;
+    var ret;
     if (levels > 1) {
       ret = {};
       d3.map(data).values().forEach(function(d) {
@@ -129,7 +129,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var categoryTotalsMax = (function() {
-  	var ret;
+    var ret;
     if (levels > 1) {
       ret = d3.max(d3.values(categoryTotals));
     }
@@ -138,7 +138,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var minValue = (function() {
-  	var ret;
+    var ret;
     if (1 === levels) {
       ret = d3.min(data.values, function(d) {
         return d.value;
@@ -155,7 +155,7 @@ d3.ez.dataParse = function module(data) {
   })();
 
   var maxValue = (function() {
-  	var ret;
+    var ret;
     if (1 === levels) {
       ret = d3.max(data.values, function(d) {
         return d.value;
@@ -187,7 +187,7 @@ d3.ez.dataParse = function module(data) {
   };
 
   var maxDecimalPlace = (function() {
-  	var ret = 0;
+    var ret = 0;
     if (levels > 1) {
       d3.map(data).values().forEach(function(d) {
         d.values.forEach(function(d) {

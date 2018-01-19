@@ -47,7 +47,7 @@ d3.ez.component.legend = function module() {
     var legendTitle = legendBox.append('g')
       .attr("transform", "translate(5, 15)");
 
-		legendTitle.append('text')
+    legendTitle.append('text')
       .style("font-weight", "bold")
       .text(title);
 
@@ -145,7 +145,7 @@ d3.ez.component.legend = function module() {
         break;
       case 'threshold':
         var min = colorScale.domain()[position];
-				var max = colorScale.domain()[position + 1];
+        var max = colorScale.domain()[position + 1];
         rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max);
         return rangeStr;
         break;
