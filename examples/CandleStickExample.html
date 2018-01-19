@@ -13,7 +13,9 @@
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    d3.json("data/candle.json", function(error, data) {
+    d3.json("data/candle.json", function(error, data1) {
+
+      var data = data1.values;
 
       data.forEach(function(d, i) {
         data[i].date = Date.parse(d.date);
