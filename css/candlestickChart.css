@@ -1,41 +1,7 @@
 /* === Candlestick Chart Styles === */
 
-.candlestickChart .gridlines {
-  stroke: lightgrey;
-  shape-rendering: crispEdges;
-  stroke-width: 1;
-}
-
-.candlestickChart .ohlc-series path {
-  vector-effect: non-scaling-stroke;
-  stroke-width: 1.5;
-}
-
-.candlestickChart .ohlc-series .up-days {
-  stroke: green;
-}
-
-.candlestickChart .ohlc-series .down-days {
-  stroke: red;
-}
-
-.candlestickChart .ohlc-series .bar.up-day {
-  stroke: green;
-}
-
-.candlestickChart .ohlc-series .bar.down-day {
-  stroke: red;
-}
-
-.candlestickChart .candlestick-series .bar path {
+.candlestickChart .bar path {
   stroke: black;
-}
-
-.candlestickChart .comparison-series .line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-  vector-effect: non-scaling-stroke;
 }
 
 .candlestickChart .bar.up-day rect {

@@ -2,8 +2,8 @@
 <html>
 
 <head>
-  <title>d3-ez : Candle Stick Chart Example</title>
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <title>d3-ez : Candlestick Chart Example</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../test/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
 </head>
@@ -12,102 +12,29 @@
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    d3.json("data/candle.json", function(error, data1) {
+    d3.json("data/candle.json", function(error, data) {
 
-      var data = data1.values;
-      var classed = "candlestickChart";
+      var chart = d3.ez.chart.candlestickChart();
+      var legend = d3.ez.component.legend().title("Bitcoin Price");
+      var title = d3.ez.component.title().mainText("Bitcoin Price").subText("Bitcoin Price");
 
-      data.forEach(function(d, i) {
-        data[i].date = Date.parse(d.date);
-      });
-
-      var margin = {
-        top: 20,
-        right: 20,
-        bottom: 30,
-        left: 50
-      };
-      var width = 660 - margin.left - margin.right;
-      var height = 400 - margin.top - margin.bottom;
-
-      var xScale = d3.time.scale();
-      var yScale = d3.scale.linear();
-
-      var xAxis = d3.svg.axis()
-        .scale(xScale)
-        .orient('bottom')
-        .ticks(5);
-
-      var yAxis = d3.svg.axis()
-        .scale(yScale)
-        .orient('left');
-
-      var series = d3.ez.component.candleSticks()
-        .xScale(xScale)
-        .yScale(yScale);
-
-      // Create svg element
-      var svg = d3.select('#chartholder')
-        .classed('d3ez', true)
-        .classed(classed, true)
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom);
-
-      // Ceate chart
-      var g = svg.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-      var plotArea = g.append('g');
-      plotArea.append('clipPath')
-        .attr('id', 'plotAreaClip')
-        .append('rect')
-        .attr({
-          width: width,
-          height: height
+      // Create chart object
+      var myChart = d3.ez.chart()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customValueMouseOver", function(d) {
+          d3.select("#message").text(d.value);
+        })
+        .on("customSeriesClick", function(d) {
+          console.log(d);
         });
-      plotArea.attr('clip-path', 'url(#plotAreaClip)');
 
-      // Set scale domains
-      var maxDate = d3.max(data, function(d) {
-        return d.date;
-      });
-
-      xScale.domain([
-        new Date(maxDate - (8.64e7 * 31.5)),
-        new Date(maxDate + 8.64e7)
-      ]);
-
-      yScale.domain(
-        [
-          d3.min(data, function(d) {
-            return d.low;
-          }),
-          d3.max(data, function(d) {
-            return d.high;
-          })
-        ]
-      ).nice();
-
-      // Set scale ranges
-      xScale.range([0, width]);
-      yScale.range([height, 0]);
-
-      // Draw axes
-      g.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(xAxis);
-
-      g.append('g')
-        .attr('class', 'y axis')
-        .call(yAxis);
-
-      // Draw series.
-      plotArea.append('g')
-        .attr('class', 'series')
+      d3.select('#chartholder')
         .datum(data)
-        .call(series);
+        .call(myChart);
 
     });
   </script>

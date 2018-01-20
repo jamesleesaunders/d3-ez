@@ -37,6 +37,7 @@ include('../src/chart/donutChart.js');
 include('../src/chart/heatMapRadial.js');
 include('../src/chart/heatMapTable.js');
 include('../src/chart/lineChart.js');
+include('../src/chart/candleStickChart.js');
 include('../src/chart/polarAreaChart.js');
 include('../src/chart/punchCard.js');
 
