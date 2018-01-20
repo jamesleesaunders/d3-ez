@@ -121,17 +121,6 @@ d3.ez.chart.candlestickChart = function module() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      /*
-      var plotArea = g.append('g');
-      plotArea.append('clipPath')
-        .attr('id', 'plotAreaClip')
-        .append('rect')
-        .attr({
-          width: width,
-          height: height
-        });
-      plotArea.attr('clip-path', 'url(#plotAreaClip)');
-      */
 
       // Add labels to chart
       var ylabel = chart.select(".yAxis")
@@ -151,6 +140,14 @@ d3.ez.chart.candlestickChart = function module() {
         .text(function(d) {
           return (d);
         });
+
+      // Add Clip Path
+      chart.append('clipPath')
+        .attr('id', 'plotAreaClip')
+        .append('rect')
+        .attr('width', chartW)
+        .attr('height', chartH)
+        .attr('clip-path', 'url(#plotAreaClip)');
 
       // Add candles to the chart
       var candleSticks = d3.ez.component.candleSticks()
