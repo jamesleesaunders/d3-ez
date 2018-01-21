@@ -1,5 +1,5 @@
 /**
- * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart)
+ * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
  *
  * @see http://datavizproject.com/data-type/candlestick-chart/
  */
