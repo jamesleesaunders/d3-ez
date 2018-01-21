@@ -107,6 +107,7 @@ The following charts are currently supported:
 * donutChart()
 * heatMapTable()
 * heatMapRadial()
+* candleChart()
 * lineChart()
 * polarAreaChart()
 * punchCard()
