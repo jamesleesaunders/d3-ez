@@ -1,5 +1,5 @@
 /**
- * Candlestick Chart (also called: Japanese Candlestick)
+ * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart)
  *
  * @see http://datavizproject.com/data-type/candlestick-chart/
  */
@@ -120,7 +120,6 @@ d3.ez.chart.candlestickChart = function module() {
 
       chart.select(".yAxis")
         .call(yAxis);
-
 
       // Add labels to chart
       var ylabel = chart.select(".yAxis")

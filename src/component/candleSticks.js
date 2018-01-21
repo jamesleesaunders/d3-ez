@@ -64,6 +64,35 @@ d3.ez.component.candleSticks = function() {
       });
   };
 
+  var openCloseTicks = function(bars) {
+    var open = bars.selectAll('.open-tick').data(function(d) {
+      return [d];
+    });
+
+    var close = bars.selectAll('.close-tick').data(function(d) {
+      return [d];
+    });
+
+    open.enter().append('path');
+    close.enter().append('path');
+
+    open.classed('open-tick', true)
+      .attr('d', function(d) {
+        return line([
+          { x: xScale(d.date) - candleWidth, y: yScale(d.open) },
+          { x: xScale(d.date), y: yScale(d.open) }
+        ]);
+      });
+
+    close.classed('close-tick', true)
+      .attr('d', function(d) {
+        return line([
+          { x: xScale(d.date), y: yScale(d.close) },
+          { x: xScale(d.date) + candleWidth, y: yScale(d.close) }
+        ]);
+      });
+  };
+
   var my = function(selection) {
     selection.each(function(data) {
       // Create series group
