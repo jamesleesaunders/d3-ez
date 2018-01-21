@@ -8,7 +8,7 @@
 "use strict";
 
 d3.ez = {
-  version: "2.2.3",
+  version: "2.2.4",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0"
