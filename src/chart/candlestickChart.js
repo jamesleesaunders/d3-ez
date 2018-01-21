@@ -14,7 +14,7 @@ d3.ez.chart.candlestickChart = function module() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = ["green", "red"];
 
   // Chart Dimensions
   var chartW;
@@ -57,6 +57,14 @@ d3.ez.chart.candlestickChart = function module() {
     //if (!yAxisLabel) {
     //  yAxisLabel = slicedData.groupName;
     //}
+
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain([true, false]);
+    }
 
     // X & Y Scales
     xScale = d3.scaleTime()
@@ -141,12 +149,12 @@ d3.ez.chart.candlestickChart = function module() {
         });
 
       // Add Clip Path
-      chart.append('clipPath')
-        .attr('id', 'plotAreaClip')
-        .append('rect')
-        .attr('width', chartW)
-        .attr('height', chartH)
-        .attr('clip-path', 'url(#plotAreaClip)');
+      // chart.append('clipPath')
+      //   .attr('id', 'plotAreaClip')
+      //   .append('rect')
+      //   .attr('width', chartW)
+      //   .attr('height', chartH)
+      //   .attr('clip-path', 'url(#plotAreaClip)');
 
       // Add candles to the chart
       var candleSticks = d3.ez.component.candleSticks()
@@ -154,6 +162,7 @@ d3.ez.chart.candlestickChart = function module() {
         .height(chartH)
         .xScale(xScale)
         .yScale(yScale)
+        .colorScale(colorScale)
         .dispatch(dispatch);
 
       chart.select(".candleSticks")

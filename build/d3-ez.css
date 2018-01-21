@@ -154,23 +154,21 @@ table.htmlTable {
 
 /* === Candlestick Chart Styles === */
 
-.candlestickChart .bar path {
+.candlestickChart .series .bar {
   stroke: black;
+  vector-effect: non-scaling-stroke;
 }
 
-.candlestickChart .bar.up-day rect {
-  fill: green;
+.candlestickChart .series .bar path.high-low-line {
+  stroke-width: 0.8px;
 }
 
-.candlestickChart .bar.down-day rect {
-  fill: red;
+.candlestickChart .series .bar path.open-tick, .candlestickChart .bar path.close-tick {
+  stroke-width: 0.8px;
 }
 
-.candlestickChart .zoom-pane {
-  fill: none;
-  pointer-events: all;
-  cursor: -webkit-grab;
-  cursor: -moz-grab;
+.candlestickChart .series .bar rect.open-close-bar {
+  stroke-width: 1px;
 }
 
 

@@ -8,7 +8,7 @@
 "use strict";
 
 d3.ez = {
-    version: "2.2.3",
+    version: "2.2.4",
     author: "James Saunders",
     copyright: "Copyright (C) 2018 James Saunders",
     license: "GPL-3.0"
@@ -1029,7 +1029,7 @@ d3.ez.component.candleSticks = function() {
         ease: d3.easeBounce,
         duration: 500
     };
-    var colorScale;
+    var colorScale = d3.scaleOrdinal().range([ "green", "red" ]).domain([ true, false ]);
     var xScale;
     var yScale;
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -1073,6 +1073,32 @@ d3.ez.component.candleSticks = function() {
             return isUpDay(d) ? yScale(d.open) - yScale(d.close) : yScale(d.close) - yScale(d.open);
         });
     };
+    var openCloseTicks = function(bars) {
+        var open = bars.selectAll(".open-tick").data(function(d) {
+            return [ d ];
+        });
+        var close = bars.selectAll(".close-tick").data(function(d) {
+            return [ d ];
+        });
+        open.enter().append("path").classed("open-tick", true).attr("d", function(d) {
+            return line([ {
+                x: xScale(d.date) - candleWidth,
+                y: yScale(d.open)
+            }, {
+                x: xScale(d.date),
+                y: yScale(d.open)
+            } ]);
+        });
+        close.enter().append("path").classed("close-tick", true).attr("d", function(d) {
+            return line([ {
+                x: xScale(d.date),
+                y: yScale(d.close)
+            }, {
+                x: xScale(d.date) + candleWidth,
+                y: yScale(d.close)
+            } ]);
+        });
+    };
     var my = function(selection) {
         selection.each(function(data) {
             // Create series group
@@ -1088,9 +1114,14 @@ d3.ez.component.candleSticks = function() {
             var barsSelect = series.selectAll(".bar").data(function(d) {
                 return d.values;
             });
-            var bars = barsSelect.enter().append("g").classed("bar", true).classed("up-day", isUpDay).classed("down-day", isDownDay).merge(barsSelect);
+            var bars = barsSelect.enter().append("g").classed("bar", true).attr("fill", function(d) {
+                return colorScale(isUpDay(d));
+            }).attr("stroke", function(d) {
+                return colorScale(isUpDay(d));
+            }).merge(barsSelect);
             highLowLines(bars);
             openCloseBars(bars);
+            /// openCloseTicks(bars);
             bars.exit().remove();
         });
     };
@@ -1104,6 +1135,11 @@ d3.ez.component.candleSticks = function() {
         if (!arguments.length) return height;
         height = _;
         return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
     };
     my.xScale = function(_) {
         if (!arguments.length) return xScale;

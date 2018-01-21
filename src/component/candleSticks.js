@@ -7,7 +7,7 @@ d3.ez.component.candleSticks = function() {
   var width = 400;
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colorScale;
+  var colorScale = d3.scaleOrdinal().range(["green", "red"]).domain([true, false]);
   var xScale;
   var yScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -65,18 +65,15 @@ d3.ez.component.candleSticks = function() {
   };
 
   var openCloseTicks = function(bars) {
-    var open = bars.selectAll('.open-tick').data(function(d) {
-      return [d];
-    });
+    var open = bars.selectAll('.open-tick')
+      .data(function(d) { return [d]; });
 
-    var close = bars.selectAll('.close-tick').data(function(d) {
-      return [d];
-    });
+    var close = bars.selectAll('.close-tick')
+      .data(function(d) { return [d]; });
 
-    open.enter().append('path');
-    close.enter().append('path');
-
-    open.classed('open-tick', true)
+    open.enter()
+      .append('path')
+      .classed('open-tick', true)
       .attr('d', function(d) {
         return line([
           { x: xScale(d.date) - candleWidth, y: yScale(d.open) },
@@ -84,7 +81,9 @@ d3.ez.component.candleSticks = function() {
         ]);
       });
 
-    close.classed('close-tick', true)
+    close.enter()
+      .append('path')
+      .classed('close-tick', true)
       .attr('d', function(d) {
         return line([
           { x: xScale(d.date), y: yScale(d.close) },
@@ -113,12 +112,13 @@ d3.ez.component.candleSticks = function() {
       var bars = barsSelect.enter()
         .append("g")
         .classed("bar", true)
-        .classed("up-day", isUpDay)
-        .classed("down-day", isDownDay)
+        .attr("fill", function(d) { return colorScale(isUpDay(d)); })
+        .attr("stroke", function(d) { return colorScale(isUpDay(d)); })
         .merge(barsSelect);
 
       highLowLines(bars);
       openCloseBars(bars);
+      /// openCloseTicks(bars);
 
       bars.exit().remove();
     });
@@ -135,6 +135,12 @@ d3.ez.component.candleSticks = function() {
     if (!arguments.length) return height;
     height = _;
     return this;
+  };
+
+  my.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
+    return my;
   };
 
   my.xScale = function(_) {
