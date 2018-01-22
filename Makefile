@@ -1,4 +1,4 @@
-# D3.EZ Makefile
+# d3-ez Makefile
 
 JS_FILES :=        src/header.js \
                    src/dataParse.js \
@@ -16,22 +16,22 @@ JS_FILES :=        src/header.js \
                    src/component/proportionalAreaCircles.js \
                    src/component/numberCard.js \
                    src/component/title.js \
-									 src/component/creditTag.js \
+                   src/component/creditTag.js \
                    src/component/legend.js \
-									 src/component/circularAxis.js \
+                   src/component/circularAxis.js \
                    src/component/circularLabels.js \
                    src/component/labeledNode.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
-									 src/chart/barChartClustered.js \
+                   src/chart/barChartClustered.js \
                    src/chart/barChartStacked.js \
                    src/chart/barChartVertical.js \
                    src/chart/donutChart.js \
-									 src/chart/candlestickChart.js \
+                   src/chart/candlestickChart.js \
                    src/chart/heatMapRadial.js \
                    src/chart/heatMapTable.js \
                    src/chart/lineChart.js \
-									 src/chart/polarAreaChart.js \
+                   src/chart/polarAreaChart.js \
                    src/chart/punchCard.js
 
 CSS_FILES :=       css/global.css \
@@ -43,7 +43,7 @@ CSS_FILES :=       css/global.css \
                    css/heatMapRadial.css \
                    css/heatMapTable.css \
                    css/lineChart.css \
-									 css/polarAreaChart.css \
+                   css/polarAreaChart.css \
                    css/punchCard.css
 
 GENERATED_FILES := build/d3-ez.js \
