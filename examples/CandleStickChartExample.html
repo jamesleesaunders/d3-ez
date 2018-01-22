@@ -12,7 +12,7 @@
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    d3.json("data/candle.json", function(error, data) {
+    d3.json("data/candlestick_data.json", function(error, data) {
 
       var chart = d3.ez.chart.candlestickChart();
       var legend = d3.ez.component.legend().title("Bitcoin Price");
