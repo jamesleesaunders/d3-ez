@@ -142,7 +142,7 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 * [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
 * [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
-* [Candlestick Chart](https://gist.github.com/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7)
+* [Candlestick Chart](http://bl.ocks.org/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [HTML List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [Multi Chart Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
