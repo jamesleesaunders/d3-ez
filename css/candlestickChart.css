@@ -9,10 +9,10 @@
   stroke-width: 0.8px;
 }
 
-.candlestickChart .series .bar path.open-tick, .candlestickChart .bar path.close-tick {
-  stroke-width: 0.8px;
-}
-
 .candlestickChart .series .bar rect.open-close-bar {
   stroke-width: 1px;
+}
+
+.candlestickChart .series .bar path.open-tick, .candlestickChart .bar path.close-tick {
+  stroke-width: 0.8px;
 }
