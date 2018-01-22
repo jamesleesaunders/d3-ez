@@ -27,6 +27,7 @@ JS_FILES :=        src/header.js \
                    src/chart/barChartStacked.js \
                    src/chart/barChartVertical.js \
                    src/chart/donutChart.js \
+									 src/chart/candlestickChart.js \
                    src/chart/heatMapRadial.js \
                    src/chart/heatMapTable.js \
                    src/chart/lineChart.js \
