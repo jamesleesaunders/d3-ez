@@ -114,6 +114,8 @@ d3.ez.component.candleSticks = function() {
         .classed("bar", true)
         .attr("fill", function(d) { return colorScale(isUpDay(d)); })
         .attr("stroke", function(d) { return colorScale(isUpDay(d)); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(barsSelect);
 
       highLowLines(bars);
