@@ -6,6 +6,7 @@ JS_FILES :=        src/header.js \
                    src/colors.js \
                    src/component/barsVertical.js \
                    src/component/barsStacked.js \
+                   src/component/barsCircular.js \
                    src/component/polarArea.js \
                    src/component/donut.js \
                    src/component/scatterPlot.js \
@@ -24,6 +25,7 @@ JS_FILES :=        src/header.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \
                    src/chart/barChartClustered.js \
+                   src/chart/barChartCircular.js \
                    src/chart/barChartStacked.js \
                    src/chart/barChartVertical.js \
                    src/chart/donutChart.js \
