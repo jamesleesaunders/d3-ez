@@ -1,5 +1,5 @@
 /**
- * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
+ * Bar Chart (vertical) (also called: Circular Bar Chart; Progress Chart)
  *
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
@@ -112,11 +112,19 @@ d3.ez.chart.barChartCircular = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      /*
+      // TODO: Tidy!
+      var spokeScale = d3.scaleLinear()
+        .domain([0, maxValue])
+        .range([radius, innerRadius]);
+      var ringScale = d3.scaleBand()
+        .domain(categoryNames)
+        .rangeRound([innerRadius, radius])
+        .padding(0.15);
+
       // Circular Axis
       var circularAxis = d3.ez.component.circularAxis()
-        .xScale(xScale)
-        .yScale(yScale)
+        .xScale(spokeScale)
+        .yScale(ringScale)
         .width(chartW)
         .height(chartH)
         .radius(radius);
@@ -129,9 +137,8 @@ d3.ez.chart.barChartCircular = function module() {
         .radius(radius * 1.04);
 
       chart.select(".circularLabels")
-        .datum(categoryNames)
+        .datum(spokeScale.ticks())
         .call(circularLabels);
-      */
 
       // Radial Bar Chart
       var barsCircular = d3.ez.component.barsCircular()

@@ -14,38 +14,50 @@ d3.ez.component.circularLabels = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
-      var labels = selection.selectAll('.circularLabels')
-        .data(function(d) { return [d]; })
-        .enter()
+      var labelsSelect = selection.selectAll('.circularLabels')
+        .data(function(d) { return [d]; });
+
+      var labels = labelsSelect.enter()
         .append("g")
-        .classed("circularLabels", true);
-      labels = selection.selectAll('.circularLabels').merge(labels);
+        .classed("circularLabels", true)
+        .merge(labelsSelect);
 
       // Labels
-      labels.selectAll("def")
-        .data([radius])
-        .enter()
+      var defSelect = labels.selectAll("def")
+        .data([radius]);
+
+      var def = defSelect.enter()
         .append("def")
         .append("path")
         .attr("id", "label-path")
+        .merge(defSelect)
         .attr("d", function(d) {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         });
 
-      labels.selectAll("text")
-        .data(function(d) { return d; })
-        .enter()
+      def.exit()
+        .remove();
+
+      var textSelect = labels.selectAll("text")
+        .data(function(d) { return d; });
+
+      var text = textSelect.enter()
         .append("text")
         .style("text-anchor", "middle")
-        .append("textPath")
+        .merge(textSelect);
+
+      text.append("textPath")
         .attr("xlink:href", "#label-path")
+        .text(function(d) {
+          return capitalizeLabels ? d.toUpperCase() : d;
+        })
         .attr("startOffset", function(d, i, j) {
           var numBars = j.length;
           return i * 100 / numBars + 50 / numBars + "%";
-        })
-        .text(function(d) {
-          return capitalizeLabels ? d.toUpperCase() : d;
         });
+
+      text.exit()
+        .remove();
     });
   }
 
