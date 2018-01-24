@@ -16,21 +16,19 @@ d3.ez.component.circularAxis = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
-      var yScale2 = d3.scaleLinear()
-        .domain(yScale.domain().reverse())
-        .range(yScale.range().reverse());
-
       // Create axis group
-      var axis = selection.selectAll('.axis')
-        .data([0])
-        .enter()
+      var axisSelect = selection.selectAll('.axis')
+        .data([0]);
+
+      var axis = axisSelect.enter()
         .append("g")
         .classed("axis", true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(axisSelect);
+
       axis.append("g").attr("class", "outerCircle");
       axis.append("g").attr("class", "tickCircles");
       axis.append("g").attr("class", "spokes");
-      axis = selection.selectAll('.axis').merge(axis);
 
       // Outer circle
       var outerCircle = axis.select(".outerCircle")
