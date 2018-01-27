@@ -26,7 +26,10 @@ d3.ez.component.circularLabels = function module() {
       var defSelect = labels.selectAll("def")
         .data([radius]);
 
-      var def = defSelect.enter()
+      defSelect.exit()
+        .remove();
+
+      defSelect.enter()
         .append("def")
         .append("path")
         .attr("id", "label-path")
@@ -35,19 +38,21 @@ d3.ez.component.circularLabels = function module() {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         });
 
-      def.exit()
-        .remove();
-
       var textSelect = labels.selectAll("text")
         .data(function(d) { return d; });
 
-      var text = textSelect.enter()
+      textSelect.exit()
+        .remove();
+
+      textSelect.enter()
         .append("text")
         .style("text-anchor", "middle")
+        .append("textPath")
+        .attr("xlink:href", "#label-path")
         .merge(textSelect);
 
-      text.append("textPath")
-        .attr("xlink:href", "#label-path")
+      textSelect.transition()
+        .select("textPath")
         .text(function(d) {
           return capitalizeLabels ? d.toUpperCase() : d;
         })
@@ -55,9 +60,6 @@ d3.ez.component.circularLabels = function module() {
           var numBars = j.length;
           return i * 100 / numBars + 50 / numBars + "%";
         });
-
-      text.exit()
-        .remove();
     });
   }
 
