@@ -15,13 +15,11 @@ d3.ez.component.barsCircular = function module() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
-
     // Arc Generator
-    var twoPi = Math.PI * 2;
     var arc = d3.arc()
       .startAngle(0)
       .endAngle(function(d) {
-        return twoPi * yScale(d.value);
+        return (yScale(d.value) * Math.PI) / 180;
       })
       .outerRadius(radius)
       .innerRadius(innerRadius)

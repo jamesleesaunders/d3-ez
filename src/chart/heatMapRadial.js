@@ -135,11 +135,15 @@ d3.ez.chart.heatMapRadial = function module() {
         .remove();
 
       // Circular Labels
+      var labelScale = d3.scaleBand()
+        .domain(categoryNames)
+        .range([0, 360]);
       var circularLabels = d3.ez.component.circularLabels()
+        .xScale(labelScale)
+        .textAnchor("start")
         .radius(radius * 1.04);
 
       chart.select(".circularLabels")
-        .datum(categoryNames)
         .call(circularLabels);
 
       // Y Axis

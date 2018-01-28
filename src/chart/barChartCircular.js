@@ -65,7 +65,7 @@ d3.ez.chart.barChartCircular = function module() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, 0.75]);
+      .range([0, 360*0.75]);
 
     categoryScale = d3.scaleBand()
       .domain(categoryNames)
@@ -112,19 +112,10 @@ d3.ez.chart.barChartCircular = function module() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // TODO: Tidy!
-      var spokeScale = d3.scaleLinear()
-        .domain([0, maxValue])
-        .range([radius, innerRadius]);
-      var ringScale = d3.scaleBand()
-        .domain(categoryNames)
-        .rangeRound([innerRadius, radius])
-        .padding(0.15);
-
       // Circular Axis
       var circularAxis = d3.ez.component.circularAxis()
-        .xScale(spokeScale)
-        .yScale(ringScale)
+        .xScale(yScale)
+        .yScale(xScale)
         .width(chartW)
         .height(chartH)
         .radius(radius);
@@ -133,11 +124,15 @@ d3.ez.chart.barChartCircular = function module() {
         .call(circularAxis);
 
       // Circular Labels
+      var labelScale = d3.scaleBand()
+        .domain(yScale.ticks())
+        .range(yScale.range());
       var circularLabels = d3.ez.component.circularLabels()
+        .xScale(labelScale)
+        .textAnchor("middle")
         .radius(radius * 1.04);
 
       chart.select(".circularLabels")
-        .datum(spokeScale.ticks())
         .call(circularLabels);
 
       // Radial Bar Chart

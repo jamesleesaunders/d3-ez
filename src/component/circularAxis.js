@@ -87,15 +87,25 @@ d3.ez.component.circularAxis = function module() {
         .merge(spokesGroupSelect);
 
       var spokes = spokesGroup.selectAll("line")
-        .data(function(d) { return d; });
+        .data(function(d) {
+          var spokeScale = d3.scaleLinear()
+            .domain([0, xScale.ticks().length])
+            .range(xScale.range());
+
+          return d.map(function(d, i) {
+            return {
+              text: d,
+              rotate: spokeScale(i)
+            }
+          });
+        });
 
       spokes.enter()
         .append("line")
         .attr("y2", -radius)
         .merge(spokes)
-        .attr("transform", function(d, i, j) {
-          var numBars = j.length;
-          return "rotate(" + (i * 360 / numBars) + ")";
+        .attr("transform", function(d) {
+          return "rotate(" + d.rotate + ")";
         });
 
       spokes.exit()

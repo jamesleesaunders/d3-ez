@@ -6,8 +6,10 @@ d3.ez.component.circularLabels = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
+  var xScale;
   var radius;
   var capitalizeLabels = false;
+  var textAnchor = "start";
 
   function my(selection) {
     selection.each(function(data) {
@@ -39,26 +41,44 @@ d3.ez.component.circularLabels = function module() {
         });
 
       var textSelect = labels.selectAll("text")
-        .data(function(d) { return d; });
+        .data(function(d) {
+          var textScale = d3.scaleLinear()
+            .domain([0, xScale.domain().length])
+            .range(xScale.range());
+
+          return xScale.domain().map(function(d, i) {
+            return {
+              text: d,
+              offset: ((textScale(i) / 360) * 100)
+            }
+          });
+        });
 
       textSelect.exit()
         .remove();
 
       textSelect.enter()
         .append("text")
-        .style("text-anchor", "middle")
+        .style("text-anchor", textAnchor)
         .append("textPath")
         .attr("xlink:href", "#label-path")
+        .text(function(d) {
+          var text = d.text;
+          return capitalizeLabels ? text.toUpperCase() : text;
+        })
+        .attr("startOffset", function(d) {
+          return d.offset + "%";
+        })
         .merge(textSelect);
 
       textSelect.transition()
         .select("textPath")
         .text(function(d) {
-          return capitalizeLabels ? d.toUpperCase() : d;
+          var text = d.text;
+          return capitalizeLabels ? text.toUpperCase() : text;
         })
-        .attr("startOffset", function(d, i, j) {
-          var numBars = j.length;
-          return i * 100 / numBars + 50 / numBars + "%";
+        .attr("startOffset", function(d) {
+          return d.offset + "%";
         });
     });
   }
@@ -79,6 +99,18 @@ d3.ez.component.circularLabels = function module() {
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;
+    return this;
+  };
+
+  my.xScale = function(_) {
+    if (!arguments.length) return xScale;
+    xScale = _;
+    return my;
+  };
+
+  my.textAnchor = function(_) {
+    if (!arguments.length) return textAnchor;
+    textAnchor  = _;
     return this;
   };
 
