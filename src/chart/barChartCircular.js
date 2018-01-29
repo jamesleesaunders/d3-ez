@@ -67,11 +67,6 @@ d3.ez.chart.barChartCircular = function module() {
       .domain([0, maxValue])
       .range([0, 360*0.75]);
 
-    categoryScale = d3.scaleBand()
-      .domain(categoryNames)
-      .rangeRound([radius, innerRadius])
-      .padding(0.15);
-
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
@@ -145,7 +140,7 @@ d3.ez.chart.barChartCircular = function module() {
         .call(barsCircular);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(categoryScale);
+      var verticalAxis = d3.axisLeft(xScale);
       chart.select(".verticalAxis")
         .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
         .call(verticalAxis);
