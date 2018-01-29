@@ -108,8 +108,8 @@ d3.ez.chart.polarAreaChart = function module() {
 
       // Circular Axis
       var circularAxis = d3.ez.component.circularAxis()
-        .xScale(xScale)
-        .yScale(yScale)
+        .radialScale(xScale)
+        .ringScale(yScale)
         .width(chartW)
         .height(chartH)
         .radius(radius);
@@ -135,11 +135,8 @@ d3.ez.chart.polarAreaChart = function module() {
         .call(verticalAxis);
 
       // Circular Labels
-      var labelScale = d3.scaleBand()
-        .domain(categoryNames)
-        .range([0, 360]);
       var circularLabels = d3.ez.component.circularLabels()
-        .xScale(labelScale)
+        .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
 

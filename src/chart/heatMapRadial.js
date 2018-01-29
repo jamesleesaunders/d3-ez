@@ -70,7 +70,7 @@ d3.ez.chart.heatMapRadial = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartW])
+      .rangeRound([0, 360])
       .padding(0.1);
 
     yScale = d3.scaleBand()
@@ -135,11 +135,8 @@ d3.ez.chart.heatMapRadial = function module() {
         .remove();
 
       // Circular Labels
-      var labelScale = d3.scaleBand()
-        .domain(categoryNames)
-        .range([0, 360]);
       var circularLabels = d3.ez.component.circularLabels()
-        .xScale(labelScale)
+        .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
 

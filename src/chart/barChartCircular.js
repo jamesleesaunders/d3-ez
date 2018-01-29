@@ -114,8 +114,8 @@ d3.ez.chart.barChartCircular = function module() {
 
       // Circular Axis
       var circularAxis = d3.ez.component.circularAxis()
-        .xScale(yScale)
-        .yScale(xScale)
+        .radialScale(yScale)
+        .ringScale(xScale)
         .width(chartW)
         .height(chartH)
         .radius(radius);
@@ -124,11 +124,8 @@ d3.ez.chart.barChartCircular = function module() {
         .call(circularAxis);
 
       // Circular Labels
-      var labelScale = d3.scaleBand()
-        .domain(yScale.ticks())
-        .range(yScale.range());
       var circularLabels = d3.ez.component.circularLabels()
-        .xScale(labelScale)
+        .radialScale(yScale)
         .textAnchor("middle")
         .radius(radius * 1.04);
 

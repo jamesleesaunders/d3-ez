@@ -6,7 +6,7 @@ d3.ez.component.circularLabels = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var xScale;
+  var radialScale;
   var radius;
   var capitalizeLabels = false;
   var textAnchor = "start";
@@ -40,13 +40,21 @@ d3.ez.component.circularLabels = function module() {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         });
 
+      if (typeof radialScale.ticks === "function") {
+				// scaleLinear
+				var tickData = radialScale.ticks();
+			} else {
+				// scaleBand
+				var tickData = radialScale.domain();
+			}
+
       var textSelect = labels.selectAll("text")
         .data(function(d) {
           var textScale = d3.scaleLinear()
-            .domain([0, xScale.domain().length])
-            .range(xScale.range());
+            .domain([0, tickData.length])
+            .range(radialScale.range());
 
-          return xScale.domain().map(function(d, i) {
+          return tickData.map(function(d, i) {
             return {
               text: d,
               offset: ((textScale(i) / 360) * 100)
@@ -102,9 +110,9 @@ d3.ez.component.circularLabels = function module() {
     return this;
   };
 
-  my.xScale = function(_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
+  my.radialScale = function(_) {
+    if (!arguments.length) return radialScale;
+		radialScale = _;
     return my;
   };
 

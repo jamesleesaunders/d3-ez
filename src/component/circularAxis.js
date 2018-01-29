@@ -7,8 +7,8 @@ d3.ez.component.circularAxis = function module() {
   var width = 300;
   var height = 300;
   var radius = 150;
-  var xScale;
-  var yScale;
+  var radialScale;
+  var ringScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
 
   function my(selection) {
@@ -38,14 +38,14 @@ d3.ez.component.circularAxis = function module() {
         .attr('stroke', '#ddd');
 
       // Tick circles
-      if (typeof yScale.ticks === "function") {
+      if (typeof ringScale.ticks === "function") {
         // scaleLinear
-        var tickData = yScale.ticks();
+        var tickData = ringScale.ticks();
         var tickPadding = 0;
       } else {
         // scaleBand
-        var tickData = yScale.domain();
-        var tickPadding = yScale.bandwidth() / 2;
+        var tickData = ringScale.domain();
+        var tickPadding = ringScale.bandwidth() / 2;
       }
       var tickCirclesGroupSelect = axis.selectAll(".tickCircles")
         .data([tickData]);
@@ -65,18 +65,18 @@ d3.ez.component.circularAxis = function module() {
         .attr('stroke', '#ddd')
         .merge(tickCircles)
         .transition()
-        .attr("r", function(d) { return (yScale(d) + tickPadding); });
+        .attr("r", function(d) { return (ringScale(d) + tickPadding); });
 
       tickCircles.exit()
         .remove();
 
       // Spokes
-      if (typeof xScale.ticks === "function") {
+      if (typeof radialScale.ticks === "function") {
         // scaleLinear
-        var spokeData = xScale.ticks();
+        var spokeData = radialScale.ticks();
       } else {
         // scaleBand
-        var spokeData = xScale.domain();
+        var spokeData = radialScale.domain();
       }
 
       var spokesGroupSelect = axis.selectAll(".spokes")
@@ -91,7 +91,7 @@ d3.ez.component.circularAxis = function module() {
         .data(function(d) {
           var spokeScale = d3.scaleLinear()
             .domain([0, spokeData.length])
-            .range(xScale.range());
+            .range(radialScale.range());
 
           return d.map(function(d, i) {
             return {
@@ -134,15 +134,15 @@ d3.ez.component.circularAxis = function module() {
     return this;
   };
 
-  my.xScale = function(_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
+  my.radialScale = function(_) {
+    if (!arguments.length) return radialScale;
+		radialScale = _;
     return my;
   };
 
-  my.yScale = function(_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
+  my.ringScale = function(_) {
+    if (!arguments.length) return ringScale;
+    ringScale = _;
     return my;
   };
 
