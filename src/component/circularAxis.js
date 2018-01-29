@@ -78,6 +78,7 @@ d3.ez.component.circularAxis = function module() {
         // scaleBand
         var spokeData = xScale.domain();
       }
+
       var spokesGroupSelect = axis.selectAll(".spokes")
         .data([spokeData]);
 
@@ -89,7 +90,7 @@ d3.ez.component.circularAxis = function module() {
       var spokes = spokesGroup.selectAll("line")
         .data(function(d) {
           var spokeScale = d3.scaleLinear()
-            .domain([0, xScale.ticks().length])
+            .domain([0, spokeData.length])
             .range(xScale.range());
 
           return d.map(function(d, i) {
