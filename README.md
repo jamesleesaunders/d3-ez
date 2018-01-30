@@ -152,7 +152,8 @@ What type of chart is best for different types of data?
 * Bar Charts are good for quantitative data.
 * Pie Charts for good to represent parts of a whole.
 * Histograms are good for showing distribution.
-For more information on which charts are good for different types of data see the [Data Viz Project](http://datavizproject.com/).
+
+For more information on which charts are good for different types of data see the [Data Viz Project](http://datavizproject.com/) or [Data Viz Catalogue](https://datavizcatalogue.com/index.html)
 
 ### Alternatives to d3-ez
 For reference here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:
