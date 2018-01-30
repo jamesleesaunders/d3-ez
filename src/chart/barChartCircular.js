@@ -25,13 +25,14 @@ d3.ez.chart.barChartCircular = function module() {
   // Scales and Axis
   var xScale;
   var yScale;
-  var xAxis;
-  var yAxis;
   var colorScale;
 
   // Data Variables
   var maxValue;
   var categoryNames;
+
+  // Other Customisation Options
+  var chartDegrees = 360 * 0.75;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -65,11 +66,7 @@ d3.ez.chart.barChartCircular = function module() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, 360*0.75]);
-
-    // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
-    yAxis = d3.axisLeft(yScale);
+      .range([0, chartDegrees]);
   }
 
   function my(selection) {
@@ -158,6 +155,24 @@ d3.ez.chart.barChartCircular = function module() {
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
+    return this;
+  };
+
+  my.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return this;
+  };
+  
+  my.radius = function(_) {
+    if (!arguments.length) return radius;
+    radius = _;
+    return this;
+  };
+
+  my.innerRadius = function(_) {
+    if (!arguments.length) return innerRadius;
+    innerRadius = _;
     return this;
   };
 

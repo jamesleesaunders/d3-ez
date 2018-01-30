@@ -184,6 +184,12 @@ d3.ez.chart.candlestickChart = function module() {
     return this;
   };
 
+  my.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return this;
+  };
+
   my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
