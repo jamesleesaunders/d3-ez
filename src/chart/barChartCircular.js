@@ -66,7 +66,8 @@ d3.ez.chart.barChartCircular = function module() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, chartDegrees]);
+      .range([0, chartDegrees])
+      .nice();
   }
 
   function my(selection) {
@@ -163,7 +164,7 @@ d3.ez.chart.barChartCircular = function module() {
     margin = _;
     return this;
   };
-  
+
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;

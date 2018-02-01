@@ -43,9 +43,32 @@ d3.ez.component.circularLabels = function module() {
       if (typeof radialScale.ticks === "function") {
 				// scaleLinear
 				var tickData = radialScale.ticks();
+
+        var min = d3.min(radialScale.domain());
+        console.log(min);
+        var max = d3.max(radialScale.domain());
+        console.log(max);
+        var range = max - min;
+        var split = tickData.length;
+        var each = range / split;
+
+        //var newtick = tickData.map(function(d, i) {
+        //  return (each * i).toFixed(0);
+        //});
+
+        var newtick = [];
+        for (i = 0; i < split; i++) {
+            newtick[i] = (each * i).toFixed(0);
+        }
+
+        console.log(newtick);
+        //tickData = newtick;
+
 			} else {
 				// scaleBand
 				var tickData = radialScale.domain();
+
+
 			}
 
       var textSelect = labels.selectAll("text")
