@@ -44,6 +44,9 @@ d3.ez.component.circularLabels = function module() {
 				// scaleLinear
 				var tickData = radialScale.ticks();
 
+
+        // << temp start >>
+
         var min = d3.min(radialScale.domain());
         console.log(min);
         var max = d3.max(radialScale.domain());
@@ -63,6 +66,9 @@ d3.ez.component.circularLabels = function module() {
 
         console.log(newtick);
         //tickData = newtick;
+
+        // << temp end >>
+
 
 			} else {
 				// scaleBand

@@ -67,7 +67,7 @@ d3.ez.chart.barChartCircular = function module() {
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range([0, chartDegrees])
-      .nice();
+      .nice();  // <<<---- temp ?
   }
 
   function my(selection) {
