@@ -93,7 +93,7 @@ d3.ez.component.candleSticks = function() {
   };
 
   var my = function(selection) {
-    selection.each(function(data) {
+    selection.each(function() {
       // Create series group
       var seriesSelect = d3.select(this).selectAll('.series')
         .data(function(d) { return [d]; });

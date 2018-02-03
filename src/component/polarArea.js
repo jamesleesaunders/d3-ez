@@ -7,28 +7,32 @@ d3.ez.component.polarArea = function module() {
   var width = 300;
   var height = 300;
   var radius = 150;
+  var startAngle = 0;
+  var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
+  var xScale;
   var yScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-
-    var yDomain = yScale.domain();
-    var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
+    startAngle = d3.min(xScale.range());
+    endAngle = d3.max(xScale.range());
 
     // Pie Generator
     var pie = d3.pie()
       .value(1)
       .sort(null)
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180))
       .padAngle(0);
 
     // Arc Generator
     var arc = d3.arc()
       .outerRadius(function(d) {
-        return barScale(d.data.value);
+        return yScale(d.data.value);
       })
       .innerRadius(0)
       .cornerRadius(2);
@@ -90,6 +94,12 @@ d3.ez.component.polarArea = function module() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.xScale = function(_) {
+    if (!arguments.length) return xScale;
+    xScale = _;
     return my;
   };
 

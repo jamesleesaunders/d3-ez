@@ -1,11 +1,11 @@
 /**
- * Reusable Heat Map Ring Component
+ * Reusable Circular Bar Chart Component
  *
  */
-d3.ez.component.heatMapRing = function module() {
+d3.ez.component.barsCircular = function module() {
   // Default Options (Configurable via setters)
-  var width = 300;
-  var height = 300;
+  var width = 400;
+  var height = 400;
   var radius = 150;
   var innerRadius = 20;
   var startAngle = 0;
@@ -20,22 +20,26 @@ d3.ez.component.heatMapRing = function module() {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
-    startAngle = d3.min(xScale.range());
-    endAngle = d3.max(xScale.range());
-
-    // Pie Generator
-    var pie = d3.pie()
-      .value(1)
-      .sort(null)
-      .startAngle(startAngle * (Math.PI / 180))
-      .endAngle(endAngle * (Math.PI / 180))
-      .padAngle(0.015);
+    startAngle = d3.min(yScale.range());
+    endAngle = d3.max(yScale.range());
 
     // Arc Generator
     var arc = d3.arc()
+      .startAngle(0)
+      .endAngle(function(d) {
+        return (yScale(d.value) * Math.PI) / 180;
+      })
       .outerRadius(radius)
       .innerRadius(innerRadius)
       .cornerRadius(2);
+
+    var arcTween = function(d) {
+      var i = d3.interpolate(this._current, d);
+      this._current = i(0);
+      return function(t) {
+        return arc(i(t));
+      };
+    };
 
     selection.each(function() {
       // Create series group
@@ -49,36 +53,28 @@ d3.ez.component.heatMapRing = function module() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      var segments = series.selectAll(".segment")
-        .data(function(d) {
-          var key = d.key;
-          var data = pie(d.values);
-          data.forEach(function(d, i) {
-            data[i].key = key;
-          });
+      // Add bars to series
+      var bars = series.selectAll(".bar")
+        .data(function(d) { return d.values; });
 
-          return data;
-        });
-
-      // Ring Segments
-      segments.enter()
+      bars.enter()
         .append("path")
         .attr("d", arc)
-        .attr("fill", 'black')
-        .classed("segment", true)
+        .classed("bar", true)
+        .style("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-        .merge(segments)
+        .merge(bars)
         .transition()
+        .ease(transition.ease)
         .duration(transition.duration)
-        .attr("fill", function(d) { return colorScale(d.data.value); });
+        .attrTween("d", arcTween);
 
-      segments.exit()
+      bars.exit()
         .transition()
         .style("opacity", 0)
         .remove();
     });
-
   }
 
   // Configuration Getters & Setters

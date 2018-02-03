@@ -1,18 +1,18 @@
 /**
- * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
+ * Bar Chart (vertical) (also called: Circular Bar Chart; Progress Chart)
  *
- * @see http://datavizproject.com/data-type/polar-area-chart/
+ * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
-d3.ez.chart.polarAreaChart = function module() {
+d3.ez.chart.barChartCircular = function module() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartPolarArea";
+  var classed = "barChartCircular";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = d3.ez.colors.categorical(4);
 
@@ -28,19 +28,15 @@ d3.ez.chart.polarAreaChart = function module() {
   var colorScale;
 
   // Data Variables
-  var categoryNames = [];
-  var maxValue = 0;
+  var maxValue;
+  var categoryNames;
 
   // Other Customisation Options
   var startAngle = 0;
-  var endAngle = 360;
+  var endAngle = 270;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  // Other Customisation Options
-  var capitalizeLabels = false;
-  var colorLabels = false;
 
   function init(data) {
     chartW = width - (margin.left + margin.right);
@@ -67,13 +63,12 @@ d3.ez.chart.polarAreaChart = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([startAngle, endAngle])
+      .rangeRound([radius, innerRadius])
       .padding(0.15);
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, radius])
-      .nice();
+      .range([startAngle, endAngle]);
   }
 
   function my(selection) {
@@ -98,7 +93,7 @@ d3.ez.chart.polarAreaChart = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circularAxis", true);
-        chart.append("g").classed("polarArea", true);
+        chart.append("g").classed("barsCircular", true);
         chart.append("g").classed("verticalAxis axis", true);
         chart.append("g").classed("circularLabels", true);
       } else {
@@ -113,8 +108,8 @@ d3.ez.chart.polarAreaChart = function module() {
 
       // Circular Axis
       var circularAxis = d3.ez.component.circularAxis()
-        .radialScale(xScale)
-        .ringScale(yScale)
+        .radialScale(yScale)
+        .ringScale(xScale)
         .width(chartW)
         .height(chartH)
         .radius(radius);
@@ -122,32 +117,32 @@ d3.ez.chart.polarAreaChart = function module() {
       chart.select(".circularAxis")
         .call(circularAxis);
 
-      // Radial Bar Chart
-      var polarArea = d3.ez.component.polarArea()
-        .radius(radius)
-        .xScale(xScale)
-        .yScale(yScale)
-        .colorScale(colorScale)
-        .dispatch(dispatch);
-
-      chart.select(".polarArea")
-        .datum(data)
-        .call(polarArea);
-
-      // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]).nice());
-      chart.select(".verticalAxis")
-        .attr("transform", "translate(0," + -(chartH / 2) + ")")
-        .call(verticalAxis);
-
       // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()
-        .radialScale(xScale)
-        .textAnchor("start")
+        .radialScale(yScale)
+        .textAnchor("middle")
         .radius(radius * 1.04);
 
       chart.select(".circularLabels")
         .call(circularLabels);
+
+      // Radial Bar Chart
+      var barsCircular = d3.ez.component.barsCircular()
+        .radius(function(d) { return xScale(d.key) })
+        .innerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
+        .yScale(yScale)
+        .colorScale(colorScale)
+        .dispatch(dispatch);
+
+      chart.select(".barsCircular")
+        .datum(data)
+        .call(barsCircular);
+
+      // Vertical Axis
+      var verticalAxis = d3.axisLeft(xScale);
+      chart.select(".verticalAxis")
+        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
+        .call(verticalAxis);
 
     });
   }
@@ -177,6 +172,12 @@ d3.ez.chart.polarAreaChart = function module() {
     return this;
   };
 
+  my.innerRadius = function(_) {
+    if (!arguments.length) return innerRadius;
+    innerRadius = _;
+    return this;
+  };
+
   my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
@@ -192,18 +193,6 @@ d3.ez.chart.polarAreaChart = function module() {
   my.transition = function(_) {
     if (!arguments.length) return transition;
     transition = _;
-    return this;
-  };
-
-  my.capitalizeLabels = function(_) {
-    if (!arguments.length) return capitalizeLabels;
-    capitalizeLabels = _;
-    return this;
-  };
-
-  my.colorLabels = function(_) {
-    if (!arguments.length) return colorLabels;
-    colorLabels = _;
     return this;
   };
 

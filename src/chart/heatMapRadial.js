@@ -34,6 +34,10 @@ d3.ez.chart.heatMapRadial = function module() {
   var maxValue = 0;
   var thresholds;
 
+  // Other Customisation Options
+  var startAngle = 0;
+  var endAngle = 270;
+
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -70,7 +74,7 @@ d3.ez.chart.heatMapRadial = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartW])
+      .rangeRound([startAngle, endAngle])
       .padding(0.1);
 
     yScale = d3.scaleBand()
@@ -101,7 +105,7 @@ d3.ez.chart.heatMapRadial = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circleRings", true);
-        chart.append("g").classed("circleLabels", true);
+        chart.append("g").classed("circularLabels", true);
         chart.append("g").classed("axis", true);
       } else {
         chart = svg.select(".chart");
@@ -136,10 +140,11 @@ d3.ez.chart.heatMapRadial = function module() {
 
       // Circular Labels
       var circularLabels = d3.ez.component.circularLabels()
+        .radialScale(xScale)
+        .textAnchor("start")
         .radius(radius * 1.04);
 
-      chart.select(".circleLabels")
-        .datum(categoryNames)
+      chart.select(".circularLabels")
         .call(circularLabels);
 
       // Y Axis

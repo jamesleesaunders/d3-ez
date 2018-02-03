@@ -8,7 +8,7 @@
 "use strict";
 
 d3.ez = {
-    version: "2.2.4",
+    version: "2.2.5",
     author: "James Saunders",
     copyright: "Copyright (C) 2018 James Saunders",
     license: "GPL-3.0"
@@ -619,6 +619,115 @@ d3.ez.component.barsStacked = function module() {
 };
 
 /**
+ * Reusable Circular Bar Chart Component
+ *
+ */
+d3.ez.component.barsCircular = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 400;
+    var radius = 150;
+    var innerRadius = 20;
+    var startAngle = 0;
+    var endAngle = 360;
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colorScale;
+    var xScale;
+    var yScale;
+    var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+    function my(selection) {
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        startAngle = d3.min(yScale.range());
+        endAngle = d3.max(yScale.range());
+        // Arc Generator
+        var arc = d3.arc().startAngle(0).endAngle(function(d) {
+            return yScale(d.value) * Math.PI / 180;
+        }).outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
+        var arcTween = function(d) {
+            var i = d3.interpolate(this._current, d);
+            this._current = i(0);
+            return function(t) {
+                return arc(i(t));
+            };
+        };
+        selection.each(function() {
+            // Create series group
+            var seriesSelect = selection.selectAll(".series").data(function(d) {
+                return [ d ];
+            });
+            var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function(d) {
+                dispatch.call("customSeriesMouseOver", this, d);
+            }).on("click", function(d) {
+                dispatch.call("customSeriesClick", this, d);
+            }).merge(seriesSelect);
+            // Add bars to series
+            var bars = series.selectAll(".bar").data(function(d) {
+                return d.values;
+            });
+            bars.enter().append("path").attr("d", arc).classed("bar", true).style("fill", function(d) {
+                return colorScale(d.key);
+            }).on("mouseover", function(d) {
+                dispatch.call("customValueMouseOver", this, d);
+            }).on("click", function(d) {
+                dispatch.call("customValueClick", this, d);
+            }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attrTween("d", arcTween);
+            bars.exit().transition().style("opacity", 0).remove();
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
+        return my;
+    };
+    my.yScale = function(_) {
+        if (!arguments.length) return yScale;
+        yScale = _;
+        return my;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
  * Reusable Polar Area Chart Component
  *
  */
@@ -627,23 +736,26 @@ d3.ez.component.polarArea = function module() {
     var width = 300;
     var height = 300;
     var radius = 150;
+    var startAngle = 0;
+    var endAngle = 360;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
     var colorScale;
+    var xScale;
     var yScale;
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function my(selection) {
         var defaultRadius = Math.min(width, height) / 2;
         radius = typeof radius === "undefined" ? defaultRadius : radius;
-        var yDomain = yScale.domain();
-        var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
+        startAngle = d3.min(xScale.range());
+        endAngle = d3.max(xScale.range());
         // Pie Generator
-        var pie = d3.pie().value(1).sort(null).padAngle(0);
+        var pie = d3.pie().value(1).sort(null).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).padAngle(0);
         // Arc Generator
         var arc = d3.arc().outerRadius(function(d) {
-            return barScale(d.data.value);
+            return yScale(d.data.value);
         }).innerRadius(0).cornerRadius(2);
         selection.each(function() {
             // Create series group
@@ -688,6 +800,11 @@ d3.ez.component.polarArea = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
         return my;
     };
     my.yScale = function(_) {
@@ -1100,7 +1217,7 @@ d3.ez.component.candleSticks = function() {
         });
     };
     var my = function(selection) {
-        selection.each(function(data) {
+        selection.each(function() {
             // Create series group
             var seriesSelect = d3.select(this).selectAll(".series").data(function(d) {
                 return [ d ];
@@ -1271,6 +1388,8 @@ d3.ez.component.heatMapRing = function module() {
     var height = 300;
     var radius = 150;
     var innerRadius = 20;
+    var startAngle = 0;
+    var endAngle = 360;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
@@ -1283,8 +1402,10 @@ d3.ez.component.heatMapRing = function module() {
         var defaultRadius = Math.min(width, height) / 2;
         radius = typeof radius === "undefined" ? defaultRadius : radius;
         innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        startAngle = d3.min(xScale.range());
+        endAngle = d3.max(xScale.range());
         // Pie Generator
-        var pie = d3.pie().value(1).sort(null).padAngle(.015);
+        var pie = d3.pie().value(1).sort(null).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).padAngle(.015);
         // Arc Generator
         var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
         selection.each(function() {
@@ -1799,8 +1920,8 @@ d3.ez.component.circularAxis = function module() {
     var width = 300;
     var height = 300;
     var radius = 150;
-    var xScale;
-    var yScale;
+    var radialScale;
+    var ringScale;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
@@ -1809,30 +1930,70 @@ d3.ez.component.circularAxis = function module() {
         selection.each(function() {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
-            var yScale2 = d3.scaleLinear().domain(yScale.domain().reverse()).range(yScale.range().reverse());
             // Create axis group
-            var axis = selection.selectAll(".axis").data([ 0 ]).enter().append("g").classed("axis", true).on("click", function(d) {
+            var axisSelect = selection.selectAll(".axis").data([ 0 ]);
+            var axis = axisSelect.enter().append("g").classed("axis", true).on("click", function(d) {
                 dispatch.call("customClick", this, d);
-            });
-            axis.append("g").attr("class", "outerCircle");
-            axis.append("g").attr("class", "tickCircles");
-            axis.append("g").attr("class", "spokes");
-            axis = selection.selectAll(".axis").merge(axis);
+            }).merge(axisSelect);
+            // Outer circle
+            var outerCircle = axis.selectAll(".outerCircle").data([ radius ]).enter().append("circle").classed("outerCircle", true).attr("r", function(d) {
+                return d;
+            }).style("fill", "none").attr("stroke-width", 2).attr("stroke", "#ddd");
             // Tick circles
-            var tickCircles = axis.select(".tickCircles").selectAll("circle").data(yScale.ticks());
-            tickCircles.enter().append("circle").style("fill", "none").merge(tickCircles).transition().attr("r", function(d) {
-                return yScale(d);
+            if (typeof ringScale.ticks === "function") {
+                // scaleLinear
+                var tickData = ringScale.ticks();
+                var tickPadding = 0;
+            } else {
+                // scaleBand
+                var tickData = ringScale.domain();
+                var tickPadding = ringScale.bandwidth() / 2;
+            }
+            var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data([ tickData ]);
+            var tickCirclesGroup = tickCirclesGroupSelect.enter().append("g").classed("tickCircles", true).merge(tickCirclesGroupSelect);
+            var tickCircles = tickCirclesGroup.selectAll("circle").data(function(d) {
+                return d;
+            });
+            tickCircles.enter().append("circle").style("fill", "none").attr("stroke-width", 1).attr("stroke", "#ddd").merge(tickCircles).transition().attr("r", function(d) {
+                return ringScale(d) + tickPadding;
             });
             tickCircles.exit().remove();
-            // Outer circle
-            var outerCircle = axis.select(".outerCircle").selectAll("circle").data([ radius ]).enter().append("circle").attr("r", function(d) {
-                return d;
-            }).style("fill", "none");
             // Spokes
-            var spokes = axis.select(".spokes").selectAll("line").data(xScale.domain()).enter().append("line").attr("y2", -radius).attr("transform", function(d, i, j) {
-                var numBars = j.length;
-                return "rotate(" + i * 360 / numBars + ")";
+            var spokeCount;
+            var spokeData = [];
+            //if (typeof radialScale.ticks === "function") {
+            if (typeof radialScale.ticks === "function") {
+                // scaleLinear
+                var min = d3.min(radialScale.domain());
+                var max = d3.max(radialScale.domain());
+                spokeCount = radialScale.ticks().length;
+                var spokeIncrement = (max - min) / spokeCount;
+                for (i = 0; i <= spokeCount; i++) {
+                    spokeData[i] = (spokeIncrement * i).toFixed(0);
+                }
+            } else {
+                // scaleBand
+                spokeData = radialScale.domain();
+                spokeCount = spokeData.length;
+                spokeData.push("");
+            }
+            var spokesGroupSelect = axis.selectAll(".spokes").data([ spokeData ]);
+            var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
+            var spokes = spokesGroup.selectAll("line").data(function(d) {
+                var spokeScale = d3.scaleLinear().domain([ 0, spokeCount ]).range(radialScale.range());
+                return spokeData.map(function(d, i) {
+                    return {
+                        value: d,
+                        rotate: spokeScale(i)
+                    };
+                });
             });
+            spokes.enter().append("line").attr("id", function(d) {
+                return d.value;
+            }).attr("y2", -radius).merge(spokes).attr("transform", function(d) {
+                return "rotate(" + d.rotate + ")";
+            });
+            spokes.exit().remove();
         });
     }
     // Configuration Getters & Setters
@@ -1851,14 +2012,14 @@ d3.ez.component.circularAxis = function module() {
         radius = _;
         return this;
     };
-    my.xScale = function(_) {
-        if (!arguments.length) return xScale;
-        xScale = _;
+    my.radialScale = function(_) {
+        if (!arguments.length) return radialScale;
+        radialScale = _;
         return my;
     };
-    my.yScale = function(_) {
-        if (!arguments.length) return yScale;
-        yScale = _;
+    my.ringScale = function(_) {
+        if (!arguments.length) return ringScale;
+        ringScale = _;
         return my;
     };
     return my;
@@ -1872,27 +2033,63 @@ d3.ez.component.circularLabels = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 300;
+    var radialScale;
     var radius;
     var capitalizeLabels = false;
+    var textAnchor = "centre";
     function my(selection) {
         selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
             radius = typeof radius === "undefined" ? defaultRadius : radius;
-            var labels = selection.selectAll(".circularLabels").data(function(d) {
+            var labelsSelect = selection.selectAll(".circularLabels").data(function(d) {
                 return [ d ];
-            }).enter().append("g").classed("circularLabels", true);
-            labels = selection.selectAll(".circularLabels").merge(labels);
+            });
+            var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
             // Labels
-            labels.selectAll("def").data([ radius ]).enter().append("def").append("path").attr("id", "label-path").attr("d", function(d) {
+            var defSelect = labels.selectAll("def").data([ radius ]);
+            defSelect.exit().remove();
+            defSelect.enter().append("def").append("path").attr("id", "label-path").merge(defSelect).attr("d", function(d) {
                 return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
             });
-            labels.selectAll("text").data(function(d) {
-                return d;
-            }).enter().append("text").style("text-anchor", "middle").append("textPath").attr("xlink:href", "#label-path").attr("startOffset", function(d, i, j) {
-                var numBars = j.length;
-                return i * 100 / numBars + 50 / numBars + "%";
-            }).text(function(d) {
-                return capitalizeLabels ? d.toUpperCase() : d;
+            var tickCount;
+            var tickData = [];
+            if (typeof radialScale.ticks === "function") {
+                // scaleLinear
+                var min = d3.min(radialScale.domain());
+                var max = d3.max(radialScale.domain());
+                tickCount = radialScale.ticks().length;
+                var tickIncrement = (max - min) / tickCount;
+                for (i = 0; i <= tickCount; i++) {
+                    tickData[i] = (tickIncrement * i).toFixed(0);
+                }
+            } else {
+                // scaleBand
+                tickData = radialScale.domain();
+                tickCount = tickData.length;
+            }
+            var textSelect = labels.selectAll("text").data(function(d) {
+                var tickScale = d3.scaleLinear().domain([ 0, tickCount ]).range(radialScale.range());
+                return tickData.map(function(d, i) {
+                    return {
+                        value: d,
+                        offset: tickScale(i) / 360 * 100
+                    };
+                });
+            });
+            textSelect.exit().remove();
+            textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", "#label-path").text(function(d) {
+                var text = d.value;
+                return capitalizeLabels ? text.toUpperCase() : text;
+            }).attr("startOffset", function(d) {
+                return d.offset + "%";
+            }).attr("id", function(d) {
+                return d.value;
+            }).merge(textSelect);
+            textSelect.transition().select("textPath").text(function(d) {
+                var text = d.value;
+                return capitalizeLabels ? text.toUpperCase() : text;
+            }).attr("startOffset", function(d) {
+                return d.offset + "%";
             });
         });
     }
@@ -1910,6 +2107,16 @@ d3.ez.component.circularLabels = function module() {
     my.radius = function(_) {
         if (!arguments.length) return radius;
         radius = _;
+        return this;
+    };
+    my.radialScale = function(_) {
+        if (!arguments.length) return radialScale;
+        radialScale = _;
+        return my;
+    };
+    my.textAnchor = function(_) {
+        if (!arguments.length) return textAnchor;
+        textAnchor = _;
         return this;
     };
     return my;
@@ -2276,6 +2483,163 @@ d3.ez.chart.barChartClustered = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return this;
+    };
+    my.dispatch = function(_) {
+        if (!arguments.length) return dispatch();
+        dispatch = _;
+        return this;
+    };
+    my.on = function() {
+        var value = dispatch.on.apply(dispatch, arguments);
+        return value === dispatch ? my : value;
+    };
+    return my;
+};
+
+/**
+ * Bar Chart (vertical) (also called: Circular Bar Chart; Progress Chart)
+ *
+ * @see http://datavizproject.com/data-type/circular-bar-chart/
+ */
+d3.ez.chart.barChartCircular = function module() {
+    // SVG and Chart containers (Populated by 'my' function)
+    var svg;
+    var chart;
+    // Default Options (Configurable via setters)
+    var classed = "barChartCircular";
+    var width = 400;
+    var height = 300;
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 40
+    };
+    var transition = {
+        ease: d3.easeBounce,
+        duration: 500
+    };
+    var colors = d3.ez.colors.categorical(4);
+    // Chart Dimensions
+    var chartW;
+    var chartH;
+    var radius;
+    var innerRadius;
+    // Scales and Axis
+    var xScale;
+    var yScale;
+    var colorScale;
+    // Data Variables
+    var maxValue;
+    var categoryNames;
+    // Other Customisation Options
+    var startAngle = 0;
+    var endAngle = 270;
+    // Dispatch (Custom events)
+    var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+    function init(data) {
+        chartW = width - (margin.left + margin.right);
+        chartH = height - (margin.top + margin.bottom);
+        var defaultRadius = Math.min(chartW, chartH) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        // Slice Data, calculate totals, max etc.
+        var slicedData = d3.ez.dataParse(data);
+        categoryNames = slicedData.categoryNames;
+        maxValue = slicedData.maxValue;
+        // Colour Scale
+        if (!colorScale) {
+            // If the colorScale has not already been passed
+            // then attempt to calculate.
+            colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
+        }
+        // X & Y Scales
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ radius, innerRadius ]).padding(.15);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ startAngle, endAngle ]);
+    }
+    function my(selection) {
+        selection.each(function(data) {
+            // Initialise Data
+            init(data);
+            // Create SVG element (if it does not exist already)
+            if (!svg) {
+                svg = function(selection) {
+                    var el = selection._groups[0][0];
+                    if (!!el.ownerSVGElement || el.tagName === "svg") {
+                        return selection;
+                    } else {
+                        return selection.append("svg");
+                    }
+                }(d3.select(this));
+                svg.classed("d3ez", true).attr("width", width).attr("height", height);
+                chart = svg.append("g").classed("chart", true);
+                chart.append("g").classed("circularAxis", true);
+                chart.append("g").classed("barsCircular", true);
+                chart.append("g").classed("verticalAxis axis", true);
+                chart.append("g").classed("circularLabels", true);
+            } else {
+                chart = selection.select(".chart");
+            }
+            // Update the chart dimensions
+            chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
+            // Circular Axis
+            var circularAxis = d3.ez.component.circularAxis().radialScale(yScale).ringScale(xScale).width(chartW).height(chartH).radius(radius);
+            chart.select(".circularAxis").call(circularAxis);
+            // Circular Labels
+            var circularLabels = d3.ez.component.circularLabels().radialScale(yScale).textAnchor("middle").radius(radius * 1.04);
+            chart.select(".circularLabels").call(circularLabels);
+            // Radial Bar Chart
+            var barsCircular = d3.ez.component.barsCircular().radius(function(d) {
+                return xScale(d.key);
+            }).innerRadius(function(d) {
+                return xScale(d.key) + xScale.bandwidth();
+            }).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            chart.select(".barsCircular").datum(data).call(barsCircular);
+            // Vertical Axis
+            var verticalAxis = d3.axisLeft(xScale);
+            chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(verticalAxis);
+        });
+    }
+    // Configuration Getters & Setters
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.innerRadius = function(_) {
+        if (!arguments.length) return innerRadius;
+        innerRadius = _;
+        return this;
+    };
+    my.colors = function(_) {
+        if (!arguments.length) return colors;
+        colors = _;
+        return this;
+    };
+    my.colorScale = function(_) {
+        if (!arguments.length) return colorScale;
+        colorScale = _;
+        return this;
+    };
+    my.transition = function(_) {
+        if (!arguments.length) return transition;
+        transition = _;
         return this;
     };
     my.dispatch = function(_) {
@@ -2836,6 +3200,11 @@ d3.ez.chart.candlestickChart = function module() {
         height = _;
         return this;
     };
+    my.margin = function(_) {
+        if (!arguments.length) return margin;
+        margin = _;
+        return this;
+    };
     my.colors = function(_) {
         if (!arguments.length) return colors;
         colors = _;
@@ -2902,6 +3271,9 @@ d3.ez.chart.heatMapRadial = function module() {
     var minValue = 0;
     var maxValue = 0;
     var thresholds;
+    // Other Customisation Options
+    var startAngle = 0;
+    var endAngle = 270;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
@@ -2928,7 +3300,7 @@ d3.ez.chart.heatMapRadial = function module() {
             colorScale = d3.scaleThreshold().range(colors).domain(thresholds);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.1);
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ startAngle, endAngle ]).padding(.1);
         yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
     }
     function my(selection) {
@@ -2948,7 +3320,7 @@ d3.ez.chart.heatMapRadial = function module() {
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("circleRings", true);
-                chart.append("g").classed("circleLabels", true);
+                chart.append("g").classed("circularLabels", true);
                 chart.append("g").classed("axis", true);
             } else {
                 chart = svg.select(".chart");
@@ -2968,8 +3340,8 @@ d3.ez.chart.heatMapRadial = function module() {
             }).call(heatMapRing);
             seriesGroup.exit().remove();
             // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
-            chart.select(".circleLabels").datum(categoryNames).call(circularLabels);
+            var circularLabels = d3.ez.component.circularLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);
+            chart.select(".circularLabels").call(circularLabels);
             // Y Axis
             var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
             chart.select(".axis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(yAxis);
@@ -3378,6 +3750,9 @@ d3.ez.chart.polarAreaChart = function module() {
     // Data Variables
     var categoryNames = [];
     var maxValue = 0;
+    // Other Customisation Options
+    var startAngle = 0;
+    var endAngle = 360;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     // Other Customisation Options
@@ -3400,8 +3775,8 @@ d3.ez.chart.polarAreaChart = function module() {
             colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartW ]).padding(.15);
-        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ startAngle, endAngle ]).padding(.15);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]).nice();
     }
     function my(selection) {
         selection.each(function(data) {
@@ -3429,17 +3804,17 @@ d3.ez.chart.polarAreaChart = function module() {
             // Update the chart dimensions
             chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
             // Circular Axis
-            var circularAxis = d3.ez.component.circularAxis().xScale(xScale).yScale(yScale).width(chartW).height(chartH).radius(radius);
+            var circularAxis = d3.ez.component.circularAxis().radialScale(xScale).ringScale(yScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circularAxis").call(circularAxis);
             // Radial Bar Chart
-            var polarArea = d3.ez.component.polarArea().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            var polarArea = d3.ez.component.polarArea().radius(radius).xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".polarArea").datum(data).call(polarArea);
             // Vertical Axis
-            var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));
+            var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]).nice());
             chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
             // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radius(radius * 1.04);
-            chart.select(".circularLabels").datum(categoryNames).call(circularLabels);
+            var circularLabels = d3.ez.component.circularLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);
+            chart.select(".circularLabels").call(circularLabels);
         });
     }
     // Configuration Getters & Setters

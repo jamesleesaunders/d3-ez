@@ -7,8 +7,8 @@ d3.ez.component.circularAxis = function module() {
   var width = 300;
   var height = 300;
   var radius = 150;
-  var xScale;
-  var yScale;
+  var radialScale;
+  var ringScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
 
   function my(selection) {
@@ -16,59 +16,114 @@ d3.ez.component.circularAxis = function module() {
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
-      var yScale2 = d3.scaleLinear()
-        .domain(yScale.domain().reverse())
-        .range(yScale.range().reverse());
-
       // Create axis group
-      var axis = selection.selectAll('.axis')
-        .data([0])
-        .enter()
+      var axisSelect = selection.selectAll('.axis')
+        .data([0]);
+
+      var axis = axisSelect.enter()
         .append("g")
         .classed("axis", true)
-        .on("click", function(d) { dispatch.call("customClick", this, d); });
-      axis.append("g").attr("class", "outerCircle");
-      axis.append("g").attr("class", "tickCircles");
-      axis.append("g").attr("class", "spokes");
-      axis = selection.selectAll('.axis').merge(axis);
+        .on("click", function(d) { dispatch.call("customClick", this, d); })
+        .merge(axisSelect);
+
+      // Outer circle
+      var outerCircle = axis.selectAll(".outerCircle")
+        .data([radius])
+        .enter()
+        .append("circle")
+        .classed("outerCircle", true)
+        .attr("r", function(d) { return d; })
+        .style("fill", "none")
+        .attr('stroke-width', 2)
+        .attr('stroke', '#ddd');
 
       // Tick circles
-      var tickCircles = axis.select(".tickCircles")
-        .selectAll("circle")
-        .data(yScale.ticks());
+      if (typeof ringScale.ticks === "function") {
+        // scaleLinear
+        var tickData = ringScale.ticks();
+
+        var tickPadding = 0;
+      } else {
+        // scaleBand
+        var tickData = ringScale.domain();
+        var tickPadding = ringScale.bandwidth() / 2;
+      }
+      var tickCirclesGroupSelect = axis.selectAll(".tickCircles")
+        .data([tickData]);
+
+      var tickCirclesGroup = tickCirclesGroupSelect.enter()
+        .append("g")
+        .classed("tickCircles", true)
+        .merge(tickCirclesGroupSelect);
+
+      var tickCircles = tickCirclesGroup.selectAll("circle")
+        .data(function(d) { return d; });
 
       tickCircles.enter()
         .append("circle")
         .style("fill", "none")
+        .attr('stroke-width', 1)
+        .attr('stroke', '#ddd')
         .merge(tickCircles)
         .transition()
-        .attr("r", function(d) {
-          return yScale(d);
-        });
+        .attr("r", function(d) { return (ringScale(d) + tickPadding); });
 
       tickCircles.exit()
         .remove();
 
-      // Outer circle
-      var outerCircle = axis.select(".outerCircle")
-        .selectAll("circle")
-        .data([radius])
-        .enter()
-        .append("circle")
-        .attr("r", function(d) { return d; })
-        .style("fill", "none");
-
       // Spokes
-      var spokes = axis.select(".spokes")
-        .selectAll("line")
-        .data(xScale.domain())
-        .enter()
-        .append("line")
-        .attr("y2", -radius)
-        .attr("transform", function(d, i, j) {
-          var numBars = j.length;
-          return "rotate(" + (i * 360 / numBars) + ")";
+      var spokeCount;
+      var spokeData = [];
+      //if (typeof radialScale.ticks === "function") {
+      if (typeof radialScale.ticks === "function") {
+        // scaleLinear
+        var min = d3.min(radialScale.domain());
+        var max = d3.max(radialScale.domain());
+        spokeCount = radialScale.ticks().length;
+        var spokeIncrement = (max - min) / spokeCount;
+        for (i = 0; i <= spokeCount; i++) {
+          spokeData[i] = (spokeIncrement * i).toFixed(0);
+        }
+      } else {
+        // scaleBand
+        spokeData = radialScale.domain();
+        spokeCount = spokeData.length;
+        spokeData.push("");
+      }
+
+      var spokesGroupSelect = axis.selectAll(".spokes")
+        .data([spokeData]);
+
+      var spokesGroup = spokesGroupSelect.enter()
+        .append("g")
+        .classed("spokes", true)
+        .merge(spokesGroupSelect);
+
+      var spokes = spokesGroup.selectAll("line")
+        .data(function(d) {
+          var spokeScale = d3.scaleLinear()
+            .domain([0, spokeCount])
+            .range(radialScale.range());
+
+          return spokeData.map(function(d, i) {
+            return {
+              value: d,
+              rotate: spokeScale(i)
+            }
+          });
         });
+
+      spokes.enter()
+        .append("line")
+        .attr("id", function(d) { return d.value; })
+        .attr("y2", -radius)
+        .merge(spokes)
+        .attr("transform", function(d) {
+          return "rotate(" + d.rotate + ")";
+        });
+
+      spokes.exit()
+        .remove();
 
     });
   }
@@ -92,15 +147,15 @@ d3.ez.component.circularAxis = function module() {
     return this;
   };
 
-  my.xScale = function(_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
+  my.radialScale = function(_) {
+    if (!arguments.length) return radialScale;
+    radialScale = _;
     return my;
   };
 
-  my.yScale = function(_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
+  my.ringScale = function(_) {
+    if (!arguments.length) return ringScale;
+    ringScale = _;
     return my;
   };
 
