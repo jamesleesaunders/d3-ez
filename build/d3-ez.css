@@ -165,7 +165,6 @@ table.htmlTable {
   cursor: pointer;
 }
 
-
 /* === Candlestick Chart Styles === */
 
 .candlestickChart .series .bar {
@@ -184,7 +183,6 @@ table.htmlTable {
 .candlestickChart .series .bar path.open-tick, .candlestickChart .bar path.close-tick {
   stroke-width: 0.8px;
 }
-
 
 /* === Donut Chart Styles === */
 
@@ -320,4 +318,3 @@ table.htmlTable {
   font-size: 15px;
   font-weight: bold;
 }
-
