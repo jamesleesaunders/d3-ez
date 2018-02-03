@@ -32,7 +32,7 @@ d3.ez.chart.barChartCircular = function module() {
   var categoryNames;
 
   // Other Customisation Options
-  var chartDegrees = 360 * 0.75;
+  var chartDegrees = 270;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -66,8 +66,7 @@ d3.ez.chart.barChartCircular = function module() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, chartDegrees])
-      .nice();  // <<<---- temp ?
+      .range([0, chartDegrees]);
   }
 
   function my(selection) {

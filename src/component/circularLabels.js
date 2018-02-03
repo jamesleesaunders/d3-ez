@@ -40,53 +40,33 @@ d3.ez.component.circularLabels = function module() {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         });
 
+      var tickCount;
+      var tickData = [];
       if (typeof radialScale.ticks === "function") {
-				// scaleLinear
-				var tickData = radialScale.ticks();
-
-
-        // << temp start >>
-
+        // scaleLinear
         var min = d3.min(radialScale.domain());
-        console.log(min);
         var max = d3.max(radialScale.domain());
-        console.log(max);
-        var range = max - min;
-        var split = tickData.length;
-        var each = range / split;
-
-        //var newtick = tickData.map(function(d, i) {
-        //  return (each * i).toFixed(0);
-        //});
-
-        var newtick = [];
-        for (i = 0; i < split; i++) {
-            newtick[i] = (each * i).toFixed(0);
+        tickCount = radialScale.ticks().length;
+        var tickIncrement = (max - min) / tickCount;
+        for (i = 0; i <= tickCount; i++) {
+          tickData[i] = (tickIncrement * i).toFixed(0);
         }
-
-        console.log(newtick);
-        //tickData = newtick;
-
-        // << temp end >>
-
-
-			} else {
-				// scaleBand
-				var tickData = radialScale.domain();
-
-
-			}
+      } else {
+        // scaleBand
+        tickData = radialScale.domain();
+        tickCount = tickData.length;
+      }
 
       var textSelect = labels.selectAll("text")
         .data(function(d) {
-          var textScale = d3.scaleLinear()
-            .domain([0, tickData.length])
+          var tickScale = d3.scaleLinear()
+            .domain([0, tickCount])
             .range(radialScale.range());
 
           return tickData.map(function(d, i) {
             return {
-              text: d,
-              offset: ((textScale(i) / 360) * 100)
+              value: d,
+              offset: ((tickScale(i) / 360) * 100)
             }
           });
         });
@@ -100,18 +80,19 @@ d3.ez.component.circularLabels = function module() {
         .append("textPath")
         .attr("xlink:href", "#label-path")
         .text(function(d) {
-          var text = d.text;
+          var text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;
         })
         .attr("startOffset", function(d) {
           return d.offset + "%";
         })
+        .attr("id", function(d) { return d.value; })
         .merge(textSelect);
 
       textSelect.transition()
         .select("textPath")
         .text(function(d) {
-          var text = d.text;
+          var text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;
         })
         .attr("startOffset", function(d) {
@@ -141,13 +122,13 @@ d3.ez.component.circularLabels = function module() {
 
   my.radialScale = function(_) {
     if (!arguments.length) return radialScale;
-		radialScale = _;
+    radialScale = _;
     return my;
   };
 
   my.textAnchor = function(_) {
     if (!arguments.length) return textAnchor;
-    textAnchor  = _;
+    textAnchor = _;
     return this;
   };
 

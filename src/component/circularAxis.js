@@ -41,6 +41,7 @@ d3.ez.component.circularAxis = function module() {
       if (typeof ringScale.ticks === "function") {
         // scaleLinear
         var tickData = ringScale.ticks();
+
         var tickPadding = 0;
       } else {
         // scaleBand
@@ -71,12 +72,21 @@ d3.ez.component.circularAxis = function module() {
         .remove();
 
       // Spokes
+      var spokeCount;
+      var spokeData = [];
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
-        var spokeData = radialScale.ticks();
+        var min = d3.min(radialScale.domain());
+        var max = d3.max(radialScale.domain());
+        spokeCount = radialScale.ticks().length;
+        var spokeIncrement = (max - min) / spokeCount;
+        for (i = 0; i <= spokeCount; i++) {
+          spokeData[i] = (spokeIncrement * i).toFixed(0);
+        }
       } else {
         // scaleBand
-        var spokeData = radialScale.domain();
+        spokeData = radialScale.domain();
+        spokeCount = spokeData.length;
       }
 
       var spokesGroupSelect = axis.selectAll(".spokes")
@@ -90,12 +100,12 @@ d3.ez.component.circularAxis = function module() {
       var spokes = spokesGroup.selectAll("line")
         .data(function(d) {
           var spokeScale = d3.scaleLinear()
-            .domain([0, spokeData.length])
+            .domain([0, spokeCount])
             .range(radialScale.range());
 
           return d.map(function(d, i) {
             return {
-              text: d,
+              value: d,
               rotate: spokeScale(i)
             }
           });
@@ -103,6 +113,7 @@ d3.ez.component.circularAxis = function module() {
 
       spokes.enter()
         .append("line")
+        .attr("id", function(d) { return d.value; })
         .attr("y2", -radius)
         .merge(spokes)
         .attr("transform", function(d) {
@@ -136,7 +147,7 @@ d3.ez.component.circularAxis = function module() {
 
   my.radialScale = function(_) {
     if (!arguments.length) return radialScale;
-		radialScale = _;
+    radialScale = _;
     return my;
   };
 
