@@ -32,7 +32,7 @@ d3.ez.chart.polarAreaChart = function module() {
   var maxValue = 0;
 
   // Other Customisation Options
-  var chartDegrees = 360;
+  var chartDegrees = 360*0.75;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -123,6 +123,7 @@ d3.ez.chart.polarAreaChart = function module() {
       // Radial Bar Chart
       var polarArea = d3.ez.component.polarArea()
         .radius(radius)
+        .xScale(xScale)
         .yScale(yScale)
         .colorScale(colorScale)
         .dispatch(dispatch);

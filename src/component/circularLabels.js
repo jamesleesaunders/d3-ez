@@ -9,7 +9,7 @@ d3.ez.component.circularLabels = function module() {
   var radialScale;
   var radius;
   var capitalizeLabels = false;
-  var textAnchor = "start";
+  var textAnchor = "centre";
 
   function my(selection) {
     selection.each(function(data) {

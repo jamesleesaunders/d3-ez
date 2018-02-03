@@ -87,6 +87,7 @@ d3.ez.component.circularAxis = function module() {
         // scaleBand
         spokeData = radialScale.domain();
         spokeCount = spokeData.length;
+        spokeData.push("");
       }
 
       var spokesGroupSelect = axis.selectAll(".spokes")
@@ -103,7 +104,7 @@ d3.ez.component.circularAxis = function module() {
             .domain([0, spokeCount])
             .range(radialScale.range());
 
-          return d.map(function(d, i) {
+          return spokeData.map(function(d, i) {
             return {
               value: d,
               rotate: spokeScale(i)
