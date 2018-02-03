@@ -74,6 +74,7 @@ d3.ez.component.circularAxis = function module() {
       // Spokes
       var spokeCount;
       var spokeData = [];
+      //if (typeof radialScale.ticks === "function") {
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
         var min = d3.min(radialScale.domain());

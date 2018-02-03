@@ -1961,6 +1961,7 @@ d3.ez.component.circularAxis = function module() {
             // Spokes
             var spokeCount;
             var spokeData = [];
+            //if (typeof radialScale.ticks === "function") {
             if (typeof radialScale.ticks === "function") {
                 // scaleLinear
                 var min = d3.min(radialScale.domain());
@@ -2533,7 +2534,8 @@ d3.ez.chart.barChartCircular = function module() {
     var maxValue;
     var categoryNames;
     // Other Customisation Options
-    var chartDegrees = 270;
+    var startAngle = 0;
+    var endAngle = 270;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
@@ -2546,6 +2548,7 @@ d3.ez.chart.barChartCircular = function module() {
         var slicedData = d3.ez.dataParse(data);
         categoryNames = slicedData.categoryNames;
         maxValue = slicedData.maxValue;
+        // Colour Scale
         if (!colorScale) {
             // If the colorScale has not already been passed
             // then attempt to calculate.
@@ -2553,7 +2556,7 @@ d3.ez.chart.barChartCircular = function module() {
         }
         // X & Y Scales
         xScale = d3.scaleBand().domain(categoryNames).rangeRound([ radius, innerRadius ]).padding(.15);
-        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, chartDegrees ]);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ startAngle, endAngle ]);
     }
     function my(selection) {
         selection.each(function(data) {
@@ -3269,7 +3272,8 @@ d3.ez.chart.heatMapRadial = function module() {
     var maxValue = 0;
     var thresholds;
     // Other Customisation Options
-    var chartDegrees = 360 * .75;
+    var startAngle = 0;
+    var endAngle = 270;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
@@ -3296,7 +3300,7 @@ d3.ez.chart.heatMapRadial = function module() {
             colorScale = d3.scaleThreshold().range(colors).domain(thresholds);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartDegrees ]).padding(.1);
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ startAngle, endAngle ]).padding(.1);
         yScale = d3.scaleBand().domain(groupNames).rangeRound([ radius, innerRadius ]).padding(.1);
     }
     function my(selection) {
@@ -3747,7 +3751,8 @@ d3.ez.chart.polarAreaChart = function module() {
     var categoryNames = [];
     var maxValue = 0;
     // Other Customisation Options
-    var chartDegrees = 360 * .75;
+    var startAngle = 0;
+    var endAngle = 360;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     // Other Customisation Options
@@ -3770,8 +3775,8 @@ d3.ez.chart.polarAreaChart = function module() {
             colorScale = d3.scaleOrdinal().range(colors).domain(categoryNames);
         }
         // X & Y Scales
-        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ 0, chartDegrees ]).padding(.15);
-        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]);
+        xScale = d3.scaleBand().domain(categoryNames).rangeRound([ startAngle, endAngle ]).padding(.15);
+        yScale = d3.scaleLinear().domain([ 0, maxValue ]).range([ 0, radius ]).nice();
     }
     function my(selection) {
         selection.each(function(data) {
@@ -3805,7 +3810,7 @@ d3.ez.chart.polarAreaChart = function module() {
             var polarArea = d3.ez.component.polarArea().radius(radius).xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".polarArea").datum(data).call(polarArea);
             // Vertical Axis
-            var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));
+            var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]).nice());
             chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
             // Circular Labels
             var circularLabels = d3.ez.component.circularLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);

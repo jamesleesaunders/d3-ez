@@ -32,7 +32,8 @@ d3.ez.chart.polarAreaChart = function module() {
   var maxValue = 0;
 
   // Other Customisation Options
-  var chartDegrees = 360 * 0.75;
+  var startAngle = 0;
+  var endAngle = 360;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -66,12 +67,13 @@ d3.ez.chart.polarAreaChart = function module() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, chartDegrees])
+      .rangeRound([startAngle, endAngle])
       .padding(0.15);
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, radius]);
+      .range([0, radius])
+      .nice();
   }
 
   function my(selection) {
@@ -133,7 +135,7 @@ d3.ez.chart.polarAreaChart = function module() {
         .call(polarArea);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]));
+      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]).nice());
       chart.select(".verticalAxis")
         .attr("transform", "translate(0," + -(chartH / 2) + ")")
         .call(verticalAxis);

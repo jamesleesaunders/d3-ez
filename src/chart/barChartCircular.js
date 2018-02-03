@@ -32,7 +32,8 @@ d3.ez.chart.barChartCircular = function module() {
   var categoryNames;
 
   // Other Customisation Options
-  var chartDegrees = 270;
+  var startAngle = 0;
+  var endAngle = 270;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -50,6 +51,7 @@ d3.ez.chart.barChartCircular = function module() {
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
 
+    // Colour Scale
     if (!colorScale) {
       // If the colorScale has not already been passed
       // then attempt to calculate.
@@ -66,7 +68,7 @@ d3.ez.chart.barChartCircular = function module() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, chartDegrees]);
+      .range([startAngle, endAngle]);
   }
 
   function my(selection) {
