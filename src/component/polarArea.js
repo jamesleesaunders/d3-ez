@@ -7,6 +7,8 @@ d3.ez.component.polarArea = function module() {
   var width = 300;
   var height = 300;
   var radius = 150;
+  var startAngle = 0;
+  var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
@@ -16,25 +18,21 @@ d3.ez.component.polarArea = function module() {
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-
-    var yDomain = yScale.domain();
-    var barScale = d3.scaleLinear().domain(yDomain).range([0, radius]);
-
-    var startAngle = d3.min(xScale.range());
-    var endAngle = d3.max(xScale.range());
+    startAngle = d3.min(xScale.range());
+    endAngle = d3.max(xScale.range());
 
     // Pie Generator
     var pie = d3.pie()
       .value(1)
       .sort(null)
-      .startAngle(startAngle * (Math.PI/180))
-      .endAngle(endAngle * (Math.PI/180))
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180))
       .padAngle(0);
 
     // Arc Generator
     var arc = d3.arc()
       .outerRadius(function(d) {
-        return barScale(d.data.value);
+        return yScale(d.data.value);
       })
       .innerRadius(0)
       .cornerRadius(2);

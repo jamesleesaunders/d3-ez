@@ -628,6 +628,8 @@ d3.ez.component.barsCircular = function module() {
     var height = 400;
     var radius = 150;
     var innerRadius = 20;
+    var startAngle = 0;
+    var endAngle = 360;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
@@ -637,6 +639,11 @@ d3.ez.component.barsCircular = function module() {
     var yScale;
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function my(selection) {
+        var defaultRadius = Math.min(width, height) / 2;
+        radius = typeof radius === "undefined" ? defaultRadius : radius;
+        innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        startAngle = d3.min(yScale.range());
+        endAngle = d3.max(yScale.range());
         // Arc Generator
         var arc = d3.arc().startAngle(0).endAngle(function(d) {
             return yScale(d.value) * Math.PI / 180;
@@ -729,23 +736,26 @@ d3.ez.component.polarArea = function module() {
     var width = 300;
     var height = 300;
     var radius = 150;
+    var startAngle = 0;
+    var endAngle = 360;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
     };
     var colorScale;
+    var xScale;
     var yScale;
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function my(selection) {
         var defaultRadius = Math.min(width, height) / 2;
         radius = typeof radius === "undefined" ? defaultRadius : radius;
-        var yDomain = yScale.domain();
-        var barScale = d3.scaleLinear().domain(yDomain).range([ 0, radius ]);
+        startAngle = d3.min(xScale.range());
+        endAngle = d3.max(xScale.range());
         // Pie Generator
-        var pie = d3.pie().value(1).sort(null).padAngle(0);
+        var pie = d3.pie().value(1).sort(null).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).padAngle(0);
         // Arc Generator
         var arc = d3.arc().outerRadius(function(d) {
-            return barScale(d.data.value);
+            return yScale(d.data.value);
         }).innerRadius(0).cornerRadius(2);
         selection.each(function() {
             // Create series group
@@ -790,6 +800,11 @@ d3.ez.component.polarArea = function module() {
     my.colorScale = function(_) {
         if (!arguments.length) return colorScale;
         colorScale = _;
+        return my;
+    };
+    my.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
         return my;
     };
     my.yScale = function(_) {
@@ -1373,6 +1388,8 @@ d3.ez.component.heatMapRing = function module() {
     var height = 300;
     var radius = 150;
     var innerRadius = 20;
+    var startAngle = 0;
+    var endAngle = 360;
     var transition = {
         ease: d3.easeBounce,
         duration: 500
@@ -1385,8 +1402,10 @@ d3.ez.component.heatMapRing = function module() {
         var defaultRadius = Math.min(width, height) / 2;
         radius = typeof radius === "undefined" ? defaultRadius : radius;
         innerRadius = typeof innerRadius === "undefined" ? defaultRadius / 4 : innerRadius;
+        startAngle = d3.min(xScale.range());
+        endAngle = d3.max(xScale.range());
         // Pie Generator
-        var pie = d3.pie().value(1).sort(null).padAngle(.015);
+        var pie = d3.pie().value(1).sort(null).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).padAngle(.015);
         // Arc Generator
         var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
         selection.each(function() {
@@ -1940,25 +1959,37 @@ d3.ez.component.circularAxis = function module() {
             });
             tickCircles.exit().remove();
             // Spokes
+            var spokeCount;
+            var spokeData = [];
             if (typeof radialScale.ticks === "function") {
                 // scaleLinear
-                var spokeData = radialScale.ticks();
+                var min = d3.min(radialScale.domain());
+                var max = d3.max(radialScale.domain());
+                spokeCount = radialScale.ticks().length;
+                var spokeIncrement = (max - min) / spokeCount;
+                for (i = 0; i <= spokeCount; i++) {
+                    spokeData[i] = (spokeIncrement * i).toFixed(0);
+                }
             } else {
                 // scaleBand
-                var spokeData = radialScale.domain();
+                spokeData = radialScale.domain();
+                spokeCount = spokeData.length;
+                spokeData.push("");
             }
             var spokesGroupSelect = axis.selectAll(".spokes").data([ spokeData ]);
             var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
             var spokes = spokesGroup.selectAll("line").data(function(d) {
-                var spokeScale = d3.scaleLinear().domain([ 0, spokeData.length ]).range(radialScale.range());
-                return d.map(function(d, i) {
+                var spokeScale = d3.scaleLinear().domain([ 0, spokeCount ]).range(radialScale.range());
+                return spokeData.map(function(d, i) {
                     return {
-                        text: d,
+                        value: d,
                         rotate: spokeScale(i)
                     };
                 });
             });
-            spokes.enter().append("line").attr("y2", -radius).merge(spokes).attr("transform", function(d) {
+            spokes.enter().append("line").attr("id", function(d) {
+                return d.value;
+            }).attr("y2", -radius).merge(spokes).attr("transform", function(d) {
                 return "rotate(" + d.rotate + ")";
             });
             spokes.exit().remove();
@@ -2004,7 +2035,7 @@ d3.ez.component.circularLabels = function module() {
     var radialScale;
     var radius;
     var capitalizeLabels = false;
-    var textAnchor = "start";
+    var textAnchor = "centre";
     function my(selection) {
         selection.each(function(data) {
             var defaultRadius = Math.min(width, height) / 2;
@@ -2019,31 +2050,42 @@ d3.ez.component.circularLabels = function module() {
             defSelect.enter().append("def").append("path").attr("id", "label-path").merge(defSelect).attr("d", function(d) {
                 return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
             });
+            var tickCount;
+            var tickData = [];
             if (typeof radialScale.ticks === "function") {
                 // scaleLinear
-                var tickData = radialScale.ticks();
+                var min = d3.min(radialScale.domain());
+                var max = d3.max(radialScale.domain());
+                tickCount = radialScale.ticks().length;
+                var tickIncrement = (max - min) / tickCount;
+                for (i = 0; i <= tickCount; i++) {
+                    tickData[i] = (tickIncrement * i).toFixed(0);
+                }
             } else {
                 // scaleBand
-                var tickData = radialScale.domain();
+                tickData = radialScale.domain();
+                tickCount = tickData.length;
             }
             var textSelect = labels.selectAll("text").data(function(d) {
-                var textScale = d3.scaleLinear().domain([ 0, tickData.length ]).range(radialScale.range());
+                var tickScale = d3.scaleLinear().domain([ 0, tickCount ]).range(radialScale.range());
                 return tickData.map(function(d, i) {
                     return {
-                        text: d,
-                        offset: textScale(i) / 360 * 100
+                        value: d,
+                        offset: tickScale(i) / 360 * 100
                     };
                 });
             });
             textSelect.exit().remove();
             textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", "#label-path").text(function(d) {
-                var text = d.text;
+                var text = d.value;
                 return capitalizeLabels ? text.toUpperCase() : text;
             }).attr("startOffset", function(d) {
                 return d.offset + "%";
+            }).attr("id", function(d) {
+                return d.value;
             }).merge(textSelect);
             textSelect.transition().select("textPath").text(function(d) {
-                var text = d.text;
+                var text = d.value;
                 return capitalizeLabels ? text.toUpperCase() : text;
             }).attr("startOffset", function(d) {
                 return d.offset + "%";
@@ -2491,7 +2533,7 @@ d3.ez.chart.barChartCircular = function module() {
     var maxValue;
     var categoryNames;
     // Other Customisation Options
-    var chartDegrees = 360 * .75;
+    var chartDegrees = 270;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
@@ -3227,7 +3269,7 @@ d3.ez.chart.heatMapRadial = function module() {
     var maxValue = 0;
     var thresholds;
     // Other Customisation Options
-    var chartDegrees = 360;
+    var chartDegrees = 360 * .75;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     function init(data) {
@@ -3705,7 +3747,7 @@ d3.ez.chart.polarAreaChart = function module() {
     var categoryNames = [];
     var maxValue = 0;
     // Other Customisation Options
-    var chartDegrees = 360;
+    var chartDegrees = 360 * .75;
     // Dispatch (Custom events)
     var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
     // Other Customisation Options
@@ -3760,7 +3802,7 @@ d3.ez.chart.polarAreaChart = function module() {
             var circularAxis = d3.ez.component.circularAxis().radialScale(xScale).ringScale(yScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circularAxis").call(circularAxis);
             // Radial Bar Chart
-            var polarArea = d3.ez.component.polarArea().radius(radius).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
+            var polarArea = d3.ez.component.polarArea().radius(radius).xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".polarArea").datum(data).call(polarArea);
             // Vertical Axis
             var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]));

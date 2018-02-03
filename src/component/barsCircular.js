@@ -8,6 +8,8 @@ d3.ez.component.barsCircular = function module() {
   var height = 400;
   var radius = 150;
   var innerRadius = 20;
+  var startAngle = 0;
+  var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
@@ -15,6 +17,12 @@ d3.ez.component.barsCircular = function module() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    startAngle = d3.min(yScale.range());
+    endAngle = d3.max(yScale.range());
+
     // Arc Generator
     var arc = d3.arc()
       .startAngle(0)

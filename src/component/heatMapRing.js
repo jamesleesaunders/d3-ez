@@ -8,6 +8,8 @@ d3.ez.component.heatMapRing = function module() {
   var height = 300;
   var radius = 150;
   var innerRadius = 20;
+  var startAngle = 0;
+  var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
@@ -18,11 +20,15 @@ d3.ez.component.heatMapRing = function module() {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    startAngle = d3.min(xScale.range());
+    endAngle = d3.max(xScale.range());
 
     // Pie Generator
     var pie = d3.pie()
       .value(1)
       .sort(null)
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180))
       .padAngle(0.015);
 
     // Arc Generator

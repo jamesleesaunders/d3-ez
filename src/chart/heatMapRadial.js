@@ -35,7 +35,7 @@ d3.ez.chart.heatMapRadial = function module() {
   var thresholds;
 
   // Other Customisation Options
-  var chartDegrees = 360;
+  var chartDegrees = 360 * 0.75;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
