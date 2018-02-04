@@ -421,9 +421,9 @@ d3.ez.colors = {
             }
             lum = lum || 0;
             // Convert to decimal and change luminosity
-            var newHex = "#", c, i;
-            for (i = 0; i < 3; i++) {
-                c = parseInt(origHex.substr(i * 2, 2), 16);
+            var newHex = "#";
+            for (var i = 0; i < 3; i++) {
+                var c = parseInt(origHex.substr(i * 2, 2), 16);
                 c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
                 newHex += ("00" + c).substr(c.length);
             }
