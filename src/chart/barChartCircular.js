@@ -94,8 +94,8 @@ d3.ez.chart.barChartCircular = function module() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circularAxis", true);
         chart.append("g").classed("barsCircular", true);
-        chart.append("g").classed("verticalAxis axis", true);
         chart.append("g").classed("circularLabels", true);
+        chart.append("g").classed("verticalAxis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -139,10 +139,47 @@ d3.ez.chart.barChartCircular = function module() {
         .call(barsCircular);
 
       // Vertical Axis
+      /*
       var verticalAxis = d3.axisLeft(xScale);
       chart.select(".verticalAxis")
         .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
         .call(verticalAxis);
+      */
+
+      // Unique id so that the text path defs are unique - is there a better way to do this?
+      var id = classed;
+      var radData = xScale.domain();
+
+      var radLabelsDefSelect = chart.select(".verticalAxis").selectAll("def")
+        .data(radData);
+
+      radLabelsDefSelect.enter()
+        .append("def")
+        .append("path")
+        .attr("id", function(d, i) {
+          return "radialLabelPath" + id + "-" + i;
+        })
+        .attr("d", function(d, i) {
+          var r = xScale(d) + 8;
+          return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
+        });
+
+      var radLabelsTxtSelect = chart.select(".verticalAxis").selectAll("text")
+        .data(radData);
+
+      radLabelsTxtSelect.enter()
+        .append("text")
+        .style("text-anchor", "end")
+        .append("textPath")
+        .attr("xlink:href", function(d, i) {
+          return "#radialLabelPath" + id + "-" + i;
+        })
+        .attr("startOffset", function(d) {
+          return 98 + "%";
+        })
+        .text(function(d) {
+          return d;
+        });
 
     });
   }
