@@ -8,7 +8,7 @@
 "use strict";
 
 d3.ez = {
-    version: "2.2.5",
+    version: "2.2.6",
     author: "James Saunders",
     copyright: "Copyright (C) 2018 James Saunders",
     license: "GPL-3.0"
@@ -2123,6 +2123,75 @@ d3.ez.component.circularLabels = function module() {
 };
 
 /**
+ * Reusable Radial Labels Component
+ *
+ */
+d3.ez.component.radialLabels = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 300;
+    var radialScale;
+    var radius;
+    var capitalizeLabels = false;
+    var textAnchor = "centre";
+    function my(selection) {
+        selection.each(function(data) {
+            var defaultRadius = Math.min(width, height) / 2;
+            radius = typeof radius === "undefined" ? defaultRadius : radius;
+            // Unique id so that the text path defs are unique - is there a better way to do this?
+            var id = "jim";
+            var radData = radialScale.domain();
+            var labelsSelect = selection.selectAll(".radialLabels").data(function(d) {
+                return [ d ];
+            });
+            var labels = labelsSelect.enter().append("g").classed("radialLabels", true).merge(labelsSelect);
+            var defSelect = labels.selectAll("def").data(radData);
+            defSelect.enter().append("def").append("path").attr("id", function(d, i) {
+                return "radialLabelPath" + id + "-" + i;
+            }).attr("d", function(d, i) {
+                var r = radialScale(d);
+                return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
+            });
+            var textSelect = labels.selectAll("text").data(radData);
+            textSelect.enter().append("text").style("text-anchor", "end").append("textPath").attr("xlink:href", function(d, i) {
+                return "#radialLabelPath" + id + "-" + i;
+            }).attr("startOffset", function(d) {
+                return 98 + "%";
+            }).text(function(d) {
+                return d;
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.radialScale = function(_) {
+        if (!arguments.length) return radialScale;
+        radialScale = _;
+        return my;
+    };
+    my.textAnchor = function(_) {
+        if (!arguments.length) return textAnchor;
+        textAnchor = _;
+        return this;
+    };
+    return my;
+};
+
+/**
  * Reusable Labeled Node Component
  *
  * @example
@@ -2576,8 +2645,8 @@ d3.ez.chart.barChartCircular = function module() {
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("circularAxis", true);
                 chart.append("g").classed("barsCircular", true);
-                chart.append("g").classed("verticalAxis axis", true);
                 chart.append("g").classed("circularLabels", true);
+                chart.append("g").classed("verticalAxis axis", true);
             } else {
                 chart = selection.select(".chart");
             }
@@ -2586,7 +2655,7 @@ d3.ez.chart.barChartCircular = function module() {
             // Circular Axis
             var circularAxis = d3.ez.component.circularAxis().radialScale(yScale).ringScale(xScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circularAxis").call(circularAxis);
-            // Circular Labels
+            // Outer Labels
             var circularLabels = d3.ez.component.circularLabels().radialScale(yScale).textAnchor("middle").radius(radius * 1.04);
             chart.select(".circularLabels").call(circularLabels);
             // Radial Bar Chart
@@ -2596,9 +2665,9 @@ d3.ez.chart.barChartCircular = function module() {
                 return xScale(d.key) + xScale.bandwidth();
             }).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".barsCircular").datum(data).call(barsCircular);
-            // Vertical Axis
-            var verticalAxis = d3.axisLeft(xScale);
-            chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(verticalAxis);
+            // Ring Labels
+            var radialLabels = d3.ez.component.radialLabels().radialScale(xScale).textAnchor("middle");
+            chart.select(".verticalAxis").call(radialLabels);
         });
     }
     // Configuration Getters & Setters

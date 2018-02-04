@@ -29,6 +29,7 @@ include('../src/component/scatterPlot.js');
 include('../src/component/title.js');
 include('../src/component/circularAxis.js');
 include('../src/component/circularLabels.js');
+include('../src/component/radialLabels.js');
 include('../src/component/htmlTable.js');
 include('../src/component/htmlList.js');
 include('../src/chart/barChartCircular.js');

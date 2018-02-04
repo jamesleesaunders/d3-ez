@@ -117,7 +117,7 @@ d3.ez.chart.barChartCircular = function module() {
       chart.select(".circularAxis")
         .call(circularAxis);
 
-      // Circular Labels
+      // Outer Labels
       var circularLabels = d3.ez.component.circularLabels()
         .radialScale(yScale)
         .textAnchor("middle")
@@ -138,48 +138,13 @@ d3.ez.chart.barChartCircular = function module() {
         .datum(data)
         .call(barsCircular);
 
-      // Vertical Axis
-      /*
-      var verticalAxis = d3.axisLeft(xScale);
+      // Ring Labels
+      var radialLabels = d3.ez.component.radialLabels()
+        .radialScale(xScale)
+        .textAnchor("middle");
+
       chart.select(".verticalAxis")
-        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
-        .call(verticalAxis);
-      */
-
-      // Unique id so that the text path defs are unique - is there a better way to do this?
-      var id = classed;
-      var radData = xScale.domain();
-
-      var radLabelsDefSelect = chart.select(".verticalAxis").selectAll("def")
-        .data(radData);
-
-      radLabelsDefSelect.enter()
-        .append("def")
-        .append("path")
-        .attr("id", function(d, i) {
-          return "radialLabelPath" + id + "-" + i;
-        })
-        .attr("d", function(d, i) {
-          var r = xScale(d) + 8;
-          return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
-        });
-
-      var radLabelsTxtSelect = chart.select(".verticalAxis").selectAll("text")
-        .data(radData);
-
-      radLabelsTxtSelect.enter()
-        .append("text")
-        .style("text-anchor", "end")
-        .append("textPath")
-        .attr("xlink:href", function(d, i) {
-          return "#radialLabelPath" + id + "-" + i;
-        })
-        .attr("startOffset", function(d) {
-          return 98 + "%";
-        })
-        .text(function(d) {
-          return d;
-        });
+        .call(radialLabels);
 
     });
   }
