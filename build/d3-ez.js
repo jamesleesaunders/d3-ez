@@ -1968,7 +1968,7 @@ d3.ez.component.circularAxis = function module() {
                 var max = d3.max(radialScale.domain());
                 spokeCount = radialScale.ticks().length;
                 var spokeIncrement = (max - min) / spokeCount;
-                for (i = 0; i <= spokeCount; i++) {
+                for (var i = 0; i <= spokeCount; i++) {
                     spokeData[i] = (spokeIncrement * i).toFixed(0);
                 }
             } else {
@@ -2059,7 +2059,7 @@ d3.ez.component.circularLabels = function module() {
                 var max = d3.max(radialScale.domain());
                 tickCount = radialScale.ticks().length;
                 var tickIncrement = (max - min) / tickCount;
-                for (i = 0; i <= tickCount; i++) {
+                for (var i = 0; i <= tickCount; i++) {
                     tickData[i] = (tickIncrement * i).toFixed(0);
                 }
             } else {
