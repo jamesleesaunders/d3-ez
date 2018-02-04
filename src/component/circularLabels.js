@@ -48,7 +48,7 @@ d3.ez.component.circularLabels = function module() {
         var max = d3.max(radialScale.domain());
         tickCount = radialScale.ticks().length;
         var tickIncrement = (max - min) / tickCount;
-        for (i = 0; i <= tickCount; i++) {
+        for (var i = 0; i <= tickCount; i++) {
           tickData[i] = (tickIncrement * i).toFixed(0);
         }
       } else {

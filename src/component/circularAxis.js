@@ -81,7 +81,7 @@ d3.ez.component.circularAxis = function module() {
         var max = d3.max(radialScale.domain());
         spokeCount = radialScale.ticks().length;
         var spokeIncrement = (max - min) / spokeCount;
-        for (i = 0; i <= spokeCount; i++) {
+        for (var i = 0; i <= spokeCount; i++) {
           spokeData[i] = (spokeIncrement * i).toFixed(0);
         }
       } else {
