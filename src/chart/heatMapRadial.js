@@ -105,7 +105,7 @@ d3.ez.chart.heatMapRadial = function module() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circleRings", true);
-        chart.append("g").classed("circularLabels", true);
+        chart.append("g").classed("circularSectorLabels", true);
         chart.append("g").classed("axis", true);
       } else {
         chart = svg.select(".chart");
@@ -139,13 +139,13 @@ d3.ez.chart.heatMapRadial = function module() {
         .remove();
 
       // Circular Labels
-      var circularLabels = d3.ez.component.circularLabels()
+      var circularSectorLabels = d3.ez.component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
 
-      chart.select(".circularLabels")
-        .call(circularLabels);
+      chart.select(".circularSectorLabels")
+        .call(circularSectorLabels);
 
       // Y Axis
       var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));

@@ -20,8 +20,8 @@ JS_FILES :=        src/header.js \
                    src/component/creditTag.js \
                    src/component/legend.js \
                    src/component/circularAxis.js \
-                   src/component/circularLabels.js \
-                   src/component/radialLabels.js \
+                   src/component/circularSectorLabels.js \
+                   src/component/circularRingLabels.js \
                    src/component/labeledNode.js \
                    src/component/htmlTable.js \
                    src/component/htmlList.js \

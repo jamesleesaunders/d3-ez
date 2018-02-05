@@ -94,8 +94,8 @@ d3.ez.chart.barChartCircular = function module() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circularAxis", true);
         chart.append("g").classed("barsCircular", true);
-        chart.append("g").classed("circularLabels", true);
-        chart.append("g").classed("verticalAxis axis", true);
+        chart.append("g").classed("circularSectorLabels", true);
+        chart.append("g").classed("circularRingLabels", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -118,13 +118,13 @@ d3.ez.chart.barChartCircular = function module() {
         .call(circularAxis);
 
       // Outer Labels
-      var circularLabels = d3.ez.component.circularLabels()
+      var circularSectorLabels = d3.ez.component.circularSectorLabels()
         .radialScale(yScale)
         .textAnchor("middle")
         .radius(radius * 1.04);
 
-      chart.select(".circularLabels")
-        .call(circularLabels);
+      chart.select(".circularSectorLabels")
+        .call(circularSectorLabels);
 
       // Radial Bar Chart
       var barsCircular = d3.ez.component.barsCircular()
@@ -139,12 +139,12 @@ d3.ez.chart.barChartCircular = function module() {
         .call(barsCircular);
 
       // Ring Labels
-      var radialLabels = d3.ez.component.radialLabels()
+      var circularRingLabels = d3.ez.component.circularRingLabels()
         .radialScale(xScale)
         .textAnchor("middle");
 
-      chart.select(".verticalAxis")
-        .call(radialLabels);
+      chart.select(".circularRingLabels")
+        .call(circularRingLabels);
 
     });
   }

@@ -2,7 +2,7 @@
  * Reusable Radial Labels Component
  *
  */
-d3.ez.component.radialLabels = function module() {
+d3.ez.component.circularRingLabels = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
