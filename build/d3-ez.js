@@ -8,7 +8,7 @@
 "use strict";
 
 d3.ez = {
-    version: "2.2.5",
+    version: "2.2.6",
     author: "James Saunders",
     copyright: "Copyright (C) 2018 James Saunders",
     license: "GPL-3.0"
@@ -2029,7 +2029,7 @@ d3.ez.component.circularAxis = function module() {
  * Reusable Circular Labels Component
  *
  */
-d3.ez.component.circularLabels = function module() {
+d3.ez.component.circularSectorLabels = function module() {
     // Default Options (Configurable via setters)
     var width = 400;
     var height = 300;
@@ -2090,6 +2090,80 @@ d3.ez.component.circularLabels = function module() {
                 return capitalizeLabels ? text.toUpperCase() : text;
             }).attr("startOffset", function(d) {
                 return d.offset + "%";
+            });
+        });
+    }
+    // Configuration Getters & Setters
+    my.height = function(_) {
+        if (!arguments.length) return height;
+        height = _;
+        return this;
+    };
+    my.width = function(_) {
+        if (!arguments.length) return width;
+        width = _;
+        return this;
+    };
+    my.radius = function(_) {
+        if (!arguments.length) return radius;
+        radius = _;
+        return this;
+    };
+    my.radialScale = function(_) {
+        if (!arguments.length) return radialScale;
+        radialScale = _;
+        return my;
+    };
+    my.textAnchor = function(_) {
+        if (!arguments.length) return textAnchor;
+        textAnchor = _;
+        return this;
+    };
+    return my;
+};
+
+/**
+ * Reusable Radial Labels Component
+ *
+ */
+d3.ez.component.circularRingLabels = function module() {
+    // Default Options (Configurable via setters)
+    var width = 400;
+    var height = 300;
+    var radialScale;
+    var radius;
+    var capitalizeLabels = false;
+    var textAnchor = "centre";
+    function my(selection) {
+        selection.each(function(data) {
+            var defaultRadius = Math.min(width, height) / 2;
+            radius = typeof radius === "undefined" ? defaultRadius : radius;
+            // Unique id so that the text path defs are unique - is there a better way to do this?
+            var id = "jim";
+            var radData = radialScale.domain();
+            var labelsSelect = selection.selectAll(".radialLabels").data(function(d) {
+                return [ d ];
+            });
+            var labels = labelsSelect.enter().append("g").classed("radialLabels", true).merge(labelsSelect);
+            var defSelect = labels.selectAll("def").data(radData);
+            defSelect.enter().append("def").append("path").attr("id", function(d, i) {
+                return "radialLabelPath" + id + "-" + i;
+            }).attr("d", function(d, i) {
+                var r = radialScale(d);
+                var arc = d3.arc().outerRadius(r).innerRadius(r);
+                var startAngle = 0, endAngle = 358;
+                var pathConf = {
+                    startAngle: startAngle * Math.PI / 180,
+                    endAngle: endAngle * Math.PI / 180
+                };
+                var pathStr = arc(pathConf).split(/[A-Z]/);
+                return "M" + pathStr[1] + "A" + pathStr[2];
+            });
+            var textSelect = labels.selectAll("text").data(radData);
+            textSelect.enter().append("text").style("text-anchor", "start").attr("dy", -5).attr("dx", 5).append("textPath").attr("xlink:href", function(d, i) {
+                return "#radialLabelPath" + id + "-" + i;
+            }).attr("startOffset", "0%").text(function(d) {
+                return d;
             });
         });
     }
@@ -2498,7 +2572,7 @@ d3.ez.chart.barChartClustered = function module() {
 };
 
 /**
- * Bar Chart (vertical) (also called: Circular Bar Chart; Progress Chart)
+ * Circular Bar Chart (also called: Progress Chart)
  *
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
@@ -2576,8 +2650,8 @@ d3.ez.chart.barChartCircular = function module() {
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("circularAxis", true);
                 chart.append("g").classed("barsCircular", true);
-                chart.append("g").classed("verticalAxis axis", true);
-                chart.append("g").classed("circularLabels", true);
+                chart.append("g").classed("circularSectorLabels", true);
+                chart.append("g").classed("circularRingLabels", true);
             } else {
                 chart = selection.select(".chart");
             }
@@ -2586,9 +2660,9 @@ d3.ez.chart.barChartCircular = function module() {
             // Circular Axis
             var circularAxis = d3.ez.component.circularAxis().radialScale(yScale).ringScale(xScale).width(chartW).height(chartH).radius(radius);
             chart.select(".circularAxis").call(circularAxis);
-            // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radialScale(yScale).textAnchor("middle").radius(radius * 1.04);
-            chart.select(".circularLabels").call(circularLabels);
+            // Outer Labels
+            var circularSectorLabels = d3.ez.component.circularSectorLabels().radialScale(yScale).textAnchor("middle").radius(radius * 1.04);
+            chart.select(".circularSectorLabels").call(circularSectorLabels);
             // Radial Bar Chart
             var barsCircular = d3.ez.component.barsCircular().radius(function(d) {
                 return xScale(d.key);
@@ -2596,9 +2670,9 @@ d3.ez.chart.barChartCircular = function module() {
                 return xScale(d.key) + xScale.bandwidth();
             }).yScale(yScale).colorScale(colorScale).dispatch(dispatch);
             chart.select(".barsCircular").datum(data).call(barsCircular);
-            // Vertical Axis
-            var verticalAxis = d3.axisLeft(xScale);
-            chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(verticalAxis);
+            // Ring Labels
+            var circularRingLabels = d3.ez.component.circularRingLabels().radialScale(xScale).textAnchor("middle");
+            chart.select(".circularRingLabels").call(circularRingLabels);
         });
     }
     // Configuration Getters & Setters
@@ -3320,8 +3394,8 @@ d3.ez.chart.heatMapRadial = function module() {
                 svg.classed("d3ez", true).attr("width", width).attr("height", height);
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("circleRings", true);
-                chart.append("g").classed("circularLabels", true);
-                chart.append("g").classed("axis", true);
+                chart.append("g").classed("circularSectorLabels", true);
+                chart.append("g").classed("circularRingLabels", true);
             } else {
                 chart = svg.select(".chart");
             }
@@ -3340,11 +3414,11 @@ d3.ez.chart.heatMapRadial = function module() {
             }).call(heatMapRing);
             seriesGroup.exit().remove();
             // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);
-            chart.select(".circularLabels").call(circularLabels);
-            // Y Axis
-            var yAxis = d3.axisLeft(yScale.domain(groupNames.reverse()));
-            chart.select(".axis").attr("transform", "translate(0," + -(chartH / 2 + innerRadius) + ")").call(yAxis);
+            var circularSectorLabels = d3.ez.component.circularSectorLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);
+            chart.select(".circularSectorLabels").call(circularSectorLabels);
+            // Ring Labels
+            var circularRingLabels = d3.ez.component.circularRingLabels().radialScale(yScale).textAnchor("middle");
+            chart.select(".circularRingLabels").call(circularRingLabels);
         });
     }
     // Configuration Getters & Setters
@@ -3796,8 +3870,8 @@ d3.ez.chart.polarAreaChart = function module() {
                 chart = svg.append("g").classed("chart", true);
                 chart.append("g").classed("circularAxis", true);
                 chart.append("g").classed("polarArea", true);
+                chart.append("g").classed("circularSectorLabels", true);
                 chart.append("g").classed("verticalAxis axis", true);
-                chart.append("g").classed("circularLabels", true);
             } else {
                 chart = selection.select(".chart");
             }
@@ -3813,8 +3887,8 @@ d3.ez.chart.polarAreaChart = function module() {
             var verticalAxis = d3.axisLeft(yScale.domain([ maxValue, 0 ]).nice());
             chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
             // Circular Labels
-            var circularLabels = d3.ez.component.circularLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);
-            chart.select(".circularLabels").call(circularLabels);
+            var circularSectorLabels = d3.ez.component.circularSectorLabels().radialScale(xScale).textAnchor("start").radius(radius * 1.04);
+            chart.select(".circularSectorLabels").call(circularSectorLabels);
         });
     }
     // Configuration Getters & Setters

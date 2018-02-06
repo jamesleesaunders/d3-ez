@@ -99,8 +99,8 @@ d3.ez.chart.polarAreaChart = function module() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circularAxis", true);
         chart.append("g").classed("polarArea", true);
+        chart.append("g").classed("circularSectorLabels", true);
         chart.append("g").classed("verticalAxis axis", true);
-        chart.append("g").classed("circularLabels", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -141,13 +141,13 @@ d3.ez.chart.polarAreaChart = function module() {
         .call(verticalAxis);
 
       // Circular Labels
-      var circularLabels = d3.ez.component.circularLabels()
+      var circularSectorLabels = d3.ez.component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
 
-      chart.select(".circularLabels")
-        .call(circularLabels);
+      chart.select(".circularSectorLabels")
+        .call(circularSectorLabels);
 
     });
   }

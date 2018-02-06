@@ -2,7 +2,7 @@
  * Reusable Circular Labels Component
  *
  */
-d3.ez.component.circularLabels = function module() {
+d3.ez.component.circularSectorLabels = function module() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;

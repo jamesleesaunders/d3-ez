@@ -1,5 +1,5 @@
 /**
- * Bar Chart (vertical) (also called: Circular Bar Chart; Progress Chart)
+ * Circular Bar Chart (also called: Progress Chart)
  *
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
@@ -94,8 +94,8 @@ d3.ez.chart.barChartCircular = function module() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("circularAxis", true);
         chart.append("g").classed("barsCircular", true);
-        chart.append("g").classed("verticalAxis axis", true);
-        chart.append("g").classed("circularLabels", true);
+        chart.append("g").classed("circularSectorLabels", true);
+        chart.append("g").classed("circularRingLabels", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -117,14 +117,14 @@ d3.ez.chart.barChartCircular = function module() {
       chart.select(".circularAxis")
         .call(circularAxis);
 
-      // Circular Labels
-      var circularLabels = d3.ez.component.circularLabels()
+      // Outer Labels
+      var circularSectorLabels = d3.ez.component.circularSectorLabels()
         .radialScale(yScale)
         .textAnchor("middle")
         .radius(radius * 1.04);
 
-      chart.select(".circularLabels")
-        .call(circularLabels);
+      chart.select(".circularSectorLabels")
+        .call(circularSectorLabels);
 
       // Radial Bar Chart
       var barsCircular = d3.ez.component.barsCircular()
@@ -138,11 +138,13 @@ d3.ez.chart.barChartCircular = function module() {
         .datum(data)
         .call(barsCircular);
 
-      // Vertical Axis
-      var verticalAxis = d3.axisLeft(xScale);
-      chart.select(".verticalAxis")
-        .attr("transform", "translate(0," + -((chartH / 2) + innerRadius) + ")")
-        .call(verticalAxis);
+      // Ring Labels
+      var circularRingLabels = d3.ez.component.circularRingLabels()
+        .radialScale(xScale)
+        .textAnchor("middle");
+
+      chart.select(".circularRingLabels")
+        .call(circularRingLabels);
 
     });
   }
