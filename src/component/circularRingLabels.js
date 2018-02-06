@@ -39,7 +39,15 @@ d3.ez.component.circularRingLabels = function module() {
         })
         .attr("d", function(d, i) {
           var r = radialScale(d);
-          return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
+          var arc = d3.arc().outerRadius(r).innerRadius(r);
+          var startAngle = 0, endAngle = 358;
+          var pathConf = {
+            startAngle: (startAngle * Math.PI) / 180,
+            endAngle:   (endAngle * Math.PI) / 180
+          };
+          var pathStr = arc(pathConf).split(/[A-Z]/);
+          return "M" + pathStr[1] + "A" + pathStr[2];
+          // return "A0 " + -r + " A" + r + " " + r + " 0 1,1 -0.01 0";
         });
 
       var textSelect = labels.selectAll("text")
@@ -47,14 +55,14 @@ d3.ez.component.circularRingLabels = function module() {
 
       textSelect.enter()
         .append("text")
-        .style("text-anchor", "end")
+        .style("text-anchor", "start")
+        .attr("dy", -5)
+        .attr("dx", 5)
         .append("textPath")
         .attr("xlink:href", function(d, i) {
           return "#radialLabelPath" + id + "-" + i;
         })
-        .attr("startOffset", function(d) {
-          return 98 + "%";
-        })
+        .attr("startOffset", "0%")
         .text(function(d) {
           return d;
         });

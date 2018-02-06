@@ -1,5 +1,5 @@
 /**
- * Bar Chart (vertical) (also called: Circular Bar Chart; Progress Chart)
+ * Circular Bar Chart (also called: Progress Chart)
  *
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
