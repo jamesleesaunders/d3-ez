@@ -47,7 +47,6 @@
   fill: #cccccc;
 }
 
-
 /* === HTML List Styles === */
 
 .htmlList, .htmlList ul {
@@ -111,7 +110,6 @@
   bottom: 0;
 }
 
-
 /* === HTML Table Styles === */
 
 table.htmlTable {
@@ -141,7 +139,6 @@ table.htmlTable {
   background-color: #eeeeee;
 }
 
-
 /* === Bar Chart (Stacked & Grouped) Styles === */
 
 [class*="barChart"] rect.bar {
@@ -168,7 +165,6 @@ table.htmlTable {
   cursor: pointer;
 }
 
-
 /* === Candlestick Chart Styles === */
 
 .candlestickChart .series .bar {
@@ -187,7 +183,6 @@ table.htmlTable {
 .candlestickChart .series .bar path.open-tick, .candlestickChart .bar path.close-tick {
   stroke-width: 0.8px;
 }
-
 
 /* === Donut Chart Styles === */
 
@@ -208,7 +203,6 @@ table.htmlTable {
   stroke-width: 2px;
   fill: none;
 }
-
 
 /* === Circular Heat Chart Styles === */
 
@@ -234,7 +228,6 @@ table.htmlTable {
   letter-spacing: -0.2px;
 }
 
-
 /* === Tabular Heat Chart Styles === */
 
 .heatMapTable rect.cell {
@@ -252,7 +245,6 @@ table.htmlTable {
   display: none;
 }
 
-
 /* === Line Chart Styles === */
 
 @keyframes circleTransition {
@@ -269,7 +261,6 @@ table.htmlTable {
   animation-name: circleTransition;
   transform-origin: center center;
 }
-
 
 /* === Polar Area Chart Styles === */
 
@@ -310,7 +301,6 @@ table.htmlTable {
   letter-spacing: -0.2px;
 }
 
-
 /* === PunchCard Styles === */
 
 .punchCard circle.punchSpot {
@@ -328,5 +318,3 @@ table.htmlTable {
   font-size: 15px;
   font-weight: bold;
 }
-
-
