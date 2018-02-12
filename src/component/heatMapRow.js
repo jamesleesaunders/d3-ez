@@ -2,7 +2,7 @@
  * Reusable Heat Map Table Row Component
  *
  */
-d3.ez.component.heatMapRow = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;

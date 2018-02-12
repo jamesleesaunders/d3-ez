@@ -8,7 +8,7 @@
  *     .subText("This is a test");
  * d3.select("svg").call(myTitle);
  */
-d3.ez.component.title = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var mainText = "Title";
   var subText = "Sub Title";

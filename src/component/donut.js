@@ -2,7 +2,7 @@
  * Reusable Donut Chart Component
  *
  */
-d3.ez.component.donut = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;

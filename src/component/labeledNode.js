@@ -10,7 +10,7 @@
  *     .radius(5);
  * d3.selectAll("g").call(myNode);
  */
-d3.ez.component.labeledNode = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var color = "steelblue";
   var opacity = 1;

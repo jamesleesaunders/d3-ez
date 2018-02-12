@@ -2,7 +2,7 @@
  * Reusable Polar Area Chart Component
  *
  */
-d3.ez.component.polarArea = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;

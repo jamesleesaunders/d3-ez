@@ -4,7 +4,7 @@
  * @example
  * @todo
  */
-d3.ez.chart = function module() {
+export default function() {
   // SVG and Canvas containers (Populated by 'my' function)
   var svg;
   var canvas;

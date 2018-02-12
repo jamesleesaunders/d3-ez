@@ -1,42 +1,5 @@
 # d3-ez Makefile
 
-JS_FILES :=        src/header.js \
-                   src/dataParse.js \
-                   src/chart.js \
-                   src/colors.js \
-                   src/component/barsVertical.js \
-                   src/component/barsStacked.js \
-                   src/component/barsCircular.js \
-                   src/component/polarArea.js \
-                   src/component/donut.js \
-                   src/component/scatterPlot.js \
-                   src/component/lineChart.js \
-                   src/component/candleSticks.js \
-                   src/component/heatMapRow.js \
-                   src/component/heatMapRing.js \
-                   src/component/proportionalAreaCircles.js \
-                   src/component/numberCard.js \
-                   src/component/title.js \
-                   src/component/creditTag.js \
-                   src/component/legend.js \
-                   src/component/circularAxis.js \
-                   src/component/circularSectorLabels.js \
-                   src/component/circularRingLabels.js \
-                   src/component/labeledNode.js \
-                   src/component/htmlTable.js \
-                   src/component/htmlList.js \
-                   src/chart/barChartClustered.js \
-                   src/chart/barChartCircular.js \
-                   src/chart/barChartStacked.js \
-                   src/chart/barChartVertical.js \
-                   src/chart/donutChart.js \
-                   src/chart/candlestickChart.js \
-                   src/chart/heatMapRadial.js \
-                   src/chart/heatMapTable.js \
-                   src/chart/lineChart.js \
-                   src/chart/polarAreaChart.js \
-                   src/chart/punchCard.js
-
 CSS_FILES :=       css/global.css \
                    css/htmlList.css \
                    css/htmlTable.css \
@@ -58,13 +21,13 @@ GENERATED_FILES := build/d3-ez.js \
 all: js css min zip
 .PHONY: js css min zip
 
-js: $(JS_FILES)
-	@echo Concatinating JS Files...
+js:
+	@echo Concatenating JS Files...
 	@rm -f build/d3-ez.js
-	@uglifyjs $^ --beautify indent_level=4 --comments all > build/d3-ez.js
+	@rollup -c
 
 css: $(CSS_FILES)
-	@echo Concatinating CSS Files...
+	@echo Concatenating CSS Files...
 	@rm -f build/d3-ez.css
 	@for file in $^; do cat "$$file"; echo "\n"; done > build/d3-ez.css
 
