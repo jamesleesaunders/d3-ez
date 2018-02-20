@@ -3,7 +3,7 @@
  *
  * @see http://datavizproject.com/data-type/heat-map/
  */
-d3.ez.chart.heatMapTable = function module() {
+export default function() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

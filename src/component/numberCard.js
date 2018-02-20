@@ -2,7 +2,7 @@
  * Reusable Number Row Component
  *
  */
-d3.ez.component.numberCard = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;

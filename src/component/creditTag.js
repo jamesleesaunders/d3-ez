@@ -8,7 +8,7 @@
  *     .href("http://d3-ez.net");
  * d3.select("svg").call(creditTag);
  */
-d3.ez.component.creditTag = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var text = "d3-ez.net";
   var href = "http://d3-ez.net";

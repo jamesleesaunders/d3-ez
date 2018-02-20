@@ -3,7 +3,7 @@
  *
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
-d3.ez.chart.barChartCircular = function module() {
+export default function() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

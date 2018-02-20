@@ -3,7 +3,7 @@
  *
  * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
  */
-d3.ez.chart.punchCard = function module() {
+export default function() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

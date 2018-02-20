@@ -2,7 +2,7 @@
  * Reusable Vertical Bar Chart Component
  *
  */
-d3.ez.component.barsVertical = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 400;

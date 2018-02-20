@@ -10,7 +10,7 @@
  *     .position('top-right');
  * d3.select("svg").call(myLegend);
  */
-d3.ez.component.legend = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var sizeScale = undefined;
   var sizeLabel = null;

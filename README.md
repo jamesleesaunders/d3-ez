@@ -51,7 +51,7 @@ var legend = d3.ez.component.legend()
 Construct chart base from the above components:
 See the [Chart Base](#chart-base) for more details.
 ```javascript
-var myChart = d3.ez.chart()
+var myChart = d3.ez.base()
 	.width(750)
 	.height(400)
 	.chart(chart)

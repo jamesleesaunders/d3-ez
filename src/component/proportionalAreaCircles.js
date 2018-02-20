@@ -2,7 +2,7 @@
  * Reusable Proportional Area Circles Component
  *
  */
-d3.ez.component.proportionalAreaCircles = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;

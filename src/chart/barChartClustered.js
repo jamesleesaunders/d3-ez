@@ -3,7 +3,7 @@
  *
  * @see http://datavizproject.com/data-type/grouped-bar-chart/
  */
-d3.ez.chart.barChartClustered = function module() {
+export default function() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

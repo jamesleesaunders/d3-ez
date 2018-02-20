@@ -2,7 +2,7 @@
  * Reusable Line Chart Component
  *
  */
-d3.ez.component.lineChart = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 400;

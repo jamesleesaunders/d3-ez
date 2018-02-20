@@ -8,7 +8,7 @@
  *     .datum(data)
  *     .call(myList);
  */
-d3.ez.component.htmlList = function module() {
+export default function() {
   // HTML List Element (Populated by 'my' function)
   var listEl;
 

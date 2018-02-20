@@ -3,7 +3,7 @@
  *
   @see http://datavizproject.com/data-type/line-chart/
  */
-d3.ez.chart.lineChart = function module() {
+export default function() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

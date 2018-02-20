@@ -2,7 +2,7 @@
  * Reusable Candle Stick Component
  *
  */
-d3.ez.component.candleSticks = function() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 400;

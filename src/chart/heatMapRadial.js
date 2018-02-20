@@ -3,7 +3,7 @@
  *
  * @see http://datavizproject.com/data-type/radial-heatmap/
  */
-d3.ez.chart.heatMapRadial = function module() {
+export default function() {
   // SVG and Chart containers (Populated by 'my' function)
   var svg;
   var chart;

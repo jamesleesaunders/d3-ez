@@ -2,7 +2,7 @@
  * Base Functions - Data Parse
  *
  */
-d3.ez.dataParse = function module(data) {
+export default function(data) {
 
   var levels = (function() {
     if (data['key'] !== undefined) {

@@ -2,7 +2,7 @@
  * Reusable Heat Map Ring Component
  *
  */
-d3.ez.component.heatMapRing = function module() {
+export default function() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
