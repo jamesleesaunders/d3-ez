@@ -5,10 +5,10 @@
  * @copyright Copyright (C) 2018 James Saunders
  * @license GPLv3
  */
- 
+
 import { default as dataParse } from "./src/dataParse";
 import { default as colors } from "./src/colors";
-import { default as base } from "./src/chart";
+import { default as base } from "./src/base";
 
 // Chart Components
 import { default as componentBarsCircular } from "./src/component/barsCircular";
