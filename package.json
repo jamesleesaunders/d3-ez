@@ -33,10 +33,12 @@
   "devDependencies": {
     "rollup": "^0.56.2",
     "tape": "^4.9.0",
+    "jsdom": "^11.0.0",
     "uglify-js": "^2.6.0",
     "vows": "0.8"
   },
   "dependencies": {
-    "d3": "^4.0.0"
+    "d3": "^4.0.0",
+    "jsdom": "^11.6.2"
   }
 }
