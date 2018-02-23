@@ -5701,7 +5701,7 @@ function chartPunchCard() {
 // Other Components
 // Charts
 var my = {
-  version: "3.0.0",
+  version: "3.1.0",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",
