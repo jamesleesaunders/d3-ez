@@ -910,7 +910,7 @@ function componentBubbles() {
       bubbles.enter()
         .append("circle")
         .attr("class", "bubble")
-        .attr("r", function(d) { console.log(d); return d.value / 100; })
+        .attr("r", function(d) { return d.value / 100; })
         .attr("cx", function(d) { return xScale(d.key); })
         .attr("cy", height)
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })

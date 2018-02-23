@@ -22,8 +22,8 @@
     var title = d3.ez.component.title().mainText("Bubble Chart").subText("Bubble Chart");
 
     // Test Data
-    var data = [{
-        "key": "Probability",
+    var data1 = [{
+        "key": "x",
         "values": [{
             "key": "Foo",
             "value": 10
@@ -43,7 +43,7 @@
         ]
       },
       {
-        "key": "Impact",
+        "key": "y",
         "values": [{
             "key": "Foo",
             "value": 6
@@ -63,7 +63,7 @@
         ]
       },
       {
-        "key": "Exposure",
+        "key": "z",
         "values": [{
             "key": "Foo",
             "value": 60
@@ -83,8 +83,69 @@
         ]
       },
     ];
+    console.log(data1);
 
-    var data2 = d3.values(data).map(function(d) {
+    var data2 = [{
+      'Foo': {
+        "x": 10,
+        "y": 6,
+        "z": 60
+      },
+      'Bar': {
+        "x": 30,
+        "y": 8,
+        "z": 240
+      },
+      'Baz': {
+        "x": 90,
+        "y": 5,
+        "z": 450
+      },
+      'Spong': {
+        "x": 50,
+        "y": 2,
+        "z": 100
+      }
+    }];
+    console.log(data2);
+
+    var data3 = [
+      {
+        key: 'Foo',
+        values: [
+          {"key": "x", "value": 10},
+          {"key": "y", "value": 6},
+          {"key": "z", "value": 60}
+        ]
+      },
+      {
+        key: 'Bar',
+        values: [
+          {"key": "x", "value": 30},
+          {"key": "y", "value": 8},
+          {"key": "z", "value": 240}
+        ]
+      },
+      {
+        key: 'Bax',
+        values: [
+          {"key": "x", "value": 90},
+          {"key": "y", "value": 5},
+          {"key": "z", "value": 450}
+        ]
+      },
+      {
+        key: 'Spong',
+        values: [
+          {"key": "x", "value": 50},
+          {"key": "y", "value": 2},
+          {"key": "z", "value": 100}
+        ]
+      }
+    ];
+    console.log(data3);
+
+    var data4 = d3.values(data1).map(function(d) {
       var values = d3.values( d.values).map(function(d) {
         var obj = {};
         obj[d.key] = d.value;
@@ -96,6 +157,7 @@
         'values': values
       };
     });
+    // console.log(data4);
 
     // Create chart base
     var myChart = d3.ez.base()
@@ -112,7 +174,7 @@
       });
 
     d3.select('#chartholder')
-      .datum(data)
+      .datum(data3)
       .call(myChart);
   </script>
 </body>
