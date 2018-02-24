@@ -905,15 +905,14 @@ function componentBubbles() {
 
       // Add dots to series
       var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d; });
+        .data(function(d) { return d.values; });
 
       bubbles.enter()
         .append("circle")
         .attr("class", "bubble")
-        .attr("cx", function(d) { console.log(d); return xScale(d.x); })
+        .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
         .attr("r", function(d) { return zScale(d.z); })
-        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(bubbles)
@@ -4135,6 +4134,7 @@ function chartBubbleChart() {
       chart.select(".yAxis")
         .call(yAxis);
 
+
       // Add bubbles to the chart
       var bubbles = d3.ez.component.bubbles()
         .width(chartW)
@@ -4145,9 +4145,19 @@ function chartBubbleChart() {
         .zScale(zScale)
         .dispatch(dispatch);
 
-      chart.select(".bubbles")
-        .datum(data)
+      var bubbleGroup = chart.selectAll(".bubbleGroup")
+        .data(function(d) { return d; });
+
+      bubbleGroup.enter().append("g")
+        .attr("class", "bubbleGroup")
+        .style("fill", function(d) { return colorScale(d.key); })
+        .datum(function(d) { return d; })
+        .merge(bubbleGroup)
         .call(bubbles);
+
+      bubbleGroup.exit()
+        .remove();
+
     });
   }
 

@@ -145,6 +145,25 @@
     ];
     // console.log(data3);
 
+    var dataX = [
+      {
+        "key": "Foo",
+        "values": [{ "x": 10, "y": 6, "z": 60 }]
+      },
+      {
+        "key": "Bar",
+        "values": [{ "x": 30, "y": 8, "z": 240 }]
+      },
+      {
+        "key": "Baz",
+        "values": [{ "x": 90, "y": 5, "z": 450 }]
+      },
+      {
+        "key": "Spong",
+        "values": [{ "x": 50, "y": 2, "z": 100 }]
+      }
+    ];
+
     var data4 = [
       {
         key: 'Foo',
@@ -202,7 +221,7 @@
       });
 
     d3.select('#chartholder')
-      .datum(data4)
+      .datum(dataX)
       .call(myChart);
   </script>
 </body>

@@ -120,6 +120,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
+
       // Add bubbles to the chart
       var bubbles = d3.ez.component.bubbles()
         .width(chartW)
@@ -130,9 +131,19 @@ export default function() {
         .zScale(zScale)
         .dispatch(dispatch);
 
-      chart.select(".bubbles")
-        .datum(data)
+      var bubbleGroup = chart.selectAll(".bubbleGroup")
+        .data(function(d) { return d; });
+
+      bubbleGroup.enter().append("g")
+        .attr("class", "bubbleGroup")
+        .style("fill", function(d) { return colorScale(d.key); })
+        .datum(function(d) { return d; })
+        .merge(bubbleGroup)
         .call(bubbles);
+
+      bubbleGroup.exit()
+        .remove();
+
     });
   }
 

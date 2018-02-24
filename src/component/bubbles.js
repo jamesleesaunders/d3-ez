@@ -28,15 +28,14 @@ export default function() {
 
       // Add dots to series
       var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d; });
+        .data(function(d) { return d.values; });
 
       bubbles.enter()
         .append("circle")
         .attr("class", "bubble")
-        .attr("cx", function(d) { console.log(d); return xScale(d.x); })
+        .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
         .attr("r", function(d) { return zScale(d.z); })
-        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(bubbles)
