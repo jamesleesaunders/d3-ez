@@ -23,30 +23,28 @@ export default function() {
   // Scales and Axis
   var xScale;
   var yScale;
+  var zScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
   // Data Variables
-  var maxValue;
-  var groupNames;
-  var categoryNames;
+  // TBC
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Other Customisation Options
-  var yAxisLabel = null;
+  // Misc Options
+  var minRadius = 2;
+  var maxRadius = 40;
+  var yAxisLabel;
 
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
-    maxValue = slicedData.maxValue;
-    groupNames = slicedData.groupNames;
-    categoryNames = slicedData.categoryNames;
+    // TBC
 
     // Colour Scale
     if (!colorScale) {
@@ -54,21 +52,24 @@ export default function() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(groupNames);
+        .domain(['Foo', 'Bar', 'Baz', 'Spong']);
     }
 
     // X & Y Scales
     xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain(categoryNames);
+      .domain([0, 120]);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (maxValue * 1.05)]);
+      .domain([0, 10]);
+
+    zScale = d3.scaleLinear()
+      .range([minRadius, maxRadius])
+      .domain([0, 500]);
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b-%y"));
+    xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -93,14 +94,9 @@ export default function() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true)
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", -35)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text(yAxisLabel);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
+        chart.append("g").classed("bubbles", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -112,7 +108,7 @@ export default function() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis)
         .selectAll("text")
@@ -121,29 +117,22 @@ export default function() {
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)");
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
+      // Add bubbles to the chart
       var bubbles = d3.ez.component.bubbles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
-        .yScale(yScale)
         .xScale(xScale)
+        .yScale(yScale)
+        .zScale(zScale)
         .dispatch(dispatch);
 
-      var bubbleGroup = chart.selectAll(".bubbleGroup")
-        .data(function(d) { return d; });
-
-      bubbleGroup.enter().append("g")
-        .attr("class", "bubbleGroup")
-        .style("fill", function(d) { return colorScale(d.key); })
-        .datum(function(d) { return d; })
-        .merge(bubbleGroup)
+      chart.select(".bubbles")
+        .datum(data)
         .call(bubbles);
-
-      bubbleGroup.exit()
-        .remove();
     });
   }
 

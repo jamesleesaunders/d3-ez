@@ -10,6 +10,7 @@ export default function() {
   var colorScale;
   var xScale;
   var yScale;
+  var zScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -21,29 +22,29 @@ export default function() {
       var series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
-        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
       // Add dots to series
       var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d.values; });
+        .data(function(d) { return d; });
 
       bubbles.enter()
         .append("circle")
         .attr("class", "bubble")
-        .attr("r", function(d) { return d.value / 100; })
-        .attr("cx", function(d) { return xScale(d.key); })
-        .attr("cy", height)
+        .attr("cx", function(d) { console.log(d); return xScale(d.x); })
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("r", function(d) { return zScale(d.z); })
+        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(bubbles)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("cx", function(d) { return xScale(d.key); })
-        .attr("cy", function(d) { return yScale(d.value); });
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("r", function(d) { return zScale(d.z); });
 
       bubbles.exit()
         .transition()
@@ -80,6 +81,12 @@ export default function() {
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
+    return my;
+  };
+
+  my.zScale = function(_) {
+    if (!arguments.length) return zScale;
+    zScale = _;
     return my;
   };
 

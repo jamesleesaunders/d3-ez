@@ -99,8 +99,8 @@ export default function() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true)
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true)
           .append("text")
           .attr("transform", "rotate(-90)")
           .attr("y", -35)
@@ -118,7 +118,7 @@ export default function() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis)
         .selectAll("text")
@@ -127,7 +127,7 @@ export default function() {
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)");
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
       var lineChart = d3.ez.component.lineChart()

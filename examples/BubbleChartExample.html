@@ -17,7 +17,7 @@
     var colors = d3.ez.colors.categorical(3);
     var chart = d3.ez.chart.bubbleChart()
       .colors(colors)
-      .yAxisLabel("Rate");
+      .yAxisLabel("yScale");
     var legend = d3.ez.component.legend().title("Bubbles");
     var title = d3.ez.component.title().mainText("Bubble Chart").subText("Bubble Chart");
 
@@ -83,7 +83,7 @@
         ]
       },
     ];
-    console.log(data1);
+    // console.log(data1);
 
     var data2 = [{
       'Foo': {
@@ -107,7 +107,7 @@
         "z": 100
       }
     }];
-    console.log(data2);
+    // console.log(data2);
 
     var data3 = [
       {
@@ -127,7 +127,7 @@
         ]
       },
       {
-        key: 'Bax',
+        key: 'Baz',
         values: [
           {"key": "x", "value": 90},
           {"key": "y", "value": 5},
@@ -143,9 +143,37 @@
         ]
       }
     ];
-    console.log(data3);
+    // console.log(data3);
 
-    var data4 = d3.values(data1).map(function(d) {
+    var data4 = [
+      {
+        key: 'Foo',
+        "x": 10,
+        "y": 6,
+        "z": 60
+      },
+      {
+        key: 'Bar',
+        "x": 30,
+        "y": 8,
+        "z": 240
+      },
+      {
+        key: 'Baz',
+        "x": 90,
+        "y": 5,
+        "z": 450
+      },
+      {
+        key: 'Spong',
+        "x": 50,
+        "y": 2,
+        "z": 100
+      }
+    ];
+    // console.log(data4);
+
+    var data5 = d3.values(data1).map(function(d) {
       var values = d3.values( d.values).map(function(d) {
         var obj = {};
         obj[d.key] = d.value;
@@ -157,7 +185,7 @@
         'values': values
       };
     });
-    // console.log(data4);
+    // console.log(data5);
 
     // Create chart base
     var myChart = d3.ez.base()
@@ -174,7 +202,7 @@
       });
 
     d3.select('#chartholder')
-      .datum(data3)
+      .datum(data4)
       .call(myChart);
   </script>
 </body>
