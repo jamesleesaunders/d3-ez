@@ -3,5 +3,9 @@
 .bubbleChart circle.bubble {
   opacity: 0.7;
   stroke: white;
+}
+
+.bubbleChart circle.bubble:hover {
+  opacity: 1;
   cursor: pointer;
 }

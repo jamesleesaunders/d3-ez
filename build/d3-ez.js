@@ -4048,8 +4048,8 @@ function chartBubbleChart() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Misc Options
-  var minRadius = 2;
-  var maxRadius = 12;
+  var minRadius = 4;
+  var maxRadius = 18;
   var yAxisLabel;
 
   function init(data) {
