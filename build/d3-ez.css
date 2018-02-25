@@ -171,8 +171,10 @@ table.htmlTable {
 
 /* === Bubble Chart Styles === */
 
-.bubbleChart {
-
+.bubbleChart circle.bubble {
+  opacity: 0.7;
+  stroke: white;
+  cursor: pointer;
 }
 
 

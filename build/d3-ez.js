@@ -378,7 +378,7 @@ function base() {
   var creditTag = d3.ez.component.creditTag();
   var yAxisLabel = "";
 
-  // Colours
+  // Dispatch (custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function init(data) {
@@ -913,8 +913,8 @@ function componentBubbles() {
         .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
         .attr("r", function(d) { return zScale(d.z); })
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.z); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d.z); })
         .merge(bubbles)
         .transition()
         .ease(transition.ease)
@@ -2837,7 +2837,6 @@ function componentLabeledNode() {
   function sizeAccessor(_) {
     return (typeof radius === "function" ? radius(_) : radius);
   }
-
   return my;
 }
 
@@ -4050,7 +4049,7 @@ function chartBubbleChart() {
 
   // Misc Options
   var minRadius = 2;
-  var maxRadius = 40;
+  var maxRadius = 12;
   var yAxisLabel;
 
   function init(data) {
@@ -4066,21 +4065,21 @@ function chartBubbleChart() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(['Foo', 'Bar', 'Baz', 'Spong']);
+        .domain(['Europe', 'Oceania', 'Africa', 'Asia', 'Americas']);
     }
 
     // X & Y Scales
     xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain([0, 120]);
+      .domain([2.2, 5]);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, 10]);
+      .domain([40, 85]);
 
     zScale = d3.scaleLinear()
       .range([minRadius, maxRadius])
-      .domain([0, 500]);
+      .domain([0, 40]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -4247,10 +4246,9 @@ function chartCandlestickChart() {
   var yAxis;
   var colorScale;
 
-  // Data Variables
+  // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Other Customisation Options
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
@@ -5277,6 +5275,8 @@ function chartPolarAreaChart() {
   var chartW;
   var chartH;
   var radius;
+
+  // Scales and Axis
   var xScale;
   var yScale;
   var colorScale;
@@ -5302,6 +5302,8 @@ function chartPolarAreaChart() {
 
     var defaultRadius = Math.min(chartW, chartH) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+
+    // Slice Data, calculate totals, max etc.
     var slicedData = d3.ez.dataParse(data);
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
@@ -5703,9 +5705,6 @@ function chartPunchCard() {
  * @license GPLv3
  */
 
-// Chart Components
-// Other Components
-// Charts
 var my = {
   version: "3.1.0",
   author: "James Saunders",

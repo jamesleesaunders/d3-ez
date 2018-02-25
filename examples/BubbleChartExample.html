@@ -14,64 +14,44 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    // Test Data
-    var data = [
-      {
-        "key": "Foo",
-        "values": [
-          { "x": 10, "y": 6, "z": 60 },
-          { "x": 13, "y": 2, "z": 68 }
-        ]
-      },
-      {
-        "key": "Bar",
-        "values": [
-          { "x": 4, "y": 8, "z": 24 },
-          { "x": 30, "y": 8, "z": 240 }
-        ]
-      },
-      {
-        "key": "Baz",
-        "values": [
-          { "x": 22, "y": 5, "z": 88 },
-          { "x": 45, "y": 4, "z": 18 }
-        ]
-      },
-      {
-        "key": "Spong",
-        "values": [
-          { "x": 50, "y": 2, "z": 100 },
-          { "x": 90, "y": 5, "z": 450 }
-        ]
-      }
-    ];
-    // hans_rosling_2007.csv
-    // UK Election Results Source: http://www.ukpolitical.info/2015.htm
+    d3.csv("data/hans_rosling_2007.csv", function(error, csv) {
+      // UK Election Results Source: https://plot.ly/~LeoDKFZ/0.embed
 
-    var colors = d3.ez.colors.categorical(3);
-    var chart = d3.ez.chart.bubbleChart()
-      .colors(colors)
-      .yAxisLabel("yScale");
-    var legend = d3.ez.component.legend().title("Bubbles");
-    var title = d3.ez.component.title().mainText("Bubble Chart").subText("Bubble Chart");
-
-    // Create chart base
-    var myChart = d3.ez.base()
-      .width(750)
-      .height(400)
-      .chart(chart)
-      .legend(legend)
-      .title(title)
-      .on("customValueMouseOver", function(d) {
-        d3.select("#message").text(d.value);
-      })
-      .on("customSeriesClick", function(d) {
-        console.log(d);
+      // Convert csv to d3-ez data format
+      // Rename keys
+      var csv2 = csv.map(function(d) {
+        return { "Continent": d.Continent, "x": d.X, "y": d.Y, "z": d.Size, "text": d.Text };
       });
+      // Nest Data
+      var data = d3.nest().key(function(d) {
+        return d.Continent;
+      }).entries(csv2);
 
-    d3.select('#chartholder')
-      .datum(data)
-      .call(myChart);
+      var colors = [d3.rgb(31, 119, 180), d3.rgb(255, 127, 14), d3.rgb(44, 160, 44), d3.rgb(214, 39, 40), d3.rgb(148, 103, 189)];
+      var chart = d3.ez.chart.bubbleChart()
+        .colors(colors)
+        .yAxisLabel("yScale");
+      var legend = d3.ez.component.legend().title("Continent");
+      var title = d3.ez.component.title().mainText("Hans Rosling Bubble Chart").subText("2007");
+
+      // Create chart base
+      var myChart = d3.ez.base()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customValueMouseOver", function(d) {
+          d3.select("#message").text(d);
+        })
+        .on("customSeriesClick", function(d) {
+          console.log(d);
+        });
+
+      d3.select('#chartholder')
+        .datum(data)
+        .call(myChart);
+    });
   </script>
 </body>
 

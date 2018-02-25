@@ -36,7 +36,7 @@ export default function() {
 
   // Misc Options
   var minRadius = 2;
-  var maxRadius = 40;
+  var maxRadius = 12;
   var yAxisLabel;
 
   function init(data) {
@@ -52,21 +52,21 @@ export default function() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(['Foo', 'Bar', 'Baz', 'Spong']);
+        .domain(['Europe', 'Oceania', 'Africa', 'Asia', 'Americas']);
     }
 
     // X & Y Scales
     xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain([0, 120]);
+      .domain([2.2, 5]);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, 10]);
+      .domain([40, 85]);
 
     zScale = d3.scaleLinear()
       .range([minRadius, maxRadius])
-      .domain([0, 500]);
+      .domain([0, 40]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
