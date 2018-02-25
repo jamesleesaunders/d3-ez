@@ -14,138 +14,8 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    var colors = d3.ez.colors.categorical(3);
-    var chart = d3.ez.chart.bubbleChart()
-      .colors(colors)
-      .yAxisLabel("yScale");
-    var legend = d3.ez.component.legend().title("Bubbles");
-    var title = d3.ez.component.title().mainText("Bubble Chart").subText("Bubble Chart");
-
     // Test Data
-    var data1 = [{
-        "key": "x",
-        "values": [{
-            "key": "Foo",
-            "value": 10
-          },
-          {
-            "key": "Bar",
-            "value": 30
-          },
-          {
-            "key": "Baz",
-            "value": 90
-          },
-          {
-            "key": "Spong",
-            "value": 50
-          }
-        ]
-      },
-      {
-        "key": "y",
-        "values": [{
-            "key": "Foo",
-            "value": 6
-          },
-          {
-            "key": "Bar",
-            "value": 8
-          },
-          {
-            "key": "Baz",
-            "value": 5
-          },
-          {
-            "key": "Spong",
-            "value": 2
-          }
-        ]
-      },
-      {
-        "key": "z",
-        "values": [{
-            "key": "Foo",
-            "value": 60
-          },
-          {
-            "key": "Bar",
-            "value": 240
-          },
-          {
-            "key": "Baz",
-            "value": 450
-          },
-          {
-            "key": "Spong",
-            "value": 100
-          }
-        ]
-      },
-    ];
-    // console.log(data1);
-
-    var data2 = [{
-      'Foo': {
-        "x": 10,
-        "y": 6,
-        "z": 60
-      },
-      'Bar': {
-        "x": 30,
-        "y": 8,
-        "z": 240
-      },
-      'Baz': {
-        "x": 90,
-        "y": 5,
-        "z": 450
-      },
-      'Spong': {
-        "x": 50,
-        "y": 2,
-        "z": 100
-      }
-    }];
-    // console.log(data2);
-
-    var data3 = [
-      {
-        key: 'Foo',
-        values: [
-          {"key": "x", "value": 10},
-          {"key": "y", "value": 6},
-          {"key": "z", "value": 60}
-        ]
-      },
-      {
-        key: 'Bar',
-        values: [
-          {"key": "x", "value": 30},
-          {"key": "y", "value": 8},
-          {"key": "z", "value": 240}
-        ]
-      },
-      {
-        key: 'Baz',
-        values: [
-          {"key": "x", "value": 90},
-          {"key": "y", "value": 5},
-          {"key": "z", "value": 450}
-        ]
-      },
-      {
-        key: 'Spong',
-        values: [
-          {"key": "x", "value": 50},
-          {"key": "y", "value": 2},
-          {"key": "z", "value": 100}
-        ]
-      }
-    ];
-    // console.log(data3);
-
-    var dataX = [
+    var data = [
       {
         "key": "Foo",
         "values": [
@@ -175,48 +45,15 @@
         ]
       }
     ];
+    // hans_rosling_2007.csv
+    // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
-    var data4 = [
-      {
-        key: 'Foo',
-        "x": 10,
-        "y": 6,
-        "z": 60
-      },
-      {
-        key: 'Bar',
-        "x": 30,
-        "y": 8,
-        "z": 240
-      },
-      {
-        key: 'Baz',
-        "x": 90,
-        "y": 5,
-        "z": 450
-      },
-      {
-        key: 'Spong',
-        "x": 50,
-        "y": 2,
-        "z": 100
-      }
-    ];
-    // console.log(data4);
-
-    var data5 = d3.values(data1).map(function(d) {
-      var values = d3.values( d.values).map(function(d) {
-        var obj = {};
-        obj[d.key] = d.value;
-        return obj;
-      });
-
-      return {
-        'key': d.key,
-        'values': values
-      };
-    });
-    // console.log(data5);
+    var colors = d3.ez.colors.categorical(3);
+    var chart = d3.ez.chart.bubbleChart()
+      .colors(colors)
+      .yAxisLabel("yScale");
+    var legend = d3.ez.component.legend().title("Bubbles");
+    var title = d3.ez.component.title().mainText("Bubble Chart").subText("Bubble Chart");
 
     // Create chart base
     var myChart = d3.ez.base()
@@ -233,7 +70,7 @@
       });
 
     d3.select('#chartholder')
-      .datum(dataX)
+      .datum(data)
       .call(myChart);
   </script>
 </body>
