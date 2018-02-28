@@ -29,14 +29,15 @@ export default function() {
   var colorScale;
 
   // Data Variables
-  // TBC
+  var maxValue;
+  var minValue;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   // Misc Options
-  var minRadius = 4;
-  var maxRadius = 18;
+  var minRadius = 3;
+  var maxRadius = 20;
   var yAxisLabel;
 
   function init(data) {
@@ -44,7 +45,24 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    // TBC
+    maxValue = (function() {
+      var ret;
+      d3.map(data).values().forEach(function(d) {
+        d.values.forEach(function(d) {
+          ret = (typeof(ret) === "undefined" ? +d.z : d3.max([ret, +d.z]));
+        });
+      });
+      return +ret;
+    })();
+    minValue = (function() {
+      var ret;
+      d3.map(data).values().forEach(function(d) {
+        d.values.forEach(function(d) {
+          ret = (typeof(ret) === "undefined" ? +d.z : d3.min([ret, +d.z]));
+        });
+      });
+      return +ret;
+    })();
 
     // Colour Scale
     if (!colorScale) {
@@ -58,15 +76,15 @@ export default function() {
     // X & Y Scales
     xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain([2.2, 5]);
+      .domain([2.3, 4.8]);
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([40, 85]);
+      .domain([38, 85]);
 
     zScale = d3.scaleLinear()
       .range([minRadius, maxRadius])
-      .domain([0, 40]);
+      .domain([minValue, maxValue]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
