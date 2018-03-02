@@ -887,7 +887,7 @@ function componentBubbles() {
   var colorScale;
   var xScale;
   var yScale;
-  var zScale;
+  var sizeScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -912,15 +912,14 @@ function componentBubbles() {
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
-        .attr("r", function(d) { return zScale(d.z); })
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.z); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d.z); })
+        .attr("r", function(d) { return sizeScale(d.value); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
         .merge(bubbles)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("cy", function(d) { return yScale(d.y); })
-        .attr("r", function(d) { return zScale(d.z); });
+        .attr("r", function(d) { return sizeScale(d.value); });
 
       bubbles.exit()
         .transition()
@@ -960,9 +959,9 @@ function componentBubbles() {
     return my;
   };
 
-  my.zScale = function(_) {
-    if (!arguments.length) return zScale;
-    zScale = _;
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return my;
   };
 
@@ -4036,14 +4035,16 @@ function chartBubbleChart() {
   // Scales and Axis
   var xScale;
   var yScale;
-  var zScale;
+  var sizeScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
   // Data Variables
-  var maxValue;
-  var minValue;
+  var xDomain;
+  var yDomain;
+  var sizeDomain;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -4058,24 +4059,26 @@ function chartBubbleChart() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    maxValue = (function() {
-      var ret;
+    function extents(key) {
+      // Calculate the extents for each series.
+      var serExts = [];
       d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? +d.z : d3.max([ret, +d.z]));
+        var vals = d.values.map(function(e) {
+          return +e[key];
         });
+        serExts.push(d3.extent(vals));
       });
-      return +ret;
-    })();
-    minValue = (function() {
-      var ret;
-      d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? +d.z : d3.min([ret, +d.z]));
-        });
-      });
-      return +ret;
-    })();
+      // Merge all the series extents into one array.
+      // Calculate overall extent.
+      return d3.extent([].concat.apply([], serExts));
+    }
+
+    xDomain = extents('x');
+    yDomain = extents('y');
+    sizeDomain = extents('value');
+    categoryNames = data.map(function(d) {
+      return d.key;
+    });
 
     // Colour Scale
     if (!colorScale) {
@@ -4083,21 +4086,23 @@ function chartBubbleChart() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(['Europe', 'Oceania', 'Africa', 'Asia', 'Americas']);
+        .domain(categoryNames);
     }
 
-    // X & Y Scales
+    // X, Y & Z Scales
     xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain([2.3, 4.8]);
+      .domain(xDomain)
+      .nice();
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([38, 85]);
+      .domain(yDomain)
+      .nice();
 
-    zScale = d3.scaleLinear()
+    sizeScale = d3.scaleLinear()
       .range([minRadius, maxRadius])
-      .domain([minValue, maxValue]);
+      .domain(sizeDomain);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -4159,7 +4164,7 @@ function chartBubbleChart() {
         .colorScale(colorScale)
         .xScale(xScale)
         .yScale(yScale)
-        .zScale(zScale)
+        .sizeScale(sizeScale)
         .dispatch(dispatch);
 
       var bubbleGroup = chart.selectAll(".bubbleGroup")

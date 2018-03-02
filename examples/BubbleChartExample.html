@@ -20,11 +20,11 @@
       // Convert csv to d3-ez data format
       // Rename keys
       var csv2 = csv.map(function(d) {
-        return { "Continent": d.Continent, "x": d.X, "y": d.Y, "z": d.Size, "text": d.Text };
+        return { "value": d.Size, "x": d.X, "y": d.Y, "text": d.Text, "series": d.Continent };
       });
       // Nest Data
       var data = d3.nest().key(function(d) {
-        return d.Continent;
+        return d.series;
       }).entries(csv2);
 
       var colors = [d3.rgb(31, 119, 180), d3.rgb(255, 127, 14), d3.rgb(44, 160, 44), d3.rgb(214, 39, 40), d3.rgb(148, 103, 189)];

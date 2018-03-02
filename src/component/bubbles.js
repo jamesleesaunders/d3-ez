@@ -10,7 +10,7 @@ export default function() {
   var colorScale;
   var xScale;
   var yScale;
-  var zScale;
+  var sizeScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -35,15 +35,14 @@ export default function() {
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
-        .attr("r", function(d) { return zScale(d.z); })
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.z); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d.z); })
+        .attr("r", function(d) { return sizeScale(d.value); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
         .merge(bubbles)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("cy", function(d) { return yScale(d.y); })
-        .attr("r", function(d) { return zScale(d.z); });
+        .attr("r", function(d) { return sizeScale(d.value); });
 
       bubbles.exit()
         .transition()
@@ -83,9 +82,9 @@ export default function() {
     return my;
   };
 
-  my.zScale = function(_) {
-    if (!arguments.length) return zScale;
-    zScale = _;
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return my;
   };
 

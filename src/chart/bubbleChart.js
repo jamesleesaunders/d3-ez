@@ -23,14 +23,16 @@ export default function() {
   // Scales and Axis
   var xScale;
   var yScale;
-  var zScale;
+  var sizeScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
   // Data Variables
-  var maxValue;
-  var minValue;
+  var xDomain;
+  var yDomain;
+  var sizeDomain;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -45,24 +47,26 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    maxValue = (function() {
-      var ret;
+    function extents(key) {
+      // Calculate the extents for each series.
+      var serExts = [];
       d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? +d.z : d3.max([ret, +d.z]));
+        var vals = d.values.map(function(e) {
+          return +e[key];
         });
+        serExts.push(d3.extent(vals));
       });
-      return +ret;
-    })();
-    minValue = (function() {
-      var ret;
-      d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? +d.z : d3.min([ret, +d.z]));
-        });
-      });
-      return +ret;
-    })();
+      // Merge all the series extents into one array.
+      // Calculate overall extent.
+      return d3.extent([].concat.apply([], serExts));
+    }
+
+    xDomain = extents('x');
+    yDomain = extents('y');
+    sizeDomain = extents('value');
+    categoryNames = data.map(function(d) {
+      return d.key;
+    });
 
     // Colour Scale
     if (!colorScale) {
@@ -70,21 +74,23 @@ export default function() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(['Europe', 'Oceania', 'Africa', 'Asia', 'Americas']);
+        .domain(categoryNames);
     }
 
-    // X & Y Scales
+    // X, Y & Z Scales
     xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain([2.3, 4.8]);
+      .domain(xDomain)
+      .nice();
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([38, 85]);
+      .domain(yDomain)
+      .nice();
 
-    zScale = d3.scaleLinear()
+    sizeScale = d3.scaleLinear()
       .range([minRadius, maxRadius])
-      .domain([minValue, maxValue]);
+      .domain(sizeDomain);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -146,7 +152,7 @@ export default function() {
         .colorScale(colorScale)
         .xScale(xScale)
         .yScale(yScale)
-        .zScale(zScale)
+        .sizeScale(sizeScale)
         .dispatch(dispatch);
 
       var bubbleGroup = chart.selectAll(".bubbleGroup")
