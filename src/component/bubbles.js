@@ -26,7 +26,7 @@ export default function() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      // Add dots to series
+      // Add bubbles to series
       var bubbles = series.selectAll(".bubble")
         .data(function(d) { return d.values; });
 
