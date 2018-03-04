@@ -907,6 +907,7 @@ function componentBubbles() {
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
         .label(function(d) { return d.text; })
+        .display("none")
         .classed("bubble")
         .dispatch(dispatch);
 
@@ -919,20 +920,21 @@ function componentBubbles() {
         .attr("transform", function(d) {
           return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
+        .on("mouseover", function(d) {
+          d3.select(this).select("text").style("display", "block");
+          dispatch.call("customValueMouseOver", this, d.value);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).select("text").style("display", "none");
+        })
+        .on("click", function(d) {
+          dispatch.call("customValueClick", this, d.value);
+        })
         .datum(function(d) { return d; })
         .call(bubble)
         .merge(bubbles);
 
-      bubbles.exit()
-        .transition()
-        .style("opacity", 0)
-        .remove();
-
       /*
-      // Add bubbles to series
-      var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d.values; });
-
       bubbles.enter()
         .append("circle")
         .attr("class", "bubble")
@@ -946,12 +948,12 @@ function componentBubbles() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
+      */
 
       bubbles.exit()
         .transition()
         .style("opacity", 0)
         .remove();
-      */
     });
   }
 
@@ -2597,13 +2599,41 @@ function componentProportionalAreaCircles() {
         .merge(seriesSelect);
 
       series.attr("transform", function(d) {
-        return "translate(0, " + (cellHeight / 2) + ")";
+        return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
       });
+
+      var spot = d3.ez.component.labeledNode()
+        .radius(function(d) { return sizeScale(d.value); })
+        .color(function(d) { return colorScale(d.value); })
+        .label(function(d) { return d.value; })
+        .display("none")
+        .classed("punchSpot")
+        .dispatch(dispatch);
 
       // Add spots to series
       var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
+      spots.enter()
+        .append("g")
+        .attr("transform", function(d) {
+          return "translate(" + xScale(d.key) + ",0)";
+        })
+        .on("mouseover", function(d) {
+          d3.select(this).select("text").style("display", "block");
+          dispatch.call("customValueMouseOver", this, d.value);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).select("text").style("display", "none");
+        })
+        .on("click", function(d) {
+          dispatch.call("customValueClick", this, d.value);
+        })
+        .datum(function(d) { return d; })
+        .call(spot)
+        .merge(spots);
+
+      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
         .attr("cx", function(d) {
@@ -2620,6 +2650,7 @@ function componentProportionalAreaCircles() {
         .attr("r", function(d) {
           return sizeScale(d['value']);
         });
+      */
 
       spots.exit()
         .transition()
@@ -2784,7 +2815,7 @@ function componentScatterPlot() {
  * @example
  * var myBubble = d3.ez.component.labeledNode()
  *    .label("Circle Label")
- *    .color("#FF0000")
+ *    .color("#ff0000")
  *    .classed("bubble")
  *    .opacity(0.5)
  *    .stroke(1)
@@ -2799,6 +2830,7 @@ function componentLabeledNode() {
   var strokeWidth = 1;
   var radius = 8;
   var label = null;
+  var display = 'block';
   var fontSize = 10;
   var classed = "labeledNode";
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
@@ -2811,10 +2843,7 @@ function componentLabeledNode() {
       var r = sizeAccessor(data);
 
       var node = d3.select(this)
-        .attr("class", classed)
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-        .on("mouseout", function(d) { dispatch.call("customValueMouseOut", this, d.value); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); });
+        .attr("class", classed);
 
       node.append("circle")
         .attr("r", r)
@@ -2825,10 +2854,12 @@ function componentLabeledNode() {
 
       node.append("text")
         .text(label)
-        .attr("dx", r + 2)
-        .attr("dy", r + 6)
+        .attr("dx", 0 - ((r/2) + 6))
+        .attr("dy", 0 - ((r/2) + 6))
+        .style("display", display)
         .style("font-size", fontSize + "px")
-        .style("text-anchor", "start");
+        .attr("alignment-baseline", "hanging")
+        .style("text-anchor", "end");
     });
   }
 
@@ -2854,6 +2885,12 @@ function componentLabeledNode() {
   my.label = function(_) {
     if (!arguments.length) return label;
     label = _;
+    return this;
+  };
+
+  my.display = function(_) {
+    if (!arguments.length) return display;
+    display = _;
     return this;
   };
 
@@ -5657,8 +5694,8 @@ function chartPunchCard() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -5670,7 +5707,7 @@ function chartPunchCard() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .call(xAxis)
         .selectAll("text")
         .attr("y", 0)
@@ -5678,7 +5715,7 @@ function chartPunchCard() {
         .attr("transform", "rotate(60)")
         .style("text-anchor", "end");
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
       var proportionalAreaCircles = d3.ez.component.proportionalAreaCircles()

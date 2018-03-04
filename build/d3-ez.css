@@ -182,10 +182,6 @@ table.htmlTable {
   cursor: pointer;
 }
 
-.bubbleChart .bubble text {
-  display: none;
-}
-
 
 /* === Candlestick Chart Styles === */
 

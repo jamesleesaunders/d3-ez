@@ -30,13 +30,41 @@ export default function() {
         .merge(seriesSelect);
 
       series.attr("transform", function(d) {
-        return "translate(0, " + (cellHeight / 2) + ")";
+        return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
       });
+
+      var spot = d3.ez.component.labeledNode()
+        .radius(function(d) { return sizeScale(d.value); })
+        .color(function(d) { return colorScale(d.value); })
+        .label(function(d) { return d.value; })
+        .display("none")
+        .classed("punchSpot")
+        .dispatch(dispatch);
 
       // Add spots to series
       var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
+      spots.enter()
+        .append("g")
+        .attr("transform", function(d) {
+          return "translate(" + xScale(d.key) + ",0)";
+        })
+        .on("mouseover", function(d) {
+          d3.select(this).select("text").style("display", "block");
+          dispatch.call("customValueMouseOver", this, d.value);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).select("text").style("display", "none");
+        })
+        .on("click", function(d) {
+          dispatch.call("customValueClick", this, d.value);
+        })
+        .datum(function(d) { return d; })
+        .call(spot)
+        .merge(spots);
+
+      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
         .attr("cx", function(d) {
@@ -53,6 +81,7 @@ export default function() {
         .attr("r", function(d) {
           return sizeScale(d['value']);
         });
+      */
 
       spots.exit()
         .transition()

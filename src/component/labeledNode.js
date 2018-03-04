@@ -4,7 +4,7 @@
  * @example
  * var myBubble = d3.ez.component.labeledNode()
  *    .label("Circle Label")
- *    .color("#FF0000")
+ *    .color("#ff0000")
  *    .classed("bubble")
  *    .opacity(0.5)
  *    .stroke(1)
@@ -19,6 +19,7 @@ export default function() {
   var strokeWidth = 1;
   var radius = 8;
   var label = null;
+  var display = 'block';
   var fontSize = 10;
   var classed = "labeledNode";
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
@@ -32,10 +33,7 @@ export default function() {
       var r = sizeAccessor(data);
 
       var node = d3.select(this)
-        .attr("class", classed)
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-        .on("mouseout", function(d) { dispatch.call("customValueMouseOut", this, d.value); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); });
+        .attr("class", classed);
 
       node.append("circle")
         .attr("r", r)
@@ -46,10 +44,12 @@ export default function() {
 
       node.append("text")
         .text(label)
-        .attr("dx", r + 2)
-        .attr("dy", r + 6)
+        .attr("dx", 0 - ((r/2) + 6))
+        .attr("dy", 0 - ((r/2) + 6))
+        .style("display", display)
         .style("font-size", fontSize + "px")
-        .style("text-anchor", "start");
+        .attr("alignment-baseline", "hanging")
+        .style("text-anchor", "end");
     });
   }
 
@@ -75,6 +75,12 @@ export default function() {
   my.label = function(_) {
     if (!arguments.length) return label;
     label = _;
+    return this;
+  };
+
+  my.display = function(_) {
+    if (!arguments.length) return display;
+    display = _;
     return this;
   };
 

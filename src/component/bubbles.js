@@ -30,6 +30,7 @@ export default function() {
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
         .label(function(d) { return d.text; })
+        .display("none")
         .classed("bubble")
         .dispatch(dispatch);
 
@@ -42,20 +43,21 @@ export default function() {
         .attr("transform", function(d) {
           return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
+        .on("mouseover", function(d) {
+          d3.select(this).select("text").style("display", "block");
+          dispatch.call("customValueMouseOver", this, d.value);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).select("text").style("display", "none");
+        })
+        .on("click", function(d) {
+          dispatch.call("customValueClick", this, d.value);
+        })
         .datum(function(d) { return d; })
         .call(bubble)
         .merge(bubbles);
 
-      bubbles.exit()
-        .transition()
-        .style("opacity", 0)
-        .remove();
-
       /*
-      // Add bubbles to series
-      var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d.values; });
-
       bubbles.enter()
         .append("circle")
         .attr("class", "bubble")
@@ -69,12 +71,12 @@ export default function() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
+      */
 
       bubbles.exit()
         .transition()
         .style("opacity", 0)
         .remove();
-      */
     });
   }
 

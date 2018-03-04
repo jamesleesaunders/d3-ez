@@ -43,10 +43,6 @@
         .title(title)
         .on("customValueMouseOver", function(d) {
           d3.select("#message").text(d);
-          d3.select(this).select("text").style("display", "block");
-        })
-        .on("customValueMouseOut", function(d) {
-          d3.select(this).select("text").style("display", "none");
         })
         .on("customSeriesClick", function(d) {
           console.log(d);
