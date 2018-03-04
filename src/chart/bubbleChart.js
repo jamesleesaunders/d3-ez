@@ -144,7 +144,6 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-
       // Add bubbles to the chart
       var bubbles = d3.ez.component.bubbles()
         .width(chartW)
@@ -160,7 +159,6 @@ export default function() {
 
       bubbleGroup.enter().append("g")
         .attr("class", "bubbleGroup")
-        .style("fill", function(d) { return colorScale(d.key); })
         .datum(function(d) { return d; })
         .merge(bubbleGroup)
         .call(bubbles);

@@ -26,6 +26,32 @@ export default function() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
+      var bubble = d3.ez.component.labeledNode()
+        .radius(function(d) { return sizeScale(d.value); })
+        .color(function(d) { return colorScale(d.series); })
+        .label(function(d) { return d.text; })
+        .classed("bubble")
+        .dispatch(dispatch);
+
+      // Add bubbles to series
+      var bubbles = series.selectAll(".bubble")
+        .data(function(d) { return d.values; });
+
+      bubbles.enter()
+        .append("g")
+        .attr("transform", function(d) {
+          return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+        })
+        .datum(function(d) { return d; })
+        .call(bubble)
+        .merge(bubbles);
+
+      bubbles.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
+
+      /*
       // Add bubbles to series
       var bubbles = series.selectAll(".bubble")
         .data(function(d) { return d.values; });
@@ -48,6 +74,7 @@ export default function() {
         .transition()
         .style("opacity", 0)
         .remove();
+      */
     });
   }
 
