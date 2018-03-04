@@ -2,14 +2,14 @@
  * Reusable Labeled Node Component
  *
  * @example
- * var myBubble = d3.ez.component.labeledNode()
- *    .label("Circle Label")
- *    .color("#ff0000")
- *    .classed("bubble")
- *    .opacity(0.5)
- *    .stroke(1)
- *    .radius(5);
- * d3.selectAll("g").call(myBubble);
+ * var myNode = d3.ez.component.labeledNode()
+ *     .label("Circle Label")
+ *     .color("#ff0000")
+ *     .classed("bubble")
+ *     .opacity(0.5)
+ *     .stroke(1)
+ *     .radius(5);
+ * d3.selectAll("g").call(myNode);
  */
 export default function() {
   // Default Options (Configurable via setters)

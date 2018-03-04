@@ -30,6 +30,7 @@ export default function() {
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
         .label(function(d) { return d.text; })
+        .stroke(1, "white")
         .display("none")
         .classed("bubble")
         .dispatch(dispatch);
