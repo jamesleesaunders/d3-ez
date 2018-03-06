@@ -906,7 +906,7 @@ function componentBubbles() {
       var bubble = d3.ez.component.labeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
-        .label(function(d) { return d.text; })
+        .label(function(d) { return d.key; })
         .stroke(1, "white")
         .display("none")
         .classed("bubble")
@@ -923,13 +923,13 @@ function componentBubbles() {
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
-          dispatch.call("customValueMouseOver", this, d.value);
+          dispatch.call("customValueMouseOver", this, d);
         })
         .on("mouseout", function(d) {
           d3.select(this).select("text").style("display", "none");
         })
         .on("click", function(d) {
-          dispatch.call("customValueClick", this, d.value);
+          dispatch.call("customValueClick", this, d);
         })
         .datum(function(d) { return d; })
         .call(bubble)
@@ -2622,13 +2622,13 @@ function componentProportionalAreaCircles() {
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
-          dispatch.call("customValueMouseOver", this, d.value);
+          dispatch.call("customValueMouseOver", this, d);
         })
         .on("mouseout", function(d) {
           d3.select(this).select("text").style("display", "none");
         })
         .on("click", function(d) {
-          dispatch.call("customValueClick", this, d.value);
+          dispatch.call("customValueClick", this, d);
         })
         .datum(function(d) { return d; })
         .call(spot)
@@ -4341,7 +4341,7 @@ function chartCandlestickChart() {
   var classed = "candlestickChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = ["green", "red"];
 
@@ -4367,8 +4367,6 @@ function chartCandlestickChart() {
     data.values.forEach(function(d, i) {
       data.values[i].date = Date.parse(d.date);
     });
-
-    console.log(data);
 
     // Slice Data, calculate totals, max etc.
     var maxDate = d3.max(data.values, function(d) {
@@ -4407,7 +4405,8 @@ function chartCandlestickChart() {
       .nice();
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
+    xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.timeFormat("%d-%b-%y"));
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -4448,7 +4447,12 @@ function chartCandlestickChart() {
       // Add axis to chart
       chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
 
       chart.select(".yAxis")
         .call(yAxis);

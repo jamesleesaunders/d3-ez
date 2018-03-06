@@ -20,7 +20,7 @@
       // Convert csv to d3-ez data format
       // Rename keys
       var csv2 = csv.map(function(d) {
-        return { "value": d.Size, "x": d.X, "y": d.Y, "text": d.Text, "series": d.Continent };
+        return { "key": d.Text, "value": d.Size, "x": d.X, "y": d.Y, "series": d.Continent };
       });
       // Nest Data
       var data = d3.nest().key(function(d) {
@@ -43,7 +43,7 @@
         .legend(legend)
         .title(title)
         .on("customValueMouseOver", function(d) {
-          d3.select("#message").text(d);
+          d3.select("#message").text(d.value);
         })
         .on("customSeriesClick", function(d) {
           console.log(d);

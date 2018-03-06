@@ -52,13 +52,13 @@ export default function() {
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
-          dispatch.call("customValueMouseOver", this, d.value);
+          dispatch.call("customValueMouseOver", this, d);
         })
         .on("mouseout", function(d) {
           d3.select(this).select("text").style("display", "none");
         })
         .on("click", function(d) {
-          dispatch.call("customValueClick", this, d.value);
+          dispatch.call("customValueClick", this, d);
         })
         .datum(function(d) { return d; })
         .call(spot)
