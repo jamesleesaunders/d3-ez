@@ -44,11 +44,11 @@ export default function() {
 
       node.append("text")
         .text(label)
-        .attr("dx", 0 - ((r/2) + 6))
-        .attr("dy", 0 - ((r/2) + 6))
+        .attr("dx", -r)
+        .attr("dy", -r)
         .style("display", display)
         .style("font-size", fontSize + "px")
-        .attr("alignment-baseline", "hanging")
+        .attr("alignment-baseline", "middle")
         .style("text-anchor", "end");
     });
   }

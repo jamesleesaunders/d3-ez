@@ -2855,11 +2855,11 @@ function componentLabeledNode() {
 
       node.append("text")
         .text(label)
-        .attr("dx", 0 - ((r/2) + 6))
-        .attr("dy", 0 - ((r/2) + 6))
+        .attr("dx", -r)
+        .attr("dy", -r)
         .style("display", display)
         .style("font-size", fontSize + "px")
-        .attr("alignment-baseline", "hanging")
+        .attr("alignment-baseline", "middle")
         .style("text-anchor", "end");
     });
   }
@@ -4367,6 +4367,8 @@ function chartCandlestickChart() {
     data.values.forEach(function(d, i) {
       data.values[i].date = Date.parse(d.date);
     });
+
+    console.log(data);
 
     // Slice Data, calculate totals, max etc.
     var maxDate = d3.max(data.values, function(d) {
