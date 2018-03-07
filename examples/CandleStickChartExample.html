@@ -14,7 +14,7 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.json("data/bitcoin_price_data.json", function(error, data) {
+    d3.json("data/bitcoin_price.json", function(error, data) {
       // Bitcoin Price Data Source: https://coinmarketcap.com/currencies/bitcoin/historical-data/?start=20180204&end=20180306
 
       var chart = d3.ez.chart.candlestickChart();
