@@ -12,10 +12,10 @@
   <div id="chartholder"></div>
   <br/>
   <div>Value: <span id="message"></span></div>
-  
+
   <script type="text/javascript">
     d3.json("data/world_temperatures.json", function(error, json) {
-      // World Temperature Data Source: http://www.holiday-weather.com/new_york_city/averages/
+      // World Temperature Data Source: http://www.holiday-weather.com/london/averages/
 
       var colors = ["#d7191c", "#fdae61", "#abd9e9", "#2c7bb6"].reverse();
       var chart = d3.ez.chart.heatMapTable().colors(colors);
