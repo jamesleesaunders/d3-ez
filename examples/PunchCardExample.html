@@ -17,6 +17,10 @@
     d3.json("data/netflix_isp_speed_index.json", function(error, json) {
       // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
+      var chart = d3.ez.chart.punchCard();
+      var legend = d3.ez.component.legend().title("Speed Index");
+      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
+
       // Convert json to d3-ez data format
       var data = d3.nest().key(function(d) {
         return d.ISP;
@@ -30,11 +34,6 @@
         return obj;
       });
 
-      var chart = d3.ez.chart.punchCard();
-      var legend = d3.ez.component.legend().title("Speed Index");
-      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
-
-      console.log(data);
       // Create chart base
       var myChart = d3.ez.base()
         .width(750)

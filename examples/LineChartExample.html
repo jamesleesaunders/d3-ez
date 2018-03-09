@@ -14,18 +14,23 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    dateConvert = function(dateYMD) {
-      parser = d3.timeParse('%d-%b-%y');
-      var dateISO = parser(dateYMD).toISOString();
-      var dateUnix = new Date(dateISO) / 1000;
-      return dateUnix;
-    };
-
     d3.csv("data/exchange_rates.csv", function(error, csv) {
       // Historical Exchange Rates Source: https://www.ofx.com/en-gb/forex-news/historical-exchange-rates/
 
+      var colors = d3.ez.colors.categorical(3);
+      var chart = d3.ez.chart.lineChart().colors(colors).yAxisLabel("Rate");
+      var legend = d3.ez.component.legend().title("Currency");
+      var title = d3.ez.component.title().mainText("Historical Exchange Rates").subText("Comparison against GBP");
+
       // Convert csv to d3-ez data format
-      data = [{
+      dateConvert = function(dateYMD) {
+        parser = d3.timeParse('%d-%b-%y');
+        var dateISO = parser(dateYMD).toISOString();
+        var dateUnix = new Date(dateISO) / 1000;
+        return dateUnix;
+      }
+
+      var data = [{
         key: "USD",
         values: []
       }, {
@@ -50,14 +55,6 @@
         });
       });
 
-      var colors = d3.ez.colors.categorical(3);
-      var chart = d3.ez.chart.lineChart()
-        .colors(colors)
-        .yAxisLabel("Rate");
-      var legend = d3.ez.component.legend().title("Currency");
-      var title = d3.ez.component.title().mainText("Historical Exchange Rates").subText("Comparison against GBP");
-
-      console.log(data);
       // Create chart base
       var myChart = d3.ez.base()
         .width(750)
