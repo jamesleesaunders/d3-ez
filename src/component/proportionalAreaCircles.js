@@ -6,11 +6,11 @@ export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-  var sizeScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
+  var sizeScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -45,6 +45,7 @@ export default function() {
       var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
+      /*
       spots.enter()
         .append("g")
         .attr("transform", function(d) {
@@ -63,13 +64,11 @@ export default function() {
         .datum(function(d) { return d; })
         .call(spot)
         .merge(spots);
+      */
 
-      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
-        .attr("cx", function(d) {
-          return (cellWidth / 2 + xScale(d.key));
-        })
+        .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
         .attr("cy", 0)
         .attr("r", 0)
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
@@ -78,10 +77,7 @@ export default function() {
         .transition()
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        });
-      */
+        .attr("r", function(d) { return sizeScale(d['value']); });
 
       spots.exit()
         .transition()

@@ -4,10 +4,10 @@
  * @example
  * var myLegend = d3.ez.component.legend()
  *     .sizeScale(**D3 Scale Object**)
- *     .sizeLabel('Label for Size')
+ *     .sizeLabel("Label for Size")
  *     .colorScale(**D3 Scale Object**)
- *     .colorLabel('Label for Colours')
- *     .position('top-right');
+ *     .colorLabel("Label for Colours")
+ *     .position("top-right");
  * d3.select("svg").call(myLegend);
  */
 export default function() {

@@ -39,6 +39,7 @@ export default function() {
       var bubbles = series.selectAll(".bubble")
         .data(function(d) { return d.values; });
 
+      /*
       bubbles.enter()
         .append("g")
         .attr("transform", function(d) {
@@ -57,14 +58,14 @@ export default function() {
         .datum(function(d) { return d; })
         .call(bubble)
         .merge(bubbles);
+      */
 
-      /*
-      bubbles.enter()
-        .append("circle")
+      bubbles.enter().append("circle")
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
         .attr("r", function(d) { return sizeScale(d.value); })
+        .style("fill", function(d) { return colorScale(d.series); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
         .merge(bubbles)
@@ -72,7 +73,6 @@ export default function() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
-      */
 
       bubbles.exit()
         .transition()

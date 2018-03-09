@@ -916,6 +916,7 @@ function componentBubbles() {
       var bubbles = series.selectAll(".bubble")
         .data(function(d) { return d.values; });
 
+      /*
       bubbles.enter()
         .append("g")
         .attr("transform", function(d) {
@@ -934,14 +935,14 @@ function componentBubbles() {
         .datum(function(d) { return d; })
         .call(bubble)
         .merge(bubbles);
+      */
 
-      /*
-      bubbles.enter()
-        .append("circle")
+      bubbles.enter().append("circle")
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
         .attr("cy", function(d) { return yScale(d.y); })
         .attr("r", function(d) { return sizeScale(d.value); })
+        .style("fill", function(d) { return colorScale(d.series); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
         .merge(bubbles)
@@ -949,7 +950,6 @@ function componentBubbles() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
-      */
 
       bubbles.exit()
         .transition()
@@ -2576,11 +2576,11 @@ function componentProportionalAreaCircles() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-  var sizeScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
+  var sizeScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -2615,6 +2615,7 @@ function componentProportionalAreaCircles() {
       var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
+      /*
       spots.enter()
         .append("g")
         .attr("transform", function(d) {
@@ -2633,13 +2634,11 @@ function componentProportionalAreaCircles() {
         .datum(function(d) { return d; })
         .call(spot)
         .merge(spots);
+      */
 
-      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
-        .attr("cx", function(d) {
-          return (cellWidth / 2 + xScale(d.key));
-        })
+        .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
         .attr("cy", 0)
         .attr("r", 0)
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
@@ -2648,10 +2647,7 @@ function componentProportionalAreaCircles() {
         .transition()
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        });
-      */
+        .attr("r", function(d) { return sizeScale(d['value']); });
 
       spots.exit()
         .transition()
@@ -2934,10 +2930,10 @@ function componentLabeledNode() {
  * @example
  * var myLegend = d3.ez.component.legend()
  *     .sizeScale(**D3 Scale Object**)
- *     .sizeLabel('Label for Size')
+ *     .sizeLabel("Label for Size")
  *     .colorScale(**D3 Scale Object**)
- *     .colorLabel('Label for Colours')
- *     .position('top-right');
+ *     .colorLabel("Label for Colours")
+ *     .position("top-right");
  * d3.select("svg").call(myLegend);
  */
 function componentLegend() {
