@@ -3,10 +3,11 @@
  *
  * @example
  * var myNode = d3.ez.component.labeledNode()
- *     .color("#FF0000")
+ *     .label("Circle Label")
+ *     .color("#ff0000")
+ *     .classed("bubble")
  *     .opacity(0.5)
  *     .stroke(1)
- *     .label("Node Label")
  *     .radius(5);
  * d3.selectAll("g").call(myNode);
  */
@@ -15,31 +16,41 @@ export default function() {
   var color = "steelblue";
   var opacity = 1;
   var strokeColor = "#000000";
-  var strokeWidth = 0;
+  var strokeWidth = 1;
   var radius = 8;
   var label = null;
+  var display = 'block';
   var fontSize = 10;
+  var classed = "labeledNode";
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
-  function my(d) {
-    var r = sizeAccessor(d);
+  function sizeAccessor(_) {
+    return (typeof radius === "function" ? radius(_) : radius);
+  };
 
-    var node = d3.select(this)
-      .attr("class", "node");
+  function my(selection) {
+    selection.each(function(data) {
+      var r = sizeAccessor(data);
 
-    node.append("circle")
-      .attr("fill-opacity", opacity)
-      .attr("r", r)
-      .style("stroke", strokeColor)
-      .style("stroke-width", strokeWidth)
-      .style("fill", color);
+      var node = d3.select(this)
+        .attr("class", classed);
 
-    node.append("text")
-      .text(label)
-      .attr("dx", r + 2)
-      .attr("dy", r + 6)
-      .style("text-anchor", "start")
-      .style("font-size", fontSize + "px")
-      .attr("class", "nodetext");
+      node.append("circle")
+        .attr("r", r)
+        .attr("fill-opacity", opacity)
+        //.style("stroke", strokeColor)
+        //.style("stroke-width", strokeWidth)
+        .style("fill", color);
+
+      node.append("text")
+        .text(label)
+        .attr("dx", -r)
+        .attr("dy", -r)
+        .style("display", display)
+        .style("font-size", fontSize + "px")
+        .attr("alignment-baseline", "middle")
+        .style("text-anchor", "end");
+    });
   }
 
   // Configuration Getters & Setters
@@ -67,6 +78,12 @@ export default function() {
     return this;
   };
 
+  my.display = function(_) {
+    if (!arguments.length) return display;
+    display = _;
+    return this;
+  };
+
   my.fontSize = function(_) {
     if (!arguments.length) return fontSize;
     fontSize = _;
@@ -74,14 +91,27 @@ export default function() {
   };
 
   my.stroke = function(_width, _color) {
-    if (!arguments.length) return strokeWidth + ", " + strokeColor;
+    if (!arguments.length) return [strokeWidth, strokeColor];
     strokeWidth = _width;
     strokeColor = _color;
     return this;
   };
 
-  function sizeAccessor(_) {
-    return (typeof radius === "function" ? radius(_) : radius);
+  my.classed = function(_) {
+    if (!arguments.length) return classed;
+    classed = _;
+    return this;
+  };
+
+  my.dispatch = function(_) {
+    if (!arguments.length) return dispatch();
+    dispatch = _;
+    return this;
+  };
+
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
   };
 
   return my;

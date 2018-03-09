@@ -1,11 +1,11 @@
 /**
- * Reusable Proportional Area Circles Component
+ * Reusable Scatter Plot Component
  *
  */
 export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
-  var height = 100;
+  var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
@@ -14,12 +14,9 @@ export default function() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
-    var cellHeight = yScale.bandwidth();
-    var cellWidth = xScale.bandwidth();
-
     selection.each(function() {
       // Create series group
-      var seriesSelect = selection.selectAll(".series")
+      var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
       var series = seriesSelect.enter()
@@ -29,27 +26,24 @@ export default function() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      series.attr("transform", function(d) {
-        return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
-      });
-
-      var spot = d3.ez.component.labeledNode()
+      var bubble = d3.ez.component.labeledNode()
         .radius(function(d) { return sizeScale(d.value); })
-        .color(function(d) { return colorScale(d.value); })
-        .label(function(d) { return d.value; })
+        .color(function(d) { return colorScale(d.series); })
+        .label(function(d) { return d.key; })
+        .stroke(1, "white")
         .display("none")
-        .classed("punchSpot")
+        .classed("bubble")
         .dispatch(dispatch);
 
-      // Add spots to series
-      var spots = series.selectAll(".punchSpot")
+      // Add bubbles to series
+      var bubbles = series.selectAll(".bubble")
         .data(function(d) { return d.values; });
 
       /*
-      spots.enter()
+      bubbles.enter()
         .append("g")
         .attr("transform", function(d) {
-          return "translate(" + xScale(d.key) + ",0)";
+          return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
@@ -62,24 +56,25 @@ export default function() {
           dispatch.call("customValueClick", this, d);
         })
         .datum(function(d) { return d; })
-        .call(spot)
-        .merge(spots);
+        .call(bubble)
+        .merge(bubbles);
       */
 
-      spots.enter().append("circle")
-        .attr("class", "punchSpot")
-        .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
-        .attr("cy", 0)
-        .attr("r", 0)
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-        .merge(spots)
+      bubbles.enter().append("circle")
+        .attr("class", "bubble")
+        .attr("cx", function(d) { return xScale(d.x); })
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("r", function(d) { return sizeScale(d.value); })
+        .style("fill", function(d) { return colorScale(d.series); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
+        .merge(bubbles)
         .transition()
+        .ease(transition.ease)
         .duration(transition.duration)
-        .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) { return sizeScale(d['value']); });
+        .attr("r", function(d) { return sizeScale(d.value); });
 
-      spots.exit()
+      bubbles.exit()
         .transition()
         .style("opacity", 0)
         .remove();
@@ -105,12 +100,6 @@ export default function() {
     return my;
   };
 
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
-    return my;
-  };
-
   my.xScale = function(_) {
     if (!arguments.length) return xScale;
     xScale = _;
@@ -120,6 +109,12 @@ export default function() {
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
+    return my;
+  };
+
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return my;
   };
 

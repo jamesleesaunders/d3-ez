@@ -15,8 +15,9 @@
 
   <script type="text/javascript">
     d3.json("data/plant_family_tree.json", function(error, data) {
+      // Plant Kingdom Data Source: http://thefloweringplants.blogspot.co.uk/
 
-      // Create chart object
+      // Create chart base
       var myList = d3.ez.component.htmlList()
         .classed("htmlList")
         .on("customValueMouseOver", function(d) {

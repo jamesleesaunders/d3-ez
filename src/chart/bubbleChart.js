@@ -1,7 +1,7 @@
 /**
- * Line Chart (also called: Line Graph; Spline Chart)
+ * Bubble Chart
  *
-  @see http://datavizproject.com/data-type/line-chart/
+  @see http://datavizproject.com/data-type/bubble-chart/
  */
 export default function() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -9,7 +9,7 @@ export default function() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "lineChart";
+  var classed = "bubbleChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
@@ -23,36 +23,50 @@ export default function() {
   // Scales and Axis
   var xScale;
   var yScale;
+  var sizeScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
   // Data Variables
-  var maxValue;
-  var groupNames;
+  var xDomain;
+  var yDomain;
+  var sizeDomain;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Other Customisation Options
-  var yAxisLabel = null;
+  // Misc Options
+  var minRadius = 3;
+  var maxRadius = 20;
+  var yAxisLabel;
 
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
-    maxValue = slicedData.maxValue;
-    groupNames = slicedData.groupNames;
-
-    // Convert dates
-    data.forEach(function(d, i) {
-      d.values.forEach(function(b, j) {
-        data[i].values[j].key = new Date(b.key * 1000);
+    function extents(key) {
+      // Calculate the extents for each series.
+      var serExts = [];
+      d3.map(data).values().forEach(function(d) {
+        var vals = d.values.map(function(e) {
+          return +e[key];
+        });
+        serExts.push(d3.extent(vals));
       });
+      // Merge all the series extents into one array.
+      // Calculate overall extent.
+      return d3.extent([].concat.apply([], serExts));
+    }
+
+    xDomain = extents('x');
+    yDomain = extents('y');
+    sizeDomain = extents('value');
+    categoryNames = data.map(function(d) {
+      return d.key;
     });
-    var dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
     // Colour Scale
     if (!colorScale) {
@@ -60,21 +74,26 @@ export default function() {
       // then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
-        .domain(groupNames);
+        .domain(categoryNames);
     }
 
-    // X & Y Scales
-    xScale = d3.scaleTime()
+    // X, Y & Z Scales
+    xScale = d3.scaleLinear()
       .range([0, chartW])
-      .domain(dateDomain);
+      .domain(xDomain)
+      .nice();
 
     yScale = d3.scaleLinear()
       .range([chartH, 0])
-      .domain([0, (maxValue * 1.05)]);
+      .domain(yDomain)
+      .nice();
+
+    sizeScale = d3.scaleLinear()
+      .range([minRadius, maxRadius])
+      .domain(sizeDomain);
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b-%y"));
+    xAxis = d3.axisBottom(xScale);
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -100,13 +119,8 @@ export default function() {
 
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("xAxis axis", true);
-        chart.append("g").classed("yAxis axis", true)
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", -35)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text(yAxisLabel);
+        chart.append("g").classed("yAxis axis", true);
+        chart.append("g").classed("bubbles", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -130,47 +144,28 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var lineChart = d3.ez.component.lineChart()
+      // Add bubbles to the chart
+      var bubbles = d3.ez.component.bubbles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
-        .yScale(yScale)
         .xScale(xScale)
+        .yScale(yScale)
+        .sizeScale(sizeScale)
         .dispatch(dispatch);
 
-      var scatterPlot = d3.ez.component.scatterPlot()
-        .width(chartW)
-        .height(chartH)
-        .colorScale(colorScale)
-        .yScale(yScale)
-        .xScale(xScale)
-        .dispatch(dispatch);
-
-      var lineGroup = chart.selectAll(".lineGroup")
+      var bubbleGroup = chart.selectAll(".bubbleGroup")
         .data(function(d) { return d; });
 
-      lineGroup.enter().append("g")
-        .attr("class", "lineGroup")
-        .style("fill", function(d) { return colorScale(d.key); })
+      bubbleGroup.enter().append("g")
+        .attr("class", "bubbleGroup")
         .datum(function(d) { return d; })
-        .merge(lineGroup)
-        .call(lineChart).call(scatterPlot);
+        .merge(bubbleGroup)
+        .call(bubbles);
 
-      lineGroup.exit()
+      bubbleGroup.exit()
         .remove();
 
-      var dotGroup = chart.selectAll(".dotGroup")
-        .data(function(d) { return d; });
-
-      dotGroup.enter().append("g")
-        .attr("class", "dotGroup")
-        .style("fill", function(d) { return colorScale(d.key); })
-        .datum(function(d) { return d; })
-        .merge(dotGroup)
-        .call(scatterPlot);
-
-      dotGroup.exit()
-        .remove();
     });
   }
 

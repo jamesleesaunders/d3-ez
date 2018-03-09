@@ -1,11 +1,11 @@
 /* === PunchCard Styles === */
 
-.punchCard circle.punchSpot {
+.punchCard .punchSpot circle {
   stroke: #999999;
   stroke-width: 0.5px;
 }
 
-.punchCard circle.punchSpot:hover {
+.punchCard .punchSpot:hover circle {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;

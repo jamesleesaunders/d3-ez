@@ -14,12 +14,32 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.json("data/uk_elections.json", function(error, data) {
-      // UK Election Results Source: http://www.ukpolitical.info/2015.htm
+    d3.json("data/nightingale_rose.json", function(error, json) {
+      // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
 
-      var chart = d3.ez.chart.polarAreaChart().colors(['#c00', '#36c', '#f90', '#fc0']);
-      var legend = d3.ez.component.legend().title("Party");
-      var title = d3.ez.component.title().mainText("UK Election Results").subText("Seats 1992 - 2015");
+      var colors = ["#599ad3", "#727272", "#f1595f"];
+      var chart = d3.ez.chart.polarAreaChart().colors(colors);
+      var legend = d3.ez.component.legend().title("Zymotic Diseases");
+      var title = d3.ez.component.title().mainText("Diagram of the Causes of Mortality in the Army in The East").subText("April 1854 to March 1855");
+
+      // Convert csv to d3-ez data format
+      // Rename keys
+      var monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      var tmp = json.map(function(d) {
+        return {
+          key: monthNames[new Date(d.date).getMonth()],
+          value: (1000 * d.zymotic_diseases / d.army_size),
+          date: new Date(d.date)
+        };
+      }).filter( function(d) { return d.date < new Date("1855-04-01T07:00:00.000Z"); } );
+      var data = {
+  			"key": "Fruit",
+  			"values": tmp
+  		};
+      console.log(data);
 
       // Create chart base
       var myChart = d3.ez.base()
@@ -36,15 +56,15 @@
         });
 
       // Add to page
-      function update() {
-        var i = Math.round(Math.random() * 3) + 1;
+      //function update() {
+      //  var i = Math.round(Math.random() * 3) + 1;
         d3.select("#chartholder")
-          .datum(data[i])
+          .datum(data)
           .call(myChart);
-      }
+      //}
 
-      update();
-      setInterval(update, 2000);
+      //update();
+      //setInterval(update, 2000);
     });
   </script>
 </body>

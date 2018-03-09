@@ -876,6 +876,140 @@ function componentBarsVertical() {
 }
 
 /**
+ * Reusable Scatter Plot Component
+ *
+ */
+function componentBubbles() {
+  // Default Options (Configurable via setters)
+  var width = 400;
+  var height = 400;
+  var transition = { ease: d3.easeBounce, duration: 500 };
+  var colorScale;
+  var xScale;
+  var yScale;
+  var sizeScale;
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+  function my(selection) {
+    selection.each(function() {
+      // Create series group
+      var seriesSelect = selection.selectAll('.series')
+        .data(function(d) { return [d]; });
+
+      var series = seriesSelect.enter()
+        .append("g")
+        .classed('series', true)
+        .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
+        .merge(seriesSelect);
+
+      var bubble = d3.ez.component.labeledNode()
+        .radius(function(d) { return sizeScale(d.value); })
+        .color(function(d) { return colorScale(d.series); })
+        .label(function(d) { return d.key; })
+        .stroke(1, "white")
+        .display("none")
+        .classed("bubble")
+        .dispatch(dispatch);
+
+      // Add bubbles to series
+      var bubbles = series.selectAll(".bubble")
+        .data(function(d) { return d.values; });
+
+      /*
+      bubbles.enter()
+        .append("g")
+        .attr("transform", function(d) {
+          return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+        })
+        .on("mouseover", function(d) {
+          d3.select(this).select("text").style("display", "block");
+          dispatch.call("customValueMouseOver", this, d);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).select("text").style("display", "none");
+        })
+        .on("click", function(d) {
+          dispatch.call("customValueClick", this, d);
+        })
+        .datum(function(d) { return d; })
+        .call(bubble)
+        .merge(bubbles);
+      */
+
+      bubbles.enter().append("circle")
+        .attr("class", "bubble")
+        .attr("cx", function(d) { return xScale(d.x); })
+        .attr("cy", function(d) { return yScale(d.y); })
+        .attr("r", function(d) { return sizeScale(d.value); })
+        .style("fill", function(d) { return colorScale(d.series); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
+        .merge(bubbles)
+        .transition()
+        .ease(transition.ease)
+        .duration(transition.duration)
+        .attr("r", function(d) { return sizeScale(d.value); });
+
+      bubbles.exit()
+        .transition()
+        .style("opacity", 0)
+        .remove();
+    });
+  }
+
+  // Configuration Getters & Setters
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
+
+  my.height = function(_) {
+    if (!arguments.length) return height;
+    height = _;
+    return this;
+  };
+
+  my.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
+    return my;
+  };
+
+  my.xScale = function(_) {
+    if (!arguments.length) return xScale;
+    xScale = _;
+    return my;
+  };
+
+  my.yScale = function(_) {
+    if (!arguments.length) return yScale;
+    yScale = _;
+    return my;
+  };
+
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
+    return my;
+  };
+
+  my.dispatch = function(_) {
+    if (!arguments.length) return dispatch();
+    dispatch = _;
+    return this;
+  };
+
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
+
+  return my;
+}
+
+/**
  * Reusable Candle Stick Component
  *
  */
@@ -2442,11 +2576,11 @@ function componentProportionalAreaCircles() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-  var sizeScale;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
+  var sizeScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -2466,18 +2600,45 @@ function componentProportionalAreaCircles() {
         .merge(seriesSelect);
 
       series.attr("transform", function(d) {
-        return "translate(0, " + (cellHeight / 2) + ")";
+        return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
       });
+
+      var spot = d3.ez.component.labeledNode()
+        .radius(function(d) { return sizeScale(d.value); })
+        .color(function(d) { return colorScale(d.value); })
+        .label(function(d) { return d.value; })
+        .display("none")
+        .classed("punchSpot")
+        .dispatch(dispatch);
 
       // Add spots to series
       var spots = series.selectAll(".punchSpot")
         .data(function(d) { return d.values; });
 
+      /*
+      spots.enter()
+        .append("g")
+        .attr("transform", function(d) {
+          return "translate(" + xScale(d.key) + ",0)";
+        })
+        .on("mouseover", function(d) {
+          d3.select(this).select("text").style("display", "block");
+          dispatch.call("customValueMouseOver", this, d);
+        })
+        .on("mouseout", function(d) {
+          d3.select(this).select("text").style("display", "none");
+        })
+        .on("click", function(d) {
+          dispatch.call("customValueClick", this, d);
+        })
+        .datum(function(d) { return d; })
+        .call(spot)
+        .merge(spots);
+      */
+
       spots.enter().append("circle")
         .attr("class", "punchSpot")
-        .attr("cx", function(d) {
-          return (cellWidth / 2 + xScale(d.key));
-        })
+        .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
         .attr("cy", 0)
         .attr("r", 0)
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
@@ -2486,9 +2647,7 @@ function componentProportionalAreaCircles() {
         .transition()
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) {
-          return sizeScale(d['value']);
-        });
+        .attr("r", function(d) { return sizeScale(d['value']); });
 
       spots.exit()
         .transition()
@@ -2652,10 +2811,11 @@ function componentScatterPlot() {
  *
  * @example
  * var myNode = d3.ez.component.labeledNode()
- *     .color("#FF0000")
+ *     .label("Circle Label")
+ *     .color("#ff0000")
+ *     .classed("bubble")
  *     .opacity(0.5)
  *     .stroke(1)
- *     .label("Node Label")
  *     .radius(5);
  * d3.selectAll("g").call(myNode);
  */
@@ -2664,31 +2824,40 @@ function componentLabeledNode() {
   var color = "steelblue";
   var opacity = 1;
   var strokeColor = "#000000";
-  var strokeWidth = 0;
+  var strokeWidth = 1;
   var radius = 8;
   var label = null;
+  var display = 'block';
   var fontSize = 10;
+  var classed = "labeledNode";
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
-  function my(d) {
-    var r = sizeAccessor(d);
+  function sizeAccessor(_) {
+    return (typeof radius === "function" ? radius(_) : radius);
+  }
+  function my(selection) {
+    selection.each(function(data) {
+      var r = sizeAccessor(data);
 
-    var node = d3.select(this)
-      .attr("class", "node");
+      var node = d3.select(this)
+        .attr("class", classed);
 
-    node.append("circle")
-      .attr("fill-opacity", opacity)
-      .attr("r", r)
-      .style("stroke", strokeColor)
-      .style("stroke-width", strokeWidth)
-      .style("fill", color);
+      node.append("circle")
+        .attr("r", r)
+        .attr("fill-opacity", opacity)
+        //.style("stroke", strokeColor)
+        //.style("stroke-width", strokeWidth)
+        .style("fill", color);
 
-    node.append("text")
-      .text(label)
-      .attr("dx", r + 2)
-      .attr("dy", r + 6)
-      .style("text-anchor", "start")
-      .style("font-size", fontSize + "px")
-      .attr("class", "nodetext");
+      node.append("text")
+        .text(label)
+        .attr("dx", -r)
+        .attr("dy", -r)
+        .style("display", display)
+        .style("font-size", fontSize + "px")
+        .attr("alignment-baseline", "middle")
+        .style("text-anchor", "end");
+    });
   }
 
   // Configuration Getters & Setters
@@ -2716,6 +2885,12 @@ function componentLabeledNode() {
     return this;
   };
 
+  my.display = function(_) {
+    if (!arguments.length) return display;
+    display = _;
+    return this;
+  };
+
   my.fontSize = function(_) {
     if (!arguments.length) return fontSize;
     fontSize = _;
@@ -2723,15 +2898,29 @@ function componentLabeledNode() {
   };
 
   my.stroke = function(_width, _color) {
-    if (!arguments.length) return strokeWidth + ", " + strokeColor;
+    if (!arguments.length) return [strokeWidth, strokeColor];
     strokeWidth = _width;
     strokeColor = _color;
     return this;
   };
 
-  function sizeAccessor(_) {
-    return (typeof radius === "function" ? radius(_) : radius);
-  }
+  my.classed = function(_) {
+    if (!arguments.length) return classed;
+    classed = _;
+    return this;
+  };
+
+  my.dispatch = function(_) {
+    if (!arguments.length) return dispatch();
+    dispatch = _;
+    return this;
+  };
+
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
+
   return my;
 }
 
@@ -2741,10 +2930,10 @@ function componentLabeledNode() {
  * @example
  * var myLegend = d3.ez.component.legend()
  *     .sizeScale(**D3 Scale Object**)
- *     .sizeLabel('Label for Size')
+ *     .sizeLabel("Label for Size")
  *     .colorScale(**D3 Scale Object**)
- *     .colorLabel('Label for Colours')
- *     .position('top-right');
+ *     .colorLabel("Label for Colours")
+ *     .position("top-right");
  * d3.select("svg").call(myLegend);
  */
 function componentLegend() {
@@ -3907,6 +4096,234 @@ function chartBarChartVertical() {
 }
 
 /**
+ * Bubble Chart
+ *
+  @see http://datavizproject.com/data-type/bubble-chart/
+ */
+function chartBubbleChart() {
+  // SVG and Chart containers (Populated by 'my' function)
+  var svg;
+  var chart;
+
+  // Default Options (Configurable via setters)
+  var classed = "bubbleChart";
+  var width = 400;
+  var height = 300;
+  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  var transition = { ease: d3.easeBounce, duration: 500 };
+  var colors = d3.ez.colors.categorical(3);
+
+  // Chart Dimensions
+  var chartW;
+  var chartH;
+
+  // Scales and Axis
+  var xScale;
+  var yScale;
+  var sizeScale;
+  var xAxis;
+  var yAxis;
+  var colorScale;
+
+  // Data Variables
+  var xDomain;
+  var yDomain;
+  var sizeDomain;
+  var categoryNames;
+
+  // Dispatch (Custom events)
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+  // Misc Options
+  var minRadius = 3;
+  var maxRadius = 20;
+  var yAxisLabel;
+
+  function init(data) {
+    chartW = width - margin.left - margin.right;
+    chartH = height - margin.top - margin.bottom;
+
+    // Slice Data, calculate totals, max etc.
+    function extents(key) {
+      // Calculate the extents for each series.
+      var serExts = [];
+      d3.map(data).values().forEach(function(d) {
+        var vals = d.values.map(function(e) {
+          return +e[key];
+        });
+        serExts.push(d3.extent(vals));
+      });
+      // Merge all the series extents into one array.
+      // Calculate overall extent.
+      return d3.extent([].concat.apply([], serExts));
+    }
+
+    xDomain = extents('x');
+    yDomain = extents('y');
+    sizeDomain = extents('value');
+    categoryNames = data.map(function(d) {
+      return d.key;
+    });
+
+    // Colour Scale
+    if (!colorScale) {
+      // If the colorScale has not already been passed
+      // then attempt to calculate.
+      colorScale = d3.scaleOrdinal()
+        .range(colors)
+        .domain(categoryNames);
+    }
+
+    // X, Y & Z Scales
+    xScale = d3.scaleLinear()
+      .range([0, chartW])
+      .domain(xDomain)
+      .nice();
+
+    yScale = d3.scaleLinear()
+      .range([chartH, 0])
+      .domain(yDomain)
+      .nice();
+
+    sizeScale = d3.scaleLinear()
+      .range([minRadius, maxRadius])
+      .domain(sizeDomain);
+
+    // X & Y Axis
+    xAxis = d3.axisBottom(xScale);
+    yAxis = d3.axisLeft(yScale);
+  }
+
+  function my(selection) {
+    selection.each(function(data) {
+      // Initialise Data
+      init(data);
+
+      // Create SVG and Chart containers (if they do not already exist)
+      if (!svg) {
+        svg = (function(selection) {
+          var el = selection._groups[0][0];
+          if (!!el.ownerSVGElement || el.tagName === "svg") {
+            return selection;
+          } else {
+            return selection.append("svg");
+          }
+        })(d3.select(this));
+
+        svg.classed("d3ez", true)
+          .attr("width", width)
+          .attr("height", height);
+
+        chart = svg.append("g").classed("chart", true);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
+        chart.append("g").classed("bubbles", true);
+      } else {
+        chart = selection.select(".chart");
+      }
+
+      // Update the chart dimensions
+      chart.classed(classed, true)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("width", chartW)
+        .attr("height", chartH);
+
+      // Add axis to chart
+      chart.select(".xAxis")
+        .attr("transform", "translate(0," + chartH + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
+
+      chart.select(".yAxis")
+        .call(yAxis);
+
+      // Add bubbles to the chart
+      var bubbles = d3.ez.component.bubbles()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
+        .sizeScale(sizeScale)
+        .dispatch(dispatch);
+
+      var bubbleGroup = chart.selectAll(".bubbleGroup")
+        .data(function(d) { return d; });
+
+      bubbleGroup.enter().append("g")
+        .attr("class", "bubbleGroup")
+        .datum(function(d) { return d; })
+        .merge(bubbleGroup)
+        .call(bubbles);
+
+      bubbleGroup.exit()
+        .remove();
+
+    });
+  }
+
+  // Configuration Getters & Setters
+  my.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return this;
+  };
+
+  my.height = function(_) {
+    if (!arguments.length) return height;
+    height = _;
+    return this;
+  };
+
+  my.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return this;
+  };
+
+  my.yAxisLabel = function(_) {
+    if (!arguments.length) return yAxisLabel;
+    yAxisLabel = _;
+    return this;
+  };
+
+  my.transition = function(_) {
+    if (!arguments.length) return transition;
+    transition = _;
+    return this;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
+    return this;
+  };
+
+  my.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
+    return this;
+  };
+
+  my.dispatch = function(_) {
+    if (!arguments.length) return dispatch();
+    dispatch = _;
+    return this;
+  };
+
+  my.on = function() {
+    var value = dispatch.on.apply(dispatch, arguments);
+    return value === dispatch ? my : value;
+  };
+
+  return my;
+}
+
+/**
  * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
  *
  * @see http://datavizproject.com/data-type/candlestick-chart/
@@ -3920,7 +4337,7 @@ function chartCandlestickChart() {
   var classed = "candlestickChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = ["green", "red"];
 
@@ -3984,7 +4401,8 @@ function chartCandlestickChart() {
       .nice();
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
+    xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.timeFormat("%d-%b-%y"));
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -4025,7 +4443,12 @@ function chartCandlestickChart() {
       // Add axis to chart
       chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
 
       chart.select(".yAxis")
         .call(yAxis);
@@ -4810,8 +5233,8 @@ function chartLineChart() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true)
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true)
           .append("text")
           .attr("transform", "rotate(-90)")
           .attr("y", -35)
@@ -4829,7 +5252,7 @@ function chartLineChart() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis)
         .selectAll("text")
@@ -4838,7 +5261,7 @@ function chartLineChart() {
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)");
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
       var lineChart = d3.ez.component.lineChart()
@@ -5274,8 +5697,8 @@ function chartPunchCard() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -5287,7 +5710,7 @@ function chartPunchCard() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .call(xAxis)
         .selectAll("text")
         .attr("y", 0)
@@ -5295,7 +5718,7 @@ function chartPunchCard() {
         .attr("transform", "rotate(60)")
         .style("text-anchor", "end");
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
       var proportionalAreaCircles = d3.ez.component.proportionalAreaCircles()
@@ -5395,7 +5818,7 @@ function chartPunchCard() {
  */
 
 var my = {
-  version: "3.0.0",
+  version: "3.1.0",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",
@@ -5406,6 +5829,7 @@ var my = {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,
     barsVertical: componentBarsVertical,
+    bubbles: componentBubbles,
     candleSticks: componentCandleSticks,
     circularAxis: componentCircularAxis,
     circularRingLabels: componentCircularRingLabels,
@@ -5430,6 +5854,7 @@ var my = {
     barChartClustered: chartBarChartClustered,
     barChartStacked: chartBarChartStacked,
     barChartVertical: chartBarChartVertical,
+    bubbleChart: chartBubbleChart,
     candlestickChart: chartCandlestickChart,
     donutChart: chartDonutChart,
     heatMapRadial: chartHeatMapRadial,

@@ -14,6 +14,7 @@ import { default as base } from "./src/base";
 import { default as componentBarsCircular } from "./src/component/barsCircular";
 import { default as componentBarsStacked } from "./src/component/barsStacked";
 import { default as componentBarsVertical } from "./src/component/barsVertical";
+import { default as componentBubbles } from "./src/component/bubbles";
 import { default as componentCandleSticks } from "./src/component/candleSticks";
 import { default as componentCircularAxis } from "./src/component/circularAxis";
 import { default as componentCircularRingLabels } from "./src/component/circularRingLabels";
@@ -40,6 +41,7 @@ import { default as chartBarChartCircular } from "./src/chart/barChartCircular";
 import { default as chartBarChartClustered } from "./src/chart/barChartClustered";
 import { default as chartBarChartStacked } from "./src/chart/barChartStacked";
 import { default as chartBarChartVertical } from "./src/chart/barChartVertical";
+import { default as chartBubbleChart } from "./src/chart/bubbleChart";
 import { default as chartCandlestickChart } from "./src/chart/candlestickChart";
 import { default as chartDonutChart } from "./src/chart/donutChart";
 import { default as chartHeatMapRadial } from "./src/chart/heatMapRadial";
@@ -49,7 +51,7 @@ import { default as chartPolarAreaChart } from "./src/chart/polarAreaChart";
 import { default as chartPunchCard } from "./src/chart/punchCard";
 
 var my = {
-  version: "3.0.0",
+  version: "3.1.0",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",
@@ -60,6 +62,7 @@ var my = {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,
     barsVertical: componentBarsVertical,
+    bubbles: componentBubbles,
     candleSticks: componentCandleSticks,
     circularAxis: componentCircularAxis,
     circularRingLabels: componentCircularRingLabels,
@@ -84,6 +87,7 @@ var my = {
     barChartClustered: chartBarChartClustered,
     barChartStacked: chartBarChartStacked,
     barChartVertical: chartBarChartVertical,
+    bubbleChart: chartBubbleChart,
     candlestickChart: chartCandlestickChart,
     donutChart: chartDonutChart,
     heatMapRadial: chartHeatMapRadial,

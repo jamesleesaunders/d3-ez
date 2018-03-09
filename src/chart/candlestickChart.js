@@ -12,7 +12,7 @@ export default function() {
   var classed = "candlestickChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = ["green", "red"];
 
@@ -83,7 +83,8 @@ export default function() {
       .nice();
 
     // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
+    xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.timeFormat("%d-%b-%y"));
     yAxis = d3.axisLeft(yScale);
   }
 
@@ -124,7 +125,12 @@ export default function() {
       // Add axis to chart
       chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
 
       chart.select(".yAxis")
         .call(yAxis);

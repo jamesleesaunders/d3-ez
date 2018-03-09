@@ -109,8 +109,8 @@ export default function() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -122,7 +122,7 @@ export default function() {
         .attr("height", chartH);
 
       // Add axis to chart
-      chart.select(".x-axis")
+      chart.select(".xAxis")
         .call(xAxis)
         .selectAll("text")
         .attr("y", 0)
@@ -130,7 +130,7 @@ export default function() {
         .attr("transform", "rotate(60)")
         .style("text-anchor", "end");
 
-      chart.select(".y-axis")
+      chart.select(".yAxis")
         .call(yAxis);
 
       var proportionalAreaCircles = d3.ez.component.proportionalAreaCircles()

@@ -20,7 +20,7 @@
     request.send(null);
     var data = JSON.parse(request.responseText);
 
-    // Create chart object
+    // Create chart base
     var myTable = d3.ez.component.htmlTable()
       .width(600)
       .on("customValueMouseOver", function(d) {

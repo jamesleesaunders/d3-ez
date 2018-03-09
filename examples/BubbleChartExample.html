@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>d3-ez : Bubble Chart Example</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+</head>
+
+<body>
+  <div id="chartholder"></div>
+  <br/>
+  <div>Value: <span id="message"></span></div>
+
+  <script type="text/javascript">
+    d3.csv("data/hans_rosling_2007.csv", function(error, csv) {
+      // UK Election Results Source: https://plot.ly/~LeoDKFZ/0.embed
+
+      var colors = [d3.rgb(31, 119, 180), d3.rgb(255, 127, 14), d3.rgb(44, 160, 44), d3.rgb(214, 39, 40), d3.rgb(148, 103, 189)];
+      var chart = d3.ez.chart.bubbleChart().colors(colors).yAxisLabel("yScale");
+      var legend = d3.ez.component.legend().title("Continent");
+      var title = d3.ez.component.title().mainText("Hans Rosling Bubble Chart").subText("2007");
+
+      // Convert csv to d3-ez data format
+      // Rename keys
+      var tmp = csv.map(function(d) {
+        return { "key": d.Text, "value": d.Size, "x": d.X, "y": d.Y, "series": d.Continent };
+      });
+      // Nest Data
+      var data = d3.nest().key(function(d) {
+        return d.series;
+      }).entries(tmp);
+
+      // Create chart base
+      var myChart = d3.ez.base()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customValueMouseOver", function(d) {
+          d3.select("#message").text(d.value);
+        })
+        .on("customSeriesClick", function(d) {
+          console.log(d);
+        });
+
+      d3.select('#chartholder')
+        .datum(data)
+        .call(myChart);
+    });
+  </script>
+</body>
+
+</html>
