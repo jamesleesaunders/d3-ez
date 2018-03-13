@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Clustered Bar Chart (also called: Multi-set Bar Chart; Grouped Bar Chart)
  *

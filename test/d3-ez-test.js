@@ -2,7 +2,6 @@ var me = require("../");
 var tape = require("tape");
 var jsdom = require("jsdom");
 var d3 = require("d3");
-global.d3 = d3;
 
 tape("Return d3-ez author and license", function(test) {
   test.equal(me.ez.author, "James Saunders", "Returns author");

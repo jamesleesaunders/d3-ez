@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
  *

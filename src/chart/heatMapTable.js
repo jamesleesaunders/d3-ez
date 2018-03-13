@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Heat Map (also called: Heat Table; Density Table; Heat Map)
  *

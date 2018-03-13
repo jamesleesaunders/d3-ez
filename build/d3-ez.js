@@ -7,10 +7,10 @@
  */
 
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.d3 = global.d3 || {})));
-}(this, (function (exports) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
+	(factory((global.d3 = global.d3 || {}),global.d3));
+}(this, (function (exports,d3) { 'use strict';
 
 /**
  * Base Functions - Data Parse
@@ -1017,7 +1017,6 @@ function componentCandleSticks() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale = d3.scaleOrdinal().range(["green", "red"]).domain([true, false]);
   var xScale;
   var yScale;
@@ -1167,7 +1166,6 @@ function componentCircularAxis() {
   var radius = 150;
   var radialScale;
   var ringScale;
-  var transition = { ease: d3.easeBounce, duration: 500 };
 
   function my(selection) {
     selection.each(function() {
@@ -1913,7 +1911,6 @@ function componentHeatMapRow() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
@@ -2349,7 +2346,6 @@ function componentNumberCard() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 100;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
@@ -4946,7 +4942,6 @@ function chartHeatMapTable() {
   var width = 400;
   var height = 300;
   var margin = { top: 45, right: 20, bottom: 20, left: 45 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 
   // Chart Dimensions
@@ -5601,7 +5596,6 @@ function chartPunchCard() {
   var width = 400;
   var height = 300;
   var margin = { top: 45, right: 20, bottom: 20, left: 45 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
 
   // Chart Dimensions

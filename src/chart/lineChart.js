@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Line Chart (also called: Line Graph; Spline Chart)
  *

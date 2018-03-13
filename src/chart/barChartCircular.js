@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Circular Bar Chart (also called: Progress Chart)
  *

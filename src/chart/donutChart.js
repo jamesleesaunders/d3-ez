@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Donut Chart (also called: Doughnut Chart; Pie Chart)
  *

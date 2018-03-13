@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
  *

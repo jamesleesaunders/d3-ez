@@ -1,3 +1,5 @@
+import * as d3 from "d3";
+
 /**
  * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
  *

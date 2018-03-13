@@ -14,6 +14,9 @@ export default {
     extend: true,
     name: 'd3',
     banner: banner,
-    strict: true
+    strict: true,
+    globals: {
+      'd3': 'd3'
+    }
   }
 };
