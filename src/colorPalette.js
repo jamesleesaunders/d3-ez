@@ -28,7 +28,7 @@ export default function() {
           //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
           return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
         case 4:
-          return (d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
+          return (my.lumShift(my.lumShift(my.categorical(3), -0.8), 5.5));
       }
     },
 

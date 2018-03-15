@@ -26,15 +26,15 @@ tape("Test legend component", function(test) {
 });
 
 tape("Test colors module", function(test) {
-  var colors1 = me.ez.colors.categorical(1);
+  var colors1 = me.ez.colorPalette.categorical(1);
   var expected1 = ['#5da5da', '#faa43a', '#60bd68', '#f17cb0', '#b2912f', '#b276b2', '#decf3f', '#f15854', '#4d4d4d'];
   test.deepEqual(colors1, expected1, "Catrgorical colours");
 
-  var colors2 = me.ez.colors.sequential("#5da5da", 6);
+  var colors2 = me.ez.colorPalette.sequential("#5da5da", 6);
   var expected2 = ['#417499', '#4c87b3', '#579bcd', '#63afe7', '#6ec3ff', '#79d7ff'];
   test.deepEqual(colors2, expected2, "Sequencial colours");
 
-  var colors3 = me.ez.colors.lumShift(['#5da5da', '#faa43a'], 1);
+  var colors3 = me.ez.colorPalette.lumShift(['#5da5da', '#faa43a'], 1);
   var expected3 = ['#baffff', '#ffff74'];
   test.deepEqual(colors3, expected3, "Lumshift colours");
 
