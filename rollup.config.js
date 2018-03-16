@@ -18,5 +18,6 @@ export default {
     globals: {
       'd3': 'd3'
     }
-  }
+  },
+  external: [ 'd3' ]
 };

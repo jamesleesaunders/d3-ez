@@ -255,10 +255,10 @@ function dataParse(data) {
  * d3.ez.palette.lumShift(d3.ez.palette.categorical(1), 0.2);
  */
 var palette = {
-  categorical: function(palette) {
+  categorical: function(index) {
     // Categorical colour palettes are the ones that are used to separate items into
     // distinct groups or categories.
-    switch (palette) {
+    switch (index) {
       case 1:
         // Stephen Few - Show Me the Numbers Book
         //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
@@ -276,10 +276,10 @@ var palette = {
     }
   },
 
-  diverging: function(palette) {
+  diverging: function(index) {
     // Diverging colour palettes are used for quantitative data. Usually two different hues
     // that diverge from a light colour, for the critical midpoint, toward dark colours.
-    switch (palette) {
+    switch (index) {
       case 1:
         // Color Brewer - Colourblind Safe
         return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
