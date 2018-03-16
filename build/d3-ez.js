@@ -3925,21 +3925,14 @@ function chartBarChartVertical() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Other Customisation Options
-  var yAxisLabel;
-
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
-
-    if (!yAxisLabel) {
-      yAxisLabel = slicedData.groupName;
-    }
 
     if (!colorScale) {
       // If the colorScale has not already been passed

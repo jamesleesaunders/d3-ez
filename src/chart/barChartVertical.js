@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
 
 /**
  * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
@@ -45,7 +46,7 @@ export default function() {
     chartH = height - (margin.top + margin.bottom);
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
 
