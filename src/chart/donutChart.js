@@ -16,7 +16,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = d3.ez.palette.categorical(4);
 
   // Chart Dimensions
   var chartW;

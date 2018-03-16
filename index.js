@@ -51,7 +51,7 @@ import { default as chartPolarAreaChart } from "./src/chart/polarAreaChart";
 import { default as chartPunchCard } from "./src/chart/punchCard";
 
 var my = {
-  version: "3.1.0",
+  version: "3.2.0",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",

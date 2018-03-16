@@ -3485,7 +3485,7 @@ function chartBarChartClustered() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = d3.ez.palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -3696,7 +3696,7 @@ function chartBarChartStacked() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = d3.ez.palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -4103,7 +4103,7 @@ function chartBubbleChart() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(3);
+  var colors = d3.ez.palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -4554,7 +4554,7 @@ function chartDonutChart() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = d3.ez.palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -5139,7 +5139,7 @@ function chartLineChart() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(3);
+  var colors = d3.ez.palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -5372,7 +5372,7 @@ function chartPolarAreaChart() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.colors.categorical(4);
+  var colors = d3.ez.palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -5808,7 +5808,7 @@ function chartPunchCard() {
  */
 
 var my = {
-  version: "3.1.0",
+  version: "3.2.0",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",
