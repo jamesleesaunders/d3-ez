@@ -9,7 +9,7 @@ import * as d3 from "d3";
  * d3.ez.colors.sequential("#ff0000", 9);
  * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
  */
-module.exports = {
+var my = {
   categorical: function(scheme) {
     // Categorical colour schemes are the ones that are used to separate items into
     // distinct groups or categories.
@@ -102,3 +102,5 @@ module.exports = {
     return result;
   }
 }
+
+export default my;

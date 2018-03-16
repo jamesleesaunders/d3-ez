@@ -254,7 +254,7 @@ function dataParse(data) {
  * d3.ez.colors.sequential("#ff0000", 9);
  * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
  */
-module.exports = {
+var my = {
   categorical: function(scheme) {
     // Categorical colour schemes are the ones that are used to separate items into
     // distinct groups or categories.
@@ -347,11 +347,6 @@ module.exports = {
     return result;
   }
 };
-
-
-var colorPalette = Object.freeze({
-
-});
 
 /**
  * Chart Base
@@ -3971,7 +3966,7 @@ function chartBarChartVertical() {
     yAxis = d3.axisLeft(yScale);
   }
 
-  function my(selection) {
+  function my$$1(selection) {
     selection.each(function(data) {
       // Initialise Data
       init(data);
@@ -4048,48 +4043,48 @@ function chartBarChartVertical() {
   }
 
   // Configuration Getters & Setters
-  my.width = function(_) {
+  my$$1.width = function(_) {
     if (!arguments.length) return width;
     width = _;
     return this;
   };
 
-  my.height = function(_) {
+  my$$1.height = function(_) {
     if (!arguments.length) return height;
     height = _;
     return this;
   };
 
-  my.colors = function(_) {
+  my$$1.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
     return this;
   };
 
-  my.colorScale = function(_) {
+  my$$1.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
     return this;
   };
 
-  my.transition = function(_) {
+  my$$1.transition = function(_) {
     if (!arguments.length) return transition;
     transition = _;
     return this;
   };
 
-  my.dispatch = function(_) {
+  my$$1.dispatch = function(_) {
     if (!arguments.length) return dispatch();
     dispatch = _;
     return this;
   };
 
-  my.on = function() {
+  my$$1.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
+    return value === dispatch ? my$$1 : value;
   };
 
-  return my;
+  return my$$1;
 }
 
 /**
@@ -5819,7 +5814,7 @@ var my$1 = {
   license: "GPL-3.0",
   base: base,
   dataParse: dataParse,
-  colorPalette: colorPalette,
+  colorPalette: my,
   component: {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,

@@ -7,7 +7,7 @@
  */
 
 import { default as dataParse } from "./src/dataParse";
-import * as colorPalette from "./src/colorPalette";
+import { default as colorPalette } from "./src/colorPalette";
 import { default as base } from "./src/base";
 
 // Chart Components
