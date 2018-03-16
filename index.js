@@ -7,7 +7,7 @@
  */
 
 import { default as dataParse } from "./src/dataParse";
-import { default as colorPalette } from "./src/colorPalette";
+import { default as colors } from "./src/colors";
 import { default as base } from "./src/base";
 
 // Chart Components
@@ -57,7 +57,7 @@ var my = {
   license: "GPL-3.0",
   base: base,
   dataParse: dataParse,
-  colorPalette: colorPalette,
+  colors: colors,
   component: {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,

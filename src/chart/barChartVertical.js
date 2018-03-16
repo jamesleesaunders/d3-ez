@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import * as colorPalette from "../colorPalette";
+import * as colors from "../colors";
 
 /**
  * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
@@ -17,7 +17,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = colorPalette.categorical(4);
+  var colors = colors.categorical(4);
 
   // Chart Dimensions
   var chartW;

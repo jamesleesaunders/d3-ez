@@ -254,7 +254,7 @@ function dataParse(data) {
  * d3.ez.colors.sequential("#ff0000", 9);
  * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
  */
-var my = {
+var colorsJ = {
   categorical: function(scheme) {
     // Categorical colour schemes are the ones that are used to separate items into
     // distinct groups or categories.
@@ -3907,7 +3907,7 @@ function chartBarChartVertical() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = undefined(4);
+  var colors = colors.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -3966,7 +3966,7 @@ function chartBarChartVertical() {
     yAxis = d3.axisLeft(yScale);
   }
 
-  function my$$1(selection) {
+  function my(selection) {
     selection.each(function(data) {
       // Initialise Data
       init(data);
@@ -4043,48 +4043,48 @@ function chartBarChartVertical() {
   }
 
   // Configuration Getters & Setters
-  my$$1.width = function(_) {
+  my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
     return this;
   };
 
-  my$$1.height = function(_) {
+  my.height = function(_) {
     if (!arguments.length) return height;
     height = _;
     return this;
   };
 
-  my$$1.colors = function(_) {
+  my.colors = function(_) {
     if (!arguments.length) return colors;
     colors = _;
     return this;
   };
 
-  my$$1.colorScale = function(_) {
+  my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
     return this;
   };
 
-  my$$1.transition = function(_) {
+  my.transition = function(_) {
     if (!arguments.length) return transition;
     transition = _;
     return this;
   };
 
-  my$$1.dispatch = function(_) {
+  my.dispatch = function(_) {
     if (!arguments.length) return dispatch();
     dispatch = _;
     return this;
   };
 
-  my$$1.on = function() {
+  my.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my$$1 : value;
+    return value === dispatch ? my : value;
   };
 
-  return my$$1;
+  return my;
 }
 
 /**
@@ -5814,7 +5814,7 @@ var my$1 = {
   license: "GPL-3.0",
   base: base,
   dataParse: dataParse,
-  colorPalette: my,
+  colors: colorsJ,
   component: {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,
