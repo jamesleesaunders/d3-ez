@@ -57,7 +57,7 @@ var my = {
   license: "GPL-3.0",
   base: base,
   dataParse: dataParse,
-  colors: colors(),
+  colors: colors,
   component: {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,
