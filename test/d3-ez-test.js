@@ -25,18 +25,18 @@ tape("Test legend component", function(test) {
   test.end();
 });
 
-tape("Test colors module", function(test) {
-  var colors1 = me.ez.colors.categorical(1);
+tape("Test palette module", function(test) {
+  var palette1 = me.ez.palette.categorical(1);
   var expected1 = ['#5da5da', '#faa43a', '#60bd68', '#f17cb0', '#b2912f', '#b276b2', '#decf3f', '#f15854', '#4d4d4d'];
-  test.deepEqual(colors1, expected1, "Catrgorical colours");
+  test.deepEqual(palette1, expected1, "Catrgorical palette");
 
-  var colors2 = me.ez.colors.sequential("#5da5da", 6);
+  var palette2 = me.ez.palette.sequential("#5da5da", 6);
   var expected2 = ['#417499', '#4c87b3', '#579bcd', '#63afe7', '#6ec3ff', '#79d7ff'];
-  test.deepEqual(colors2, expected2, "Sequencial colours");
+  test.deepEqual(palette2, expected2, "Sequencial palette");
 
-  var colors3 = me.ez.colors.lumShift(['#5da5da', '#faa43a'], 1);
+  var palette3 = me.ez.palette.lumShift(['#5da5da', '#faa43a'], 1);
   var expected3 = ['#baffff', '#ffff74'];
-  test.deepEqual(colors3, expected3, "Lumshift colours");
+  test.deepEqual(palette3, expected3, "Lumshift palette");
 
   test.end();
 });

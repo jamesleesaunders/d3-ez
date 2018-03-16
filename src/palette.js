@@ -4,16 +4,16 @@ import * as d3 from "d3";
  * Colour Palettes
  *
  * @example
- * d3.ez.colors.categorical(1);
- * d3.ez.colors.diverging(1);
- * d3.ez.colors.sequential("#ff0000", 9);
- * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
+ * d3.ez.palette.categorical(1);
+ * d3.ez.palette.diverging(1);
+ * d3.ez.palette.sequential("#ff0000", 9);
+ * d3.ez.palette.lumShift(d3.ez.palette.categorical(1), 0.2);
  */
 export default {
-  categorical: function(scheme) {
-    // Categorical colour schemes are the ones that are used to separate items into
+  categorical: function(palette) {
+    // Categorical colour palettes are the ones that are used to separate items into
     // distinct groups or categories.
-    switch (scheme) {
+    switch (palette) {
       case 1:
         // Stephen Few - Show Me the Numbers Book
         //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
@@ -27,14 +27,14 @@ export default {
         //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
         return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
       case 4:
-        return (d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
+        return (d3.ez.palette.lumShift(d3.ez.palette.lumShift(d3.ez.palette.categorical(3), -0.8), 5.5));
     }
   },
 
-  diverging: function(scheme) {
-    // Diverging colour schemes are used for quantitative data. Usually two different hues
+  diverging: function(palette) {
+    // Diverging colour palettes are used for quantitative data. Usually two different hues
     // that diverge from a light colour, for the critical midpoint, toward dark colours.
-    switch (scheme) {
+    switch (palette) {
       case 1:
         // Color Brewer - Colourblind Safe
         return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
@@ -48,7 +48,7 @@ export default {
   },
 
   sequential: function(origHex, count) {
-    // Sequential colour schemes are primarily used to encode quantitative differences.
+    // Sequential colour palettes are primarily used to encode quantitative differences.
     // Quantitative values are arranged sequentially, from low to high.
     var lumStep = 0.1;
     var lumMax = (lumStep * count) / 2;
