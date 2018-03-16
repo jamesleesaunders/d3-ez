@@ -9,7 +9,7 @@ import * as d3 from "d3";
  * d3.ez.colors.sequential("#ff0000", 9);
  * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
  */
-var colorsJ = {
+export default {
   categorical: function(scheme) {
     // Categorical colour schemes are the ones that are used to separate items into
     // distinct groups or categories.
@@ -27,7 +27,7 @@ var colorsJ = {
         //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
         return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
       case 4:
-        return (my.lumShift(my.lumShift(my.exports.categorical(3), -0.8), 5.5));
+        return (d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
     }
   },
 
@@ -102,5 +102,3 @@ var colorsJ = {
     return result;
   }
 }
-
-export default colorsJ;

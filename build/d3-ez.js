@@ -254,7 +254,7 @@ function dataParse(data) {
  * d3.ez.colors.sequential("#ff0000", 9);
  * d3.ez.colors.lumShift(d3.ez.colors.categorical(1), 0.2);
  */
-var colorsJ = {
+var colors = {
   categorical: function(scheme) {
     // Categorical colour schemes are the ones that are used to separate items into
     // distinct groups or categories.
@@ -272,7 +272,7 @@ var colorsJ = {
         //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
         return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
       case 4:
-        return (my.lumShift(my.lumShift(my.exports.categorical(3), -0.8), 5.5));
+        return (d3.ez.colors.lumShift(d3.ez.colors.lumShift(d3.ez.colors.categorical(3), -0.8), 5.5));
     }
   },
 
@@ -346,7 +346,7 @@ var colorsJ = {
     });
     return result;
   }
-};
+}
 
 /**
  * Chart Base
@@ -3907,7 +3907,7 @@ function chartBarChartVertical() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = colors.categorical(4);
+  var colors = d3.ez.colors.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -5807,14 +5807,14 @@ function chartPunchCard() {
  * @license GPLv3
  */
 
-var my$1 = {
+var my = {
   version: "3.1.0",
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",
   base: base,
   dataParse: dataParse,
-  colors: colorsJ,
+  colors: colors,
   component: {
     barsCircular: componentBarsCircular,
     barsStacked: componentBarsStacked,
@@ -5855,7 +5855,7 @@ var my$1 = {
   }
 };
 
-exports.ez = my$1;
+exports.ez = my;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
