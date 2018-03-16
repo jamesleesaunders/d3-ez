@@ -26,8 +26,6 @@ export default {
         // Google Design - http://www.google.com/design/spec/style/color.html
         //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
         return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
-      case 4:
-        return (d3.ez.palette.lumShift(d3.ez.palette.lumShift(d3.ez.palette.categorical(3), -0.8), 5.5));
     }
   },
 
