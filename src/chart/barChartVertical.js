@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
+import { default as componentBarsVertical } from "../component/barsVertical";
 
 /**
  * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
@@ -139,7 +140,7 @@ export default function() {
         });
 
       // Add bars to the chart
-      var barsVertical = d3.ez.component.barsVertical()
+      var barsVertical = componentBarsVertical()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

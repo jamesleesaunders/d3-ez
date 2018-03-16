@@ -4019,7 +4019,7 @@ function chartBarChartVertical() {
         });
 
       // Add bars to the chart
-      var barsVertical = d3.ez.component.barsVertical()
+      var barsVertical = componentBarsVertical()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
