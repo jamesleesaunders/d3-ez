@@ -1,6 +1,6 @@
 {
   "name": "d3-ez",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "D3 Easy Reusable Chart Library",
   "license": "GPL-3.0",
   "keywords": [
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "d3": "^4.0.0",
-    "npm": "^5.7.1"
+    "npm": "^5.7.1",
+    "rollup-plugin-json": "^2.3.0"
   }
 }

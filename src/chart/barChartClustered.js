@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentBarsVertical } from "../component/barsVertical";
+import { default as component } from "../component";
 
 /**
  * Clustered Bar Chart (also called: Multi-set Bar Chart; Grouped Bar Chart)
@@ -19,7 +19,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -132,7 +132,7 @@ export default function() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barsVertical = componentBarsVertical()
+      var barsVertical = component.barsVertical()
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)

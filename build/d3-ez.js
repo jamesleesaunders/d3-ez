@@ -12,6 +12,8 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
+var version = "3.2.1";
+
 /**
  * Base Functions - Data Parse
  *
@@ -3253,6 +3255,31 @@ function componentLegend() {
   return my;
 }
 
+var component = {
+  barsCircular: componentBarsCircular,
+  barsStacked: componentBarsStacked,
+  barsVertical: componentBarsVertical,
+  bubbles: componentBubbles,
+  candleSticks: componentCandleSticks,
+  circularAxis: componentCircularAxis,
+  circularRingLabels: componentCircularRingLabels,
+  circularSectorLabels: componentCircularSectorLabels,
+  creditTag: componentCreditTag,
+  donut: componentDonut,
+  heatMapRing: componentHeatMapRing,
+  heatMapRow: componentHeatMapRow,
+  htmlList: componentHtmlList,
+  htmlTable: componentHtmlTable,
+  labeledNode: componentLabeledNode,
+  legend: componentLegend,
+  lineChart: componentLineChart,
+  numberCard: componentNumberCard,
+  polarArea: componentPolarArea,
+  proportionalAreaCircles: componentProportionalAreaCircles,
+  scatterPlot: componentScatterPlot,
+  title: componentTitle
+};
+
 /**
  * Circular Bar Chart (also called: Progress Chart)
  *
@@ -3269,7 +3296,7 @@ function chartBarChartCircular() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -3362,7 +3389,7 @@ function chartBarChartCircular() {
         .attr("height", chartH);
 
       // Circular Axis
-      var circularAxis = componentCircularAxis()
+      var circularAxis = component.circularAxis()
         .radialScale(yScale)
         .ringScale(xScale)
         .width(chartW)
@@ -3373,7 +3400,7 @@ function chartBarChartCircular() {
         .call(circularAxis);
 
       // Outer Labels
-      var circularSectorLabels = componentCircularSectorLabels()
+      var circularSectorLabels = component.circularSectorLabels()
         .radialScale(yScale)
         .textAnchor("middle")
         .radius(radius * 1.04);
@@ -3382,7 +3409,7 @@ function chartBarChartCircular() {
         .call(circularSectorLabels);
 
       // Radial Bar Chart
-      var barsCircular = componentBarsCircular()
+      var barsCircular = component.barsCircular()
         .radius(function(d) { return xScale(d.key) })
         .innerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
         .yScale(yScale)
@@ -3394,7 +3421,7 @@ function chartBarChartCircular() {
         .call(barsCircular);
 
       // Ring Labels
-      var circularRingLabels = componentCircularRingLabels()
+      var circularRingLabels = component.circularRingLabels()
         .radialScale(xScale)
         .textAnchor("middle");
 
@@ -3483,7 +3510,7 @@ function chartBarChartClustered() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -3594,7 +3621,7 @@ function chartBarChartClustered() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barsVertical = componentBarsVertical()
+      var barsVertical = component.barsVertical()
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
@@ -3692,7 +3719,7 @@ function chartBarChartStacked() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -3803,7 +3830,7 @@ function chartBarChartStacked() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barsStacked = componentBarsStacked()
+      var barsStacked = component.barsStacked()
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
@@ -3901,7 +3928,7 @@ function chartBarChartVertical() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -4015,7 +4042,7 @@ function chartBarChartVertical() {
         });
 
       // Add bars to the chart
-      var barsVertical = componentBarsVertical()
+      var barsVertical = component.barsVertical()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -4221,7 +4248,7 @@ function chartBubbleChart() {
         .call(yAxis);
 
       // Add bubbles to the chart
-      var bubbles = componentBubbles()
+      var bubbles = component.bubbles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -4460,7 +4487,7 @@ function chartCandlestickChart() {
       //   .attr('clip-path', 'url(#plotAreaClip)');
 
       // Add candles to the chart
-      var candleSticks = componentCandleSticks()
+      var candleSticks = component.candleSticks()
         .width(chartW)
         .height(chartH)
         .xScale(xScale)
@@ -4541,7 +4568,7 @@ function chartDonutChart() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -4612,7 +4639,7 @@ function chartDonutChart() {
         .attr("height", chartH);
 
       // Add the chart
-      var donutChart = componentDonut()
+      var donutChart = component.donut()
         .radius(radius)
         .innerRadius(innerRadius)
         .colorScale(colorScale)
@@ -4802,7 +4829,7 @@ function chartHeatMapRadial() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatMapRing = componentHeatMapRing()
+      var heatMapRing = component.heatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
@@ -4824,7 +4851,7 @@ function chartHeatMapRadial() {
         .remove();
 
       // Circular Labels
-      var circularSectorLabels = componentCircularSectorLabels()
+      var circularSectorLabels = component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
@@ -4833,7 +4860,7 @@ function chartHeatMapRadial() {
         .call(circularSectorLabels);
 
       // Ring Labels
-      var circularRingLabels = componentCircularRingLabels()
+      var circularRingLabels = component.circularRingLabels()
         .radialScale(yScale)
         .textAnchor("middle");
 
@@ -5027,7 +5054,7 @@ function chartHeatMapTable() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var heatMapRow = componentHeatMapRow()
+      var heatMapRow = component.heatMapRow()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -5234,7 +5261,7 @@ function chartLineChart() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var lineChart = componentLineChart()
+      var lineChart = component.lineChart()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -5242,7 +5269,7 @@ function chartLineChart() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var scatterPlot = componentScatterPlot()
+      var scatterPlot = component.scatterPlot()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -5351,7 +5378,7 @@ function chartPolarAreaChart() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -5447,7 +5474,7 @@ function chartPolarAreaChart() {
         .attr("height", chartH);
 
       // Circular Axis
-      var circularAxis = componentCircularAxis()
+      var circularAxis = component.circularAxis()
         .radialScale(xScale)
         .ringScale(yScale)
         .width(chartW)
@@ -5458,7 +5485,7 @@ function chartPolarAreaChart() {
         .call(circularAxis);
 
       // Radial Bar Chart
-      var polarArea = componentPolarArea()
+      var polarArea = component.polarArea()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
@@ -5476,7 +5503,7 @@ function chartPolarAreaChart() {
         .call(verticalAxis);
 
       // Circular Labels
-      var circularSectorLabels = componentCircularSectorLabels()
+      var circularSectorLabels = component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
@@ -5690,7 +5717,7 @@ function chartPunchCard() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var proportionalAreaCircles = componentProportionalAreaCircles()
+      var proportionalAreaCircles = component.proportionalAreaCircles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -5778,6 +5805,21 @@ function chartPunchCard() {
   return my;
 }
 
+var chart = {
+  barChartCircular: chartBarChartCircular,
+  barChartClustered: chartBarChartClustered,
+  barChartStacked: chartBarChartStacked,
+  barChartVertical: chartBarChartVertical,
+  bubbleChart: chartBubbleChart,
+  candlestickChart: chartCandlestickChart,
+  donutChart: chartDonutChart,
+  heatMapRadial: chartHeatMapRadial,
+  heatMapTable: chartHeatMapTable,
+  lineChart: chartLineChart,
+  polarAreaChart: chartPolarAreaChart,
+  punchCard: chartPunchCard
+};
+
 /**
  * d3-ez
  *
@@ -5787,51 +5829,15 @@ function chartPunchCard() {
  */
 
 var my = {
-  version: "3.2.0",
+  version: version,
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
   license: "GPL-3.0",
   base: base,
   dataParse: dataParse,
   palette: palette,
-  component: {
-    barsCircular: componentBarsCircular,
-    barsStacked: componentBarsStacked,
-    barsVertical: componentBarsVertical,
-    bubbles: componentBubbles,
-    candleSticks: componentCandleSticks,
-    circularAxis: componentCircularAxis,
-    circularRingLabels: componentCircularRingLabels,
-    circularSectorLabels: componentCircularSectorLabels,
-    creditTag: componentCreditTag,
-    donut: componentDonut,
-    heatMapRing: componentHeatMapRing,
-    heatMapRow: componentHeatMapRow,
-    htmlList: componentHtmlList,
-    htmlTable: componentHtmlTable,
-    labeledNode: componentLabeledNode,
-    legend: componentLegend,
-    lineChart: componentLineChart,
-    numberCard: componentNumberCard,
-    polarArea: componentPolarArea,
-    proportionalAreaCircles: componentProportionalAreaCircles,
-    scatterPlot: componentScatterPlot,
-    title: componentTitle,
-  },
-  chart: {
-    barChartCircular: chartBarChartCircular,
-    barChartClustered: chartBarChartClustered,
-    barChartStacked: chartBarChartStacked,
-    barChartVertical: chartBarChartVertical,
-    bubbleChart: chartBubbleChart,
-    candlestickChart: chartCandlestickChart,
-    donutChart: chartDonutChart,
-    heatMapRadial: chartHeatMapRadial,
-    heatMapTable: chartHeatMapTable,
-    lineChart: chartLineChart,
-    polarAreaChart: chartPolarAreaChart,
-    punchCard: chartPunchCard
-  }
+  component: component,
+  chart: chart
 };
 
 exports.ez = my;

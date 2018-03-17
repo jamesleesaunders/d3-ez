@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentHeatMapRow } from "../component/heatMapRow";
+import { default as component } from "../component";
 
 /**
  * Heat Map (also called: Heat Table; Density Table; Heat Map)
@@ -129,7 +129,7 @@ export default function() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var heatMapRow = componentHeatMapRow()
+      var heatMapRow = component.heatMapRow()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

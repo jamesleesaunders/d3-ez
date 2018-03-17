@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentBarsVertical } from "../component/barsVertical";
+import { default as component } from "../component";
 
 /**
  * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
@@ -19,7 +19,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -140,7 +140,7 @@ export default function() {
         });
 
       // Add bars to the chart
-      var barsVertical = componentBarsVertical()
+      var barsVertical = component.barsVertical()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

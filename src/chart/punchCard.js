@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentProportionalAreaCircles } from "../component/proportionalAreaCircles";
+import { default as component } from "../component";
 
 /**
  * Punch Card
@@ -138,7 +138,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var proportionalAreaCircles = componentProportionalAreaCircles()
+      var proportionalAreaCircles = component.proportionalAreaCircles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

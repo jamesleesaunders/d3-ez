@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentDonut } from "../component/donut";
+import { default as component } from "../component";
 
 /**
  * Donut Chart (also called: Doughnut Chart; Pie Chart)
@@ -19,7 +19,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -90,7 +90,7 @@ export default function() {
         .attr("height", chartH);
 
       // Add the chart
-      var donutChart = componentDonut()
+      var donutChart = component.donut()
         .radius(radius)
         .innerRadius(innerRadius)
         .colorScale(colorScale)

@@ -1,0 +1,47 @@
+import { default as componentBarsCircular } from "./component/barsCircular";
+import { default as componentBarsStacked } from "./component/barsStacked";
+import { default as componentBarsVertical } from "./component/barsVertical";
+import { default as componentBubbles } from "./component/bubbles";
+import { default as componentCandleSticks } from "./component/candleSticks";
+import { default as componentCircularAxis } from "./component/circularAxis";
+import { default as componentCircularRingLabels } from "./component/circularRingLabels";
+import { default as componentCircularSectorLabels } from "./component/circularSectorLabels";
+import { default as componentDonut } from "./component/donut";
+import { default as componentHeatMapRing } from "./component/heatMapRing";
+import { default as componentHeatMapRow } from "./component/heatMapRow";
+import { default as componentHtmlList } from "./component/htmlList";
+import { default as componentHtmlTable } from "./component/htmlTable";
+import { default as componentLineChart } from "./component/lineChart";
+import { default as componentNumberCard } from "./component/numberCard";
+import { default as componentPolarArea } from "./component/polarArea";
+import { default as componentProportionalAreaCircles } from "./component/proportionalAreaCircles";
+import { default as componentScatterPlot } from "./component/scatterPlot";
+import { default as componentLabeledNode } from "./component/labeledNode";
+import { default as componentLegend } from "./component/legend";
+import { default as componentTitle } from "./component/title";
+import { default as componentCreditTag } from "./component/creditTag";
+
+export default {
+  barsCircular: componentBarsCircular,
+  barsStacked: componentBarsStacked,
+  barsVertical: componentBarsVertical,
+  bubbles: componentBubbles,
+  candleSticks: componentCandleSticks,
+  circularAxis: componentCircularAxis,
+  circularRingLabels: componentCircularRingLabels,
+  circularSectorLabels: componentCircularSectorLabels,
+  creditTag: componentCreditTag,
+  donut: componentDonut,
+  heatMapRing: componentHeatMapRing,
+  heatMapRow: componentHeatMapRow,
+  htmlList: componentHtmlList,
+  htmlTable: componentHtmlTable,
+  labeledNode: componentLabeledNode,
+  legend: componentLegend,
+  lineChart: componentLineChart,
+  numberCard: componentNumberCard,
+  polarArea: componentPolarArea,
+  proportionalAreaCircles: componentProportionalAreaCircles,
+  scatterPlot: componentScatterPlot,
+  title: componentTitle
+};
