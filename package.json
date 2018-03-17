@@ -31,15 +31,15 @@
     "d3": "^4.0.0"
   },
   "devDependencies": {
+    "npm": "^5.7.1",
     "rollup": "^0.56.2",
+    "rollup-plugin-json": "^2.3.0",
     "tape": "^4.9.0",
     "jsdom": "^11.0.0",
     "uglify-js": "^2.6.0",
     "vows": "0.8"
   },
   "dependencies": {
-    "d3": "^4.0.0",
-    "npm": "^5.7.1",
-    "rollup-plugin-json": "^2.3.0"
+    "d3": "^4.0.0"
   }
 }
