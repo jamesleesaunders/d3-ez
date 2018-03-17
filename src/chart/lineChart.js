@@ -1,8 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentLineChart } from "../component/lineChart";
-import { default as componentScatterPlot } from "../component/scatterPlot";
+import { default as component } from "../component";
 
 /**
  * Line Chart (also called: Line Graph; Spline Chart)
@@ -136,7 +135,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var lineChart = componentLineChart()
+      var lineChart = component.lineChart()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -144,7 +143,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var scatterPlot = componentScatterPlot()
+      var scatterPlot = component.scatterPlot()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

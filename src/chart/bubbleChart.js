@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentBubbles } from "../component/bubbles";
+import { default as component } from "../component";
 
 /**
  * Bubble Chart
@@ -150,7 +150,7 @@ export default function() {
         .call(yAxis);
 
       // Add bubbles to the chart
-      var bubbles = componentBubbles()
+      var bubbles = component.bubbles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

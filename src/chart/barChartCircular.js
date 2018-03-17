@@ -1,10 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentCircularAxis } from "../component/circularAxis";
-import { default as componentBarsCircular } from "../component/barsCircular";
-import { default as componentCircularSectorLabels } from "../component/circularSectorLabels";
-import { default as componentCircularRingLabels } from "../component/circularRingLabels";
+import { default as component } from "../component";
 
 /**
  * Circular Bar Chart (also called: Progress Chart)
@@ -22,7 +19,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(4);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -115,7 +112,7 @@ export default function() {
         .attr("height", chartH);
 
       // Circular Axis
-      var circularAxis = componentCircularAxis()
+      var circularAxis = component.circularAxis()
         .radialScale(yScale)
         .ringScale(xScale)
         .width(chartW)
@@ -126,7 +123,7 @@ export default function() {
         .call(circularAxis);
 
       // Outer Labels
-      var circularSectorLabels = componentCircularSectorLabels()
+      var circularSectorLabels = component.circularSectorLabels()
         .radialScale(yScale)
         .textAnchor("middle")
         .radius(radius * 1.04);
@@ -135,7 +132,7 @@ export default function() {
         .call(circularSectorLabels);
 
       // Radial Bar Chart
-      var barsCircular = componentBarsCircular()
+      var barsCircular = component.barsCircular()
         .radius(function(d) { return xScale(d.key) })
         .innerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
         .yScale(yScale)
@@ -147,7 +144,7 @@ export default function() {
         .call(barsCircular);
 
       // Ring Labels
-      var circularRingLabels = componentCircularRingLabels()
+      var circularRingLabels = component.circularRingLabels()
         .radialScale(xScale)
         .textAnchor("middle");
 

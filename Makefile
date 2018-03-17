@@ -23,7 +23,7 @@ all: js css min zip
 .PHONY: js css min zip
 
 js:
-	@echo Concatenating JS Files...
+	@echo Compiling JS Files...
 	@rm -f build/d3-ez.js
 	@rollup -c
 

@@ -1,3 +1,5 @@
+import json from 'rollup-plugin-json';
+
 var banner = "/** \n\
  * d3-ez \n\
  * \n\
@@ -19,5 +21,10 @@ export default {
       'd3': 'd3'
     }
   },
-  external: [ 'd3' ]
+  external: ['d3'],
+  plugins: [
+  json({
+      exclude: ['node_modules/**']
+    })
+]
 };

@@ -1,9 +1,7 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
-import { default as componentHeatMapRing } from "../component/heatMapRing";
-import { default as componentCircularSectorLabels } from "../component/circularSectorLabels";
-import { default as componentCircularRingLabels } from "../component/circularRingLabels";
+import { default as component } from "../component";
 
 /**
  * Circular Heat Map (also called: Radial Heat Map)
@@ -124,7 +122,7 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatMapRing = componentHeatMapRing()
+      var heatMapRing = component.heatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
@@ -146,7 +144,7 @@ export default function() {
         .remove();
 
       // Circular Labels
-      var circularSectorLabels = componentCircularSectorLabels()
+      var circularSectorLabels = component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
@@ -155,7 +153,7 @@ export default function() {
         .call(circularSectorLabels);
 
       // Ring Labels
-      var circularRingLabels = componentCircularRingLabels()
+      var circularRingLabels = component.circularRingLabels()
         .radialScale(yScale)
         .textAnchor("middle");
 
