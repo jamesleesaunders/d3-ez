@@ -1,4 +1,10 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentCircularAxis } from "../component/circularAxis";
+import { default as componentBarsCircular } from "../component/barsCircular";
+import { default as componentCircularSectorLabels } from "../component/circularSectorLabels";
+import { default as componentCircularRingLabels } from "../component/circularRingLabels";
 
 /**
  * Circular Bar Chart (also called: Progress Chart)
@@ -16,7 +22,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.palette.categorical(4);
+  var colors = palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -49,7 +55,7 @@ export default function() {
     innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
 
@@ -109,7 +115,7 @@ export default function() {
         .attr("height", chartH);
 
       // Circular Axis
-      var circularAxis = d3.ez.component.circularAxis()
+      var circularAxis = componentCircularAxis()
         .radialScale(yScale)
         .ringScale(xScale)
         .width(chartW)
@@ -120,7 +126,7 @@ export default function() {
         .call(circularAxis);
 
       // Outer Labels
-      var circularSectorLabels = d3.ez.component.circularSectorLabels()
+      var circularSectorLabels = componentCircularSectorLabels()
         .radialScale(yScale)
         .textAnchor("middle")
         .radius(radius * 1.04);
@@ -129,7 +135,7 @@ export default function() {
         .call(circularSectorLabels);
 
       // Radial Bar Chart
-      var barsCircular = d3.ez.component.barsCircular()
+      var barsCircular = componentBarsCircular()
         .radius(function(d) { return xScale(d.key) })
         .innerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
         .yScale(yScale)
@@ -141,7 +147,7 @@ export default function() {
         .call(barsCircular);
 
       // Ring Labels
-      var circularRingLabels = d3.ez.component.circularRingLabels()
+      var circularRingLabels = componentCircularRingLabels()
         .radialScale(xScale)
         .textAnchor("middle");
 

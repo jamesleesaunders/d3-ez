@@ -1,4 +1,7 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentBubbles } from "../component/bubbles";
 
 /**
  * Bubble Chart
@@ -16,7 +19,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.palette.categorical(3);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -147,7 +150,7 @@ export default function() {
         .call(yAxis);
 
       // Add bubbles to the chart
-      var bubbles = d3.ez.component.bubbles()
+      var bubbles = componentBubbles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { default as componentLabeledNode } from "./labeledNode";
 
 /**
  * Reusable Scatter Plot Component
@@ -28,7 +29,7 @@ export default function() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      var bubble = d3.ez.component.labeledNode()
+      var bubble = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
         .label(function(d) { return d.key; })

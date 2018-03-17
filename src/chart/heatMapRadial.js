@@ -1,4 +1,9 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentHeatMapRing } from "../component/heatMapRing";
+import { default as componentCircularSectorLabels } from "../component/circularSectorLabels";
+import { default as componentCircularRingLabels } from "../component/circularRingLabels";
 
 /**
  * Circular Heat Map (also called: Radial Heat Map)
@@ -52,7 +57,7 @@ export default function() {
     innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     maxValue = slicedData.maxValue;
     minValue = slicedData.minValue;
     categoryNames = slicedData.categoryNames;
@@ -119,7 +124,7 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatMapRing = d3.ez.component.heatMapRing()
+      var heatMapRing = componentHeatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
@@ -141,7 +146,7 @@ export default function() {
         .remove();
 
       // Circular Labels
-      var circularSectorLabels = d3.ez.component.circularSectorLabels()
+      var circularSectorLabels = componentCircularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);
@@ -150,7 +155,7 @@ export default function() {
         .call(circularSectorLabels);
 
       // Ring Labels
-      var circularRingLabels = d3.ez.component.circularRingLabels()
+      var circularRingLabels = componentCircularRingLabels()
         .radialScale(yScale)
         .textAnchor("middle");
 

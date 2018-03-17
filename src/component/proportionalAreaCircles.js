@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { default as componentLabeledNode } from "./labeledNode";
 
 /**
  * Reusable Proportional Area Circles Component
@@ -35,7 +36,7 @@ export default function() {
         return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
       });
 
-      var spot = d3.ez.component.labeledNode()
+      var spot = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.value); })
         .label(function(d) { return d.value; })

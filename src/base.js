@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import { default as componentCreditTag } from "./component/creditTag";
+import { default as componentTitle } from "./component/title";
 
 /**
  * Chart Base
@@ -23,7 +25,7 @@ export default function() {
   var chart = undefined;
   var legend = undefined;
   var title = undefined;
-  var creditTag = d3.ez.component.creditTag();
+  var creditTag = componentCreditTag();
   var description = "";
   var yAxisLabel = "";
 
@@ -146,7 +148,7 @@ export default function() {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
       // If the caller has passed a plain string convert it to a title object.
-      title = d3.ez.title().mainText(_).subText('');
+      title = componenttitle().mainText(_).subText('');
     } else {
       title = _;
     }

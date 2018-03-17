@@ -1,4 +1,7 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentCandleSticks } from "../component/candleSticks";
 
 /**
  * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
@@ -165,7 +168,7 @@ export default function() {
       //   .attr('clip-path', 'url(#plotAreaClip)');
 
       // Add candles to the chart
-      var candleSticks = d3.ez.component.candleSticks()
+      var candleSticks = componentCandleSticks()
         .width(chartW)
         .height(chartH)
         .xScale(xScale)

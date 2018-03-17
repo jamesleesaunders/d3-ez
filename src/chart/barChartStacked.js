@@ -1,4 +1,7 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentBarsStacked } from "../component/barsStacked";
 
 /**
  * Stacked Bar Chart
@@ -16,7 +19,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.palette.categorical(4);
+  var colors = palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -47,7 +50,7 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     groupNames = slicedData.groupNames;
     groupTotalsMax = slicedData.groupTotalsMax;
     maxValue = slicedData.maxValue;
@@ -129,7 +132,7 @@ export default function() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barsStacked = d3.ez.component.barsStacked()
+      var barsStacked = componentBarsStacked()
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)

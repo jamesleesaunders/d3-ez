@@ -1,4 +1,7 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentProportionalAreaCircles } from "../component/proportionalAreaCircles";
 
 /**
  * Punch Card
@@ -49,7 +52,7 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     maxValue = slicedData.maxValue;
     minValue = slicedData.minValue;
     categoryNames = slicedData.categoryNames;
@@ -135,7 +138,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var proportionalAreaCircles = d3.ez.component.proportionalAreaCircles()
+      var proportionalAreaCircles = componentProportionalAreaCircles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

@@ -1,4 +1,8 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentLineChart } from "../component/lineChart";
+import { default as componentScatterPlot } from "../component/scatterPlot";
 
 /**
  * Line Chart (also called: Line Graph; Spline Chart)
@@ -16,7 +20,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.palette.categorical(3);
+  var colors = palette.categorical(3);
 
   // Chart Dimensions
   var chartW;
@@ -44,7 +48,7 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     maxValue = slicedData.maxValue;
     groupNames = slicedData.groupNames;
 
@@ -132,7 +136,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var lineChart = d3.ez.component.lineChart()
+      var lineChart = componentLineChart()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -140,7 +144,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var scatterPlot = d3.ez.component.scatterPlot()
+      var scatterPlot = componentScatterPlot()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)

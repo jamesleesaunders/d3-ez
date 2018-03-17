@@ -1,4 +1,9 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentCircularAxis } from "../component/circularAxis";
+import { default as componentPolarArea } from "../component/polarArea";
+import { default as componentCircularSectorLabels } from "../component/circularSectorLabels";
 
 /**
  * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
@@ -16,7 +21,7 @@ export default function() {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = d3.ez.palette.categorical(4);
+  var colors = palette.categorical(4);
 
   // Chart Dimensions
   var chartW;
@@ -53,7 +58,7 @@ export default function() {
     innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     categoryNames = slicedData.categoryNames;
     maxValue = slicedData.maxValue;
 
@@ -114,7 +119,7 @@ export default function() {
         .attr("height", chartH);
 
       // Circular Axis
-      var circularAxis = d3.ez.component.circularAxis()
+      var circularAxis = componentCircularAxis()
         .radialScale(xScale)
         .ringScale(yScale)
         .width(chartW)
@@ -125,7 +130,7 @@ export default function() {
         .call(circularAxis);
 
       // Radial Bar Chart
-      var polarArea = d3.ez.component.polarArea()
+      var polarArea = componentPolarArea()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
@@ -143,7 +148,7 @@ export default function() {
         .call(verticalAxis);
 
       // Circular Labels
-      var circularSectorLabels = d3.ez.component.circularSectorLabels()
+      var circularSectorLabels = componentCircularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
         .radius(radius * 1.04);

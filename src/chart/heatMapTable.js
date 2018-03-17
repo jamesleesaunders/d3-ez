@@ -1,4 +1,7 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+import { default as componentHeatMapRow } from "../component/heatMapRow";
 
 /**
  * Heat Map (also called: Heat Table; Density Table; Heat Map)
@@ -44,7 +47,7 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = d3.ez.dataParse(data);
+    var slicedData = dataParse(data);
     maxValue = slicedData.maxValue;
     minValue = slicedData.minValue;
     categoryNames = slicedData.categoryNames;
@@ -126,7 +129,7 @@ export default function() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var heatMapRow = d3.ez.component.heatMapRow()
+      var heatMapRow = componentHeatMapRow()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
