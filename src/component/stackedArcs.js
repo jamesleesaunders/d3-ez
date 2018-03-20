@@ -23,6 +23,8 @@ export default function() {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
+    var endAngle = xScale.bandwidth();
+
     // Arc Generator
     var arc = d3.arc()
       .innerRadius(function(d) {
@@ -31,7 +33,8 @@ export default function() {
       .outerRadius(function(d) {
         return yScale(d.y1);
       })
-      .cornerRadius(2);
+      .startAngle(0 * (Math.PI/180))
+      .endAngle(endAngle * (Math.PI/180));
 
     // Stack Generator
     var stacker = function(data) {
@@ -46,7 +49,6 @@ export default function() {
         };
         y0 += d.value;
       });
-
       return series;
     };
 
@@ -69,9 +71,9 @@ export default function() {
       segments.enter()
         .append("path")
         .classed("segment", true)
-        .style("fill", function(d) { return colorScale(d.key); })
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.data); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d.data); })
+        .attr("fill", function(d) { return colorScale(d.name); })
+        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(segments)
         .transition()
         .ease(transition.ease)

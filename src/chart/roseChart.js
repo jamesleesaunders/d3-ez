@@ -4,9 +4,9 @@ import { default as dataParse } from "../dataParse";
 import { default as component } from "../component";
 
 /**
- * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
+ * Stacked Bar Chart
  *
- * @see http://datavizproject.com/data-type/polar-area-chart/
+ * @see http://datavizproject.com/data-type/stacked-bar-chart/
  */
 export default function() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -14,10 +14,10 @@ export default function() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "chartPolarArea";
+  var classed = "barChartStacked";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
 
@@ -32,31 +32,27 @@ export default function() {
   var colorScale;
 
   // Data Variables
-  var categoryNames = [];
-  var maxValue = 0;
-
-  // Other Customisation Options
-  var startAngle = 0;
-  var endAngle = 360;
+  var groupNames;
+  var groupTotalsMax;
+  var maxValue;
+  var categoryNames;
 
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Other Customisation Options
-  var capitalizeLabels = false;
-  var colorLabels = false;
-
   function init(data) {
-    chartW = width - (margin.left + margin.right);
-    chartH = height - (margin.top + margin.bottom);
+    chartW = width - margin.left - margin.right;
+    chartH = height - margin.top - margin.bottom;
 
     var defaultRadius = Math.min(chartW, chartH) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    categoryNames = slicedData.categoryNames;
+    groupNames = slicedData.groupNames;
+    groupTotalsMax = slicedData.groupTotalsMax;
     maxValue = slicedData.maxValue;
+    categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -69,14 +65,12 @@ export default function() {
 
     // X & Y Scales
     xScale = d3.scaleBand()
-      .domain(categoryNames)
-      .rangeRound([startAngle, endAngle])
-      .padding(0.15);
+      .domain(groupNames)
+      .rangeRound([0, 360]);
 
     yScale = d3.scaleLinear()
-      .domain([0, maxValue])
       .range([0, radius])
-      .nice();
+      .domain([0, groupTotalsMax]);
   }
 
   function my(selection) {
@@ -84,7 +78,7 @@ export default function() {
       // Initialise Data
       init(data);
 
-      // Create SVG element (if it does not exist already)
+      // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
           var el = selection._groups[0][0];
@@ -100,10 +94,7 @@ export default function() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("circularAxis", true);
-        chart.append("g").classed("polarArea", true);
         chart.append("g").classed("circularSectorLabels", true);
-        chart.append("g").classed("verticalAxis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -114,34 +105,27 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Circular Axis
-      var circularAxis = component.circularAxis()
-        .radialScale(xScale)
-        .ringScale(yScale)
-        .width(chartW)
-        .height(chartH)
-        .radius(radius);
-
-      chart.select(".circularAxis")
-        .call(circularAxis);
-
-      // Radial Bar Chart
-      var polarArea = component.polarArea()
+      var stackedArcs = component.stackedArcs()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
         .colorScale(colorScale)
         .dispatch(dispatch);
 
-      chart.select(".polarArea")
-        .datum(data)
-        .call(polarArea);
+      // Create series group
+      var seriesGroup = chart.selectAll(".seriesGroup")
+        .data(data);
 
-      // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]).nice());
-      chart.select(".verticalAxis")
-        .attr("transform", "translate(0," + -(chartH / 2) + ")")
-        .call(verticalAxis);
+      seriesGroup.enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", function(d) { return "rotate(" + xScale(d.key) + ")"; })
+        .datum(function(d) { return d; })
+        .merge(seriesGroup)
+        .call(stackedArcs);
+
+      seriesGroup.exit()
+        .remove();
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
@@ -174,9 +158,9 @@ export default function() {
     return this;
   };
 
-  my.radius = function(_) {
-    if (!arguments.length) return radius;
-    radius = _;
+  my.transition = function(_) {
+    if (!arguments.length) return transition;
+    transition = _;
     return this;
   };
 
@@ -189,24 +173,6 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
-    return this;
-  };
-
-  my.transition = function(_) {
-    if (!arguments.length) return transition;
-    transition = _;
-    return this;
-  };
-
-  my.capitalizeLabels = function(_) {
-    if (!arguments.length) return capitalizeLabels;
-    capitalizeLabels = _;
-    return this;
-  };
-
-  my.colorLabels = function(_) {
-    if (!arguments.length) return colorLabels;
-    colorLabels = _;
     return this;
   };
 

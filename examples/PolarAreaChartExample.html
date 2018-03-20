@@ -28,7 +28,7 @@
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
       ];
-      var tmp = json.map(function(d) {
+      var vals = json.map(function(d) {
         return {
           key: monthNames[new Date(d.date).getMonth()],
           value: (1000 * d.zymotic_diseases / d.army_size),
@@ -36,10 +36,9 @@
         };
       }).filter( function(d) { return d.date < new Date("1855-04-01T07:00:00.000Z"); } );
       var data = {
-  			"key": "Fruit",
-  			"values": tmp
+  			"key": "Diseases",
+  			"values": vals
   		};
-      console.log(data);
 
       // Create chart base
       var myChart = d3.ez.base()
