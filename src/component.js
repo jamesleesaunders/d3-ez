@@ -14,6 +14,7 @@ import { default as componentHtmlTable } from "./component/htmlTable";
 import { default as componentLineChart } from "./component/lineChart";
 import { default as componentNumberCard } from "./component/numberCard";
 import { default as componentPolarArea } from "./component/polarArea";
+import { default as componentStackedArcs } from "./component/stackedArcs";
 import { default as componentProportionalAreaCircles } from "./component/proportionalAreaCircles";
 import { default as componentScatterPlot } from "./component/scatterPlot";
 import { default as componentLabeledNode } from "./component/labeledNode";
@@ -41,6 +42,7 @@ export default {
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
+  stackedArcs: componentStackedArcs,
   proportionalAreaCircles: componentProportionalAreaCircles,
   scatterPlot: componentScatterPlot,
   title: componentTitle
