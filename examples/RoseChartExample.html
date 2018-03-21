@@ -28,13 +28,24 @@
       var data = d3.nest().key(function(d) {
         return new Date(d.date)
       }).entries(json).map(function(obj) {
-        obj.values = obj.values.map(function(values) {
-          return {
-            key: 'zymotic_diseases',
-            value: (1000 * values.zymotic_diseases / values.army_size)
-          };
-        });
-        return obj;
+        //obj.values = obj.values.map(function(values) {
+        //  return {
+        //    key: 'zymotic_diseases',
+        //    value: (1000 * values.zymotic_diseases / values.army_size)
+        //  };
+        //});
+        console.log(obj.values);
+        var values = {
+          key: obj.key,
+          values: [
+            {key: 'zymotic_diseases', value: obj.values[0].zymotic_diseases},
+            {key: 'wounds', value: obj.values[0].wounds},
+            {key: 'other', value: obj.values[0].other}
+          ]
+        };
+
+
+        return values;
       });//.filter( function(d) { return d.key < new Date("1855-04-01T07:00:00.000Z"); } );
 
       console.log(data);
