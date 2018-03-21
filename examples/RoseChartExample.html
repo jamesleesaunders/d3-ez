@@ -17,38 +17,27 @@
     d3.json("data/nightingale_rose.json", function(error, json) {
       // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
 
-      var colors = ["#c00", "#36c", "#f90", "#fc0"];
+      var colors = ["#f1595f", "#727272", "#599ad3"];
       var chart = d3.ez.chart.roseChart().colors(colors);
-      var legend = d3.ez.component.legend().title("Zymotic Diseases");
+      var legend = d3.ez.component.legend().title("Causes of Mortality");
       var title = d3.ez.component.title().mainText("Diagram of the Causes of Mortality in the Army in The East").subText("April 1854 to March 1855");
-
-      console.log(json);
 
       // Convert json to d3-ez data format
       var data = d3.nest().key(function(d) {
-        return new Date(d.date)
+        return d.date;
       }).entries(json).map(function(obj) {
-        //obj.values = obj.values.map(function(values) {
-        //  return {
-        //    key: 'zymotic_diseases',
-        //    value: (1000 * values.zymotic_diseases / values.army_size)
-        //  };
-        //});
-        console.log(obj.values);
+        var rec = obj.values[0];
+        var army_size = rec.army_size;
         var values = {
           key: obj.key,
           values: [
-            {key: 'zymotic_diseases', value: obj.values[0].zymotic_diseases},
-            {key: 'wounds', value: obj.values[0].wounds},
-            {key: 'other', value: obj.values[0].other}
+            {key: 'Other Causes', value: (1000 * rec.all_other_causes / army_size)},
+            {key: 'Wounds & Injuries', value: (1000 * rec.wounds_and_injuries / army_size)},
+            {key: 'Zymotic Diseases', value: (1000 * rec.zymotic_diseases / army_size)}
           ]
         };
-
-
         return values;
-      });//.filter( function(d) { return d.key < new Date("1855-04-01T07:00:00.000Z"); } );
-
-      console.log(data);
+      }).filter( function(d) { return new Date(d.key) < new Date("1855-04-01T07:00:00.000Z"); } );
 
       // Create chart base
       var myChart = d3.ez.base()
