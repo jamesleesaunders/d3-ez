@@ -31,7 +31,7 @@
       var vals = json.map(function(d) {
         return {
           key: monthNames[new Date(d.date).getMonth()],
-          value: (1000 * d.zymotic_diseases / d.army_size),
+          value: d.zymotic_diseases,
           date: new Date(d.date)
         };
       }).filter( function(d) { return d.date < new Date("1855-04-01T07:00:00.000Z"); } );
