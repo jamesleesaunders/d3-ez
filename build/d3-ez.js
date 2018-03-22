@@ -1562,11 +1562,13 @@ function componentCircularAxis() {
  */
 function componentCircularRingLabels() {
   // Default Options (Configurable via setters)
-  var width = 400;
+  var width = 300;
   var height = 300;
-  var radialScale;
   var radius;
+  var startAngle = 0;
+  var endAngle = 360;
   var textAnchor = "centre";
+  var radialScale;
 
   function my(selection) {
     selection.each(function(data) {
@@ -1574,7 +1576,6 @@ function componentCircularRingLabels() {
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
-      var id = 'jim';
       var radData = radialScale.domain();
 
       var labelsSelect = selection.selectAll('.radialLabels')
@@ -1592,19 +1593,17 @@ function componentCircularRingLabels() {
         .append("def")
         .append("path")
         .attr("id", function(d, i) {
-          return "radialLabelPath" + id + "-" + i;
+          return "radialLabelPath" + "-" + i;
         })
         .attr("d", function(d, i) {
           var r = radialScale(d);
           var arc = d3.arc().outerRadius(r).innerRadius(r);
-          var startAngle = 0, endAngle = 358;
           var pathConf = {
             startAngle: (startAngle * Math.PI) / 180,
-            endAngle:   (endAngle * Math.PI) / 180
+            endAngle: (endAngle * Math.PI) / 180
           };
           var pathStr = arc(pathConf).split(/[A-Z]/);
           return "M" + pathStr[1] + "A" + pathStr[2];
-          // return "A0 " + -r + " A" + r + " " + r + " 0 1,1 -0.01 0";
         });
 
       var textSelect = labels.selectAll("text")
@@ -1617,7 +1616,7 @@ function componentCircularRingLabels() {
         .attr("dx", 5)
         .append("textPath")
         .attr("xlink:href", function(d, i) {
-          return "#radialLabelPath" + id + "-" + i;
+          return "#radialLabelPath" + "-" + i;
         })
         .attr("startOffset", "0%")
         .text(function(d) {
@@ -1646,6 +1645,18 @@ function componentCircularRingLabels() {
     return this;
   };
 
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
+    return this;
+  };
+
   my.radialScale = function(_) {
     if (!arguments.length) return radialScale;
     radialScale = _;
@@ -1669,10 +1680,12 @@ function componentCircularSectorLabels() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var radialScale;
   var radius;
+  var startAngle = 0;
+  var endAngle = 360;
   var capitalizeLabels = false;
   var textAnchor = "centre";
+  var radialScale;
 
   function my(selection) {
     selection.each(function(data) {
@@ -1780,6 +1793,18 @@ function componentCircularSectorLabels() {
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return this;
   };
 
@@ -3048,7 +3073,9 @@ function componentStackedArcs() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
-  var radius = 150;
+  var radius;
+  var startAngle = 0;
+  var endAngle = 45;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
@@ -3058,8 +3085,7 @@ function componentStackedArcs() {
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-
-    var endAngle = xScale.bandwidth();
+    endAngle = startAngle + xScale.bandwidth();
 
     // Arc Generator
     var arc = d3.arc()
@@ -3069,7 +3095,7 @@ function componentStackedArcs() {
       .outerRadius(function(d) {
         return yScale(d.y1);
       })
-      .startAngle(0 * (Math.PI/180))
+      .startAngle(startAngle * (Math.PI/180))
       .endAngle(endAngle * (Math.PI/180));
 
     // Stack Generator
@@ -3139,6 +3165,18 @@ function componentStackedArcs() {
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return this;
   };
 
@@ -6044,6 +6082,7 @@ function chartRoseChart() {
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
+        //.startAngle(-90)
         .colorScale(colorScale)
         .dispatch(dispatch);
 

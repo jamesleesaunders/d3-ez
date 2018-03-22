@@ -8,11 +8,9 @@ export default function() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
-  var radius = 150;
-  var startRadius = 0;
-  var endRadius = 360;
+  var radius;
   var startAngle = 0;
-  var endAngle = 60;
+  var endAngle = 45;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
@@ -22,8 +20,7 @@ export default function() {
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-
-    var endAngle = xScale.bandwidth();
+    endAngle = startAngle + xScale.bandwidth();
 
     // Arc Generator
     var arc = d3.arc()
@@ -33,7 +30,7 @@ export default function() {
       .outerRadius(function(d) {
         return yScale(d.y1);
       })
-      .startAngle(0 * (Math.PI/180))
+      .startAngle(startAngle * (Math.PI/180))
       .endAngle(endAngle * (Math.PI/180));
 
     // Stack Generator
@@ -103,6 +100,18 @@ export default function() {
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return this;
   };
 
