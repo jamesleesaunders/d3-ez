@@ -33,7 +33,6 @@ export default function() {
 
   // Data Variables
   var groupNames;
-  var groupTotalsMax;
   var maxValue;
   var categoryNames;
 
@@ -50,7 +49,6 @@ export default function() {
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
     groupNames = slicedData.groupNames;
-    groupTotalsMax = slicedData.groupTotalsMax;
     maxValue = slicedData.maxValue;
     categoryNames = slicedData.categoryNames;
 

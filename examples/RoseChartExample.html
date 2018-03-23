@@ -17,7 +17,7 @@
     d3.json("data/nightingale_rose.json", function(error, json) {
       // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
 
-      var colors = ["#f1595f", "#727272", "#599ad3"];
+      var colors = ["#599ad3", "#727272", "#f1595f"];
       var chart = d3.ez.chart.roseChart().colors(colors);
       var legend = d3.ez.component.legend().title("Causes of Mortality");
       var title = d3.ez.component.title().mainText("Diagram of the Causes of Mortality in the Army in The East").subText("April 1854 to March 1855");
@@ -32,14 +32,15 @@
       }).entries(json).map(function(obj) {
         var rec = obj.values[0];
         var army_size = rec.army_size;
+        var scalar = 1000*12 / rec.army_size;
         var datetime = new Date(obj.key);
         var values = {
           key: monthNames[datetime.getMonth()] + ' ' + datetime.getFullYear(),
           datetime: datetime,
           values: [
-            {key: 'Zymotic Diseases', value: (1000 * rec.zymotic_diseases / army_size)},
-            {key: 'Other Causes', value: (1000 * rec.all_other_causes / army_size)},
-            {key: 'Wounds & Injuries', value: (1000 * rec.wounds_and_injuries / army_size)},
+            {key: 'Zymotic Diseases', value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI},
+            {key: 'Other Causes', value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI},
+            {key: 'Wounds & Injuries', value: Math.sqrt(rec.wounds_and_injuries * scalar) / Math.PI}
           ]
         };
         return values;
