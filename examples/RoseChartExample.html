@@ -37,9 +37,9 @@
           key: monthNames[datetime.getMonth()] + ' ' + datetime.getFullYear(),
           datetime: datetime,
           values: [
-            {key: 'Wounds & Injuries', value: (1000 * rec.wounds_and_injuries / army_size)},
+            {key: 'Zymotic Diseases', value: (1000 * rec.zymotic_diseases / army_size)},
             {key: 'Other Causes', value: (1000 * rec.all_other_causes / army_size)},
-            {key: 'Zymotic Diseases', value: (1000 * rec.zymotic_diseases / army_size)}
+            {key: 'Wounds & Injuries', value: (1000 * rec.wounds_and_injuries / army_size)},
           ]
         };
         return values;

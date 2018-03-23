@@ -24,30 +24,12 @@ export default function() {
 
     // Arc Generator
     var arc = d3.arc()
-      .innerRadius(function(d) {
-        return yScale(d.y0);
-      })
+      .innerRadius(0)
       .outerRadius(function(d) {
-        return yScale(d.y1);
+        return yScale(d.value);
       })
       .startAngle(startAngle * (Math.PI/180))
       .endAngle(endAngle * (Math.PI/180));
-
-    // Stack Generator
-    var stacker = function(data) {
-      var series = [];
-      var y0 = 0;
-      data.forEach(function(d, i) {
-        series[i] = {
-          name: d.key,
-          value: d.value,
-          y0: y0,
-          y1: y0 + d.value
-        };
-        y0 += d.value;
-      });
-      return series;
-    };
 
     selection.each(function() {
       // Create series group
@@ -62,13 +44,13 @@ export default function() {
         .merge(seriesSelect);
 
       // Add segments to series
-      var segments = series.selectAll(".bar")
-        .data(function(d) { return stacker(d.values); });
+      var segments = series.selectAll(".segment")
+        .data(function(d) { return d.values; });
 
       segments.enter()
         .append("path")
         .classed("segment", true)
-        .attr("fill", function(d) { return colorScale(d.name); })
+        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(segments)

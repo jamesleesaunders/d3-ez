@@ -37,7 +37,12 @@
   letter-spacing: -0.2px;
 }
 
-/* ------------- */
+/* === Rose Chart Styles === */
+
+.roseChart path.segment {
+  stroke-width: 0.5px;
+  stroke: #999999;
+}
 
 .roseChart path.segment:hover {
   opacity: 0.7;

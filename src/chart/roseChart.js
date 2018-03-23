@@ -70,7 +70,7 @@ export default function() {
 
     yScale = d3.scaleLinear()
       .range([0, radius])
-      .domain([0, groupTotalsMax]);
+      .domain([0, maxValue]);
   }
 
   function my(selection) {
