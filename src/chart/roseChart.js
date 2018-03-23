@@ -14,7 +14,7 @@ export default function() {
   var chart;
 
   // Default Options (Configurable via setters)
-  var classed = "barChartStacked";
+  var classed = "roseChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
