@@ -41,7 +41,7 @@ var title = d3.ez.component.title()
 	.subText("Which fruit do you like?");
 
 var chart = d3.ez.chart.barChartVertical()
-	.colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
+	.colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
 
 var legend = d3.ez.component.legend()
 	.title("Fruit Type");
