@@ -4,9 +4,9 @@ import { default as dataParse } from "../dataParse";
 import { default as component } from "../component";
 
 /**
- * Stacked Bar Chart
+ * Rose Chart (also called: Coxcomb Chart; Circumplex Chart; Nightingale Chart)
  *
- * @see http://datavizproject.com/data-type/stacked-bar-chart/
+ * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 export default function() {
   // SVG and Chart containers (Populated by 'my' function)
