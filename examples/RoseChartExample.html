@@ -27,24 +27,35 @@
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
       ];
-      var data = d3.nest().key(function(d) {
-        return d.date;
-      }).entries(json).map(function(obj) {
-        var rec = obj.values[0];
-        var army_size = rec.army_size;
-        var scalar = 1000*12 / rec.army_size;
-        var datetime = new Date(obj.key);
-        var values = {
-          key: monthNames[datetime.getMonth()] + ' ' + datetime.getFullYear(),
-          datetime: datetime,
-          values: [
-            {key: 'Zymotic Diseases', value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI},
-            {key: 'Other Causes', value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI},
-            {key: 'Wounds & Injuries', value: Math.sqrt(rec.wounds_and_injuries * scalar) / Math.PI}
-          ]
-        };
-        return values;
-      }).filter( function(d) { return d.datetime < new Date("1855-04-01T07:00:00.000Z"); } );
+      var data = d3.nest()
+        .key(function(d) { return d.date; })
+        .entries(json).map(function(obj) {
+          var rec = obj.values[0];
+          var scalar = 1000 * 12 / rec.army_size;
+          var datetime = new Date(obj.key);
+
+          var values = {
+            key: monthNames[datetime.getMonth()],
+            datetime: datetime,
+            values: [{
+                key: 'Zymotic Diseases',
+                value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI
+              },
+              {
+                key: 'Other Causes',
+                value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI
+              },
+              {
+                key: 'Wounds & Injuries',
+                value: Math.sqrt(rec.wounds_and_injuries * scalar) / Math.PI
+              }
+            ]
+          };
+          return values;
+        })
+        .filter(function(d) {
+          return d.datetime < new Date("1855-04-01T07:00:00.000Z");
+        });
       console.log(data);
 
       // Create chart base

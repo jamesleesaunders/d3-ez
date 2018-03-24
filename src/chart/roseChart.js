@@ -130,6 +130,7 @@ export default function() {
       var circularSectorLabels = component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
+        .capitalizeLabels(true)
         .radius(radius * 1.04);
 
       chart.select(".circularSectorLabels")

@@ -136,6 +136,12 @@ export default function() {
     return this;
   };
 
+  my.capitalizeLabels = function(_) {
+    if (!arguments.length) return capitalizeLabels;
+    capitalizeLabels = _;
+    return this;
+  };
+
   my.radialScale = function(_) {
     if (!arguments.length) return radialScale;
     radialScale = _;

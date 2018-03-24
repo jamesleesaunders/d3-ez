@@ -25,6 +25,7 @@ export default function() {
 
     // Stack Generator
     var stacker = function(data) {
+      // Calculate inner and outer radius values
       var series = [];
       var innerRadius = 0;
       var outerRadius = 0;
@@ -50,8 +51,8 @@ export default function() {
       .outerRadius(function(d) {
         return d.outerRadius;
       })
-      .startAngle(startAngle * (Math.PI/180))
-      .endAngle(endAngle * (Math.PI/180));
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180));
 
     selection.each(function() {
       // Create series group

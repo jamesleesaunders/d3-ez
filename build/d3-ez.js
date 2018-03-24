@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.1";
+var version = "3.2.2";
 
 /**
  * Base Functions - Data Parse
@@ -1810,6 +1810,12 @@ function componentCircularSectorLabels() {
     return this;
   };
 
+  my.capitalizeLabels = function(_) {
+    if (!arguments.length) return capitalizeLabels;
+    capitalizeLabels = _;
+    return this;
+  };
+
   my.radialScale = function(_) {
     if (!arguments.length) return radialScale;
     radialScale = _;
@@ -3092,6 +3098,7 @@ function componentRosePetals() {
 
     // Stack Generator
     var stacker = function(data) {
+      // Calculate inner and outer radius values
       var series = [];
       var innerRadius = 0;
       var outerRadius = 0;
@@ -3117,8 +3124,8 @@ function componentRosePetals() {
       .outerRadius(function(d) {
         return d.outerRadius;
       })
-      .startAngle(startAngle * (Math.PI/180))
-      .endAngle(endAngle * (Math.PI/180));
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180));
 
     selection.each(function() {
       // Create series group
@@ -6094,7 +6101,7 @@ function chartRoseChart() {
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
-        .stacked(true)
+        .stacked(false)
         .colorScale(colorScale)
         .dispatch(dispatch);
 
@@ -6117,6 +6124,7 @@ function chartRoseChart() {
       var circularSectorLabels = component.circularSectorLabels()
         .radialScale(xScale)
         .textAnchor("start")
+        .capitalizeLabels(true)
         .radius(radius * 1.04);
 
       chart.select(".circularSectorLabels")
