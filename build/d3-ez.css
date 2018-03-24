@@ -287,38 +287,38 @@ table.htmlTable {
 
 /* === Polar Area Chart Styles === */
 
-.chartPolarArea path {
+.polarArea path {
   fill: none;
 }
 
-.chartPolarArea path.segment {
+.polarArea path.segment {
   fill: steelblue;
   stroke-width: 0.5px;
   stroke: #999999;
 }
 
-.chartPolarArea path.segment:hover {
+.polarArea path.segment:hover {
   opacity: 0.7;
   stroke: black;
   cursor: pointer;
 }
 
-.chartPolarArea .outerCircle circle {
+.polarArea .outerCircle circle {
   stroke: #aaa;
   stroke-dasharray: 4, 4;
 }
 
-.chartPolarArea .tickCircles circle {
+.polarArea .tickCircles circle {
   stroke: #ddd;
   stroke-dasharray: 2, 2;
 }
 
-.chartPolarArea .spokes line {
+.polarArea .spokes line {
   stroke: #aaa;
   stroke-width: 1px;
 }
 
-.chartPolarArea .circularLabels text {
+.polarArea .circularLabels text {
   font-size: 1.1em;
   font-weight: bold;
   letter-spacing: -0.2px;
@@ -341,6 +341,20 @@ table.htmlTable {
 .punchCard text.punchValue {
   font-size: 15px;
   font-weight: bold;
+}
+
+
+/* === Rose Chart Styles === */
+
+.roseChart path.segment {
+  stroke-width: 0.5px;
+  stroke: #999999;
+}
+
+.roseChart path.segment:hover {
+  opacity: 0.7;
+  stroke: black;
+  cursor: pointer;
 }
 
 

@@ -113,6 +113,7 @@ The following charts are currently supported:
 * lineChart()
 * polarAreaChart()
 * punchCard()
+* roseChart()
 
 All of the above support the following options:
 * colors()
@@ -135,18 +136,19 @@ The format of the d3-ez data must be in key / value pairs.
 
 ### Examples
 Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. One of the aims of **d3-ez** to make it easier to create visualizations with graphs which are clickable interact with each other, this is done though the use of D3's dispatch, please see the 'Showcase' link below for example:
-* [Bar Chart (Vertical)](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
+* [Bar Chart (Circular)](http://bl.ocks.org/jamesleesaunders/7505129553c74ba04191d40e4fe6e2d7)
 * [Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
 * [Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
-* [Bar Chart (Circular)](http://bl.ocks.org/jamesleesaunders/7505129553c74ba04191d40e4fe6e2d7)
+* [Bar Chart (Vertical)](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
 * [Bubble Chart](http://bl.ocks.org/jamesleesaunders/e724157a7a387dcc08dd4ba80e48b72f)
+* [Candlestick Chart](http://bl.ocks.org/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7)
 * [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
 * [Heat Map (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
 * [Heat Map (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
+* [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
 * [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
-* [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
-* [Candlestick Chart](http://bl.ocks.org/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7)
+* [Rose Chart](http://bl.ocks.org/jamesleesaunders/)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [HTML List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [Multi Chart Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)

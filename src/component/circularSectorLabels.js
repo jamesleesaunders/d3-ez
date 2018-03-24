@@ -8,10 +8,12 @@ export default function() {
   // Default Options (Configurable via setters)
   var width = 400;
   var height = 300;
-  var radialScale;
   var radius;
+  var startAngle = 0;
+  var endAngle = 360;
   var capitalizeLabels = false;
   var textAnchor = "centre";
+  var radialScale;
 
   function my(selection) {
     selection.each(function(data) {
@@ -119,6 +121,24 @@ export default function() {
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
+    return this;
+  };
+
+  my.capitalizeLabels = function(_) {
+    if (!arguments.length) return capitalizeLabels;
+    capitalizeLabels = _;
     return this;
   };
 

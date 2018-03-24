@@ -1,38 +1,58 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Stacked Bar Chart Component
+ * Reusable Stacked Arcs
  *
  */
 export default function() {
   // Default Options (Configurable via setters)
-  var width = 100;
-  var height = 400;
+  var width = 300;
+  var height = 300;
+  var radius;
+  var startAngle = 0;
+  var endAngle = 45;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colorScale;
   var xScale;
   var yScale;
+  var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    endAngle = startAngle + xScale.bandwidth();
+
     // Stack Generator
     var stacker = function(data) {
+      // Calculate inner and outer radius values
       var series = [];
-      var y0 = 0;
-      var y1 = 0;
+      var innerRadius = 0;
+      var outerRadius = 0;
       data.forEach(function(d, i) {
-        y1 = y0 + d.value;
+        outerRadius = innerRadius + d.value;
         series[i] = {
           key: d.key,
           value: d.value,
-          y0: y0,
-          y1: y1
+          innerRadius: yScale(innerRadius),
+          outerRadius: yScale(outerRadius)
         };
-        y0 += d.value;
+        innerRadius += (stacked ? d.value : 0);
       });
 
       return series;
     };
+
+    // Arc Generator
+    var arc = d3.arc()
+      .innerRadius(function(d) {
+        return d.innerRadius;
+      })
+      .outerRadius(function(d) {
+        return d.outerRadius;
+      })
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180));
 
     selection.each(function() {
       // Create series group
@@ -41,37 +61,28 @@ export default function() {
 
       var series = seriesSelect.enter()
         .append("g")
-        .classed('series', true)
+        .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      // Add bars to series
-      var bars = series.selectAll(".bar")
+      // Add segments to series
+      var segments = series.selectAll(".segment")
         .data(function(d) { return stacker(d.values); });
 
-      bars.enter()
-        .append("rect")
-        .classed("bar", true)
-        .attr("width", width)
-        .attr("x", 0)
-        .attr("y", height)
-        .attr("rx", 0)
-        .attr("ry", 0)
-        .attr("height", 0)
+      segments.enter()
+        .append("path")
+        .classed("segment", true)
         .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-        .merge(bars)
+        .merge(segments)
         .transition()
         .ease(transition.ease)
         .duration(transition.duration)
-        .attr("width", width)
-        .attr("x", 0)
-        .attr("y", function(d) { return yScale(d.y1); })
-        .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
+        .attr("d", arc);
 
-      bars.exit()
+      segments.exit()
         .transition()
         .style("opacity", 0)
         .remove();
@@ -91,6 +102,24 @@ export default function() {
     return this;
   };
 
+  my.radius = function(_) {
+    if (!arguments.length) return radius;
+    radius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
+    return this;
+  };
+
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
@@ -106,6 +135,12 @@ export default function() {
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
+    return my;
+  };
+
+  my.stacked = function(_) {
+    if (!arguments.length) return stacked;
+    stacked = _;
     return my;
   };
 

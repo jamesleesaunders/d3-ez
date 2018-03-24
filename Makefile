@@ -11,7 +11,8 @@ CSS_FILES :=       css/global.css \
                    css/heatMapTable.css \
                    css/lineChart.css \
                    css/polarAreaChart.css \
-                   css/punchCard.css
+                   css/punchCard.css \
+                   css/roseChart.css
 
 GENERATED_FILES := build/d3-ez.js \
                    build/d3-ez.min.js \

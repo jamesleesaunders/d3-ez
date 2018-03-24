@@ -9,6 +9,7 @@ function randomDataset1() {
       { key: "Apples", value: randomNum() },
       { key: "Oranges", value: randomNum() },
       { key: "Pears", value: randomNum() },
+      { key: "Bananas", value: randomNum() },
       { key: "Kiwis", value: randomNum() }
     ]
   };

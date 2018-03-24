@@ -6,12 +6,14 @@ import * as d3 from "d3";
  */
 export default function() {
   // Default Options (Configurable via setters)
-  var width = 400;
+  var width = 300;
   var height = 300;
-  var radialScale;
   var radius;
+  var startAngle = 0;
+  var endAngle = 360;
   var capitalizeLabels = false;
   var textAnchor = "centre";
+  var radialScale;
 
   function my(selection) {
     selection.each(function(data) {
@@ -19,7 +21,6 @@ export default function() {
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
-      var id = 'jim';
       var radData = radialScale.domain();
 
       var labelsSelect = selection.selectAll('.radialLabels')
@@ -37,19 +38,17 @@ export default function() {
         .append("def")
         .append("path")
         .attr("id", function(d, i) {
-          return "radialLabelPath" + id + "-" + i;
+          return "radialLabelPath" + "-" + i;
         })
         .attr("d", function(d, i) {
           var r = radialScale(d);
           var arc = d3.arc().outerRadius(r).innerRadius(r);
-          var startAngle = 0, endAngle = 358;
           var pathConf = {
             startAngle: (startAngle * Math.PI) / 180,
-            endAngle:   (endAngle * Math.PI) / 180
+            endAngle: (endAngle * Math.PI) / 180
           };
           var pathStr = arc(pathConf).split(/[A-Z]/);
           return "M" + pathStr[1] + "A" + pathStr[2];
-          // return "A0 " + -r + " A" + r + " " + r + " 0 1,1 -0.01 0";
         });
 
       var textSelect = labels.selectAll("text")
@@ -62,7 +61,7 @@ export default function() {
         .attr("dx", 5)
         .append("textPath")
         .attr("xlink:href", function(d, i) {
-          return "#radialLabelPath" + id + "-" + i;
+          return "#radialLabelPath" + "-" + i;
         })
         .attr("startOffset", "0%")
         .text(function(d) {
@@ -88,6 +87,18 @@ export default function() {
   my.radius = function(_) {
     if (!arguments.length) return radius;
     radius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return this;
   };
 
