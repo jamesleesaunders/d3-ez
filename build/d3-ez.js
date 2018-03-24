@@ -790,12 +790,14 @@ function componentBarsStacked() {
     var stacker = function(data) {
       var series = [];
       var y0 = 0;
+      var y1 = 0;
       data.forEach(function(d, i) {
+        y1 = y0 + d.value;
         series[i] = {
-          name: d.key,
+          key: d.key,
           value: d.value,
           y0: y0,
-          y1: y0 + d.value
+          y1: y1
         };
         y0 += d.value;
       });
@@ -828,7 +830,7 @@ function componentBarsStacked() {
         .attr("rx", 0)
         .attr("ry", 0)
         .attr("height", 0)
-        .attr("fill", function(d) { return colorScale(d.name); })
+        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(bars)
@@ -3080,6 +3082,7 @@ function componentRosePetals() {
   var colorScale;
   var xScale;
   var yScale;
+  var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -3087,11 +3090,32 @@ function componentRosePetals() {
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     endAngle = startAngle + xScale.bandwidth();
 
+    // Stack Generator
+    var stacker = function(data) {
+      var series = [];
+      var innerRadius = 0;
+      var outerRadius = 0;
+      data.forEach(function(d, i) {
+        outerRadius = innerRadius + d.value;
+        series[i] = {
+          key: d.key,
+          value: d.value,
+          innerRadius: yScale(innerRadius),
+          outerRadius: yScale(outerRadius)
+        };
+        innerRadius += (stacked ? d.value : 0);
+      });
+
+      return series;
+    };
+
     // Arc Generator
     var arc = d3.arc()
-      .innerRadius(0)
+      .innerRadius(function(d) {
+        return d.innerRadius;
+      })
       .outerRadius(function(d) {
-        return yScale(d.value);
+        return d.outerRadius;
       })
       .startAngle(startAngle * (Math.PI/180))
       .endAngle(endAngle * (Math.PI/180));
@@ -3110,7 +3134,7 @@ function componentRosePetals() {
 
       // Add segments to series
       var segments = series.selectAll(".segment")
-        .data(function(d) { return d.values; });
+        .data(function(d) { return stacker(d.values); });
 
       segments.enter()
         .append("path")
@@ -3177,6 +3201,12 @@ function componentRosePetals() {
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
+    return my;
+  };
+
+  my.stacked = function(_) {
+    if (!arguments.length) return stacked;
+    stacked = _;
     return my;
   };
 
@@ -5961,9 +5991,9 @@ function chartPunchCard() {
 }
 
 /**
- * Stacked Bar Chart
+ * Rose Chart (also called: Coxcomb Chart; Circumplex Chart; Nightingale Chart)
  *
- * @see http://datavizproject.com/data-type/stacked-bar-chart/
+ * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 function chartRoseChart() {
   // SVG and Chart containers (Populated by 'my' function)
@@ -6064,7 +6094,7 @@ function chartRoseChart() {
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
-        //.startAngle(-90)
+        .stacked(true)
         .colorScale(colorScale)
         .dispatch(dispatch);
 

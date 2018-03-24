@@ -15,6 +15,7 @@ export default function() {
   var colorScale;
   var xScale;
   var yScale;
+  var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   function my(selection) {
@@ -22,11 +23,32 @@ export default function() {
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     endAngle = startAngle + xScale.bandwidth();
 
+    // Stack Generator
+    var stacker = function(data) {
+      var series = [];
+      var innerRadius = 0;
+      var outerRadius = 0;
+      data.forEach(function(d, i) {
+        outerRadius = innerRadius + d.value;
+        series[i] = {
+          key: d.key,
+          value: d.value,
+          innerRadius: yScale(innerRadius),
+          outerRadius: yScale(outerRadius)
+        };
+        innerRadius += (stacked ? d.value : 0);
+      });
+
+      return series;
+    };
+
     // Arc Generator
     var arc = d3.arc()
-      .innerRadius(0)
+      .innerRadius(function(d) {
+        return d.innerRadius;
+      })
       .outerRadius(function(d) {
-        return yScale(d.value);
+        return d.outerRadius;
       })
       .startAngle(startAngle * (Math.PI/180))
       .endAngle(endAngle * (Math.PI/180));
@@ -45,7 +67,7 @@ export default function() {
 
       // Add segments to series
       var segments = series.selectAll(".segment")
-        .data(function(d) { return d.values; });
+        .data(function(d) { return stacker(d.values); });
 
       segments.enter()
         .append("path")
@@ -112,6 +134,12 @@ export default function() {
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
+    return my;
+  };
+
+  my.stacked = function(_) {
+    if (!arguments.length) return stacked;
+    stacked = _;
     return my;
   };
 

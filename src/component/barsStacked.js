@@ -19,12 +19,14 @@ export default function() {
     var stacker = function(data) {
       var series = [];
       var y0 = 0;
+      var y1 = 0;
       data.forEach(function(d, i) {
+        y1 = y0 + d.value;
         series[i] = {
-          name: d.key,
+          key: d.key,
           value: d.value,
           y0: y0,
-          y1: y0 + d.value
+          y1: y1
         };
         y0 += d.value;
       });
@@ -57,7 +59,7 @@ export default function() {
         .attr("rx", 0)
         .attr("ry", 0)
         .attr("height", 0)
-        .attr("fill", function(d) { return colorScale(d.name); })
+        .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
         .merge(bars)

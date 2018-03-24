@@ -107,7 +107,7 @@ export default function() {
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
-        //.startAngle(-90)
+        .stacked(false)
         .colorScale(colorScale)
         .dispatch(dispatch);
 
