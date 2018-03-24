@@ -103,7 +103,7 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var stackedArcs = component.stackedArcs()
+      var stackedArcs = component.rosePetals()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)

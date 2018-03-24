@@ -3069,7 +3069,7 @@ function componentScatterPlot() {
  * Reusable Stacked Arcs
  *
  */
-function componentStackedArcs() {
+function componentRosePetals() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
@@ -3429,7 +3429,7 @@ var component = {
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
-  stackedArcs: componentStackedArcs,
+  rosePetals: componentRosePetals,
   proportionalAreaCircles: componentProportionalAreaCircles,
   scatterPlot: componentScatterPlot,
   title: componentTitle
@@ -6060,7 +6060,7 @@ function chartRoseChart() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var stackedArcs = component.stackedArcs()
+      var stackedArcs = component.rosePetals()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
