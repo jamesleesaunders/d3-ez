@@ -16,7 +16,7 @@ import { default as componentNumberCard } from "./component/numberCard";
 import { default as componentPolarArea } from "./component/polarArea";
 import { default as componentProportionalAreaCircles } from "./component/proportionalAreaCircles";
 import { default as componentScatterPlot } from "./component/scatterPlot";
-import { default as componentRosePetals } from "./component/rosePetals";
+import { default as componentRoseChartSector } from "./component/roseChartSector";
 import { default as componentLabeledNode } from "./component/labeledNode";
 import { default as componentLegend } from "./component/legend";
 import { default as componentTitle } from "./component/title";
@@ -42,7 +42,7 @@ export default {
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
-  rosePetals: componentRosePetals,
+  roseChartSector: componentRoseChartSector,
   proportionalAreaCircles: componentProportionalAreaCircles,
   scatterPlot: componentScatterPlot,
   title: componentTitle

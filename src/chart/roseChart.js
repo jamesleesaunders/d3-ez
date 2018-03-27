@@ -103,7 +103,7 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var stackedArcs = component.rosePetals()
+      var roseChartSector = component.roseChartSector()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
@@ -118,10 +118,14 @@ export default function() {
       seriesGroup.enter()
         .append("g")
         .classed("seriesGroup", true)
-        .attr("transform", function(d) { return "rotate(" + xScale(d.key) + ")"; })
         .datum(function(d) { return d; })
         .merge(seriesGroup)
-        .call(stackedArcs);
+        .each(function(d) {
+          var startAngle = xScale(d.key);
+          var endAngle = xScale(d.key) + xScale.bandwidth();
+          roseChartSector.startAngle(startAngle).endAngle(endAngle);
+          d3.select(this).call(roseChartSector);
+        });
 
       seriesGroup.exit()
         .remove();

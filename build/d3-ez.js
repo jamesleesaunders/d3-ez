@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.2";
+var version = "3.2.3";
 
 /**
  * Base Functions - Data Parse
@@ -3074,10 +3074,10 @@ function componentScatterPlot() {
 }
 
 /**
- * Reusable Stacked Arcs
+ * Reusable Rose Chart Sector
  *
  */
-function componentRosePetals() {
+function componentRoseChartSector() {
   // Default Options (Configurable via setters)
   var width = 300;
   var height = 300;
@@ -3094,7 +3094,6 @@ function componentRosePetals() {
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    endAngle = startAngle + xScale.bandwidth();
 
     // Stack Generator
     var stacker = function(data) {
@@ -3466,7 +3465,7 @@ var component = {
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
-  rosePetals: componentRosePetals,
+  roseChartSector: componentRoseChartSector,
   proportionalAreaCircles: componentProportionalAreaCircles,
   scatterPlot: componentScatterPlot,
   title: componentTitle
@@ -6097,7 +6096,7 @@ function chartRoseChart() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var stackedArcs = component.rosePetals()
+      var roseChartSector = component.roseChartSector()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
@@ -6112,10 +6111,14 @@ function chartRoseChart() {
       seriesGroup.enter()
         .append("g")
         .classed("seriesGroup", true)
-        .attr("transform", function(d) { return "rotate(" + xScale(d.key) + ")"; })
         .datum(function(d) { return d; })
         .merge(seriesGroup)
-        .call(stackedArcs);
+        .each(function(d) {
+          var startAngle = xScale(d.key);
+          var endAngle = xScale(d.key) + xScale.bandwidth();
+          roseChartSector.startAngle(startAngle).endAngle(endAngle);
+          d3.select(this).call(roseChartSector);
+        });
 
       seriesGroup.exit()
         .remove();

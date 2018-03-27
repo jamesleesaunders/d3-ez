@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Stacked Arcs
+ * Reusable Rose Chart Sector
  *
  */
 export default function() {
@@ -21,7 +21,6 @@ export default function() {
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    endAngle = startAngle + xScale.bandwidth();
 
     // Stack Generator
     var stacker = function(data) {
