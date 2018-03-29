@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.3";
+var version = "3.2.4";
 
 /**
  * Base Functions - Data Parse
@@ -839,8 +839,8 @@ function componentBarsStacked() {
         .duration(transition.duration)
         .attr("width", width)
         .attr("x", 0)
-        .attr("y", function(d) { return yScale(d.y1); })
-        .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
+        .attr("y", function(d) { return height - yScale(d.y1) ; })
+        .attr("height", function(d) { return yScale(d.value); });
 
       bars.exit()
         .transition()
@@ -942,8 +942,8 @@ function componentBarsVertical() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("x", function(d) { return xScale(d.key); })
-        .attr("y", function(d) { return yScale(d.value); })
-        .attr("height", function(d) { return height - yScale(d.value); });
+        .attr("y", function(d) { return height - yScale(d.value); })
+        .attr("height", function(d) { return yScale(d.value); });
 
       bars.exit()
         .transition()
@@ -3752,7 +3752,7 @@ function chartBarChartClustered() {
       .padding(0.1);
 
     yScale = d3.scaleLinear()
-      .range([chartH, 0])
+      .range([0, chartH])
       .domain([0, maxValue]);
 
     xScale2 = d3.scaleBand()
@@ -3961,7 +3961,7 @@ function chartBarChartStacked() {
       .padding(0.1);
 
     yScale = d3.scaleLinear()
-      .range([chartH, 0])
+      .range([0, chartH])
       .domain([0, groupTotalsMax]);
 
     xScale2 = d3.scaleBand()
@@ -4164,7 +4164,7 @@ function chartBarChartVertical() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([chartH, 0]);
+      .range([0, chartH]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -6098,7 +6098,6 @@ function chartRoseChart() {
 
       var roseChartSector = component.roseChartSector()
         .radius(radius)
-        .xScale(xScale)
         .yScale(yScale)
         .stacked(false)
         .colorScale(colorScale)

@@ -71,7 +71,7 @@ export default function() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([chartH, 0]);
+      .range([0, chartH]);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);

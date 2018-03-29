@@ -72,7 +72,7 @@ export default function() {
       .padding(0.1);
 
     yScale = d3.scaleLinear()
-      .range([chartH, 0])
+      .range([0, chartH])
       .domain([0, groupTotalsMax]);
 
     xScale2 = d3.scaleBand()

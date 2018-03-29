@@ -68,8 +68,8 @@ export default function() {
         .duration(transition.duration)
         .attr("width", width)
         .attr("x", 0)
-        .attr("y", function(d) { return yScale(d.y1); })
-        .attr("height", function(d) { return yScale(d.y0) - yScale(d.y1); });
+        .attr("y", function(d) { return height - yScale(d.y1) ; })
+        .attr("height", function(d) { return yScale(d.value); });
 
       bars.exit()
         .transition()

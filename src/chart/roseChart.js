@@ -105,7 +105,6 @@ export default function() {
 
       var roseChartSector = component.roseChartSector()
         .radius(radius)
-        .xScale(xScale)
         .yScale(yScale)
         .stacked(false)
         .colorScale(colorScale)
