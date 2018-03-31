@@ -1,40 +1,77 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Stacked Bar Chart Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 100;
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colorScale;
+  var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var colorScale;
 
+  /**
+   * Stack Generator
+   */
+  var stacker = function(data) {
+    var series = [];
+    var y0 = 0;
+    var y1 = 0;
+    data.forEach(function(d, i) {
+      y1 = y0 + d.value;
+      series[i] = {
+        key: d.key,
+        value: d.value,
+        y0: y0,
+        y1: y1
+      };
+      y0 += d.value;
+    });
+
+    return series;
+  };
+
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var maxValue = slicedData.categoryTotal;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === 'undefined') ?
+      d3.scaleLinear().domain([0, maxValue]).range([0, height]) :
+      yScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === 'undefined') ?
+      d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) :
+      xScale;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      colorScale;
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
-    // Stack Generator
-    var stacker = function(data) {
-      var series = [];
-      var y0 = 0;
-      var y1 = 0;
-      data.forEach(function(d, i) {
-        y1 = y0 + d.value;
-        series[i] = {
-          key: d.key,
-          value: d.value,
-          y0: y0,
-          y1: y1
-        };
-        y0 += d.value;
-      });
+    selection.each(function(data) {
+      init(data);
 
-      return series;
-    };
-
-    selection.each(function() {
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -68,7 +105,7 @@ export default function() {
         .duration(transition.duration)
         .attr("width", width)
         .attr("x", 0)
-        .attr("y", function(d) { return height - yScale(d.y1) ; })
+        .attr("y", function(d) { return height - yScale(d.y1); })
         .attr("height", function(d) { return yScale(d.value); });
 
       bars.exit()
@@ -78,7 +115,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

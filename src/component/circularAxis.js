@@ -1,20 +1,39 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Circular Axis Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 300;
   var height = 300;
+  var transition = { ease: d3.easeBounce, duration: 500 };
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var radius = 150;
   var radialScale;
   var ringScale;
-  var transition = { ease: d3.easeBounce, duration: 500 };
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    /* TODO */
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
+          init(data);
+
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
@@ -130,7 +149,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;

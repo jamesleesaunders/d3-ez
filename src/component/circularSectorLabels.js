@@ -1,11 +1,17 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Circular Labels Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 400;
   var height = 300;
   var radius;
@@ -15,8 +21,20 @@ export default function() {
   var textAnchor = "centre";
   var radialScale;
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    /* TODO */
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
+      init(data);
+
       var defaultRadius = Math.min(width, height) / 2;
       radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
@@ -105,7 +123,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.height = function(_) {
     if (!arguments.length) return height;
     height = _;

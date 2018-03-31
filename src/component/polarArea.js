@@ -1,22 +1,39 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Polar Area Chart Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 300;
   var height = 300;
   var radius = 150;
   var startAngle = 0;
   var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
+  var colors = palette.categorical(3);
   var colorScale;
   var xScale;
   var yScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    /* TODO */
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
@@ -39,7 +56,9 @@ export default function() {
       .innerRadius(0)
       .cornerRadius(2);
 
-    selection.each(function() {
+    selection.each(function(data) {
+      init(data);
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -74,7 +93,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

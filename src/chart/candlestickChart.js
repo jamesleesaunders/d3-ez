@@ -5,43 +5,46 @@ import { default as component } from "../component";
 
 /**
  * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
- *
  * @see http://datavizproject.com/data-type/candlestick-chart/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "candlestickChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = ["green", "red"];
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var yScale;
   var xAxis;
   var yAxis;
   var colorScale;
 
-  // Data Variables
-  var maxValue;
-  var categoryNames;
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  // Other Customisation Options
+  /**
+   * Other Customisation Options
+   */
   var yAxisLabel;
 
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
@@ -93,6 +96,9 @@ export default function() {
     yAxis = d3.axisLeft(yScale);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -182,7 +188,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

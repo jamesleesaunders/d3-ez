@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
 import { default as componentLabeledNode } from "./labeledNode";
 
 /**
@@ -6,18 +8,34 @@ import { default as componentLabeledNode } from "./labeledNode";
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 400;
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colorScale;
+  var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var xScale;
   var yScale;
+  var colorScale;
   var sizeScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    /* TODO */
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
+      init(data);
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -84,7 +102,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

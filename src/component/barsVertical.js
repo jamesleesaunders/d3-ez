@@ -1,21 +1,56 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Vertical Bar Chart Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 400;
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colorScale;
+  var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  var colorScale;
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var maxValue = slicedData.maxValue;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === 'undefined') ?
+      d3.scaleLinear().domain([0, maxValue]).range([0, height]) :
+      yScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === 'undefined') ?
+      d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) :
+      xScale;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      colorScale;
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
+      init(data);
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -58,7 +93,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

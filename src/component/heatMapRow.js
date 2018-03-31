@@ -1,19 +1,36 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Heat Map Table Row Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 400;
   var height = 100;
   var transition = { ease: d3.easeBounce, duration: 500 };
+  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
   var colorScale;
   var xScale;
   var yScale;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    /* TODO */
+  }
+
+  /**
+   * Constructor
+   */
   function my(selection) {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
@@ -67,7 +84,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

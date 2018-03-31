@@ -1,47 +1,55 @@
-var ez = require("../");
+var d3ez = require("../");
 var tape = require("tape");
 var jsdom = require("jsdom");
 var d3 = require("d3");
 
-tape("Return d3-ez author and license", function(test) {
-  test.equal(ez.ez.author, "James Saunders", "Returns author");
-  test.equal(ez.ez.license, "GPL-3.0", "Returns license");
+tape('setup', function (t) {
+  var JSDOM = jsdom.JSDOM;
+  global.document = new JSDOM().window.document;
+  global.fs = require("fs");
 
-  test.end();
+  t.end();
 });
 
-tape("Test title component", function(test) {
-  var title = ez.ez.component.title().mainText("Foo").subText("Bar");
-  test.equal(title.mainText(), "Foo", "Returns main title");
-  test.equal(title.subText(), "Bar", "Returns sub-title");
+tape("Return d3-ez author and license", function(t) {
+  t.equal(d3ez.ez.author, "James Saunders", "Returns author");
+  t.equal(d3ez.ez.license, "GPL-3.0", "Returns license");
 
-  test.end();
+  t.end();
 });
 
-tape("Test legend component", function(test) {
-  var legend = ez.ez.component.legend().title("Foo Bar");
-  test.equal(legend.title(), "Foo Bar", "Returns legend title");
+tape("Test title module", function(t) {
+  var title = d3ez.ez.component.title().mainText("Foo").subText("Bar");
+  t.equal(title.mainText(), "Foo", "Returns main title");
+  t.equal(title.subText(), "Bar", "Returns sub-title");
 
-  test.end();
+  t.end();
 });
 
-tape("Test palette module", function(test) {
-  var palette1 = ez.ez.palette.categorical(1);
+tape("Test legend module", function(t) {
+  var legend = d3ez.ez.component.legend().title("Foo Bar");
+  t.equal(legend.title(), "Foo Bar", "Returns legend title");
+
+  t.end();
+});
+
+tape("Test palette module", function(t) {
+  var palette1 = d3ez.ez.palette.categorical(1);
   var expected1 = ['#5da5da', '#faa43a', '#60bd68', '#f17cb0', '#b2912f', '#b276b2', '#decf3f', '#f15854', '#4d4d4d'];
-  test.deepEqual(palette1, expected1, "Catrgorical palette");
+  t.deepEqual(palette1, expected1, "Catrgorical palette");
 
-  var palette2 = ez.ez.palette.sequential("#5da5da", 6);
+  var palette2 = d3ez.ez.palette.sequential("#5da5da", 6);
   var expected2 = ['#417499', '#4c87b3', '#579bcd', '#63afe7', '#6ec3ff', '#79d7ff'];
-  test.deepEqual(palette2, expected2, "Sequencial palette");
+  t.deepEqual(palette2, expected2, "Sequencial palette");
 
-  var palette3 = ez.ez.palette.lumShift(['#5da5da', '#faa43a'], 1);
+  var palette3 = d3ez.ez.palette.lumShift(['#5da5da', '#faa43a'], 1);
   var expected3 = ['#baffff', '#ffff74'];
-  test.deepEqual(palette3, expected3, "Lumshift palette");
+  t.deepEqual(palette3, expected3, "Lumshift palette");
 
-  test.end();
+  t.end();
 });
 
-tape("Test dataParse module", function(test) {
+tape("Test dataParse module", function(t) {
   var data = {
     key: "Fruit",
     values: [
@@ -51,7 +59,7 @@ tape("Test dataParse module", function(test) {
       { key: "Bananas", value: 7 }
 		]
   };
-  var result = ez.ez.dataParse(data);
+  var result = d3ez.ez.dataParse(data);
   var expected = {
     levels: 1,
     groupName: 'Fruit',
@@ -67,24 +75,29 @@ tape("Test dataParse module", function(test) {
     maxDecimalPlace: 0,
     thresholds: ['4', '5', '6', '8']
   };
-  test.deepEqual(result, expected, "Parses data analysis");
+  t.deepEqual(result, expected, "Parses data analysis");
 
-  test.end();
+  t.end();
 });
 
-tape("Test jsdom", function(test) {
-  var html = "<html><body><div id='chartholder'></div></body></html>";
-  var JSDOM = jsdom.JSDOM;
-  global.document = new JSDOM(html).window.document;
+tape("Test jsdom", function(t) {
+  var chartHolder = d3.select(document.createElement('div'));
+  var dot = chartHolder
+    .append('svg')
+    .append('circle')
+    .attr('cx', 5)
+    .attr('cy', 10);
 
-  var chartholder = d3.select("#chartholder")
-    .append("svg");
-  var dot = chartholder.append("circle")
-    .attr("cx", 5)
-    .attr("cy", 10);
+  t.equal(dot.attr('cx'), '5', "Test cx");
+  t.equal(dot.attr('cy'), '10', "Test cy");
 
-  test.equal(+dot.attr("cx"), 5, "Test cx");
-  test.equal(+dot.attr("cy"), 10, "Test cy");
+  var result = chartHolder.html();
+  //var expected = '<svg><circle cx="5" cy="10"></circle></svg>';
 
-  test.end();
+  var expected = fs.readFileSync("./test/svg/test.svg")
+    .toString('utf-8')
+    .replace(/[\n\r]+/g, '');
+  t.equal(result, expected, "Test svg");
+
+  t.end();
 });

@@ -5,27 +5,32 @@ import { default as component } from "../component";
 
 /**
  * Bubble Chart
- *
-  @see http://datavizproject.com/data-type/bubble-chart/
+ * @see http://datavizproject.com/data-type/bubble-chart/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "bubbleChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 40, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var yScale;
   var sizeScale;
@@ -33,20 +38,16 @@ export default function() {
   var yAxis;
   var colorScale;
 
-  // Data Variables
-  var xDomain;
-  var yDomain;
-  var sizeDomain;
-  var categoryNames;
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  // Misc Options
+  /**
+   * Other Customisation Options
+   */
   var minRadius = 3;
   var maxRadius = 20;
   var yAxisLabel;
 
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
@@ -66,10 +67,10 @@ export default function() {
       return d3.extent([].concat.apply([], serExts));
     }
 
-    xDomain = extents('x');
-    yDomain = extents('y');
-    sizeDomain = extents('value');
-    categoryNames = data.map(function(d) {
+    var xDomain = extents('x');
+    var yDomain = extents('y');
+    var sizeDomain = extents('value');
+    var categoryNames = data.map(function(d) {
       return d.key;
     });
 
@@ -102,6 +103,9 @@ export default function() {
     yAxis = d3.axisLeft(yScale);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -174,7 +178,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

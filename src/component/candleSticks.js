@@ -1,35 +1,51 @@
 import * as d3 from "d3";
+import { default as palette } from "../palette";
+import { default as dataParse } from "../dataParse";
+
 
 /**
  * Reusable Candle Stick Component
  *
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var width = 400;
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colorScale = d3.scaleOrdinal().range(["green", "red"]).domain([true, false]);
+  var colors = ["green", "red"];
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var xScale;
   var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  // Other Customisation Options
+  var colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
   var candleWidth = 3;
 
-  // Functions
+  /**
+   * Is Up Day
+   */
   var isUpDay = function(d) {
     return d.close > d.open;
   };
 
+  /**
+   * Is Down Day
+   */
   var isDownDay = function(d) {
     return !isUpDay(d);
   };
 
+  /**
+   * Line Function
+   */
   var line = d3.line()
     .x(function(d) { return d.x; })
     .y(function(d) { return d.y; });
 
+  /**
+   * High Low Lines
+   */
   var highLowLines = function(bars) {
     var paths = bars.selectAll('.high-low-line')
       .data(function(d) { return [d]; });
@@ -45,6 +61,9 @@ export default function() {
       });
   };
 
+  /**
+   * Open Close Bars
+   */
   var openCloseBars = function(bars) {
     var rect = bars.selectAll('.open-close-bar')
       .data(function(d) { return [d]; });
@@ -66,6 +85,9 @@ export default function() {
       });
   };
 
+  /**
+   * Open Close Ticks
+   */
   var openCloseTicks = function(bars) {
     var open = bars.selectAll('.open-tick')
       .data(function(d) { return [d]; });
@@ -94,8 +116,20 @@ export default function() {
       });
   };
 
+  /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    /* TODO */
+  }
+
+  /**
+   * Constructor
+   */
   var my = function(selection) {
-    selection.each(function() {
+    selection.each(function(data) {
+      init(data);
+
       // Create series group
       var seriesSelect = d3.select(this).selectAll('.series')
         .data(function(d) { return [d]; });
@@ -128,7 +162,9 @@ export default function() {
     });
   };
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

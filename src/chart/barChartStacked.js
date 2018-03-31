@@ -5,27 +5,32 @@ import { default as component } from "../component";
 
 /**
  * Stacked Bar Chart
- *
  * @see http://datavizproject.com/data-type/stacked-bar-chart/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "barChartStacked";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var xScale2;
   var yScale;
@@ -33,28 +38,24 @@ export default function() {
   var yAxis;
   var colorScale;
 
-  // Data Variables
-  var groupNames;
-  var groupTotalsMax;
-  var maxValue;
-  var categoryNames;
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  // Other Customisation Options
+  /**
+   * Other Customisation Options
+   */
   var yAxisLabel = null;
 
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    groupNames = slicedData.groupNames;
-    groupTotalsMax = slicedData.groupTotalsMax;
-    maxValue = slicedData.maxValue;
-    categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
+    var groupTotalsMax = slicedData.groupTotalsMax;
+    var maxValue = slicedData.maxValue;
+    var categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -85,9 +86,11 @@ export default function() {
     yAxis = d3.axisLeft(yScale);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
-      // Initialise Data
       init(data);
 
       // Create SVG and Chart containers (if they do not already exist)
@@ -157,7 +160,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

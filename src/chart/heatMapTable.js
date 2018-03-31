@@ -5,53 +5,56 @@ import { default as component } from "../component";
 
 /**
  * Heat Map (also called: Heat Table; Density Table; Heat Map)
- *
  * @see http://datavizproject.com/data-type/heat-map/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "heatMapTable";
   var width = 400;
   var height = 300;
   var margin = { top: 45, right: 20, bottom: 20, left: 45 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var yScale;
   var colorScale;
   var xAxis;
   var yAxis;
 
-  // Data Variables
-  var groupNames = [];
-  var categoryNames = [];
-  var minValue = 0;
-  var maxValue = 0;
-  var thresholds = undefined;
+  /**
+   * Other Customisation Options
+   */
+  var thresholds;
 
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    maxValue = slicedData.maxValue;
-    minValue = slicedData.minValue;
-    categoryNames = slicedData.categoryNames;
-    groupNames = slicedData.groupNames;
+    var maxValue = slicedData.maxValue;
+    var minValue = slicedData.minValue;
+    var categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
@@ -84,6 +87,9 @@ export default function() {
     yAxis = d3.axisLeft(yScale);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -153,7 +159,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

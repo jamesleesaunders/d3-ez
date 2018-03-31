@@ -5,47 +5,48 @@ import { default as component } from "../component";
 
 /**
  * Circular Heat Map (also called: Radial Heat Map)
- *
  * @see http://datavizproject.com/data-type/radial-heatmap/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "heatMapRadial";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
   var radius;
   var innerRadius;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var yScale;
   var colorScale;
 
-  // Data Variables
-  var categoryNames = [];
-  var groupNames = [];
-  var minValue = 0;
-  var maxValue = 0;
-  var thresholds;
-
-  // Other Customisation Options
+  /**
+   * Other Customisation Options
+   */
   var startAngle = 0;
   var endAngle = 270;
+  var thresholds;
 
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
@@ -56,10 +57,10 @@ export default function() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    maxValue = slicedData.maxValue;
-    minValue = slicedData.minValue;
-    categoryNames = slicedData.categoryNames;
-    groupNames = slicedData.groupNames;
+    var maxValue = slicedData.maxValue;
+    var minValue = slicedData.minValue;
+    var categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
@@ -88,6 +89,9 @@ export default function() {
       .padding(0.1);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -163,7 +167,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

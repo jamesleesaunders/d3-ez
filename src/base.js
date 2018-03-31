@@ -5,15 +5,14 @@ import { default as componentTitle } from "./component/title";
 /**
  * Chart Base
  *
- * @example
- * @todo
  */
 export default function() {
-  // SVG and Canvas containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var canvas;
-
-  // Default Options (Configurable via setters)
   var width = 600;
   var height = 400;
   var margin = { top: 15, right: 15, bottom: 15, left: 15 };
@@ -29,12 +28,13 @@ export default function() {
   var description = "";
   var yAxisLabel = "";
 
-  // Colours
   var colorScale = undefined;
 
-  // Dispatch (custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
+  /**
+   * Initialise Data and Scales
+   */
   function init(data) {
     canvasW = width - (margin.left + margin.right);
     canvasH = height - (margin.top + margin.bottom);
@@ -60,6 +60,9 @@ export default function() {
     creditTag.text("d3-ez.net").href("http://d3-ez.net");
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       init(data);
@@ -119,7 +122,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

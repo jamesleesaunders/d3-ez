@@ -5,40 +5,40 @@ import { default as component } from "../component";
 
 /**
  * Rose Chart (also called: Coxcomb Chart; Circumplex Chart; Nightingale Chart)
- *
  * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "roseChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
   var radius;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var yScale;
   var colorScale;
 
-  // Data Variables
-  var groupNames;
-  var maxValue;
-  var categoryNames;
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
@@ -48,9 +48,9 @@ export default function() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    groupNames = slicedData.groupNames;
-    maxValue = slicedData.maxValue;
-    categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
+    var maxValue = slicedData.maxValue;
+    var categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -71,6 +71,9 @@ export default function() {
       .domain([0, maxValue]);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -142,7 +145,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

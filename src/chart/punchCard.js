@@ -5,27 +5,32 @@ import { default as component } from "../component";
 
 /**
  * Punch Card
- *
  * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "punchCard";
   var width = 400;
   var height = 300;
   var margin = { top: 45, right: 20, bottom: 20, left: 45 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var sizeScale;
   var xScale;
   var yScale;
@@ -33,30 +38,26 @@ export default function() {
   var yAxis;
   var colorScale;
 
-  // Data Variables
-  var maxValue;
-  var minValue;
-  var categoryNames;
-  var groupNames;
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  // Misc Options
+  /**
+   * Other Customisation Options
+   */
   var minRadius = 2;
   var maxRadius = 20;
   var useGlobalScale = true;
 
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    maxValue = slicedData.maxValue;
-    minValue = slicedData.minValue;
-    categoryNames = slicedData.categoryNames;
-    groupNames = slicedData.groupNames;
+    var maxValue = slicedData.maxValue;
+    var minValue = slicedData.minValue;
+    var categoryNames = slicedData.categoryNames;
+    var groupNames = slicedData.groupNames;
 
     var valDomain = [minValue, maxValue];
     var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
@@ -93,6 +94,9 @@ export default function() {
       .range([minRadius, maxRadius]);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -163,7 +167,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

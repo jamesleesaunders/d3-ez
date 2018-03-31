@@ -5,37 +5,39 @@ import { default as component } from "../component";
 
 /**
  * Donut Chart (also called: Doughnut Chart; Pie Chart)
- *
  * @see http://datavizproject.com/data-type/donut-chart/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "donutChart";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeCubic, duration: 750 };
   var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
   var radius;
   var innerRadius;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var colorScale;
 
-  // Data Variables
-  var categoryNames = [];
-
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
@@ -46,7 +48,7 @@ export default function() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    categoryNames = slicedData.categoryNames;
+    var categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -58,6 +60,9 @@ export default function() {
     }
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -102,7 +107,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

@@ -5,44 +5,47 @@ import { default as component } from "../component";
 
 /**
  * Circular Bar Chart (also called: Progress Chart)
- *
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
 export default function() {
-  // SVG and Chart containers (Populated by 'my' function)
+
+  /**
+   * Default Properties
+   */
   var svg;
   var chart;
-
-  // Default Options (Configurable via setters)
   var classed = "barChartCircular";
   var width = 400;
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 40 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
+  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  // Chart Dimensions
+  /**
+   * Chart Dimensions
+   */
   var chartW;
   var chartH;
   var radius;
   var innerRadius;
 
-  // Scales and Axis
+  /**
+   * Scales and Axis
+   */
   var xScale;
   var yScale;
   var colorScale;
 
-  // Data Variables
-  var maxValue;
-  var categoryNames;
-
-  // Other Customisation Options
+  /**
+   * Other Customisation Options
+   */
   var startAngle = 0;
   var endAngle = 270;
 
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
+  /**
+   * Initialise Data, Scales and Series
+   */
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
@@ -53,13 +56,12 @@ export default function() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    categoryNames = slicedData.categoryNames;
-    maxValue = slicedData.maxValue;
+    var categoryNames = slicedData.categoryNames;
+    var maxValue = slicedData.maxValue;
 
     // Colour Scale
     if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
+      // If the colorScale has not been passed then attempt to calculate.
       colorScale = d3.scaleOrdinal()
         .range(colors)
         .domain(categoryNames);
@@ -68,7 +70,7 @@ export default function() {
     // X & Y Scales
     xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([radius, innerRadius])
+      .rangeRound([innerRadius, radius])
       .padding(0.15);
 
     yScale = d3.scaleLinear()
@@ -76,9 +78,11 @@ export default function() {
       .range([startAngle, endAngle]);
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
-      // Initialise Data
       init(data);
 
       // Create SVG element (if it does not exist already)
@@ -133,9 +137,10 @@ export default function() {
 
       // Radial Bar Chart
       var barsCircular = component.barsCircular()
-        .radius(function(d) { return xScale(d.key) })
-        .innerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
+        .radius(radius)
+        .innerRadius(innerRadius)
         .yScale(yScale)
+        .xScale(xScale)
         .colorScale(colorScale)
         .dispatch(dispatch);
 
@@ -154,7 +159,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
