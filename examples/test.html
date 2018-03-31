@@ -222,7 +222,7 @@
 
     var yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, 180]);
+      .range([0, 200]);
 
     var xScale = d3.scaleBand()
       .domain(categoryNames)
@@ -233,7 +233,7 @@
       .range(colors)
       .domain(categoryNames);
 
-    var myChart = d3.ez.component.barsCircular()
+    var myChart = d3.ez.component.roseChartSector()
       .width(width)
       .height(height)
       .yScale(yScale)

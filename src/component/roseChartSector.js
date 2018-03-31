@@ -29,7 +29,32 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    var slicedData = dataParse(data);
+    var maxValue = slicedData.maxValue;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === 'undefined') ?
+      d3.scaleLinear().domain([0, maxValue]).range([0, radius]) :
+      yScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === 'undefined') ?
+      d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15) :
+      xScale;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      colorScale;
   }
 
   /**

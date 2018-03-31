@@ -658,10 +658,6 @@ function componentBarsCircular() {
   var xScale;
   var yScale;
   var colorScale;
-
-  /**
-   * Other Customisation Options
-   */
   var radius = 150;
   var innerRadius = 20;
   var startAngle = 0;
@@ -3359,6 +3355,38 @@ function componentRoseChartSector() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var maxValue = slicedData.maxValue;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === 'undefined') ?
+      d3.scaleLinear().domain([0, maxValue]).range([0, radius]) :
+      yScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === 'undefined') ?
+      d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15) :
+      xScale;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
@@ -3397,6 +3425,7 @@ function componentRoseChartSector() {
       .endAngle(endAngle * (Math.PI / 180));
 
     selection.each(function(data) {
+      init(data);
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')

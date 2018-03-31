@@ -20,10 +20,6 @@ export default function() {
   var xScale;
   var yScale;
   var colorScale;
-
-  /**
-   * Other Customisation Options
-   */
   var radius = 150;
   var innerRadius = 20;
   var startAngle = 0;
