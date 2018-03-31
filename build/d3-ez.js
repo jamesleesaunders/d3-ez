@@ -3366,10 +3366,6 @@ function componentRoseChartSector() {
       (Math.min(width, height) / 2) :
       radius;
 
-    innerRadius = (typeof innerRadius === 'undefined') ?
-      (radius / 4) :
-      innerRadius;
-
     // If the yScale has not been passed then attempt to calculate.
     yScale = (typeof yScale === 'undefined') ?
       d3.scaleLinear().domain([0, maxValue]).range([0, radius]) :
