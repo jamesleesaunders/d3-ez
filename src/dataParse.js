@@ -80,9 +80,10 @@ export default function(data) {
   };
 
   var categoryNames = (function() {
+
     var ret = [];
     if (1 === levels) {
-      ret = d3.values(data)[1].map(function(d) {
+      ret = d3.values(data.values).map(function(d) {
         return d.key;
       });
 

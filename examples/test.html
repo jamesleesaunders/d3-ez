@@ -205,8 +205,8 @@
       }
     ];
 
-    var width = 300;
-    var height = 300;
+    var width = 250;
+    var height = 250;
     var radius = Math.min(width, height) / 2;
     var innerRadius = radius / 4;
 
@@ -216,17 +216,20 @@
     var maxValue = d3.max(series.values, function(d) {
       return d.value;
     });
-    var categoryNames = d3.values(series)[1].map(function(d) {
+    var categoryNames = d3.values(series.values).map(function(d) {
       return d.key;
     });
+
+    var slicedData = d3.ez.dataParse(data);
+    var groupNames = slicedData.groupNames;
 
     var yScale = d3.scaleLinear()
       .domain([0, maxValue])
       .range([0, radius]);
 
     var xScale = d3.scaleBand()
-      .domain(categoryNames)
-      .rangeRound([0, 20])
+      .domain(groupNames)
+      .rangeRound([0, 260])
       .padding(0.15);
 
     var colorScale = d3.scaleOrdinal()
@@ -235,12 +238,10 @@
 
     var myChart = d3.ez.component.roseChartSector()
       .radius(radius)
-      .width(width)
-      .height(height)
-      //.startAngle(15)
-      //.endAngle(60)
+      .startAngle(15)
+      .endAngle(60)
       .yScale(yScale)
-      //.xScale(xScale)
+      .xScale(xScale)
       .colorScale(colorScale);
 
     d3.select("#chartholder")

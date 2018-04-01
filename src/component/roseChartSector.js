@@ -48,22 +48,10 @@ export default function() {
   };
 
   /**
-   * Arc Generator
-   */
-  var arc = d3.arc()
-    .innerRadius(function(d) {
-      return d.innerRadius;
-    })
-    .outerRadius(function(d) {
-      return d.outerRadius;
-    })
-    .startAngle(startAngle * (Math.PI / 180))
-    .endAngle(endAngle * (Math.PI / 180));
-
-  /**
    * Initialise Data and Scales
    */
   function init(data) {
+
     var slicedData = dataParse(data);
     var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.maxValue;
@@ -79,16 +67,14 @@ export default function() {
       yScale;
 
     // If the xScale has not been passed then attempt to calculate.
-    if (typeof xScale === 'undefined') {
-      xScale = d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15);
-    } else {
-      startAngle = d3.min(xScale.range());
-      endAngle = d3.max(xScale.range());
+    if (typeof xScale !== 'undefined') {
+      startAngle = xScale(data.key);
+      endAngle = xScale(data.key) + xScale.bandwidth();
     }
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
-      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
 
@@ -98,6 +84,17 @@ export default function() {
   function my(selection) {
     selection.each(function(data) {
       init(data);
+
+      // Arc Generator
+      var arc = d3.arc()
+        .innerRadius(function(d) {
+          return d.innerRadius;
+        })
+        .outerRadius(function(d) {
+          return d.outerRadius;
+        })
+        .startAngle(startAngle * (Math.PI / 180))
+        .endAngle(endAngle * (Math.PI / 180));
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')

@@ -94,9 +94,10 @@ function dataParse(data) {
   };
 
   var categoryNames = (function() {
+
     var ret = [];
     if (1 === levels) {
-      ret = d3.values(data)[1].map(function(d) {
+      ret = d3.values(data.values).map(function(d) {
         return d.key;
       });
 
@@ -3379,22 +3380,10 @@ function componentRoseChartSector() {
   };
 
   /**
-   * Arc Generator
-   */
-  var arc = d3.arc()
-    .innerRadius(function(d) {
-      return d.innerRadius;
-    })
-    .outerRadius(function(d) {
-      return d.outerRadius;
-    })
-    .startAngle(startAngle * (Math.PI / 180))
-    .endAngle(endAngle * (Math.PI / 180));
-
-  /**
    * Initialise Data and Scales
    */
   function init(data) {
+
     var slicedData = dataParse(data);
     var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.maxValue;
@@ -3410,16 +3399,14 @@ function componentRoseChartSector() {
       yScale;
 
     // If the xScale has not been passed then attempt to calculate.
-    if (typeof xScale === 'undefined') {
-      xScale = d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15);
-    } else {
-      startAngle = d3.min(xScale.range());
-      endAngle = d3.max(xScale.range());
+    if (typeof xScale !== 'undefined') {
+      startAngle = xScale(data.key);
+      endAngle = xScale(data.key) + xScale.bandwidth();
     }
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
-      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
 
@@ -3429,6 +3416,17 @@ function componentRoseChartSector() {
   function my(selection) {
     selection.each(function(data) {
       init(data);
+
+      // Arc Generator
+      var arc = d3.arc()
+        .innerRadius(function(d) {
+          return d.innerRadius;
+        })
+        .outerRadius(function(d) {
+          return d.outerRadius;
+        })
+        .startAngle(startAngle * (Math.PI / 180))
+        .endAngle(endAngle * (Math.PI / 180));
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')
