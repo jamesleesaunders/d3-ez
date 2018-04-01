@@ -225,23 +225,23 @@
 
     var yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, radius]);
+      .range([0, 270]);
 
     var xScale = d3.scaleBand()
-      .domain(groupNames)
-      .rangeRound([0, 260])
+      .domain(categoryNames)
+      .rangeRound([0, radius])
       .padding(0.15);
 
     var colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(categoryNames);
 
-    var myChart = d3.ez.component.roseChartSector()
+    var myChart = d3.ez.component.barsCircular()
       .radius(radius)
       .startAngle(15)
-      .endAngle(60)
+      .endAngle(90)
       .yScale(yScale)
-      .xScale(xScale)
+      //.xScale(xScale)
       .colorScale(colorScale);
 
     d3.select("#chartholder")

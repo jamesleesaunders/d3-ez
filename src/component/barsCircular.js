@@ -81,7 +81,7 @@ export default function() {
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
-      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
 
@@ -151,6 +151,18 @@ export default function() {
   my.innerRadius = function(_) {
     if (!arguments.length) return innerRadius;
     innerRadius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return this;
   };
 

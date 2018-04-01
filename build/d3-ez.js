@@ -720,7 +720,7 @@ function componentBarsCircular() {
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
-      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
 
@@ -790,6 +790,18 @@ function componentBarsCircular() {
   my.innerRadius = function(_) {
     if (!arguments.length) return innerRadius;
     innerRadius = _;
+    return this;
+  };
+
+  my.startAngle = function(_) {
+    if (!arguments.length) return startAngle;
+    startAngle = _;
+    return this;
+  };
+
+  my.endAngle = function(_) {
+    if (!arguments.length) return endAngle;
+    endAngle = _;
     return this;
   };
 
@@ -3398,16 +3410,16 @@ function componentRoseChartSector() {
       d3.scaleLinear().domain([0, maxValue]).range([0, radius]) :
       yScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    if (typeof xScale !== 'undefined') {
-      startAngle = xScale(data.key);
-      endAngle = xScale(data.key) + xScale.bandwidth();
-    }
-
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
       d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
+
+    // If the xScale has been passed then re-calculate the start and end angles.
+    if (typeof xScale !== 'undefined') {
+      startAngle = xScale(data.key);
+      endAngle = xScale(data.key) + xScale.bandwidth();
+    }
   }
 
   /**
