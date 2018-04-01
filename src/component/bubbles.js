@@ -26,7 +26,7 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    /* NOOP */
   }
 
   /**

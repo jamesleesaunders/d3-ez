@@ -25,7 +25,8 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
   }
 
   /**
@@ -34,9 +35,6 @@ export default function() {
   function my(selection) {
     selection.each(function(data) {
       init(data);
-
-      var defaultRadius = Math.min(width, height) / 2;
-      radius = (typeof radius === 'undefined') ? defaultRadius : radius;
 
       var labelsSelect = selection.selectAll('.circularLabels')
         .data(function(d) { return [d]; });

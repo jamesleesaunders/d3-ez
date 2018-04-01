@@ -139,8 +139,8 @@ export default function() {
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
-        .xScale(xScale)
         .yScale(yScale)
+        .xScale(xScale)
         .dispatch(dispatch);
 
       // Create bar group

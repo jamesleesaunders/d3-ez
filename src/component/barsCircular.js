@@ -30,15 +30,9 @@ export default function() {
    */
   var arc = d3.arc()
     .startAngle(0)
-    .endAngle(function(d) {
-      return (yScale(d.value) * Math.PI) / 180;
-    })
-    .outerRadius(function(d) {
-      return xScale(d.key) + xScale.bandwidth();
-    })
-    .innerRadius(function(d) {
-      return (xScale(d.key));
-    })
+    .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
+    .outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
+    .innerRadius(function(d) { return (xScale(d.key)); })
     .cornerRadius(2);
 
   /**

@@ -160,6 +160,7 @@ export default function(data) {
   var maxValue = (function() {
     var ret;
     if (1 === levels) {
+      console.log(data);
       ret = d3.max(data.values, function(d) {
         return d.value;
       });

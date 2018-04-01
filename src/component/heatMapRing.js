@@ -36,11 +36,7 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
-    startAngle = d3.min(xScale.range());
-    endAngle = d3.max(xScale.range());
+
 
     // Pie Generator
     var pie = d3.pie()

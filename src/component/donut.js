@@ -22,48 +22,59 @@ export default function() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Pie Generator
+   */
+  var pie = d3.pie()
+    .value(function(d) { return d.value; })
+    .sort(null)
+    .padAngle(0.015);
+
+  /**
+   * Arc Generator
+   */
+  var arc = d3.arc()
+    .innerRadius(function(d) { return innerRadius; })
+    .outerRadius(function(d) { return radius; })
+    .cornerRadius(2);
+
+  /**
+   * Outer Arc Generator
+   */
+  var outerArc = d3.arc()
+    .innerRadius(function(d) { return radius * 0.9; })
+    .outerRadius(function(d) { return radius * 0.9; });
+
+  /**
+   * Arc Tween
+   */
+  var arcTween = function(d) {
+    var i = d3.interpolate(this._current, d);
+    this._current = i(0);
+    return function(t) {
+      return arc(i(t));
+    };
+  };
+
+  /**
+   * Mid Angle
+   */
+  var midAngle = function(d) {
+    return d.startAngle + (d.endAngle - d.startAngle) / 2;
+  };
+
+  /**
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    var defaultRadius = Math.min(width, height) / 2;
+    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
-
-    // Pie Generator
-    var pie = d3.pie()
-      .value(function(d) { return d.value; })
-      .sort(null)
-      .padAngle(0.015);
-
-    // Arc Generators
-    var arc = d3.arc()
-      .innerRadius(innerRadius)
-      .outerRadius(radius)
-      .cornerRadius(2);
-
-    var outerArc = d3.arc()
-      .innerRadius(radius * 0.9)
-      .outerRadius(radius * 0.9);
-
-    var arcTween = function(d) {
-      var i = d3.interpolate(this._current, d);
-      this._current = i(0);
-      return function(t) {
-        return arc(i(t));
-      };
-    };
-
-    var midAngle = function(d) {
-      return d.startAngle + (d.endAngle - d.startAngle) / 2;
-    };
-
     selection.each(function(data) {
       init(data);
 

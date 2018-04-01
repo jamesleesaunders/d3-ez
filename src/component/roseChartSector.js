@@ -29,18 +29,10 @@ export default function() {
    * Arc Generator
    */
   var arc = d3.arc()
-    .innerRadius(function(d) {
-      return d.innerRadius;
-    })
-    .outerRadius(function(d) {
-      return d.outerRadius;
-    })
-    .startAngle(function(d) {
-      return startAngle * (Math.PI / 180);
-    })
-    .endAngle(function(d) {
-      return endAngle * (Math.PI / 180);
-    });
+    .innerRadius(function(d) { return d.innerRadius; })
+    .outerRadius(function(d) { return d.outerRadius; })
+    .startAngle(function(d) { return startAngle * (Math.PI / 180); })
+    .endAngle(function(d) { return endAngle * (Math.PI / 180); });
 
   /**
    * Stack Generator

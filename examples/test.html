@@ -205,8 +205,8 @@
       }
     ];
 
-    var width = 250;
-    var height = 250;
+    var width = 300;
+    var height = 300;
     var radius = Math.min(width, height) / 2;
     var innerRadius = radius / 4;
 
@@ -216,32 +216,32 @@
     var maxValue = d3.max(series.values, function(d) {
       return d.value;
     });
+    var sumValue = d3.sum(series.values, function(d) {
+      return d.value;
+    });
     var categoryNames = d3.values(series.values).map(function(d) {
       return d.key;
     });
-
     var slicedData = d3.ez.dataParse(data);
     var groupNames = slicedData.groupNames;
 
     var yScale = d3.scaleLinear()
-      .domain([0, maxValue])
-      .range([0, 270]);
+      .domain([0, sumValue])
+      .range([0, height]);
 
     var xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, radius])
+      .rangeRound([0, width])
       .padding(0.15);
 
     var colorScale = d3.scaleOrdinal()
       .range(colors)
       .domain(categoryNames);
 
-    var myChart = d3.ez.component.barsCircular()
-      .radius(radius)
-      .startAngle(15)
-      .endAngle(90)
+    var myChart = d3.ez.component.barsStacked()
+      .width(width)
+      .height(height)
       .yScale(yScale)
-      //.xScale(xScale)
       .colorScale(colorScale);
 
     d3.select("#chartholder")
@@ -250,7 +250,7 @@
       .attr('height', height)
       .classed('barChart', true)
       .append('g')
-      .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+      //.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
       .datum(series)
       .call(myChart);
 

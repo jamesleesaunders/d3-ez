@@ -13,12 +13,12 @@ export default function() {
    * Default Properties
    */
   var width = 100;
-  var height = 400;
+  var height = 300;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
   var yScale;
+  var xScale;
   var colorScale;
 
   /**
@@ -48,21 +48,16 @@ export default function() {
   function init(data) {
     var slicedData = dataParse(data);
     var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.categoryTotal;
+    var categoryTotal = slicedData.categoryTotal;
 
     // If the yScale has not been passed then attempt to calculate.
     yScale = (typeof yScale === 'undefined') ?
-      d3.scaleLinear().domain([0, maxValue]).range([0, height]) :
+      d3.scaleLinear().domain([0, categoryTotal]).range([0, height]) :
       yScale;
-
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = (typeof xScale === 'undefined') ?
-      d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) :
-      xScale;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
-      d3.scaleOrdinal().range(colors).domain(xScale.domain()) :
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
 
@@ -137,15 +132,15 @@ export default function() {
     return my;
   };
 
-  my.xScale = function(_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
-
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
+    return my;
+  };
+
+  my.xScale = function(_) {
+    if (!arguments.length) return xScale;
+    xScale = _;
     return my;
   };
 
