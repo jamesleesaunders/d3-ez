@@ -3358,16 +3358,33 @@ function componentRoseChartSector() {
    */
   var width = 300;
   var height = 300;
+  var transition = { ease: d3.easeBounce, duration: 500 };
   var radius;
   var startAngle = 0;
   var endAngle = 45;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var colorScale;
   var xScale;
   var yScale;
   var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+  /**
+   * Arc Generator
+   */
+  var arc = d3.arc()
+    .innerRadius(function(d) {
+      return d.innerRadius;
+    })
+    .outerRadius(function(d) {
+      return d.outerRadius;
+    })
+    .startAngle(function(d) {
+      return startAngle * (Math.PI / 180);
+    })
+    .endAngle(function(d) {
+      return endAngle * (Math.PI / 180);
+    });
 
   /**
    * Stack Generator
@@ -3395,7 +3412,6 @@ function componentRoseChartSector() {
    * Initialise Data and Scales
    */
   function init(data) {
-
     var slicedData = dataParse(data);
     var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.maxValue;
@@ -3428,17 +3444,6 @@ function componentRoseChartSector() {
   function my(selection) {
     selection.each(function(data) {
       init(data);
-
-      // Arc Generator
-      var arc = d3.arc()
-        .innerRadius(function(d) {
-          return d.innerRadius;
-        })
-        .outerRadius(function(d) {
-          return d.outerRadius;
-        })
-        .startAngle(startAngle * (Math.PI / 180))
-        .endAngle(endAngle * (Math.PI / 180));
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')
