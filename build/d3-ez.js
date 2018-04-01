@@ -868,6 +868,7 @@ function componentBarsStacked() {
    */
   function init(data) {
     var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.categoryTotal;
 
     // If the yScale has not been passed then attempt to calculate.
@@ -1006,6 +1007,7 @@ function componentBarsVertical() {
    */
   function init(data) {
     var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.maxValue;
 
     // If the yScale has not been passed then attempt to calculate.
@@ -3355,10 +3357,46 @@ function componentRoseChartSector() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Stack Generator
+   */
+  var stacker = function(data) {
+    // Calculate inner and outer radius values
+    var series = [];
+    var innerRadius = 0;
+    var outerRadius = 0;
+    data.forEach(function(d, i) {
+      outerRadius = innerRadius + d.value;
+      series[i] = {
+        key: d.key,
+        value: d.value,
+        innerRadius: yScale(innerRadius),
+        outerRadius: yScale(outerRadius)
+      };
+      innerRadius += (stacked ? d.value : 0);
+    });
+
+    return series;
+  };
+
+  /**
+   * Arc Generator
+   */
+  var arc = d3.arc()
+    .innerRadius(function(d) {
+      return d.innerRadius;
+    })
+    .outerRadius(function(d) {
+      return d.outerRadius;
+    })
+    .startAngle(startAngle * (Math.PI / 180))
+    .endAngle(endAngle * (Math.PI / 180));
+
+  /**
    * Initialise Data and Scales
    */
   function init(data) {
     var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
@@ -3372,9 +3410,12 @@ function componentRoseChartSector() {
       yScale;
 
     // If the xScale has not been passed then attempt to calculate.
-    xScale = (typeof xScale === 'undefined') ?
-      d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15) :
-      xScale;
+    if (typeof xScale === 'undefined') {
+      xScale = d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15);
+    } else {
+      startAngle = d3.min(xScale.range());
+      endAngle = d3.max(xScale.range());
+    }
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -3386,40 +3427,6 @@ function componentRoseChartSector() {
    * Constructor
    */
   function my(selection) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-
-    // Stack Generator
-    var stacker = function(data) {
-      // Calculate inner and outer radius values
-      var series = [];
-      var innerRadius = 0;
-      var outerRadius = 0;
-      data.forEach(function(d, i) {
-        outerRadius = innerRadius + d.value;
-        series[i] = {
-          key: d.key,
-          value: d.value,
-          innerRadius: yScale(innerRadius),
-          outerRadius: yScale(outerRadius)
-        };
-        innerRadius += (stacked ? d.value : 0);
-      });
-
-      return series;
-    };
-
-    // Arc Generator
-    var arc = d3.arc()
-      .innerRadius(function(d) {
-        return d.innerRadius;
-      })
-      .outerRadius(function(d) {
-        return d.outerRadius;
-      })
-      .startAngle(startAngle * (Math.PI / 180))
-      .endAngle(endAngle * (Math.PI / 180));
-
     selection.each(function(data) {
       init(data);
 

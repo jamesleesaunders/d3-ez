@@ -222,11 +222,11 @@
 
     var yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, 200]);
+      .range([0, radius]);
 
     var xScale = d3.scaleBand()
       .domain(categoryNames)
-      .rangeRound([0, radius])
+      .rangeRound([0, 20])
       .padding(0.15);
 
     var colorScale = d3.scaleOrdinal()
@@ -234,10 +234,13 @@
       .domain(categoryNames);
 
     var myChart = d3.ez.component.roseChartSector()
+      .radius(radius)
       .width(width)
       .height(height)
+      //.startAngle(15)
+      //.endAngle(60)
       .yScale(yScale)
-      .xScale(xScale)
+      //.xScale(xScale)
       .colorScale(colorScale);
 
     d3.select("#chartholder")

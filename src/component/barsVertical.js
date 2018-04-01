@@ -26,6 +26,7 @@ export default function() {
    */
   function init(data) {
     var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
     var maxValue = slicedData.maxValue;
 
     // If the yScale has not been passed then attempt to calculate.
