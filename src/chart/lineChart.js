@@ -51,8 +51,8 @@ export default function() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    maxValue = slicedData.maxValue;
-    groupNames = slicedData.groupNames;
+    var maxValue = slicedData.maxValue;
+    var groupNames = slicedData.groupNames;
 
     // Convert dates
     data.forEach(function(d, i) {

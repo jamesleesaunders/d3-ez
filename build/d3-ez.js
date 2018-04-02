@@ -173,8 +173,8 @@ function dataParse(data) {
 
   var maxValue = (function() {
     var ret;
+    console.log(data);
     if (1 === levels) {
-      console.log(data);
       ret = d3.max(data.values, function(d) {
         return d.value;
       });
@@ -5769,8 +5769,8 @@ function chartLineChart() {
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
-    maxValue = slicedData.maxValue;
-    groupNames = slicedData.groupNames;
+    var maxValue = slicedData.maxValue;
+    var groupNames = slicedData.groupNames;
 
     // Convert dates
     data.forEach(function(d, i) {
@@ -6101,7 +6101,7 @@ function chartPolarAreaChart() {
         .call(polarArea);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]).nice());
+      var verticalAxis = d3.axisLeft(yScale);
       chart.select(".verticalAxis")
         .attr("transform", "translate(0," + -(chartH / 2) + ")")
         .call(verticalAxis);

@@ -142,7 +142,7 @@ export default function() {
         .call(polarArea);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale.domain([maxValue, 0]).nice());
+      var verticalAxis = d3.axisLeft(yScale);
       chart.select(".verticalAxis")
         .attr("transform", "translate(0," + -(chartH / 2) + ")")
         .call(verticalAxis);
