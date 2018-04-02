@@ -173,7 +173,6 @@ function dataParse(data) {
 
   var maxValue = (function() {
     var ret;
-    console.log(data);
     if (1 === levels) {
       ret = d3.max(data.values, function(d) {
         return d.value;
