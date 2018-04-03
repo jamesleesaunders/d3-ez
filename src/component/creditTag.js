@@ -6,15 +6,15 @@ import * as d3 from "d3";
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var text = "d3-ez.net";
   var href = "http://d3-ez.net";
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     var creditTag = selection.selectAll("#creditTag")
       .data([0])
@@ -34,9 +34,9 @@ export default function() {
     creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.text = function(_) {
     if (!arguments.length) return text;
     text = _;

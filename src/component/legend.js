@@ -6,9 +6,9 @@ import * as d3 from "d3";
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var sizeScale = undefined;
   var sizeLabel = null;
   var colorScale = undefined;
@@ -22,9 +22,9 @@ export default function() {
   var strokewidth = "1px";
   var spacing = 5;
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     height = (height ? height : this.attr("height"));
     width = (width ? width : this.attr("width"));
@@ -128,9 +128,9 @@ export default function() {
     }
   }
 
-	/**
-	 * Helper function to calculate the keys min and max values
-	 */
+  /**
+   * Helper function to calculate the keys min and max values
+   */
   function keyScaleRange(type, position) {
     switch (type) {
       case 'size':
@@ -169,9 +169,9 @@ export default function() {
     return rangeStr;
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.sizeScale = function(_) {
     if (!arguments.length) return sizeScale;
     sizeScale = _;

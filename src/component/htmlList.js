@@ -14,9 +14,9 @@ export default function() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Create HTML List 'ul' element (if it does not exist already)
@@ -76,9 +76,9 @@ export default function() {
     });
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.classed = function(_) {
     if (!arguments.length) return classed;
     classed = _;

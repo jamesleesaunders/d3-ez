@@ -6,17 +6,17 @@ import * as d3 from "d3";
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var mainText = "Title";
   var subText = "Sub Title";
   var height = 40;
   var width = 200;
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.selectAll("#titleGroup")
       .data([0])
@@ -46,9 +46,9 @@ export default function() {
     subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.mainText = function(_) {
     if (!arguments.length) return mainText;
     mainText = _;

@@ -19,9 +19,9 @@ export default function() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Initialise Data
-	 */
+  /**
+   * Initialise Data
+   */
   function init(data) {
     // Cut the data in different ways....
     rowNames = data.map(function(d) {
@@ -36,9 +36,9 @@ export default function() {
     });
   }
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Initialise Data
@@ -109,9 +109,9 @@ export default function() {
     });
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;

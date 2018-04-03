@@ -56,8 +56,8 @@ export default function() {
     });
   }
 
-	/**
-	 * Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
 	 */
   my.color = function(_) {
     if (!arguments.length) return color;

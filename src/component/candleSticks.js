@@ -32,7 +32,7 @@ export default function() {
    * Constructor
    */
   var my = function(selection) {
-    
+
     /**
      * Is Up Day
      */

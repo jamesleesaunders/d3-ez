@@ -73,11 +73,11 @@ export default function() {
     var midAngle = function(d) {
       return d.startAngle + (d.endAngle - d.startAngle) / 2;
     };
-    
+
     selection.each(function(data) {
       init(data);
 
-			// Create series group
+      // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 

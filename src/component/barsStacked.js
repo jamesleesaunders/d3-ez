@@ -43,7 +43,7 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    
+
     /**
      * Stack Generator
      */
