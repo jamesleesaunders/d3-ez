@@ -10,7 +10,7 @@
 
 <body>
   <div id="chartholder"></div>
-  <br/>
+  <br />
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
@@ -38,9 +38,9 @@
             key: monthNames[datetime.getMonth()],
             datetime: datetime,
             values: [{
-                key: 'Zymotic Diseases',
-                value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI
-              },
+              key: 'Zymotic Diseases',
+              value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI
+            },
               {
                 key: 'Other Causes',
                 value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI

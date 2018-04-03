@@ -2,56 +2,57 @@
 <html>
 
 <head>
-	<title>d3-ez : Readme Example</title>
-	<script src="https://d3js.org/d3.v4.min.js"></script>
-	<script src="../build/d3-ez.js"></script>
-	<link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+  <title>d3-ez : Readme Example</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
 </head>
 
 <body>
-	<div id="chartholder"></div>
+  <div id="chartholder"></div>
 
-	<script type="text/javascript">
-		// Generate some data
-		var data = {
-			"key": "Fruit",
-			"values": [{
-					"key": "Apples",
-					"value": 9
-				},
-				{
-					"key": "Oranges",
-					"value": 3
-				},
-				{
-					"key": "Grapes",
-					"value": 5
-				},
-				{
-					"key": "Bananas",
-					"value": 7
-				}
-			]
-		};
+  <script type="text/javascript">
+    // Generate some data
+    var data = {
+      "key": "Fruit",
+      "values": [
+        {
+          "key": "Apples",
+          "value": 9
+        },
+        {
+          "key": "Oranges",
+          "value": 3
+        },
+        {
+          "key": "Grapes",
+          "value": 5
+        },
+        {
+          "key": "Bananas",
+          "value": 7
+        }
+      ]
+    };
 
-		// Configure chart components
-		var chart = d3.ez.chart.barChartVertical().colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
-		var legend = d3.ez.component.legend().title("Fruit Type");
-		var title = d3.ez.component.title().mainText("Super Fruit Survey").subText("Which fruit do you like?");
+    // Configure chart components
+    var chart = d3.ez.chart.barChartVertical().colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
+    var legend = d3.ez.component.legend().title("Fruit Type");
+    var title = d3.ez.component.title().mainText("Super Fruit Survey").subText("Which fruit do you like?");
 
-		// Construct chart base from components
-		var myChart = d3.ez.base()
-			.width(750)
-			.height(400)
-			.chart(chart)
-			.legend(legend)
-			.title(title);
+    // Construct chart base from components
+    var myChart = d3.ez.base()
+      .width(750)
+      .height(400)
+      .chart(chart)
+      .legend(legend)
+      .title(title);
 
-		// Attach data and chart to 'chartholder' element
-		d3.select("#chartholder")
-			.datum(data)
-			.call(myChart);
-	</script>
+    // Attach data and chart to 'chartholder' element
+    d3.select("#chartholder")
+      .datum(data)
+      .call(myChart);
+  </script>
 </body>
 
 </html>
