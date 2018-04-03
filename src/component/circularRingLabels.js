@@ -35,7 +35,6 @@ export default function() {
     selection.each(function(data) {
       init(data);
 
-      // Unique id so that the text path defs are unique - is there a better way to do this?
       var radData = radialScale.domain();
 
       var labelsSelect = selection.selectAll('.radialLabels')
