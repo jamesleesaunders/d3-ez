@@ -3,18 +3,18 @@ import * as d3 from "d3";
 /**
  * Reusable Credit Tag Component
  *
- * @example
- * var creditTag = d3.ez.component.creditTag()
- *     .enabled(true)
- *     .text("d3-ez.net")
- *     .href("http://d3-ez.net");
- * d3.select("svg").call(creditTag);
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var text = "d3-ez.net";
   var href = "http://d3-ez.net";
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     var creditTag = selection.selectAll("#creditTag")
       .data([0])
@@ -34,7 +34,9 @@ export default function() {
     creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.text = function(_) {
     if (!arguments.length) return text;
     text = _;

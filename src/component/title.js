@@ -3,20 +3,20 @@ import * as d3 from "d3";
 /**
  * Reusable Title Component
  *
- * @example
- * var myTitle = d3.ez.component.title()
- *     .enabled(true)
- *     .mainText("Hello World")
- *     .subText("This is a test");
- * d3.select("svg").call(myTitle);
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+  /**
+   * Default Properties
+   */
   var mainText = "Title";
   var subText = "Sub Title";
   var height = 40;
   var width = 200;
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.selectAll("#titleGroup")
       .data([0])
@@ -46,7 +46,9 @@ export default function() {
     subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.mainText = function(_) {
     if (!arguments.length) return mainText;
     mainText = _;

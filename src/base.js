@@ -169,7 +169,7 @@ export default function() {
   my.on = function() {
     var value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
-  }
+  };
 
   return my;
 };

@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
 
-
 /**
  * Reusable Rose Chart Sector
  *
@@ -24,37 +23,6 @@ export default function() {
   var yScale;
   var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-  /**
-   * Arc Generator
-   */
-  var arc = d3.arc()
-    .innerRadius(function(d) { return d.innerRadius; })
-    .outerRadius(function(d) { return d.outerRadius; })
-    .startAngle(function(d) { return startAngle * (Math.PI / 180); })
-    .endAngle(function(d) { return endAngle * (Math.PI / 180); });
-
-  /**
-   * Stack Generator
-   */
-  var stacker = function(data) {
-    // Calculate inner and outer radius values
-    var series = [];
-    var innerRadius = 0;
-    var outerRadius = 0;
-    data.forEach(function(d, i) {
-      outerRadius = innerRadius + d.value;
-      series[i] = {
-        key: d.key,
-        value: d.value,
-        innerRadius: yScale(innerRadius),
-        outerRadius: yScale(outerRadius)
-      };
-      innerRadius += (stacked ? d.value : 0);
-    });
-
-    return series;
-  };
 
   /**
    * Initialise Data and Scales
@@ -90,6 +58,33 @@ export default function() {
    * Constructor
    */
   function my(selection) {
+    // Arc Generator
+    var arc = d3.arc()
+      .innerRadius(function(d) { return d.innerRadius; })
+      .outerRadius(function(d) { return d.outerRadius; })
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180));
+
+    // Stack Generator
+    var stacker = function(data) {
+      // Calculate inner and outer radius values
+      var series = [];
+      var innerRadius = 0;
+      var outerRadius = 0;
+      data.forEach(function(d, i) {
+        outerRadius = innerRadius + d.value;
+        series[i] = {
+          key: d.key,
+          value: d.value,
+          innerRadius: yScale(innerRadius),
+          outerRadius: yScale(outerRadius)
+        };
+        innerRadius += (stacked ? d.value : 0);
+      });
+
+      return series;
+    };
+
     selection.each(function(data) {
       init(data);
 

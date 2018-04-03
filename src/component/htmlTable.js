@@ -3,13 +3,6 @@ import * as d3 from "d3";
 /**
  * Simple HTML Table
  *
- * @example
- * var myTable = d3.ez.component.htmlTable()
- *     .classed("myClass")
- *     .width("600");
- * d3.select("#tableholder")
- *     .datum(data)
- *     .call(myTable);
  */
 export default function() {
   // HTML Table Element (Populated by 'my' function)
@@ -26,6 +19,9 @@ export default function() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
+  /**
+   * Initialise Data
+   */
   function init(data) {
     // Cut the data in different ways....
     rowNames = data.map(function(d) {
@@ -40,9 +36,11 @@ export default function() {
     });
   }
 
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
-      // Initialise Data
       init(data);
 
       // Create HTML Table 'table' element (if it does not exist already)
@@ -110,7 +108,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
