@@ -3,12 +3,6 @@ import * as d3 from "d3";
 /**
  * Reusable Credit Tag Component
  *
- * @example
- * var creditTag = d3.ez.component.creditTag()
- *     .enabled(true)
- *     .text("d3-ez.net")
- *     .href("http://d3-ez.net");
- * d3.select("svg").call(creditTag);
  */
 export default function() {
   // Default Options (Configurable via setters)

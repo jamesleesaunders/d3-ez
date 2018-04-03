@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
 
-
 /**
  * Reusable Heat Map Ring Component
  *
@@ -29,14 +28,13 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    /* NOOP */
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-
 
     // Pie Generator
     var pie = d3.pie()

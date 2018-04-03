@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
 
-
 /**
  * Reusable Scatter Plot Component
  *
@@ -25,7 +24,7 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    /* NOOP */
   }
 
   /**

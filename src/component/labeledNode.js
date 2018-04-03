@@ -3,18 +3,12 @@ import * as d3 from "d3";
 /**
  * Reusable Labeled Node Component
  *
- * @example
- * var myNode = d3.ez.component.labeledNode()
- *     .label("Circle Label")
- *     .color("#ff0000")
- *     .classed("bubble")
- *     .opacity(0.5)
- *     .stroke(1)
- *     .radius(5);
- * d3.selectAll("g").call(myNode);
  */
 export default function() {
-  // Default Options (Configurable via setters)
+
+	/**
+	 * Default Properties
+	 */
   var color = "steelblue";
   var opacity = 1;
   var strokeColor = "#000000";
@@ -26,10 +20,16 @@ export default function() {
   var classed = "labeledNode";
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
+	/**
+	 * Size Accessor
+	 */
   function sizeAccessor(_) {
     return (typeof radius === "function" ? radius(_) : radius);
-  };
+  }
 
+	/**
+	 * Constructor
+	 */
   function my(selection) {
     selection.each(function(data) {
       var r = sizeAccessor(data);
@@ -55,7 +55,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+	/**
+	 * Configuration Getters & Setters
+	 */
   my.color = function(_) {
     if (!arguments.length) return color;
     color = _;

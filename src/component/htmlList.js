@@ -3,12 +3,6 @@ import * as d3 from "d3";
 /**
  * Simple HTML List
  *
- * @example
- * var myList = d3.ez.component.htmlList()
- *      .classed("myClass");
- * d3.select("#listholder")
- *     .datum(data)
- *     .call(myList);
  */
 export default function() {
   // HTML List Element (Populated by 'my' function)
@@ -20,6 +14,9 @@ export default function() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
+	/**
+	 * Constructor
+	 */
   function my(selection) {
     selection.each(function(data) {
       // Create HTML List 'ul' element (if it does not exist already)
@@ -79,7 +76,9 @@ export default function() {
     });
   }
 
-  // Configuration Getters & Setters
+	/**
+	 * Configuration Getters & Setters
+	 */
   my.classed = function(_) {
     if (!arguments.length) return classed;
     classed = _;

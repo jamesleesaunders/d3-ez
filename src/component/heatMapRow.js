@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
 
-
 /**
  * Reusable Heat Map Table Row Component
  *
@@ -25,7 +24,7 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* TODO */
+    /* NOOP */
   }
 
   /**
@@ -35,7 +34,9 @@ export default function() {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
 
-    selection.each(function() {
+    selection.each(function(data) {
+    	init(data);
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
