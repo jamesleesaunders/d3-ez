@@ -21,16 +21,17 @@ export default function() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
 	/**
-	 * Size Accessor
-	 */
-  function sizeAccessor(_) {
-    return (typeof radius === "function" ? radius(_) : radius);
-  }
-
-	/**
 	 * Constructor
 	 */
   function my(selection) {
+
+    /**
+     * Size Accessor
+     */
+    function sizeAccessor(_) {
+      return (typeof radius === "function" ? radius(_) : radius);
+    }
+
     selection.each(function(data) {
       var r = sizeAccessor(data);
 

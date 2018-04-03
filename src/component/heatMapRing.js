@@ -35,8 +35,9 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-
-    // Pie Generator
+    /**
+     * Pie Generator
+     */
     var pie = d3.pie()
       .value(1)
       .sort(null)
@@ -44,7 +45,9 @@ export default function() {
       .endAngle(endAngle * (Math.PI / 180))
       .padAngle(0.015);
 
-    // Arc Generator
+    /**
+     * Arc Generator
+     */
     var arc = d3.arc()
       .outerRadius(radius)
       .innerRadius(innerRadius)

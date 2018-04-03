@@ -32,102 +32,103 @@ export default function() {
    * Constructor
    */
   var my = function(selection) {
+    
+    /**
+     * Is Up Day
+     */
+    var isUpDay = function(d) {
+      return d.close > d.open;
+    };
+
+    /**
+     * Is Down Day
+     */
+    var isDownDay = function(d) {
+      return !isUpDay(d);
+    };
+
+    /**
+     * Line Function
+     */
+    var line = d3.line()
+      .x(function(d) { return d.x; })
+      .y(function(d) { return d.y; });
+
+    /**
+     * High Low Lines
+     */
+    var highLowLines = function(bars) {
+      var paths = bars.selectAll('.high-low-line')
+        .data(function(d) { return [d]; });
+
+      paths.enter()
+        .append('path')
+        .classed('high-low-line', true)
+        .attr('d', function(d) {
+          return line([
+            { x: xScale(d.date), y: yScale(d.high) },
+            { x: xScale(d.date), y: yScale(d.low) }
+          ]);
+        });
+    };
+
+    /**
+     * Open Close Bars
+     */
+    var openCloseBars = function(bars) {
+      var rect = bars.selectAll('.open-close-bar')
+        .data(function(d) { return [d]; });
+
+      rect.enter()
+        .append('rect')
+        .classed('open-close-bar', true)
+        .attr('x', function(d) {
+          return xScale(d.date) - candleWidth;
+        })
+        .attr('y', function(d) {
+          return isUpDay(d) ? yScale(d.close) : yScale(d.open);
+        })
+        .attr('width', candleWidth * 2)
+        .attr('height', function(d) {
+          return isUpDay(d) ?
+            yScale(d.open) - yScale(d.close) :
+            yScale(d.close) - yScale(d.open);
+        });
+    };
+
+    /**
+     * Open Close Ticks
+     */
+    var openCloseTicks = function(bars) {
+      var open = bars.selectAll('.open-tick')
+        .data(function(d) { return [d]; });
+
+      var close = bars.selectAll('.close-tick')
+        .data(function(d) { return [d]; });
+
+      open.enter()
+        .append('path')
+        .classed('open-tick', true)
+        .attr('d', function(d) {
+          return line([
+            { x: xScale(d.date) - candleWidth, y: yScale(d.open) },
+            { x: xScale(d.date), y: yScale(d.open) }
+          ]);
+        });
+
+      close.enter()
+        .append('path')
+        .classed('close-tick', true)
+        .attr('d', function(d) {
+          return line([
+            { x: xScale(d.date), y: yScale(d.close) },
+            { x: xScale(d.date) + candleWidth, y: yScale(d.close) }
+          ]);
+        });
+    };
+
     selection.each(function(data) {
       init(data);
-
-			/**
-			 * Is Up Day
-			 */
-			var isUpDay = function(d) {
-				return d.close > d.open;
-			};
-
-			/**
-			 * Is Down Day
-			 */
-			var isDownDay = function(d) {
-				return !isUpDay(d);
-			};
-
-			/**
-			 * Line Function
-			 */
-			var line = d3.line()
-				.x(function(d) { return d.x; })
-				.y(function(d) { return d.y; });
-
-			/**
-			 * High Low Lines
-			 */
-			var highLowLines = function(bars) {
-				var paths = bars.selectAll('.high-low-line')
-					.data(function(d) { return [d]; });
-
-				paths.enter()
-					.append('path')
-					.classed('high-low-line', true)
-					.attr('d', function(d) {
-						return line([
-							{ x: xScale(d.date), y: yScale(d.high) },
-							{ x: xScale(d.date), y: yScale(d.low) }
-						]);
-					});
-			};
-
-			/**
-			 * Open Close Bars
-			 */
-			var openCloseBars = function(bars) {
-				var rect = bars.selectAll('.open-close-bar')
-					.data(function(d) { return [d]; });
-
-				rect.enter()
-					.append('rect')
-					.classed('open-close-bar', true)
-					.attr('x', function(d) {
-						return xScale(d.date) - candleWidth;
-					})
-					.attr('y', function(d) {
-						return isUpDay(d) ? yScale(d.close) : yScale(d.open);
-					})
-					.attr('width', candleWidth * 2)
-					.attr('height', function(d) {
-						return isUpDay(d) ?
-							yScale(d.open) - yScale(d.close) :
-							yScale(d.close) - yScale(d.open);
-					});
-			};
-
-			/**
-			 * Open Close Ticks
-			 */
-			var openCloseTicks = function(bars) {
-				var open = bars.selectAll('.open-tick')
-					.data(function(d) { return [d]; });
-
-				var close = bars.selectAll('.close-tick')
-					.data(function(d) { return [d]; });
-
-				open.enter()
-					.append('path')
-					.classed('open-tick', true)
-					.attr('d', function(d) {
-						return line([
-							{ x: xScale(d.date) - candleWidth, y: yScale(d.open) },
-							{ x: xScale(d.date), y: yScale(d.open) }
-						]);
-					});
-
-				close.enter()
-					.append('path')
-					.classed('close-tick', true)
-					.attr('d', function(d) {
-						return line([
-							{ x: xScale(d.date), y: yScale(d.close) },
-							{ x: xScale(d.date) + candleWidth, y: yScale(d.close) }
-						]);
-					});
-			};
 
       // Create series group
       var seriesSelect = d3.select(this).selectAll('.series')

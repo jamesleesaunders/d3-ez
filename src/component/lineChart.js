@@ -31,13 +31,18 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    // Line generation function
+
+    /**
+     * Line generation function
+     */
     var line = d3.line()
       .curve(d3.curveCardinal)
       .x(function(d) { return xScale(d.key); })
       .y(function(d) { return yScale(d.value); });
 
-    // Line animation tween
+    /**
+     * Line animation tween
+     */
     var pathTween = function(data) {
       var interpolate = d3.scaleQuantile()
         .domain([0, 1])

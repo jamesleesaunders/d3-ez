@@ -11,7 +11,7 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 400;
+  var width = 300;
   var height = 300;
   var radius;
   var startAngle = 0;

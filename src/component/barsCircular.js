@@ -62,29 +62,30 @@ export default function() {
    * Constructor
    */
   function my(selection) {
+    
+    /**
+     * Arc Generator
+     */
+    var arc = d3.arc()
+      .startAngle(0)
+      .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
+      .outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
+      .innerRadius(function(d) { return (xScale(d.key)); })
+      .cornerRadius(cornerRadius);
+
+    /**
+     * Arc Tween
+     */
+    var arcTween = function(d) {
+      var i = d3.interpolate(this._current, d);
+      this._current = i(0);
+      return function(t) {
+        return arc(i(t));
+      };
+    };
+
     selection.each(function(data) {
       init(data);
-
-			/**
-			 * Arc Generator
-			 */
-			var arc = d3.arc()
-				.startAngle(0)
-				.endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
-				.outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
-				.innerRadius(function(d) { return (xScale(d.key)); })
-				.cornerRadius(cornerRadius);
-
-			/**
-			 * Arc Tween
-			 */
-			var arcTween = function(d) {
-				var i = d3.interpolate(this._current, d);
-				this._current = i(0);
-				return function(t) {
-					return arc(i(t));
-				};
-			};
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')

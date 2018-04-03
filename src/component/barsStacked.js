@@ -43,29 +43,30 @@ export default function() {
    * Constructor
    */
   function my(selection) {
+    
+    /**
+     * Stack Generator
+     */
+    var stacker = function(data) {
+      var series = [];
+      var y0 = 0;
+      var y1 = 0;
+      data.forEach(function(d, i) {
+        y1 = y0 + d.value;
+        series[i] = {
+          key: d.key,
+          value: d.value,
+          y0: y0,
+          y1: y1
+        };
+        y0 += d.value;
+      });
+
+      return series;
+    };
+
     selection.each(function(data) {
       init(data);
-
-			/**
-			 * Stack Generator
-			 */
-			var stacker = function(data) {
-				var series = [];
-				var y0 = 0;
-				var y1 = 0;
-				data.forEach(function(d, i) {
-					y1 = y0 + d.value;
-					series[i] = {
-						key: d.key,
-						value: d.value,
-						y0: y0,
-						y1: y1
-					};
-					y0 += d.value;
-				});
-
-				return series;
-			};
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')
