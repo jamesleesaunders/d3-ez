@@ -6,9 +6,9 @@ import * as d3 from "d3";
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var color = "steelblue";
   var opacity = 1;
   var strokeColor = "#000000";
@@ -20,9 +20,9 @@ export default function() {
   var classed = "labeledNode";
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
 
     // Size Accessor
@@ -56,7 +56,7 @@ export default function() {
 
   /**
    * Configuration Getters & Setters
-	 */
+   */
   my.color = function(_) {
     if (!arguments.length) return color;
     color = _;

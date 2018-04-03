@@ -1129,9 +1129,9 @@ function componentBarsVertical() {
  */
 function componentLabeledNode() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var color = "steelblue";
   var opacity = 1;
   var strokeColor = "#000000";
@@ -1143,9 +1143,9 @@ function componentLabeledNode() {
   var classed = "labeledNode";
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
 
     // Size Accessor
@@ -1179,7 +1179,7 @@ function componentLabeledNode() {
 
   /**
    * Configuration Getters & Setters
-	 */
+   */
   my.color = function(_) {
     if (!arguments.length) return color;
     color = _;
@@ -2322,11 +2322,17 @@ function componentHeatMapRing() {
   function init(data) {
     var slicedData = dataParse(data);
     var categoryNames = slicedData.categoryNames;
+    var maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === 'undefined') ?
       (Math.min(width, height) / 2) :
       radius;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === 'undefined') ?
+      d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) :
+      yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -2338,25 +2344,26 @@ function componentHeatMapRing() {
    * Constructor
    */
   function my(selection) {
+    var segStartAngle = d3.min(xScale.range());
+    var segEndAngle = d3.max(xScale.range());
 
+    // Pie Generator
+    var pie = d3.pie()
+      .value(1)
+      .sort(null)
+      .startAngle(segStartAngle * (Math.PI / 180))
+      .endAngle(segEndAngle * (Math.PI / 180))
+      .padAngle(0.015);
+
+    // Arc Generator
+    var arc = d3.arc()
+      .outerRadius(radius)
+      .innerRadius(innerRadius)
+      .cornerRadius(2);
 
     selection.each(function(data) {
       init(data);
 
-      // Pie Generator
-      var pie = d3.pie()
-        .value(1)
-        .sort(null)
-        .startAngle(startAngle * (Math.PI / 180))
-        .endAngle(endAngle * (Math.PI / 180))
-        .padAngle(0.015);
-
-      // Arc Generator
-      var arc = d3.arc()
-        .outerRadius(radius)
-        .innerRadius(innerRadius)
-        .cornerRadius(2);
-        
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -2871,7 +2878,7 @@ function componentLineChart() {
 
     selection.each(function(data) {
       init(data);
-      
+
       // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -2979,7 +2986,7 @@ function componentNumberCard() {
 
     selection.each(function(data) {
       init(data);
-      
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -3132,7 +3139,7 @@ function componentPolarArea() {
 
     selection.each(function(data) {
       init(data);
-      
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -3262,7 +3269,7 @@ function componentProportionalAreaCircles() {
 
     selection.each(function(data) {
       init(data);
-      
+
       // Create series group
       var seriesSelect = selection.selectAll(".series")
         .data(function(d) { return [d]; });
@@ -3421,7 +3428,7 @@ function componentScatterPlot() {
   function my(selection) {
     selection.each(function(data) {
       init(data);
-      
+
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });

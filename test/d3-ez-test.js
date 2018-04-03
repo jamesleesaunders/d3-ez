@@ -3,7 +3,7 @@ var tape = require("tape");
 var jsdom = require("jsdom");
 var d3 = require("d3");
 
-tape('setup', function (t) {
+tape('setup', function(t) {
   var JSDOM = jsdom.JSDOM;
   global.document = new JSDOM().window.document;
   global.fs = require("fs");
@@ -80,7 +80,7 @@ tape("Test dataParse module", function(t) {
   t.end();
 });
 
-tape("Test jsdom", function(t) {
+tape("Test simple SVG creation", function(t) {
   var chartHolder = d3.select(document.createElement('div'));
   var dot = chartHolder
     .append('svg')
@@ -92,11 +92,35 @@ tape("Test jsdom", function(t) {
   t.equal(dot.attr('cy'), '10', "Test cy");
 
   var result = chartHolder.html();
-  //var expected = '<svg><circle cx="5" cy="10"></circle></svg>';
+  var expected = '<svg><circle cx="5" cy="10"></circle></svg>';
+  t.equal(result, expected, "Test svg");
 
-  var expected = fs.readFileSync("./test/svg/test.svg")
+  t.end();
+});
+
+tape("Test component barsVertical", function(t) {
+  var data = {
+    "key": "Fruit",
+    "values": [
+      { "key": "Apples", "value": 5 },
+      { "key": "Pears", "value": 2 },
+      { "key": "Oranges", "value": 1 }
+		]
+  };
+
+  var chartHolder = d3.select(document.createElement('div'));
+  var myChart = d3ez.ez.component.barsVertical();
+
+  chartHolder
+    .append('svg')
+    .datum(data)
+    .call(myChart);
+
+  var result = chartHolder.html();
+  var expected = fs.readFileSync("./test/svg/componentBarsVertical.svg")
     .toString('utf-8')
-    .replace(/[\n\r]+/g, '');
+    .replace(/[\n\r\t]+/g, '')
+    .replace(/\>\s+\</g, '><');
   t.equal(result, expected, "Test svg");
 
   t.end();

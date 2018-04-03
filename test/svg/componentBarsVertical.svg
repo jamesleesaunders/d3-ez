@@ -1,0 +1,7 @@
+<svg>
+  <g class="series">
+    <rect class="bar" fill="#3f51b5" width="107" x="20" y="400" rx="0" ry="0" height="0"></rect>
+    <rect class="bar" fill="#ff9800" width="107" x="146" y="400" rx="0" ry="0" height="0"></rect>
+    <rect class="bar" fill="#8bc34a" width="107" x="272" y="400" rx="0" ry="0" height="0"></rect>
+  </g>
+</svg>

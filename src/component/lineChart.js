@@ -55,7 +55,7 @@ export default function() {
 
     selection.each(function(data) {
       init(data);
-      
+
       // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; });
