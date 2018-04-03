@@ -62,10 +62,7 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-
-    /**
-     * Arc Generator
-     */
+    // Arc Generator
     var arc = d3.arc()
       .startAngle(0)
       .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
@@ -73,9 +70,7 @@ export default function() {
       .innerRadius(function(d) { return (xScale(d.key)); })
       .cornerRadius(cornerRadius);
 
-    /**
-     * Arc Tween
-     */
+    // Arc Tween
     var arcTween = function(d) {
       var i = d3.interpolate(this._current, d);
       this._current = i(0);

@@ -28,16 +28,25 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* NOOP */
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    /**
-     * Pie Generator
-     */
+    // Pie Generator
     var pie = d3.pie()
       .value(1)
       .sort(null)
@@ -45,9 +54,7 @@ export default function() {
       .endAngle(endAngle * (Math.PI / 180))
       .padAngle(0.015);
 
-    /**
-     * Arc Generator
-     */
+    // Arc Generator
     var arc = d3.arc()
       .outerRadius(radius)
       .innerRadius(innerRadius)

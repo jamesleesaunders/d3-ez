@@ -24,25 +24,26 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* NOOP */
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-
-    /**
-     * Line generation function
-     */
+    // Line generation function
     var line = d3.line()
       .curve(d3.curveCardinal)
       .x(function(d) { return xScale(d.key); })
       .y(function(d) { return yScale(d.value); });
 
-    /**
-     * Line animation tween
-     */
+    // Line animation tween
     var pathTween = function(data) {
       var interpolate = d3.scaleQuantile()
         .domain([0, 1])
@@ -54,7 +55,7 @@ export default function() {
 
     selection.each(function(data) {
       init(data);
-
+      
       // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; });

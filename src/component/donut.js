@@ -24,41 +24,46 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    /**
-     * Pie Generator
-     */
+    // Pie Generator
     var pie = d3.pie()
       .value(function(d) { return d.value; })
       .sort(null)
       .padAngle(0.015);
 
-    /**
-     * Arc Generator
-     */
+    // Arc Generator
     var arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(radius)
       .cornerRadius(2);
 
-    /**
-     * Outer Arc Generator
-     */
+    // Outer Arc Generator
     var outerArc = d3.arc()
       .innerRadius(radius * 0.9)
       .outerRadius(radius * 0.9);
 
-    /**
-     * Arc Tween
-     */
+    // Arc Tween
     var arcTween = function(d) {
       var i = d3.interpolate(this._current, d);
       this._current = i(0);
@@ -67,9 +72,7 @@ export default function() {
       };
     };
 
-    /**
-     * Mid Angle
-     */
+    // Mid Angle
     var midAngle = function(d) {
       return d.startAngle + (d.endAngle - d.startAngle) / 2;
     };

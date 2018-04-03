@@ -43,10 +43,7 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-
-    /**
-     * Stack Generator
-     */
+    // Stack Generator
     var stacker = function(data) {
       var series = [];
       var y0 = 0;

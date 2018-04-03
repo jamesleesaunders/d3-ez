@@ -25,38 +25,35 @@ export default function() {
    * Initialise Data and Scales
    */
   function init(data) {
-    /* NOOP */
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
   }
 
   /**
    * Constructor
    */
   var my = function(selection) {
-
-    /**
-     * Is Up Day
-     */
+    // Is Up Day
     var isUpDay = function(d) {
       return d.close > d.open;
     };
 
-    /**
-     * Is Down Day
-     */
+    // Is Down Day
     var isDownDay = function(d) {
       return !isUpDay(d);
     };
 
-    /**
-     * Line Function
-     */
+    // Line Function
     var line = d3.line()
       .x(function(d) { return d.x; })
       .y(function(d) { return d.y; });
 
-    /**
-     * High Low Lines
-     */
+    // High Low Lines
     var highLowLines = function(bars) {
       var paths = bars.selectAll('.high-low-line')
         .data(function(d) { return [d]; });
@@ -72,9 +69,7 @@ export default function() {
         });
     };
 
-    /**
-     * Open Close Bars
-     */
+    // Open Close Bars
     var openCloseBars = function(bars) {
       var rect = bars.selectAll('.open-close-bar')
         .data(function(d) { return [d]; });
@@ -96,9 +91,7 @@ export default function() {
         });
     };
 
-    /**
-     * Open Close Ticks
-     */
+    // Open Close Ticks
     var openCloseTicks = function(bars) {
       var open = bars.selectAll('.open-tick')
         .data(function(d) { return [d]; });

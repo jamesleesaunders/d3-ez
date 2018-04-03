@@ -41,7 +41,6 @@ export default function() {
    */
   function my(selection) {
     selection.each(function(data) {
-      // Initialise Data
       init(data);
 
       // Create HTML Table 'table' element (if it does not exist already)

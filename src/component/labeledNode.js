@@ -25,9 +25,7 @@ export default function() {
 	 */
   function my(selection) {
 
-    /**
-     * Size Accessor
-     */
+    // Size Accessor
     function sizeAccessor(_) {
       return (typeof radius === "function" ? radius(_) : radius);
     }

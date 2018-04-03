@@ -58,19 +58,14 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-
-    /**
-     * Arc Generator
-     */
+    // Arc Generator
     var arc = d3.arc()
       .innerRadius(function(d) { return d.innerRadius; })
       .outerRadius(function(d) { return d.outerRadius; })
       .startAngle(startAngle * (Math.PI / 180))
       .endAngle(endAngle * (Math.PI / 180));
 
-    /**
-     * Stack Generator
-     */
+    // Stack Generator
     var stacker = function(data) {
       // Calculate inner and outer radius values
       var series = [];

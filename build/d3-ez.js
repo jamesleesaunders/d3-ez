@@ -355,15 +355,15 @@ var palette = {
  */
 function componentCreditTag() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var text = "d3-ez.net";
   var href = "http://d3-ez.net";
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     var creditTag = selection.selectAll("#creditTag")
       .data([0])
@@ -383,9 +383,9 @@ function componentCreditTag() {
     creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.text = function(_) {
     if (!arguments.length) return text;
     text = _;
@@ -407,17 +407,17 @@ function componentCreditTag() {
  */
 function componentTitle() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var mainText = "Title";
   var subText = "Sub Title";
   var height = 40;
   var width = 200;
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.selectAll("#titleGroup")
       .data([0])
@@ -447,9 +447,9 @@ function componentTitle() {
     subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.mainText = function(_) {
     if (!arguments.length) return mainText;
     mainText = _;
@@ -706,10 +706,7 @@ function componentBarsCircular() {
    * Constructor
    */
   function my(selection) {
-    
-    /**
-     * Arc Generator
-     */
+    // Arc Generator
     var arc = d3.arc()
       .startAngle(0)
       .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
@@ -717,9 +714,7 @@ function componentBarsCircular() {
       .innerRadius(function(d) { return (xScale(d.key)); })
       .cornerRadius(cornerRadius);
 
-    /**
-     * Arc Tween
-     */
+    // Arc Tween
     var arcTween = function(d) {
       var i = d3.interpolate(this._current, d);
       this._current = i(0);
@@ -878,10 +873,7 @@ function componentBarsStacked() {
    * Constructor
    */
   function my(selection) {
-    
-    /**
-     * Stack Generator
-     */
+    // Stack Generator
     var stacker = function(data) {
       var series = [];
       var y0 = 0;
@@ -1156,9 +1148,7 @@ function componentLabeledNode() {
 	 */
   function my(selection) {
 
-    /**
-     * Size Accessor
-     */
+    // Size Accessor
     function sizeAccessor(_) {
       return (typeof radius === "function" ? radius(_) : radius);
     }
@@ -1187,8 +1177,8 @@ function componentLabeledNode() {
     });
   }
 
-	/**
-	 * Configuration Getters & Setters
+  /**
+   * Configuration Getters & Setters
 	 */
   my.color = function(_) {
     if (!arguments.length) return color;
@@ -1273,10 +1263,24 @@ function componentBubbles() {
   var sizeScale;
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
     selection.each(function(data) {
+      init(data);
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')
@@ -1416,27 +1420,33 @@ function componentCandleSticks() {
   var candleWidth = 3;
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   var my = function(selection) {
-    
-    /**
-     * Is Up Day
-     */
+    // Is Up Day
     var isUpDay = function(d) {
       return d.close > d.open;
     };
 
-    /**
-     * Line Function
-     */
+    // Line Function
     var line = d3.line()
       .x(function(d) { return d.x; })
       .y(function(d) { return d.y; });
 
-    /**
-     * High Low Lines
-     */
+    // High Low Lines
     var highLowLines = function(bars) {
       var paths = bars.selectAll('.high-low-line')
         .data(function(d) { return [d]; });
@@ -1452,9 +1462,7 @@ function componentCandleSticks() {
         });
     };
 
-    /**
-     * Open Close Bars
-     */
+    // Open Close Bars
     var openCloseBars = function(bars) {
       var rect = bars.selectAll('.open-close-bar')
         .data(function(d) { return [d]; });
@@ -1477,6 +1485,7 @@ function componentCandleSticks() {
     };
 
     selection.each(function(data) {
+      init(data);
 
       // Create series group
       var seriesSelect = d3.select(this).selectAll('.series')
@@ -1583,8 +1592,10 @@ function componentCircularAxis() {
    * Initialise Data and Scales
    */
   function init(data) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
   }
 
   /**
@@ -1763,18 +1774,20 @@ function componentCircularRingLabels() {
    * Initialise Data and Scales
    */
   function init(data) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
+    var radData = radialScale.domain();
+
     selection.each(function(data) {
       init(data);
-
-      var radData = radialScale.domain();
 
       var labelsSelect = selection.selectAll('.radialLabels')
         .data(function(d) { return [d]; });
@@ -1894,8 +1907,10 @@ function componentCircularSectorLabels() {
    * Initialise Data and Scales
    */
   function init(data) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
   }
 
   /**
@@ -2066,41 +2081,46 @@ function componentDonut() {
    * Initialise Data and Scales
    */
   function init(data) {
-    var defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    /**
-     * Pie Generator
-     */
+    // Pie Generator
     var pie = d3.pie()
       .value(function(d) { return d.value; })
       .sort(null)
       .padAngle(0.015);
 
-    /**
-     * Arc Generator
-     */
+    // Arc Generator
     var arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(radius)
       .cornerRadius(2);
 
-    /**
-     * Outer Arc Generator
-     */
+    // Outer Arc Generator
     var outerArc = d3.arc()
       .innerRadius(radius * 0.9)
       .outerRadius(radius * 0.9);
 
-    /**
-     * Arc Tween
-     */
+    // Arc Tween
     var arcTween = function(d) {
       var i = d3.interpolate(this._current, d);
       this._current = i(0);
@@ -2109,17 +2129,15 @@ function componentDonut() {
       };
     };
 
-    /**
-     * Mid Angle
-     */
+    // Mid Angle
     var midAngle = function(d) {
       return d.startAngle + (d.endAngle - d.startAngle) / 2;
     };
-    
+
     selection.each(function(data) {
       init(data);
 
-			// Create series group
+      // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
@@ -2299,29 +2317,46 @@ function componentHeatMapRing() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
-    /**
-     * Pie Generator
-     */
-    var pie = d3.pie()
-      .value(1)
-      .sort(null)
-      .startAngle(startAngle * (Math.PI / 180))
-      .endAngle(endAngle * (Math.PI / 180))
-      .padAngle(0.015);
 
-    /**
-     * Arc Generator
-     */
-    var arc = d3.arc()
-      .outerRadius(radius)
-      .innerRadius(innerRadius)
-      .cornerRadius(2);
 
     selection.each(function(data) {
+      init(data);
 
+      // Pie Generator
+      var pie = d3.pie()
+        .value(1)
+        .sort(null)
+        .startAngle(startAngle * (Math.PI / 180))
+        .endAngle(endAngle * (Math.PI / 180))
+        .padAngle(0.015);
+
+      // Arc Generator
+      var arc = d3.arc()
+        .outerRadius(radius)
+        .innerRadius(innerRadius)
+        .cornerRadius(2);
+        
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -2442,6 +2477,19 @@ function componentHeatMapRow() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
@@ -2449,6 +2497,7 @@ function componentHeatMapRow() {
     var cellWidth = xScale.bandwidth();
 
     selection.each(function(data) {
+      init(data);
 
       // Create series group
       var seriesSelect = selection.selectAll('.series')
@@ -2559,9 +2608,9 @@ function componentHtmlList() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
       // Create HTML List 'ul' element (if it does not exist already)
@@ -2621,9 +2670,9 @@ function componentHtmlList() {
     });
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.classed = function(_) {
     if (!arguments.length) return classed;
     classed = _;
@@ -2657,9 +2706,9 @@ function componentHtmlTable() {
   // Dispatch (Custom events)
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Initialise Data
-	 */
+  /**
+   * Initialise Data
+   */
   function init(data) {
     // Cut the data in different ways....
     rowNames = data.map(function(d) {
@@ -2674,12 +2723,11 @@ function componentHtmlTable() {
     });
   }
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     selection.each(function(data) {
-      // Initialise Data
       init(data);
 
       // Create HTML Table 'table' element (if it does not exist already)
@@ -2747,9 +2795,9 @@ function componentHtmlTable() {
     });
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.width = function(_) {
     if (!arguments.length) return width;
     width = _;
@@ -2789,21 +2837,29 @@ function componentLineChart() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
-
-    /**
-     * Line generation function
-     */
+    // Line generation function
     var line = d3.line()
       .curve(d3.curveCardinal)
       .x(function(d) { return xScale(d.key); })
       .y(function(d) { return yScale(d.value); });
 
-    /**
-     * Line animation tween
-     */
+    // Line animation tween
     var pathTween = function(data) {
       var interpolate = d3.scaleQuantile()
         .domain([0, 1])
@@ -2814,7 +2870,8 @@ function componentLineChart() {
     };
 
     selection.each(function(data) {
-
+      init(data);
+      
       // Create series group
       var series = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -2902,13 +2959,27 @@ function componentNumberCard() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
     var cellWidth = xScale.bandwidth();
 
     selection.each(function(data) {
-
+      init(data);
+      
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -3016,9 +3087,28 @@ function componentPolarArea() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(width, height) / 2) :
+      radius;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
+    // Calculate Radius and Angles
     var defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     startAngle = d3.min(xScale.range());
@@ -3041,7 +3131,8 @@ function componentPolarArea() {
       .cornerRadius(2);
 
     selection.each(function(data) {
-
+      init(data);
+      
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -3149,14 +3240,29 @@ function componentProportionalAreaCircles() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
+    // Calculate cell sizes
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
 
     selection.each(function(data) {
-
+      init(data);
+      
       // Create series group
       var seriesSelect = selection.selectAll(".series")
         .data(function(d) { return [d]; });
@@ -3297,11 +3403,25 @@ function componentScatterPlot() {
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
+   * Initialise Data and Scales
+   */
+  function init(data) {
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === 'undefined') ?
+      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      colorScale;
+  }
+
+  /**
    * Constructor
    */
   function my(selection) {
     selection.each(function(data) {
-
+      init(data);
+      
       // Create series group
       var seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
@@ -3408,14 +3528,6 @@ function componentRoseChartSector() {
   var yScale;
   var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  /**
-   * Arc Generator
-   */
-  var arc = d3.arc()
-    .innerRadius(function(d) { return d.innerRadius; })
-    .outerRadius(function(d) { return d.outerRadius; })
-    .startAngle(startAngle * (Math.PI / 180))
-    .endAngle(endAngle * (Math.PI / 180));
 
   /**
    * Initialise Data and Scales
@@ -3451,11 +3563,14 @@ function componentRoseChartSector() {
    * Constructor
    */
   function my(selection) {
+    // Arc Generator
+    var arc = d3.arc()
+      .innerRadius(function(d) { return d.innerRadius; })
+      .outerRadius(function(d) { return d.outerRadius; })
+      .startAngle(startAngle * (Math.PI / 180))
+      .endAngle(endAngle * (Math.PI / 180));
 
-
-    /**
-     * Stack Generator
-     */
+    // Stack Generator
     var stacker = function(data) {
       // Calculate inner and outer radius values
       var series = [];
@@ -3589,9 +3704,9 @@ function componentRoseChartSector() {
  */
 function componentLegend() {
 
-	/**
-	 * Default Properties
-	 */
+  /**
+   * Default Properties
+   */
   var sizeScale = undefined;
   var sizeLabel = null;
   var colorScale = undefined;
@@ -3605,9 +3720,9 @@ function componentLegend() {
   var strokewidth = "1px";
   var spacing = 5;
 
-	/**
-	 * Constructor
-	 */
+  /**
+   * Constructor
+   */
   function my(selection) {
     height = (height ? height : this.attr("height"));
     width = (width ? width : this.attr("width"));
@@ -3711,9 +3826,9 @@ function componentLegend() {
     }
   }
 
-	/**
-	 * Helper function to calculate the keys min and max values
-	 */
+  /**
+   * Helper function to calculate the keys min and max values
+   */
   function keyScaleRange(type, position) {
     switch (type) {
       case 'size':
@@ -3752,9 +3867,9 @@ function componentLegend() {
     return rangeStr;
   }
 
-	/**
-	 * Configuration Getters & Setters
-	 */
+  /**
+   * Configuration Getters & Setters
+   */
   my.sizeScale = function(_) {
     if (!arguments.length) return sizeScale;
     sizeScale = _;
