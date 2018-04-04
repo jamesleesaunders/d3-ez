@@ -75,6 +75,7 @@ export default function() {
 
       spots.enter()
         .append("g")
+        .call(spot)
         .attr("transform", function(d) {
           return "translate(" + (cellWidth / 2 + xScale(d.key)) + ",0)";
         })
@@ -88,7 +89,6 @@ export default function() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .call(spot)
         .merge(spots);
 
       /*

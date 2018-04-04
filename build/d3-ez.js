@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.6";
+var version = "3.2.7";
 
 /**
  * Base Functions - Data Parse
@@ -1308,6 +1308,7 @@ function componentBubbles() {
 
       bubbles.enter()
         .append("g")
+        .call(bubble)
         .attr("transform", function(d) {
           return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
@@ -1321,7 +1322,6 @@ function componentBubbles() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .call(bubble)
         .merge(bubbles);
 
       /*
@@ -3297,6 +3297,7 @@ function componentProportionalAreaCircles() {
 
       spots.enter()
         .append("g")
+        .call(spot)
         .attr("transform", function(d) {
           return "translate(" + (cellWidth / 2 + xScale(d.key)) + ",0)";
         })
@@ -3310,7 +3311,6 @@ function componentProportionalAreaCircles() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .call(spot)
         .merge(spots);
 
       /*

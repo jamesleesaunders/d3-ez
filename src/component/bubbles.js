@@ -68,6 +68,7 @@ export default function() {
 
       bubbles.enter()
         .append("g")
+        .call(bubble)
         .attr("transform", function(d) {
           return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
@@ -81,7 +82,6 @@ export default function() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .call(bubble)
         .merge(bubbles);
 
       /*
