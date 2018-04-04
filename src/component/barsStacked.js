@@ -63,7 +63,6 @@ export default function() {
       return series;
     };
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 

@@ -893,7 +893,6 @@ function componentBarsStacked() {
       return series;
     };
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -1033,7 +1032,6 @@ function componentBarsVertical() {
    * Constructor
    */
   function my(selection) {
-    selection.attr('height', height).attr('width', width);
     selection.each(function(data) {
       init(data);
 
@@ -1487,7 +1485,6 @@ function componentCandleSticks() {
         });
     };
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -2506,8 +2503,7 @@ function componentHeatMapRow() {
   function my(selection) {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
-    
-    selection.attr("width", width).attr("height", height);
+
     selection.each(function(data) {
       init(data);
 
@@ -2881,7 +2877,6 @@ function componentLineChart() {
       };
     };
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -2990,7 +2985,6 @@ function componentNumberCard() {
   function my(selection) {
     var cellWidth = xScale.bandwidth();
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -3274,7 +3268,6 @@ function componentProportionalAreaCircles() {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -3434,7 +3427,6 @@ function componentScatterPlot() {
    * Constructor
    */
   function my(selection) {
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 

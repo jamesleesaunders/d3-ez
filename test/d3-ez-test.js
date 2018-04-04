@@ -107,6 +107,8 @@ tape("Test component barsVertical", function(t) {
 
   chartHolder
     .append('svg')
+    .attr('width', 400)
+    .attr('height', 400)
     .datum(data)
     .call(myChart);
 
@@ -118,7 +120,52 @@ tape("Test component barsVertical", function(t) {
       .replace(/[\n\r\t]+/g, '')
       .replace(/\>\s+\</g, '><');
     t.equal(result, expected, "Check svg generation");
+    t.end();
   }, 600);
+});
 
-  t.end();
+tape("Test component barsStacked", function(t) {
+  var chartHolder = d3.select(document.createElement('div'));
+  var myChart = d3ez.ez.component.barsStacked();
+
+  chartHolder
+    .append('svg')
+    .attr('width', 400)
+    .attr('height', 400)
+    .datum(data)
+    .call(myChart);
+
+  // Wait for transitions to complete
+  setTimeout(function() {
+    var result = chartHolder.html();
+    var expected = fs.readFileSync("./test/svg/componentBarsStacked.svg")
+      .toString('utf-8')
+      .replace(/[\n\r\t]+/g, '')
+      .replace(/\>\s+\</g, '><');
+    t.equal(result, expected, "Check svg generation");
+    t.end();
+  }, 600);
+});
+
+tape("Test component roseChartSector", function(t) {
+  var chartHolder = d3.select(document.createElement('div'));
+  var myChart = d3ez.ez.component.roseChartSector();
+
+  chartHolder
+    .append('svg')
+    .attr('width', 400)
+    .attr('height', 400)
+    .datum(data)
+    .call(myChart);
+
+  // Wait for transitions to complete
+  setTimeout(function() {
+    var result = chartHolder.html();
+    var expected = fs.readFileSync("./test/svg/componentRoseChartSector.svg")
+      .toString('utf-8')
+      .replace(/[\n\r\t]+/g, '')
+      .replace(/\>\s+\</g, '><');
+    t.equal(result, expected, "Check svg generation");
+    t.end();
+  }, 600);
 });

@@ -39,7 +39,6 @@ export default function() {
   function my(selection) {
     var cellWidth = xScale.bandwidth();
 
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 

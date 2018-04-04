@@ -37,7 +37,6 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
