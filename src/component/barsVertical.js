@@ -48,6 +48,7 @@ export default function() {
    * Constructor
    */
   function my(selection) {
+    selection.attr('height', height).attr('width', width);
     selection.each(function(data) {
       init(data);
 

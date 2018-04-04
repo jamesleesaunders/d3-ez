@@ -43,6 +43,7 @@ export default function() {
    * Constructor
    */
   function my(selection) {
+
     // Stack Generator
     var stacker = function(data) {
       var series = [];
@@ -62,6 +63,7 @@ export default function() {
       return series;
     };
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 

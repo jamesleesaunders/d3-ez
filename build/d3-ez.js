@@ -873,6 +873,7 @@ function componentBarsStacked() {
    * Constructor
    */
   function my(selection) {
+
     // Stack Generator
     var stacker = function(data) {
       var series = [];
@@ -892,6 +893,7 @@ function componentBarsStacked() {
       return series;
     };
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -1031,6 +1033,7 @@ function componentBarsVertical() {
    * Constructor
    */
   function my(selection) {
+    selection.attr('height', height).attr('width', width);
     selection.each(function(data) {
       init(data);
 
@@ -1484,6 +1487,7 @@ function componentCandleSticks() {
         });
     };
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
