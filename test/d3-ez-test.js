@@ -96,7 +96,7 @@ tape("Test simple SVG creation", function(t) {
 
   var result = chartHolder.html();
   var expected = '<svg width="20" height="20"><circle cx="5" cy="10"></circle></svg>';
-  t.equal(result, expected, "Check svg generation");
+  t.equal(result, expected, "Check svg");
 
   t.end();
 });

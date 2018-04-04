@@ -43,6 +43,7 @@ export default function() {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -58,7 +59,7 @@ export default function() {
         .merge(seriesSelect);
 
       series.attr("transform", function(d) {
-        return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
+        return "translate(0 , " + (cellHeight / 2) + ")";
       });
 
       var spot = componentLabeledNode()

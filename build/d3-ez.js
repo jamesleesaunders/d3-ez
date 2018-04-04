@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.5";
+var version = "3.2.6";
 
 /**
  * Base Functions - Data Parse
@@ -2506,7 +2506,8 @@ function componentHeatMapRow() {
   function my(selection) {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
-
+    
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -2880,6 +2881,7 @@ function componentLineChart() {
       };
     };
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -2988,6 +2990,7 @@ function componentNumberCard() {
   function my(selection) {
     var cellWidth = xScale.bandwidth();
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -3271,6 +3274,7 @@ function componentProportionalAreaCircles() {
     var cellHeight = yScale.bandwidth();
     var cellWidth = xScale.bandwidth();
 
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
@@ -3286,7 +3290,7 @@ function componentProportionalAreaCircles() {
         .merge(seriesSelect);
 
       series.attr("transform", function(d) {
-        return "translate(" + (cellWidth / 2) + ", " + (cellHeight / 2) + ")";
+        return "translate(0 , " + (cellHeight / 2) + ")";
       });
 
       var spot = componentLabeledNode()
@@ -3430,6 +3434,7 @@ function componentScatterPlot() {
    * Constructor
    */
   function my(selection) {
+    selection.attr("width", width).attr("height", height);
     selection.each(function(data) {
       init(data);
 
