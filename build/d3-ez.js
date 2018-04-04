@@ -1255,7 +1255,6 @@ function componentBubbles() {
    */
   var width = 400;
   var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var xScale;
@@ -1294,6 +1293,10 @@ function componentBubbles() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
+      // Add bubbles to series
+      var bubbles = series.selectAll(".bubble")
+        .data(function(d) { return d.values; });
+
       var bubble = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
@@ -1303,11 +1306,6 @@ function componentBubbles() {
         .classed("bubble")
         .dispatch(dispatch);
 
-      // Add bubbles to series
-      var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d.values; });
-
-      /*
       bubbles.enter()
         .append("g")
         .attr("transform", function(d) {
@@ -1323,11 +1321,10 @@ function componentBubbles() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .datum(function(d) { return d; })
         .call(bubble)
         .merge(bubbles);
-      */
 
+      /*
       bubbles.enter().append("circle")
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
@@ -1341,6 +1338,7 @@ function componentBubbles() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
+      */
 
       bubbles.exit()
         .transition()
@@ -3239,7 +3237,6 @@ function componentProportionalAreaCircles() {
    */
   var width = 400;
   var height = 100;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
   var colorScale;
   var xScale;
@@ -3286,6 +3283,10 @@ function componentProportionalAreaCircles() {
         return "translate(0 , " + (cellHeight / 2) + ")";
       });
 
+      // Add spots to series
+      var spots = series.selectAll(".punchSpot")
+        .data(function(d) { return d.values; });
+
       var spot = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.value); })
@@ -3294,15 +3295,10 @@ function componentProportionalAreaCircles() {
         .classed("punchSpot")
         .dispatch(dispatch);
 
-      // Add spots to series
-      var spots = series.selectAll(".punchSpot")
-        .data(function(d) { return d.values; });
-
-      /*
       spots.enter()
         .append("g")
         .attr("transform", function(d) {
-          return "translate(" + xScale(d.key) + ",0)";
+          return "translate(" + (cellWidth / 2 + xScale(d.key)) + ",0)";
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
@@ -3314,11 +3310,10 @@ function componentProportionalAreaCircles() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .datum(function(d) { return d; })
         .call(spot)
         .merge(spots);
-      */
 
+      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
         .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
@@ -3331,6 +3326,7 @@ function componentProportionalAreaCircles() {
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); })
         .attr("r", function(d) { return sizeScale(d['value']); });
+      */
 
       spots.exit()
         .transition()
