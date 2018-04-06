@@ -17,7 +17,7 @@ export default function() {
   var classed = "roseChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -43,8 +43,10 @@ export default function() {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -134,10 +136,10 @@ export default function() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
         .textAnchor("start")
-        .capitalizeLabels(true)
-        .radius(radius * 1.04);
+        .capitalizeLabels(true);
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);

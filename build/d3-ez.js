@@ -3962,7 +3962,7 @@ function chartBarChartCircular() {
   var classed = "barChartCircular";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3995,9 +3995,14 @@ function chartBarChartCircular() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -4062,20 +4067,18 @@ function chartBarChartCircular() {
 
       // Circular Axis
       var circularAxis = component.circularAxis()
+        .radius(radius)
         .radialScale(yScale)
-        .ringScale(xScale)
-        .width(chartW)
-        .height(chartH)
-        .radius(radius);
+        .ringScale(xScale);
 
       chart.select(".circularAxis")
         .call(circularAxis);
 
       // Outer Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(yScale)
-        .textAnchor("middle")
-        .radius(radius * 1.04);
+        .textAnchor("middle");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
@@ -5300,9 +5303,14 @@ function chartDonutChart() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 2) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -5478,9 +5486,14 @@ function chartHeatMapRadial() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -5574,9 +5587,9 @@ function chartHeatMapRadial() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
-        .textAnchor("start")
-        .radius(radius * 1.04);
+        .textAnchor("start");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
@@ -6152,8 +6165,10 @@ function chartPolarAreaChart() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -6223,8 +6238,6 @@ function chartPolarAreaChart() {
       var circularAxis = component.circularAxis()
         .radialScale(xScale)
         .ringScale(yScale)
-        .width(chartW)
-        .height(chartH)
         .radius(radius);
 
       chart.select(".circularAxis")
@@ -6250,9 +6263,9 @@ function chartPolarAreaChart() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
-        .textAnchor("start")
-        .radius(radius * 1.04);
+        .textAnchor("start");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
@@ -6573,7 +6586,7 @@ function chartRoseChart() {
   var classed = "roseChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -6599,8 +6612,10 @@ function chartRoseChart() {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -6690,10 +6705,10 @@ function chartRoseChart() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
         .textAnchor("start")
-        .capitalizeLabels(true)
-        .radius(radius * 1.04);
+        .capitalizeLabels(true);
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);

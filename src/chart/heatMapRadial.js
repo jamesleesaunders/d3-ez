@@ -51,9 +51,14 @@ export default function() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -149,9 +154,9 @@ export default function() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
-        .textAnchor("start")
-        .radius(radius * 1.04);
+        .textAnchor("start");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
