@@ -379,7 +379,7 @@ function componentCreditTag() {
       });
 
     // Right Justify Text
-    var xPos = 0 - (d3.select("#creditTag").selectAll("text").node().getBBox().width);
+    var xPos = 0 - (selection.node().getBBox().width);
     creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
@@ -441,8 +441,8 @@ function componentTitle() {
     var subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    var titleOffset = 1 - (title.node().getBBox().width / 2);
-    var subTitleOffset = 1 - (subTitle.node().getComputedTextLength() / 2);
+    var titleOffset = 0 - (selection.node().getBBox().width / 2);
+    var subTitleOffset = 0 - (subTitle.node().getComputedTextLength() / 2);
     title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
     subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
   }
