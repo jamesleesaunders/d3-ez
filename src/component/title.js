@@ -40,10 +40,12 @@ export default function() {
     var subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    var titleOffset = 1 - (title.node().getBBox().width / 2);
-    var subTitleOffset = 1 - (subTitle.node().getComputedTextLength() / 2);
-    title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
-    subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
+    // var titleOffset = 0 - (title.node().getBBox().width / 2);
+    // var subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+    title.style("text-anchor", "middle")
+      .attr("transform", "translate(0, 15)");
+    subTitle.style("text-anchor", "middle")
+      .attr("transform", "translate(0, 30)");
   }
 
   /**

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>d3-ez : Rose Chart Example</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+</head>
+
+<body>
+  <div id="chartholder1" style="width: 100%; display: block;"></div>
+  <br />
+  <div id="chartholder2" style="width: 100%; display: block;"></div>
+
+  <script type="text/javascript">
+    data = [{
+        "key": "April",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 0.4456449819211225
+          },
+          {
+            "key": "Other Causes",
+            "value": 0.9964924734072947
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "key": "May",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 0.5683963816037488
+          },
+          {
+            "key": "Other Causes",
+            "value": 0.4895920708911949
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "key": "June",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 0.44910035513382074
+          },
+          {
+            "key": "Other Causes",
+            "value": 0.32754009741648094
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "key": "July",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 2.5198752498583787
+          },
+          {
+            "key": "Other Causes",
+            "value": 0.6374836167230692
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0
+          }
+        ]
+      },
+      {
+        "key": "August",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 3.622833452074941
+          },
+          {
+            "key": "Other Causes",
+            "value": 0.6916402468357198
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0.1268051149517051
+          }
+        ]
+      },
+      {
+        "key": "September",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 3.5400350582804325
+          },
+          {
+            "key": "Other Causes",
+            "value": 1.0544621569781183
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 1.135124846264534
+          }
+        ]
+      },
+      {
+        "key": "October",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 2.7958136622844134
+          },
+          {
+            "key": "Other Causes",
+            "value": 1.4099183817581236
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 1.4322551129152805
+          }
+        ]
+      },
+      {
+        "key": "November",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 3.7318295398530563
+          },
+          {
+            "key": "Other Causes",
+            "value": 1.3228827724548429
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 2.175974271395484
+          }
+        ]
+      },
+      {
+        "key": "December",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 4.839824098184857
+          },
+          {
+            "key": "Other Causes",
+            "value": 1.334330824701245
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 1.2436865215332569
+          }
+        ]
+      },
+      {
+        "key": "January",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 6.195987379762899
+          },
+          {
+            "key": "Other Causes",
+            "value": 2.122295180558012
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 1.0734562589519998
+          }
+        ]
+      },
+      {
+        "key": "February",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 5.688204115256894
+          },
+          {
+            "key": "Other Causes",
+            "value": 2.3471837961012283
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0.800611516345369
+          }
+        ]
+      },
+      {
+        "key": "March",
+        "values": [{
+            "key": "Zymotic Diseases",
+            "value": 4.404162171879019
+          },
+          {
+            "key": "Other Causes",
+            "value": 1.6644435360395322
+          },
+          {
+            "key": "Wounds & Injuries",
+            "value": 0.7189720273746245
+          }
+        ]
+      }
+    ];
+    var colors = ['#599ad3', '#727272', '#f1595f'];
+
+    var myChart1 = d3.ez.chart.roseChart()
+      .colors(colors)
+      .width(300)
+      .height(300);
+
+    var chartHolder1 = d3.select("#chartholder1");
+    chartHolder1
+      .datum(data)
+      .call(myChart1);
+
+    var chart = d3.ez.chart.roseChart().colors(colors);
+    var legend = d3.ez.component.legend().title("Causes of Mortality");
+    var title = d3.ez.component.title().mainText("Diagram of the Causes of Mortality in the Army in The East").subText("April 1854 to March 1855");
+    var myChart2 = d3.ez.base()
+      .width(600)
+      .height(600)
+      .chart(chart)
+      .legend(legend)
+      .title(title);
+
+    var chartHolder2 = d3.select("#chartholder2");
+    chartHolder2
+      .datum(data)
+      .call(myChart2);
+  </script>
+</body>
+
+</html>

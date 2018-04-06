@@ -379,8 +379,9 @@ function componentCreditTag() {
       });
 
     // Right Justify Text
-    var xPos = 0 - (selection.node().getBBox().width);
-    creditText.attr("transform", "translate(" + xPos + ", 0)");
+    var xPos = 0 - creditText.node().getBBox().width;
+    creditText.style("text-anchor", "end")
+      .attr("transform", "translate(" + xPos + ", 0)");
   }
 
   /**
@@ -441,10 +442,12 @@ function componentTitle() {
     var subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    var titleOffset = 0 - (selection.node().getBBox().width / 2);
-    var subTitleOffset = 0 - (subTitle.node().getComputedTextLength() / 2);
-    title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
-    subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
+    // var titleOffset = 0 - (title.node().getBBox().width / 2);
+    // var subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+    title.style("text-anchor", "middle")
+      .attr("transform", "translate(0, 15)");
+    subTitle.style("text-anchor", "middle")
+      .attr("transform", "translate(0, 30)");
   }
 
   /**
@@ -589,7 +592,7 @@ function base() {
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")")
+        .attr("transform", "translate(" + (width - margin.right) + "," + (height - margin.bottom) + ")")
         .call(creditTag);
     });
   }
@@ -625,7 +628,7 @@ function base() {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
       // If the caller has passed a plain string convert it to a title object.
-      title = componenttitle().mainText(_).subText('');
+      title = componentTitle().mainText(_).subText('');
     } else {
       title = _;
     }

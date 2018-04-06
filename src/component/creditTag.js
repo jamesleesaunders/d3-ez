@@ -30,8 +30,9 @@ export default function() {
       });
 
     // Right Justify Text
-    var xPos = 0 - (d3.select("#creditTag").selectAll("text").node().getBBox().width);
-    creditText.attr("transform", "translate(" + xPos + ", 0)");
+    var xPos = 0 - creditText.node().getBBox().width;
+    creditText.style("text-anchor", "end")
+      .attr("transform", "translate(" + xPos + ", 0)");
   }
 
   /**

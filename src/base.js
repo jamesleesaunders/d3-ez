@@ -117,7 +117,7 @@ export default function() {
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")")
+        .attr("transform", "translate(" + (width - margin.right) + "," + (height - margin.bottom) + ")")
         .call(creditTag);
     });
   }
