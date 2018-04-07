@@ -9,9 +9,13 @@
 </head>
 
 <body>
+<<<<<<< HEAD
   <div id="chartholder1" style="width: 100%; display: block;"></div>
   <br />
   <div id="chartholder2" style="width: 100%; display: block;"></div>
+=======
+  <!-- <div id="chartholder"></div> -->
+>>>>>>> 056c3f5... Fix radius calculation on circularSectorLabels.
 
   <script type="text/javascript">
     data = [{
@@ -207,6 +211,7 @@
         ]
       }
     ];
+<<<<<<< HEAD
     var colors = ['#599ad3', '#727272', '#f1595f'];
 
     var myChart1 = d3.ez.chart.roseChart()
@@ -225,14 +230,39 @@
     var myChart2 = d3.ez.base()
       .width(600)
       .height(600)
+=======
+
+    //var chartHolder = d3.select("#chartholder");
+    var div = document.createElement('div');
+    document.body.appendChild(div);
+    var chartHolder = d3.select(div);
+
+    var colors = ['#599ad3', '#727272', '#f1595f'];
+    var chart = d3.ez.chart.roseChart().colors(colors);
+    var legend = d3.ez.component.legend().title("Causes of Mortality");
+    var title = d3.ez.component.title().mainText("Diagram of the Causes of Mortality in the Army in The East").subText("April 1854 to March 1855");
+
+    var myChart = d3.ez.base()
+      .width(300)
+      .height(300)
+>>>>>>> 056c3f5... Fix radius calculation on circularSectorLabels.
       .chart(chart)
       .legend(legend)
       .title(title);
 
+<<<<<<< HEAD
     var chartHolder2 = d3.select("#chartholder2");
     chartHolder2
       .datum(data)
       .call(myChart2);
+=======
+    chartHolder
+      .datum(data)
+      .call(myChart);
+
+    // return chartHolder.node();
+
+>>>>>>> 056c3f5... Fix radius calculation on circularSectorLabels.
   </script>
 </body>
 

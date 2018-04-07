@@ -1934,17 +1934,17 @@ function componentCircularSectorLabels() {
       var defSelect = labels.selectAll("def")
         .data([radius]);
 
-      defSelect.exit()
-        .remove();
-
       defSelect.enter()
         .append("def")
         .append("path")
         .attr("id", "label-path")
-        .merge(defSelect)
         .attr("d", function(d) {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-        });
+        })
+        .merge(defSelect);
+
+      defSelect.exit()
+        .remove();
 
       var tickCount;
       var tickData = [];
@@ -1977,9 +1977,6 @@ function componentCircularSectorLabels() {
           });
         });
 
-      textSelect.exit()
-        .remove();
-
       textSelect.enter()
         .append("text")
         .style("text-anchor", textAnchor)
@@ -2004,6 +2001,9 @@ function componentCircularSectorLabels() {
         .attr("startOffset", function(d) {
           return d.offset + "%";
         });
+
+      textSelect.exit()
+        .remove();
     });
   }
 
