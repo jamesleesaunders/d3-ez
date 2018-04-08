@@ -373,15 +373,11 @@ function componentCreditTag() {
 
     var creditText = creditTag.append("text")
       .text(text)
+      .style("text-anchor", "end")
       .attr("xlink:href", href)
       .on("click", function() {
         window.open(href);
       });
-
-    // Right Justify Text
-    var xPos = 0 - creditText.node().getBBox().width;
-    creditText.style("text-anchor", "end")
-      .attr("transform", "translate(" + xPos + ", 0)");
   }
 
   /**
