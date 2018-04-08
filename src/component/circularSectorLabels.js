@@ -49,10 +49,12 @@ export default function() {
       var defSelect = labels.selectAll("def")
         .data([radius]);
 
+      // Generate rendom path def ID if there are more than one on the page.
+      var pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
       defSelect.enter()
         .append("def")
         .append("path")
-        .attr("id", "label-path")
+        .attr("id", pathId)
         .attr("d", function(d) {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         })
@@ -96,7 +98,7 @@ export default function() {
         .append("text")
         .style("text-anchor", textAnchor)
         .append("textPath")
-        .attr("xlink:href", "#label-path")
+        .attr("xlink:href", "#" + pathId)
         .text(function(d) {
           var text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;
