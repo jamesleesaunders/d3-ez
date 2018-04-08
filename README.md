@@ -155,9 +155,10 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 
 ### What type of chart should I use?
 What type of chart is best for different types of data?
-* Bar Charts are good for quantitative data.
-* Pie Charts for good to represent parts of a whole.
+* Bar charts are good for quantitative data.
+* Pie charts for good to represent parts of a whole.
 * Histograms are good for showing distribution.
+* Line charts are good for showing time series data.
 
 For more information on which charts are good for different types of data see the [Data Viz Project](http://datavizproject.com/) or [Data Viz Catalogue](https://datavizcatalogue.com/index.html)
 
