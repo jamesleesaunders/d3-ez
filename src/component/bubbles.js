@@ -53,6 +53,10 @@ export default function() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
+      // Add bubbles to series
+      var bubbles = series.selectAll(".bubble")
+        .data(function(d) { return d.values; });
+
       var bubble = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
@@ -62,13 +66,9 @@ export default function() {
         .classed("bubble")
         .dispatch(dispatch);
 
-      // Add bubbles to series
-      var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d.values; });
-
-      /*
       bubbles.enter()
         .append("g")
+        .call(bubble)
         .attr("transform", function(d) {
           return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
@@ -82,11 +82,9 @@ export default function() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .datum(function(d) { return d; })
-        .call(bubble)
         .merge(bubbles);
-      */
 
+      /*
       bubbles.enter().append("circle")
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
@@ -100,6 +98,7 @@ export default function() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
+      */
 
       bubbles.exit()
         .transition()

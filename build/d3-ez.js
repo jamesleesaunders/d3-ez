@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.6";
+var version = "3.2.7";
 
 /**
  * Base Functions - Data Parse
@@ -373,14 +373,11 @@ function componentCreditTag() {
 
     var creditText = creditTag.append("text")
       .text(text)
+      .style("text-anchor", "end")
       .attr("xlink:href", href)
       .on("click", function() {
         window.open(href);
       });
-
-    // Right Justify Text
-    var xPos = 0 - (selection.node().getBBox().width);
-    creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
   /**
@@ -441,10 +438,12 @@ function componentTitle() {
     var subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    var titleOffset = 0 - (selection.node().getBBox().width / 2);
-    var subTitleOffset = 0 - (subTitle.node().getComputedTextLength() / 2);
-    title.attr("transform", "translate(" + titleOffset + ", " + 15 + ")");
-    subTitle.attr("transform", "translate(" + subTitleOffset + ", " + 30 + ")");
+    // var titleOffset = 0 - (title.node().getBBox().width / 2);
+    // var subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+    title.style("text-anchor", "middle")
+      .attr("transform", "translate(0, 15)");
+    subTitle.style("text-anchor", "middle")
+      .attr("transform", "translate(0, 30)");
   }
 
   /**
@@ -589,7 +588,7 @@ function base() {
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")")
+        .attr("transform", "translate(" + (width - margin.right) + "," + (height - margin.bottom) + ")")
         .call(creditTag);
     });
   }
@@ -625,7 +624,7 @@ function base() {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
       // If the caller has passed a plain string convert it to a title object.
-      title = componenttitle().mainText(_).subText('');
+      title = componentTitle().mainText(_).subText('');
     } else {
       title = _;
     }
@@ -1255,7 +1254,6 @@ function componentBubbles() {
    */
   var width = 400;
   var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var xScale;
@@ -1294,6 +1292,10 @@ function componentBubbles() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
+      // Add bubbles to series
+      var bubbles = series.selectAll(".bubble")
+        .data(function(d) { return d.values; });
+
       var bubble = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.series); })
@@ -1303,13 +1305,9 @@ function componentBubbles() {
         .classed("bubble")
         .dispatch(dispatch);
 
-      // Add bubbles to series
-      var bubbles = series.selectAll(".bubble")
-        .data(function(d) { return d.values; });
-
-      /*
       bubbles.enter()
         .append("g")
+        .call(bubble)
         .attr("transform", function(d) {
           return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
         })
@@ -1323,11 +1321,9 @@ function componentBubbles() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .datum(function(d) { return d; })
-        .call(bubble)
         .merge(bubbles);
-      */
 
+      /*
       bubbles.enter().append("circle")
         .attr("class", "bubble")
         .attr("cx", function(d) { return xScale(d.x); })
@@ -1341,6 +1337,7 @@ function componentBubbles() {
         .ease(transition.ease)
         .duration(transition.duration)
         .attr("r", function(d) { return sizeScale(d.value); });
+      */
 
       bubbles.exit()
         .transition()
@@ -1933,17 +1930,19 @@ function componentCircularSectorLabels() {
       var defSelect = labels.selectAll("def")
         .data([radius]);
 
-      defSelect.exit()
-        .remove();
-
+      // Generate rendom path def ID if there are more than one on the page.
+      var pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
       defSelect.enter()
         .append("def")
         .append("path")
-        .attr("id", "label-path")
-        .merge(defSelect)
+        .attr("id", pathId)
         .attr("d", function(d) {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-        });
+        })
+        .merge(defSelect);
+
+      defSelect.exit()
+        .remove();
 
       var tickCount;
       var tickData = [];
@@ -1976,14 +1975,11 @@ function componentCircularSectorLabels() {
           });
         });
 
-      textSelect.exit()
-        .remove();
-
       textSelect.enter()
         .append("text")
         .style("text-anchor", textAnchor)
         .append("textPath")
-        .attr("xlink:href", "#label-path")
+        .attr("xlink:href", "#" + pathId)
         .text(function(d) {
           var text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;
@@ -2003,6 +1999,9 @@ function componentCircularSectorLabels() {
         .attr("startOffset", function(d) {
           return d.offset + "%";
         });
+
+      textSelect.exit()
+        .remove();
     });
   }
 
@@ -3239,7 +3238,6 @@ function componentProportionalAreaCircles() {
    */
   var width = 400;
   var height = 100;
-  var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
   var colorScale;
   var xScale;
@@ -3286,6 +3284,10 @@ function componentProportionalAreaCircles() {
         return "translate(0 , " + (cellHeight / 2) + ")";
       });
 
+      // Add spots to series
+      var spots = series.selectAll(".punchSpot")
+        .data(function(d) { return d.values; });
+
       var spot = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.value); })
@@ -3294,15 +3296,11 @@ function componentProportionalAreaCircles() {
         .classed("punchSpot")
         .dispatch(dispatch);
 
-      // Add spots to series
-      var spots = series.selectAll(".punchSpot")
-        .data(function(d) { return d.values; });
-
-      /*
       spots.enter()
         .append("g")
+        .call(spot)
         .attr("transform", function(d) {
-          return "translate(" + xScale(d.key) + ",0)";
+          return "translate(" + (cellWidth / 2 + xScale(d.key)) + ",0)";
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
@@ -3314,11 +3312,9 @@ function componentProportionalAreaCircles() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .datum(function(d) { return d; })
-        .call(spot)
         .merge(spots);
-      */
 
+      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
         .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
@@ -3331,6 +3327,7 @@ function componentProportionalAreaCircles() {
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); })
         .attr("r", function(d) { return sizeScale(d['value']); });
+      */
 
       spots.exit()
         .transition()
@@ -3963,7 +3960,7 @@ function chartBarChartCircular() {
   var classed = "barChartCircular";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3996,9 +3993,14 @@ function chartBarChartCircular() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -4063,20 +4065,18 @@ function chartBarChartCircular() {
 
       // Circular Axis
       var circularAxis = component.circularAxis()
+        .radius(radius)
         .radialScale(yScale)
-        .ringScale(xScale)
-        .width(chartW)
-        .height(chartH)
-        .radius(radius);
+        .ringScale(xScale);
 
       chart.select(".circularAxis")
         .call(circularAxis);
 
       // Outer Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(yScale)
-        .textAnchor("middle")
-        .radius(radius * 1.04);
+        .textAnchor("middle");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
@@ -5301,9 +5301,14 @@ function chartDonutChart() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 2 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 2) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -5479,9 +5484,14 @@ function chartHeatMapRadial() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
-    innerRadius = (typeof innerRadius === 'undefined') ? defaultRadius / 4 : innerRadius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
+
+    innerRadius = (typeof innerRadius === 'undefined') ?
+      (radius / 4) :
+      innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -5575,9 +5585,9 @@ function chartHeatMapRadial() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
-        .textAnchor("start")
-        .radius(radius * 1.04);
+        .textAnchor("start");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
@@ -6153,8 +6163,10 @@ function chartPolarAreaChart() {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -6224,8 +6236,6 @@ function chartPolarAreaChart() {
       var circularAxis = component.circularAxis()
         .radialScale(xScale)
         .ringScale(yScale)
-        .width(chartW)
-        .height(chartH)
         .radius(radius);
 
       chart.select(".circularAxis")
@@ -6251,9 +6261,9 @@ function chartPolarAreaChart() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
-        .textAnchor("start")
-        .radius(radius * 1.04);
+        .textAnchor("start");
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);
@@ -6574,7 +6584,7 @@ function chartRoseChart() {
   var classed = "roseChart";
   var width = 400;
   var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -6600,8 +6610,10 @@ function chartRoseChart() {
     chartW = width - margin.left - margin.right;
     chartH = height - margin.top - margin.bottom;
 
-    var defaultRadius = Math.min(chartW, chartH) / 2;
-    radius = (typeof radius === 'undefined') ? defaultRadius : radius;
+    // If the radius has not been passed then calculate it from width/height.
+    radius = (typeof radius === 'undefined') ?
+      (Math.min(chartW, chartH) / 2) :
+      radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -6691,10 +6703,10 @@ function chartRoseChart() {
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels()
+        .radius(radius * 1.04)
         .radialScale(xScale)
         .textAnchor("start")
-        .capitalizeLabels(true)
-        .radius(radius * 1.04);
+        .capitalizeLabels(true);
 
       chart.select(".circularSectorLabels")
         .call(circularSectorLabels);

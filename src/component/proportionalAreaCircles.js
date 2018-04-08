@@ -61,6 +61,10 @@ export default function() {
         return "translate(0 , " + (cellHeight / 2) + ")";
       });
 
+      // Add spots to series
+      var spots = series.selectAll(".punchSpot")
+        .data(function(d) { return d.values; });
+
       var spot = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
         .color(function(d) { return colorScale(d.value); })
@@ -69,15 +73,11 @@ export default function() {
         .classed("punchSpot")
         .dispatch(dispatch);
 
-      // Add spots to series
-      var spots = series.selectAll(".punchSpot")
-        .data(function(d) { return d.values; });
-
-      /*
       spots.enter()
         .append("g")
+        .call(spot)
         .attr("transform", function(d) {
-          return "translate(" + xScale(d.key) + ",0)";
+          return "translate(" + (cellWidth / 2 + xScale(d.key)) + ",0)";
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
@@ -89,11 +89,9 @@ export default function() {
         .on("click", function(d) {
           dispatch.call("customValueClick", this, d);
         })
-        .datum(function(d) { return d; })
-        .call(spot)
         .merge(spots);
-      */
 
+      /*
       spots.enter().append("circle")
         .attr("class", "punchSpot")
         .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
@@ -106,6 +104,7 @@ export default function() {
         .duration(transition.duration)
         .attr("fill", function(d) { return colorScale(d.value); })
         .attr("r", function(d) { return sizeScale(d['value']); });
+      */
 
       spots.exit()
         .transition()

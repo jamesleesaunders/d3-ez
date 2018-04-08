@@ -1,6 +1,6 @@
 {
   "name": "d3-ez",
-  "version": "3.2.6",
+  "version": "3.2.7",
   "description": "D3 Easy Reusable Chart Library",
   "license": "GPL-3.0",
   "keywords": [
@@ -23,6 +23,8 @@
     "url": "https://github.com/jamesleesaunders/d3-ez/issues"
   },
   "main": "build/d3-ez.js",
+  "unpkg": "build/d3-ez.min.js",
+  "module": "index",
   "scripts": {
     "pretest": "make",
     "test": "tape 'test/**/*-test.js'"

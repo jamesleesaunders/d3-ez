@@ -117,7 +117,7 @@ export default function() {
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr("transform", "translate(" + (width - 20) + "," + (height - 20) + ")")
+        .attr("transform", "translate(" + (width - margin.right) + "," + (height - margin.bottom) + ")")
         .call(creditTag);
     });
   }
@@ -153,7 +153,7 @@ export default function() {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
       // If the caller has passed a plain string convert it to a title object.
-      title = componenttitle().mainText(_).subText('');
+      title = componentTitle().mainText(_).subText('');
     } else {
       title = _;
     }

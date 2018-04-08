@@ -24,14 +24,11 @@ export default function() {
 
     var creditText = creditTag.append("text")
       .text(text)
+      .style("text-anchor", "end")
       .attr("xlink:href", href)
       .on("click", function() {
         window.open(href);
       });
-
-    // Right Justify Text
-    var xPos = 0 - (d3.select("#creditTag").selectAll("text").node().getBBox().width);
-    creditText.attr("transform", "translate(" + xPos + ", 0)");
   }
 
   /**
