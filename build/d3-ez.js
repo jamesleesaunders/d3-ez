@@ -307,7 +307,7 @@ var palette = {
 
       // Convert to decimal and change luminosity
       var newHex = "#";
-      var c;
+      var c = void 0;
       for (var j = 0; j < 3; j++) {
         c = parseInt(origHex.substr(j * 2, 2), 16);
         c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
@@ -458,8 +458,8 @@ function base () {
   /**
    * Default Properties
    */
-  var svg;
-  var canvas;
+  var svg = void 0;
+  var canvas = void 0;
   var width = 600;
   var height = 400;
   var margin = { top: 15, right: 15, bottom: 15, left: 15 };
@@ -3549,6 +3549,7 @@ function chartBarChartCircular () {
    * Default Properties
    */
 <<<<<<< HEAD
+<<<<<<< HEAD
   var svg;
   var chart;
 =======
@@ -3562,10 +3563,22 @@ function chartBarChartCircular () {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+=======
+  let svg;
+  let chart;
+  let classed = "barChartCircular";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
 
   /**
    * Chart Dimensions
    */
+<<<<<<< HEAD
 <<<<<<< HEAD
   var chartW;
   var chartH;
@@ -3577,10 +3590,17 @@ function chartBarChartCircular () {
   var radius = void 0;
   var innerRadius = void 0;
 >>>>>>> a86da0b... Added babel plugin.
+=======
+  let chartW;
+  let chartH;
+  let radius;
+  let innerRadius;
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
 
   /**
    * Scales and Axis
    */
+<<<<<<< HEAD
 <<<<<<< HEAD
   var xScale;
   var yScale;
@@ -3590,12 +3610,17 @@ function chartBarChartCircular () {
   var yScale = void 0;
   var colorScale = void 0;
 >>>>>>> a86da0b... Added babel plugin.
+=======
+  let xScale;
+  let yScale;
+  let colorScale;
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
 
   /**
    * Other Customisation Options
    */
-  var startAngle = 0;
-  var endAngle = 270;
+  let startAngle = 0;
+  let endAngle = 270;
 
   /**
    * Initialise Data, Scales and Series
@@ -3610,9 +3635,9 @@ function chartBarChartCircular () {
     innerRadius = typeof innerRadius === 'undefined' ? radius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
 
     // Colour Scale
     if (!colorScale) {
@@ -3637,10 +3662,14 @@ function chartBarChartCircular () {
       if (!svg) {
 <<<<<<< HEAD
         svg = (function(selection) {
+<<<<<<< HEAD
 =======
         svg = function (selection) {
 >>>>>>> a86da0b... Added babel plugin.
           var el = selection._groups[0][0];
+=======
+          let el = selection._groups[0][0];
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -3664,7 +3693,11 @@ function chartBarChartCircular () {
 
       // Circular Axis
 <<<<<<< HEAD
+<<<<<<< HEAD
       var circularAxis = component.circularAxis()
+=======
+      let circularAxis = component.circularAxis()
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
         .radius(radius)
         .radialScale(yScale)
         .ringScale(xScale);
@@ -3676,7 +3709,11 @@ function chartBarChartCircular () {
 
       // Outer Labels
 <<<<<<< HEAD
+<<<<<<< HEAD
       var circularSectorLabels = component.circularSectorLabels()
+=======
+      let circularSectorLabels = component.circularSectorLabels()
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
         .radius(radius * 1.04)
         .radialScale(yScale)
         .textAnchor("middle");
@@ -3688,7 +3725,11 @@ function chartBarChartCircular () {
 
       // Radial Bar Chart
 <<<<<<< HEAD
+<<<<<<< HEAD
       var barsCircular = component.barsCircular()
+=======
+      let barsCircular = component.barsCircular()
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
         .radius(radius)
         .innerRadius(innerRadius)
         .yScale(yScale)
@@ -3701,7 +3742,7 @@ function chartBarChartCircular () {
         .call(barsCircular);
 
       // Ring Labels
-      var circularRingLabels = component.circularRingLabels()
+      let circularRingLabels = component.circularRingLabels()
         .radialScale(xScale)
         .textAnchor("middle");
 =======
@@ -3776,10 +3817,14 @@ function chartBarChartCircular () {
 
 <<<<<<< HEAD
   my.on = function() {
+<<<<<<< HEAD
 =======
   my.on = function () {
 >>>>>>> a86da0b... Added babel plugin.
     var value = dispatch.on.apply(dispatch, arguments);
+=======
+    let value = dispatch.on.apply(dispatch, arguments);
+>>>>>>> 6867ec4... Converted src/chart files from var to let.
     return value === dispatch ? my : value;
   };
 
@@ -4865,8 +4910,8 @@ function chartHeatMapRadial () {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
+  var svg = void 0;
+  var chart = void 0;
   var classed = "heatMapRadial";
   var width = 400;
   var height = 300;
@@ -4878,24 +4923,24 @@ function chartHeatMapRadial () {
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
-  var innerRadius;
+  var chartW = void 0;
+  var chartH = void 0;
+  var radius = void 0;
+  var innerRadius = void 0;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
 
   /**
    * Other Customisation Options
    */
   var startAngle = 0;
   var endAngle = 270;
-  var thresholds;
+  var thresholds = void 0;
 
   /**
    * Initialise Data, Scales and Series
@@ -5067,8 +5112,8 @@ function chartHeatMapTable () {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
+  var svg = void 0;
+  var chart = void 0;
   var classed = "heatMapTable";
   var width = 400;
   var height = 300;
@@ -5079,22 +5124,22 @@ function chartHeatMapTable () {
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  var chartW = void 0;
+  var chartH = void 0;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
-  var xAxis;
-  var yAxis;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
+  var xAxis = void 0;
+  var yAxis = void 0;
 
   /**
    * Other Customisation Options
    */
-  var thresholds;
+  var thresholds = void 0;
 
   /**
    * Initialise Data, Scales and Series
@@ -5245,8 +5290,8 @@ function chartLineChart () {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
+  var svg = void 0;
+  var chart = void 0;
   var classed = "lineChart";
   var width = 400;
   var height = 300;
@@ -5258,17 +5303,17 @@ function chartLineChart () {
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  var chartW = void 0;
+  var chartH = void 0;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var xAxis = void 0;
+  var yAxis = void 0;
+  var colorScale = void 0;
 
   /**
    * Other Customisation Options
@@ -5448,8 +5493,8 @@ function chartPolarAreaChart () {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
+  var svg = void 0;
+  var chart = void 0;
   var classed = "polarArea";
   var width = 400;
   var height = 300;
@@ -5461,16 +5506,16 @@ function chartPolarAreaChart () {
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
+  var chartW = void 0;
+  var chartH = void 0;
+  var radius = void 0;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
 
   /**
    * Other Customisation Options
@@ -5642,8 +5687,8 @@ function chartPunchCard () {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
+  var svg = void 0;
+  var chart = void 0;
   var classed = "punchCard";
   var width = 400;
   var height = 300;
@@ -5654,18 +5699,18 @@ function chartPunchCard () {
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  var chartW = void 0;
+  var chartH = void 0;
 
   /**
    * Scales and Axis
    */
-  var sizeScale;
-  var xScale;
-  var yScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  var sizeScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
+  var xAxis = void 0;
+  var yAxis = void 0;
+  var colorScale = void 0;
 
   /**
    * Other Customisation Options
@@ -5839,8 +5884,8 @@ function chartRoseChart () {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
+  var svg = void 0;
+  var chart = void 0;
   var classed = "roseChart";
   var width = 400;
   var height = 300;
@@ -5852,16 +5897,16 @@ function chartRoseChart () {
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
+  var chartW = void 0;
+  var chartH = void 0;
+  var radius = void 0;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
 
   /**
    * Initialise Data, Scales and Series

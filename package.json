@@ -42,7 +42,7 @@
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-json": "^2.3.0",
     "tape": "^4.9.0",
-    "uglify-js": "^2.6.0",
+    "uglify-es": "^3.3.9",
     "vows": "0.8"
   },
   "dependencies": {

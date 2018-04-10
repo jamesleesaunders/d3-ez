@@ -12,37 +12,37 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "polarArea";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "polarArea";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
+  let chartW;
+  let chartH;
+  let radius;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
+  let xScale;
+  let yScale;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var startAngle = 0;
-  var endAngle = 360;
-  var capitalizeLabels = false;
-  var colorLabels = false;
+  let startAngle = 0;
+  let endAngle = 360;
+  let capitalizeLabels = false;
+  let colorLabels = false;
 
   /**
    * Initialise Data, Scales and Series
@@ -57,9 +57,9 @@ export default function() {
       radius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
 
     // Colour Scale
     if (!colorScale) {
@@ -93,7 +93,7 @@ export default function() {
       // Create SVG element (if it does not exist already)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -121,7 +121,7 @@ export default function() {
         .attr("height", chartH);
 
       // Circular Axis
-      var circularAxis = component.circularAxis()
+      let circularAxis = component.circularAxis()
         .radialScale(xScale)
         .ringScale(yScale)
         .radius(radius);
@@ -130,7 +130,7 @@ export default function() {
         .call(circularAxis);
 
       // Radial Bar Chart
-      var polarArea = component.polarArea()
+      let polarArea = component.polarArea()
         .radius(radius)
         .xScale(xScale)
         .yScale(yScale)
@@ -142,13 +142,13 @@ export default function() {
         .call(polarArea);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale);
+      let verticalAxis = d3.axisLeft(yScale);
       chart.select(".verticalAxis")
         .attr("transform", "translate(0," + -(chartH / 2) + ")")
         .call(verticalAxis);
 
       // Circular Labels
-      var circularSectorLabels = component.circularSectorLabels()
+      let circularSectorLabels = component.circularSectorLabels()
         .radius(radius * 1.04)
         .radialScale(xScale)
         .textAnchor("start");
@@ -223,7 +223,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

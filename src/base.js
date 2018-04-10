@@ -11,26 +11,26 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var canvas;
-  var width = 600;
-  var height = 400;
-  var margin = { top: 15, right: 15, bottom: 15, left: 15 };
-  var canvasW = 580;
-  var canvasH = 380;
-  var chartTop = 0;
-  var classed = "d3ez";
+  let svg;
+  let canvas;
+  let width = 600;
+  let height = 400;
+  let margin = { top: 15, right: 15, bottom: 15, left: 15 };
+  let canvasW = 580;
+  let canvasH = 380;
+  let chartTop = 0;
+  let classed = "d3ez";
 
-  var chart = undefined;
-  var legend = undefined;
-  var title = undefined;
-  var creditTag = componentCreditTag();
-  var description = "";
-  var yAxisLabel = "";
+  let chart = undefined;
+  let legend = undefined;
+  let title = undefined;
+  let creditTag = componentCreditTag();
+  let description = "";
+  let yAxisLabel = "";
 
-  var colorScale = undefined;
+  let colorScale = undefined;
 
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
@@ -167,7 +167,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

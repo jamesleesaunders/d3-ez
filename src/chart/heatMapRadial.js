@@ -12,37 +12,37 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "heatMapRadial";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "heatMapRadial";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
-  var innerRadius;
+  let chartW;
+  let chartH;
+  let radius;
+  let innerRadius;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
+  let xScale;
+  let yScale;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var startAngle = 0;
-  var endAngle = 270;
-  var thresholds;
+  let startAngle = 0;
+  let endAngle = 270;
+  let thresholds;
 
   /**
    * Initialise Data, Scales and Series
@@ -61,11 +61,11 @@ export default function() {
       innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+    let slicedData = dataParse(data);
+    let maxValue = slicedData.maxValue;
+    let minValue = slicedData.minValue;
+    let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
@@ -105,7 +105,7 @@ export default function() {
       // Create chart element (if it does not exist already)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -131,7 +131,7 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var heatMapRing = component.heatMapRing()
+      let heatMapRing = component.heatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .colorScale(colorScale)
@@ -139,7 +139,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
+      let seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
         .data(function(d) { return d; });
 
       seriesGroup.enter()
@@ -153,7 +153,7 @@ export default function() {
         .remove();
 
       // Circular Labels
-      var circularSectorLabels = component.circularSectorLabels()
+      let circularSectorLabels = component.circularSectorLabels()
         .radius(radius * 1.04)
         .radialScale(xScale)
         .textAnchor("start");
@@ -162,7 +162,7 @@ export default function() {
         .call(circularSectorLabels);
 
       // Ring Labels
-      var circularRingLabels = component.circularRingLabels()
+      let circularRingLabels = component.circularRingLabels()
         .radialScale(yScale)
         .textAnchor("middle");
 
@@ -230,7 +230,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

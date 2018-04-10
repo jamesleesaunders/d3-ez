@@ -12,29 +12,29 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "roseChart";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "roseChart";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
+  let chartW;
+  let chartH;
+  let radius;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
+  let xScale;
+  let yScale;
+  let colorScale;
 
   /**
    * Initialise Data, Scales and Series
@@ -49,10 +49,10 @@ export default function() {
       radius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var groupNames = slicedData.groupNames;
-    var maxValue = slicedData.maxValue;
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let groupNames = slicedData.groupNames;
+    let maxValue = slicedData.maxValue;
+    let categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -84,7 +84,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -108,7 +108,7 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      var roseChartSector = component.roseChartSector()
+      let roseChartSector = component.roseChartSector()
         .radius(radius)
         .yScale(yScale)
         .stacked(false)
@@ -116,7 +116,7 @@ export default function() {
         .dispatch(dispatch);
 
       // Create series group
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      let seriesGroup = chart.selectAll(".seriesGroup")
         .data(data);
 
       seriesGroup.enter()
@@ -125,8 +125,8 @@ export default function() {
         .datum(function(d) { return d; })
         .merge(seriesGroup)
         .each(function(d) {
-          var startAngle = xScale(d.key);
-          var endAngle = xScale(d.key) + xScale.bandwidth();
+          let startAngle = xScale(d.key);
+          let endAngle = xScale(d.key) + xScale.bandwidth();
           roseChartSector.startAngle(startAngle).endAngle(endAngle);
           d3.select(this).call(roseChartSector);
         });
@@ -135,7 +135,7 @@ export default function() {
         .remove();
 
       // Circular Labels
-      var circularSectorLabels = component.circularSectorLabels()
+      let circularSectorLabels = component.circularSectorLabels()
         .radius(radius * 1.04)
         .radialScale(xScale)
         .textAnchor("start")
@@ -193,7 +193,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -48,17 +48,17 @@ export default {
   sequential: function(origHex, count) {
     // Sequential colour palettes are primarily used to encode quantitative differences.
     // Quantitative values are arranged sequentially, from low to high.
-    var lumStep = 0.1;
-    var lumMax = (lumStep * count) / 2;
-    var lumMin = 0 - lumMax;
+    let lumStep = 0.1;
+    let lumMax = (lumStep * count) / 2;
+    let lumMin = 0 - lumMax;
 
-    var lumScale = d3.scaleLinear()
+    let lumScale = d3.scaleLinear()
       .domain([1, count])
       .range([lumMin, lumMax]);
 
-    var result = [];
-    for (var i = 1; i <= count; i++) {
-      var lum = lumScale(i);
+    let result = [];
+    for (let i = 1; i <= count; i++) {
+      let lum = lumScale(i);
 
       // Validate and normalise Hex value.
       origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
@@ -67,9 +67,9 @@ export default {
       }
 
       // Convert to decimal and change luminosity
-      var newHex = "#";
-      var c;
-      for (var j = 0; j < 3; j++) {
+      let newHex = "#";
+      let c;
+      for (let j = 0; j < 3; j++) {
         c = parseInt(origHex.substr(j * 2, 2), 16);
         c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
         newHex += ("00" + c).substr(c.length);
@@ -80,7 +80,7 @@ export default {
   },
 
   lumShift: function(colors, lum) {
-    var result = [];
+    let result = [];
     colors.forEach(function addNumber(origHex, index) {
       origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
       if (origHex.length < 6) {
@@ -89,9 +89,9 @@ export default {
       lum = lum || 0;
 
       // Convert to decimal and change luminosity
-      var newHex = "#";
-      for (var i = 0; i < 3; i++) {
-        var c = parseInt(origHex.substr(i * 2, 2), 16);
+      let newHex = "#";
+      for (let i = 0; i < 3; i++) {
+        let c = parseInt(origHex.substr(i * 2, 2), 16);
         c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
         newHex += ("00" + c).substr(c.length);
       }

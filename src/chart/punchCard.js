@@ -12,38 +12,38 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "punchCard";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "punchCard";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  let chartW;
+  let chartH;
 
   /**
    * Scales and Axis
    */
-  var sizeScale;
-  var xScale;
-  var yScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  let sizeScale;
+  let xScale;
+  let yScale;
+  let xAxis;
+  let yAxis;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var minRadius = 2;
-  var maxRadius = 20;
-  var useGlobalScale = true;
+  let minRadius = 2;
+  let maxRadius = 20;
+  let useGlobalScale = true;
 
   /**
    * Initialise Data, Scales and Series
@@ -53,14 +53,14 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+    let slicedData = dataParse(data);
+    let maxValue = slicedData.maxValue;
+    let minValue = slicedData.minValue;
+    let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
 
-    var valDomain = [minValue, maxValue];
-    var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
+    let valDomain = [minValue, maxValue];
+    let sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
       return d['value'];
     })];
 
@@ -105,7 +105,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -142,7 +142,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var proportionalAreaCircles = component.proportionalAreaCircles()
+      let proportionalAreaCircles = component.proportionalAreaCircles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -151,7 +151,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      let seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; });
 
       seriesGroup.enter().append("g")
@@ -225,7 +225,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -12,35 +12,35 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "lineChart";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "lineChart";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  let chartW;
+  let chartH;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  let xScale;
+  let yScale;
+  let xAxis;
+  let yAxis;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var yAxisLabel = null;
+  let yAxisLabel = null;
 
   /**
    * Initialise Data, Scales and Series
@@ -50,9 +50,9 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var groupNames = slicedData.groupNames;
+    let slicedData = dataParse(data);
+    let maxValue = slicedData.maxValue;
+    let groupNames = slicedData.groupNames;
 
     // Convert dates
     data.forEach(function(d, i) {
@@ -60,7 +60,7 @@ export default function() {
         data[i].values[j].key = new Date(b.key * 1000);
       });
     });
-    var dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+    let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
     // Colour Scale
     if (!colorScale) {
@@ -97,7 +97,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -141,7 +141,7 @@ export default function() {
       chart.select(".yAxis")
         .call(yAxis);
 
-      var lineChart = component.lineChart()
+      let lineChart = component.lineChart()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -149,7 +149,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var scatterPlot = component.scatterPlot()
+      let scatterPlot = component.scatterPlot()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -157,7 +157,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var lineGroup = chart.selectAll(".lineGroup")
+      let lineGroup = chart.selectAll(".lineGroup")
         .data(function(d) { return d; });
 
       lineGroup.enter().append("g")
@@ -170,7 +170,7 @@ export default function() {
       lineGroup.exit()
         .remove();
 
-      var dotGroup = chart.selectAll(".dotGroup")
+      let dotGroup = chart.selectAll(".dotGroup")
         .data(function(d) { return d; });
 
       dotGroup.enter().append("g")
@@ -237,7 +237,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

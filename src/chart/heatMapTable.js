@@ -12,35 +12,35 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "heatMapTable";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 45, right: 20, bottom: 20, left: 45 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "heatMapTable";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  let chartW;
+  let chartH;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var colorScale;
-  var xAxis;
-  var yAxis;
+  let xScale;
+  let yScale;
+  let colorScale;
+  let xAxis;
+  let yAxis;
 
   /**
    * Other Customisation Options
    */
-  var thresholds;
+  let thresholds;
 
   /**
    * Initialise Data, Scales and Series
@@ -50,11 +50,11 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+    let slicedData = dataParse(data);
+    let maxValue = slicedData.maxValue;
+    let minValue = slicedData.minValue;
+    let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
 
     // If thresholds values are not already set
     // attempt to auto-calculate some thresholds.
@@ -98,7 +98,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -135,7 +135,7 @@ export default function() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var heatMapRow = component.heatMapRow()
+      let heatMapRow = component.heatMapRow()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -143,7 +143,7 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      let seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; });
 
       seriesGroup.enter().append("g")
@@ -205,7 +205,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 
