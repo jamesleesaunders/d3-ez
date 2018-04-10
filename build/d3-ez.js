@@ -3556,14 +3556,8 @@ function chartBarChartCircular () {
   /**
    * Default Properties
    */
-<<<<<<< HEAD
-<<<<<<< HEAD
-  var svg;
-  var chart;
-=======
   var svg = void 0;
   var chart = void 0;
->>>>>>> a86da0b... Added babel plugin.
   var classed = "barChartCircular";
   var width = 400;
   var height = 300;
@@ -3571,64 +3565,27 @@ function chartBarChartCircular () {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-=======
-  let svg;
-  let chart;
-  let classed = "barChartCircular";
-  let width = 400;
-  let height = 300;
-  let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  let transition = { ease: d3.easeBounce, duration: 500 };
-  let colors = palette.categorical(3);
-  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
->>>>>>> 6867ec4... Converted src/chart files from var to let.
 
   /**
    * Chart Dimensions
    */
-<<<<<<< HEAD
-<<<<<<< HEAD
-  var chartW;
-  var chartH;
-  var radius;
-  var innerRadius;
-=======
   var chartW = void 0;
   var chartH = void 0;
   var radius = void 0;
   var innerRadius = void 0;
->>>>>>> a86da0b... Added babel plugin.
-=======
-  let chartW;
-  let chartH;
-  let radius;
-  let innerRadius;
->>>>>>> 6867ec4... Converted src/chart files from var to let.
 
   /**
    * Scales and Axis
    */
-<<<<<<< HEAD
-<<<<<<< HEAD
-  var xScale;
-  var yScale;
-  var colorScale;
-=======
   var xScale = void 0;
   var yScale = void 0;
   var colorScale = void 0;
->>>>>>> a86da0b... Added babel plugin.
-=======
-  let xScale;
-  let yScale;
-  let colorScale;
->>>>>>> 6867ec4... Converted src/chart files from var to let.
 
   /**
    * Other Customisation Options
    */
-  let startAngle = 0;
-  let endAngle = 270;
+  var startAngle = 0;
+  var endAngle = 270;
 
   /**
    * Initialise Data, Scales and Series
@@ -3643,9 +3600,9 @@ function chartBarChartCircular () {
     innerRadius = typeof innerRadius === 'undefined' ? radius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    let slicedData = dataParse(data);
-    let categoryNames = slicedData.categoryNames;
-    let maxValue = slicedData.maxValue;
+    var slicedData = dataParse(data);
+    var categoryNames = slicedData.categoryNames;
+    var maxValue = slicedData.maxValue;
 
     // Colour Scale
     if (!colorScale) {
@@ -3668,16 +3625,8 @@ function chartBarChartCircular () {
 
       // Create SVG element (if it does not exist already)
       if (!svg) {
-<<<<<<< HEAD
-        svg = (function(selection) {
-<<<<<<< HEAD
-=======
         svg = function (selection) {
->>>>>>> a86da0b... Added babel plugin.
           var el = selection._groups[0][0];
-=======
-          let el = selection._groups[0][0];
->>>>>>> 6867ec4... Converted src/chart files from var to let.
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -3700,64 +3649,19 @@ function chartBarChartCircular () {
       chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
 
       // Circular Axis
-<<<<<<< HEAD
-<<<<<<< HEAD
-      var circularAxis = component.circularAxis()
-=======
-      let circularAxis = component.circularAxis()
->>>>>>> 6867ec4... Converted src/chart files from var to let.
-        .radius(radius)
-        .radialScale(yScale)
-        .ringScale(xScale);
-=======
       var circularAxis = component.circularAxis().radius(radius).radialScale(yScale).ringScale(xScale);
->>>>>>> a86da0b... Added babel plugin.
 
       chart.select(".circularAxis").call(circularAxis);
 
       // Outer Labels
-<<<<<<< HEAD
-<<<<<<< HEAD
-      var circularSectorLabels = component.circularSectorLabels()
-=======
-      let circularSectorLabels = component.circularSectorLabels()
->>>>>>> 6867ec4... Converted src/chart files from var to let.
-        .radius(radius * 1.04)
-        .radialScale(yScale)
-        .textAnchor("middle");
-=======
       var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(yScale).textAnchor("middle");
->>>>>>> a86da0b... Added babel plugin.
 
       chart.select(".circularSectorLabels").call(circularSectorLabels);
 
       // Radial Bar Chart
-<<<<<<< HEAD
-<<<<<<< HEAD
-      var barsCircular = component.barsCircular()
-=======
-      let barsCircular = component.barsCircular()
->>>>>>> 6867ec4... Converted src/chart files from var to let.
-        .radius(radius)
-        .innerRadius(innerRadius)
-        .yScale(yScale)
-        .xScale(xScale)
-        .colorScale(colorScale)
-        .dispatch(dispatch);
-
-      chart.select(".barsCircular")
-        .datum(data)
-        .call(barsCircular);
-
-      // Ring Labels
-      let circularRingLabels = component.circularRingLabels()
-        .radialScale(xScale)
-        .textAnchor("middle");
-=======
       var barsCircular = component.barsCircular().radius(radius).innerRadius(innerRadius).yScale(yScale).xScale(xScale).colorScale(colorScale).dispatch(dispatch);
 
       chart.select(".barsCircular").datum(data).call(barsCircular);
->>>>>>> a86da0b... Added babel plugin.
 
       // Ring Labels
       var circularRingLabels = component.circularRingLabels().radialScale(xScale).textAnchor("middle");
@@ -3823,16 +3727,8 @@ function chartBarChartCircular () {
     return this;
   };
 
-<<<<<<< HEAD
-  my.on = function() {
-<<<<<<< HEAD
-=======
   my.on = function () {
->>>>>>> a86da0b... Added babel plugin.
     var value = dispatch.on.apply(dispatch, arguments);
-=======
-    let value = dispatch.on.apply(dispatch, arguments);
->>>>>>> 6867ec4... Converted src/chart files from var to let.
     return value === dispatch ? my : value;
   };
 
