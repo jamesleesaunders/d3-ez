@@ -41,4 +41,4 @@ min:
 zip: $(GENERATED_FILES)
 	@echo Zipping...
 	@rm -f build/d3-ez.zip
-	@zip -q build/d3-ez.zip $^
+	@zip -qj build/d3-ez.zip $^
