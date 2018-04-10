@@ -1,6 +1,9 @@
 # d3-ez
 ## D3 Easy Reusable Charts
 
+[![Build Status](https://travis-ci.org/jamesleesaunders/d3-ez.svg?branch=master)](https://travis-ci.org/jamesleesaunders/d3-ez)
+[![npm version](https://badge.fury.io/js/d3-ez.svg)](https://badge.fury.io/js/d3-ez)
+
 **d3-ez** is a library of reusable charts which use [D3v4](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating charts and graph making with D3. **d3-ez** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualisations with minimal code.
 
 ### Getting Started
