@@ -1,4 +1,5 @@
 import json from 'rollup-plugin-json';
+import babel from 'rollup-plugin-babel';
 
 var banner = "/** \n\
  * d3-ez \n\
@@ -23,8 +24,14 @@ export default {
   },
   external: ['d3'],
   plugins: [
-  json({
+    babel({
+      exclude: ['node_modules/**', '*.json'],
+      babelrc: false,
+      presets: [['es2015', {'modules': false}]],
+      plugins: ['external-helpers']
+    }),
+    json({
       exclude: ['node_modules/**']
     })
-]
+  ]
 };

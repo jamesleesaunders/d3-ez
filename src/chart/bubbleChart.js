@@ -12,38 +12,38 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "bubbleChart";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "bubbleChart";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 40, left: 40 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  let chartW;
+  let chartH;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var sizeScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  let xScale;
+  let yScale;
+  let sizeScale;
+  let xAxis;
+  let yAxis;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var minRadius = 3;
-  var maxRadius = 20;
-  var yAxisLabel;
+  let minRadius = 3;
+  let maxRadius = 20;
+  let yAxisLabel;
 
   /**
    * Initialise Data, Scales and Series
@@ -55,9 +55,9 @@ export default function() {
     // Slice Data, calculate totals, max etc.
     function extents(key) {
       // Calculate the extents for each series.
-      var serExts = [];
+      let serExts = [];
       d3.map(data).values().forEach(function(d) {
-        var vals = d.values.map(function(e) {
+        let vals = d.values.map(function(e) {
           return +e[key];
         });
         serExts.push(d3.extent(vals));
@@ -67,10 +67,10 @@ export default function() {
       return d3.extent([].concat.apply([], serExts));
     }
 
-    var xDomain = extents('x');
-    var yDomain = extents('y');
-    var sizeDomain = extents('value');
-    var categoryNames = data.map(function(d) {
+    let xDomain = extents('x');
+    let yDomain = extents('y');
+    let sizeDomain = extents('value');
+    let categoryNames = data.map(function(d) {
       return d.key;
     });
 
@@ -114,7 +114,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -154,7 +154,7 @@ export default function() {
         .call(yAxis);
 
       // Add bubbles to the chart
-      var bubbles = component.bubbles()
+      let bubbles = component.bubbles()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -163,7 +163,7 @@ export default function() {
         .sizeScale(sizeScale)
         .dispatch(dispatch);
 
-      var bubbleGroup = chart.selectAll(".bubbleGroup")
+      let bubbleGroup = chart.selectAll(".bubbleGroup")
         .data(function(d) { return d; });
 
       bubbleGroup.enter().append("g")
@@ -230,7 +230,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

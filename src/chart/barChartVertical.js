@@ -12,35 +12,35 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "barChartVertical";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "barChartVertical";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  let chartW;
+  let chartH;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var yScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  let xScale;
+  let yScale;
+  let xAxis;
+  let yAxis;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var yAxisLabel;
+  let yAxisLabel;
 
   /**
    * Initialise Data, Scales and Series
@@ -50,9 +50,9 @@ export default function() {
     chartH = height - (margin.top + margin.bottom);
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
 
     if (!yAxisLabel) {
       yAxisLabel = slicedData.groupName;
@@ -92,7 +92,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -127,7 +127,7 @@ export default function() {
         .call(yAxis);
 
       // Add labels to chart
-      var ylabel = chart.select(".yAxis")
+      let ylabel = chart.select(".yAxis")
         .selectAll(".y-label")
         .data([data.key]);
 
@@ -146,7 +146,7 @@ export default function() {
         });
 
       // Add bars to the chart
-      var barsVertical = component.barsVertical()
+      let barsVertical = component.barsVertical()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
@@ -200,7 +200,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -12,28 +12,28 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "donutChart";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeCubic, duration: 750 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "donutChart";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  let transition = { ease: d3.easeCubic, duration: 750 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
-  var radius;
-  var innerRadius;
+  let chartW;
+  let chartH;
+  let radius;
+  let innerRadius;
 
   /**
    * Scales and Axis
    */
-  var colorScale;
+  let colorScale;
 
   /**
    * Initialise Data, Scales and Series
@@ -52,8 +52,8 @@ export default function() {
       innerRadius;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -76,7 +76,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -100,7 +100,7 @@ export default function() {
         .attr("height", chartH);
 
       // Add the chart
-      var donutChart = component.donut()
+      let donutChart = component.donut()
         .radius(radius)
         .innerRadius(innerRadius)
         .colorScale(colorScale)
@@ -170,7 +170,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

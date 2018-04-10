@@ -12,36 +12,36 @@ export default function() {
   /**
    * Default Properties
    */
-  var svg;
-  var chart;
-  var classed = "barChartClustered";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 40 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let svg;
+  let chart;
+  let classed = "barChartClustered";
+  let width = 400;
+  let height = 300;
+  let margin = { top: 20, right: 20, bottom: 20, left: 40 };
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Chart Dimensions
    */
-  var chartW;
-  var chartH;
+  let chartW;
+  let chartH;
 
   /**
    * Scales and Axis
    */
-  var xScale;
-  var xScale2;
-  var yScale;
-  var xAxis;
-  var yAxis;
-  var colorScale;
+  let xScale;
+  let xScale2;
+  let yScale;
+  let xAxis;
+  let yAxis;
+  let colorScale;
 
   /**
    * Other Customisation Options
    */
-  var yAxisLabel = null;
+  let yAxisLabel = null;
 
   /**
    * Initialise Data, Scales and Series
@@ -51,11 +51,11 @@ export default function() {
     chartH = height - margin.top - margin.bottom;
 
     // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var groupNames = slicedData.groupNames;
-    var groupTotalsMax = slicedData.groupTotalsMax;
-    var maxValue = slicedData.maxValue;
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let groupNames = slicedData.groupNames;
+    let groupTotalsMax = slicedData.groupTotalsMax;
+    let maxValue = slicedData.maxValue;
+    let categoryNames = slicedData.categoryNames;
 
     // Colour Scale
     if (!colorScale) {
@@ -96,7 +96,7 @@ export default function() {
       // Create SVG and Chart containers (if they do not already exist)
       if (!svg) {
         svg = (function(selection) {
-          var el = selection._groups[0][0];
+          let el = selection._groups[0][0];
           if (!!el.ownerSVGElement || el.tagName === "svg") {
             return selection;
           } else {
@@ -135,7 +135,7 @@ export default function() {
       chart.select(".y-axis")
         .call(yAxis);
 
-      var barsVertical = component.barsVertical()
+      let barsVertical = component.barsVertical()
         .width(xScale.bandwidth())
         .height(chartH)
         .colorScale(colorScale)
@@ -144,7 +144,7 @@ export default function() {
         .dispatch(dispatch);
 
       // Create bar group
-      var seriesGroup = chart.selectAll(".seriesGroup")
+      let seriesGroup = chart.selectAll(".seriesGroup")
         .data(data);
 
       seriesGroup.enter()
@@ -212,7 +212,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 
