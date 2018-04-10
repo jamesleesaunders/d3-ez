@@ -11,24 +11,24 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var radius = 150;
-  var startAngle = 0;
-  var endAngle = 360;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 300;
+  let height = 300;
+  let radius = 150;
+  let startAngle = 0;
+  let endAngle = 360;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let colorScale;
+  let xScale;
+  let yScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === 'undefined') ?
@@ -46,13 +46,13 @@ export default function() {
    */
   function my(selection) {
     // Calculate Radius and Angles
-    var defaultRadius = Math.min(width, height) / 2;
+    let defaultRadius = Math.min(width, height) / 2;
     radius = (typeof radius === 'undefined') ? defaultRadius : radius;
     startAngle = d3.min(xScale.range());
     endAngle = d3.max(xScale.range());
 
     // Pie Generator
-    var pie = d3.pie()
+    let pie = d3.pie()
       .value(1)
       .sort(null)
       .startAngle(startAngle * (Math.PI / 180))
@@ -60,7 +60,7 @@ export default function() {
       .padAngle(0);
 
     // Arc Generator
-    var arc = d3.arc()
+    let arc = d3.arc()
       .outerRadius(function(d) {
         return yScale(d.data.value);
       })
@@ -71,10 +71,10 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -82,7 +82,7 @@ export default function() {
         .merge(seriesSelect);
 
       // Add segments to series
-      var segments = series.selectAll(".segment")
+      let segments = series.selectAll(".segment")
         .data(function(d) { return pie(d.values); });
 
       segments.enter()
@@ -150,7 +150,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

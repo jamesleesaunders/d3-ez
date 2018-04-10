@@ -11,26 +11,26 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var radius = 150;
-  var innerRadius = 20;
-  var startAngle = 0;
-  var endAngle = 360;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var colorScale;
-  var xScale;
-  var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 300;
+  let height = 300;
+  let radius = 150;
+  let innerRadius = 20;
+  let startAngle = 0;
+  let endAngle = 360;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  let colorScale;
+  let xScale;
+  let yScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === 'undefined') ?
@@ -52,11 +52,11 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    var segStartAngle = d3.min(xScale.range());
-    var segEndAngle = d3.max(xScale.range());
+    let segStartAngle = d3.min(xScale.range());
+    let segEndAngle = d3.max(xScale.range());
 
     // Pie Generator
-    var pie = d3.pie()
+    let pie = d3.pie()
       .value(1)
       .sort(null)
       .startAngle(segStartAngle * (Math.PI / 180))
@@ -64,7 +64,7 @@ export default function() {
       .padAngle(0.015);
 
     // Arc Generator
-    var arc = d3.arc()
+    let arc = d3.arc()
       .outerRadius(radius)
       .innerRadius(innerRadius)
       .cornerRadius(2);
@@ -73,20 +73,20 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      var segments = series.selectAll(".segment")
+      let segments = series.selectAll(".segment")
         .data(function(d) {
-          var key = d.key;
-          var data = pie(d.values);
+          let key = d.key;
+          let data = pie(d.values);
           data.forEach(function(d, i) {
             data[i].key = key;
           });
@@ -167,7 +167,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

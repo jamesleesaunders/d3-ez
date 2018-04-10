@@ -29,7 +29,7 @@ function dataParse (data) {
   }();
 
   var groupName = function () {
-    var ret;
+    var ret = void 0;
     if (1 === levels) {
       ret = d3.values(data)[0];
     }
@@ -38,7 +38,7 @@ function dataParse (data) {
   }();
 
   var groupNames = function () {
-    var ret;
+    var ret = void 0;
     if (levels > 1) {
       ret = data.map(function (d) {
         return d.key;
@@ -49,7 +49,7 @@ function dataParse (data) {
   }();
 
   var groupTotals = function () {
-    var ret;
+    var ret = void 0;
     if (levels > 1) {
       ret = {};
       d3.map(data).values().forEach(function (d) {
@@ -67,7 +67,7 @@ function dataParse (data) {
   }();
 
   var groupTotalsMax = function () {
-    var ret;
+    var ret = void 0;
     if (levels > 1) {
       ret = d3.max(d3.values(groupTotals));
     }
@@ -116,7 +116,7 @@ function dataParse (data) {
   }();
 
   var categoryTotal = function () {
-    var ret;
+    var ret = void 0;
     if (1 === levels) {
       ret = d3.sum(data.values, function (d) {
         return d.value;
@@ -127,7 +127,7 @@ function dataParse (data) {
   }();
 
   var categoryTotals = function () {
-    var ret;
+    var ret = void 0;
     if (levels > 1) {
       ret = {};
       d3.map(data).values().forEach(function (d) {
@@ -145,7 +145,7 @@ function dataParse (data) {
   }();
 
   var categoryTotalsMax = function () {
-    var ret;
+    var ret = void 0;
     if (levels > 1) {
       ret = d3.max(d3.values(categoryTotals));
     }
@@ -154,7 +154,7 @@ function dataParse (data) {
   }();
 
   var minValue = function () {
-    var ret;
+    var ret = void 0;
     if (1 === levels) {
       ret = d3.min(data.values, function (d) {
         return d.value;
@@ -171,7 +171,7 @@ function dataParse (data) {
   }();
 
   var maxValue = function () {
-    var ret;
+    var ret = void 0;
     if (1 === levels) {
       ret = d3.max(data.values, function (d) {
         return d.value;
@@ -413,8 +413,8 @@ function componentTitle () {
     var subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    // var titleOffset = 0 - (title.node().getBBox().width / 2);
-    // var subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+    // let titleOffset = 0 - (title.node().getBBox().width / 2);
+    // let subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
     title.style("text-anchor", "middle").attr("transform", "translate(0, 15)");
     subTitle.style("text-anchor", "middle").attr("transform", "translate(0, 30)");
   }
@@ -615,9 +615,9 @@ function componentBarsCircular () {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
-  var yScale;
-  var colorScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
   var radius = 150;
   var innerRadius = 20;
   var startAngle = 0;
@@ -785,9 +785,9 @@ function componentBarsStacked () {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var yScale;
-  var xScale;
-  var colorScale;
+  var yScale = void 0;
+  var xScale = void 0;
+  var colorScale = void 0;
 
   /**
    * Initialise Data and Scales
@@ -924,9 +924,9 @@ function componentBarsVertical () {
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
-  var yScale;
-  var colorScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
 
   /**
    * Initialise Data and Scales
@@ -1159,10 +1159,10 @@ function componentBubbles () {
   var height = 400;
   var colors = palette.categorical(3);
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
-  var yScale;
-  var colorScale;
-  var sizeScale;
+  var xScale = void 0;
+  var yScale = void 0;
+  var colorScale = void 0;
+  var sizeScale = void 0;
 
   /**
    * Initialise Data and Scales
@@ -1303,8 +1303,8 @@ function componentCandleSticks () {
   var height = 400;
   var colors = ["green", "red"];
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
-  var yScale;
+  var xScale = void 0;
+  var yScale = void 0;
   var colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
   var candleWidth = 3;
 
@@ -1464,8 +1464,8 @@ function componentCircularAxis () {
   var height = 300;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   var radius = 150;
-  var radialScale;
-  var ringScale;
+  var radialScale = void 0;
+  var ringScale = void 0;
 
   /**
    * Initialise Data and Scales
@@ -1495,15 +1495,16 @@ function componentCircularAxis () {
       }).style("fill", "none").attr('stroke-width', 2).attr('stroke', '#ddd');
 
       // Tick circles
+      var tickData = void 0,
+          tickPadding = void 0;
       if (typeof ringScale.ticks === "function") {
         // scaleLinear
-        var tickData = ringScale.ticks();
-
-        var tickPadding = 0;
+        tickData = ringScale.ticks();
+        tickPadding = 0;
       } else {
         // scaleBand
-        var tickData = ringScale.domain();
-        var tickPadding = ringScale.bandwidth() / 2;
+        tickData = ringScale.domain();
+        tickPadding = ringScale.bandwidth() / 2;
       }
       var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data([tickData]);
 
@@ -1520,7 +1521,7 @@ function componentCircularAxis () {
       tickCircles.exit().remove();
 
       // Spokes
-      var spokeCount;
+      var spokeCount = void 0;
       var spokeData = [];
       //if (typeof radialScale.ticks === "function") {
       if (typeof radialScale.ticks === "function") {
@@ -1611,11 +1612,11 @@ function componentCircularRingLabels () {
    */
   var width = 300;
   var height = 300;
-  var radius;
+  var radius = void 0;
   var startAngle = 0;
   var endAngle = 360;
   var textAnchor = "centre";
-  var radialScale;
+  var radialScale = void 0;
 
   /**
    * Initialise Data and Scales
@@ -1724,12 +1725,12 @@ function componentCircularSectorLabels () {
    */
   var width = 300;
   var height = 300;
-  var radius;
+  var radius = void 0;
   var startAngle = 0;
   var endAngle = 360;
   var capitalizeLabels = false;
   var textAnchor = "centre";
-  var radialScale;
+  var radialScale = void 0;
 
   /**
    * Initialise Data and Scales
@@ -1763,7 +1764,7 @@ function componentCircularSectorLabels () {
 
       defSelect.exit().remove();
 
-      var tickCount;
+      var tickCount = void 0;
       var tickData = [];
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
@@ -1877,10 +1878,10 @@ function componentDonut () {
   var width = 300;
   var height = 300;
   var radius = 150;
-  var innerRadius;
+  var innerRadius = void 0;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
-  var colorScale;
+  var colorScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -2075,9 +2076,9 @@ function componentHeatMapRing () {
   var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -2219,9 +2220,9 @@ function componentHeatMapRow () {
   var width = 400;
   var height = 100;
   var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -2338,7 +2339,7 @@ function componentHeatMapRow () {
  */
 function componentHtmlList () {
   // HTML List Element (Populated by 'my' function)
-  var listEl;
+  var listEl = void 0;
 
   // Default Options (Configurable via setters)
   var classed = "htmlList";
@@ -2411,7 +2412,7 @@ function componentHtmlList () {
  */
 function componentHtmlTable () {
   // HTML Table Element (Populated by 'my' function)
-  var tableEl;
+  var tableEl = void 0;
 
   // Default Options (Configurable via setters)
   var classed = "htmlTable";
@@ -2532,9 +2533,9 @@ function componentLineChart () {
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 1500 };
   var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -2644,9 +2645,9 @@ function componentNumberCard () {
   var width = 400;
   var height = 100;
   var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -2764,9 +2765,9 @@ function componentPolarArea () {
   var endAngle = 360;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -2897,10 +2898,10 @@ function componentProportionalAreaCircles () {
   var width = 400;
   var height = 100;
   var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-  var colorScale;
-  var xScale;
-  var yScale;
-  var sizeScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
+  var sizeScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -3049,9 +3050,9 @@ function componentScatterPlot () {
   var height = 400;
   var transition = { ease: d3.easeBounce, duration: 500 };
   var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -3165,13 +3166,13 @@ function componentRoseChartSector () {
   var width = 300;
   var height = 300;
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var radius;
+  var radius = void 0;
   var startAngle = 0;
   var endAngle = 45;
   var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
+  var colorScale = void 0;
+  var xScale = void 0;
+  var yScale = void 0;
   var stacked = false;
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -3371,6 +3372,9 @@ function componentLegend () {
     legendTitle.append('text').style("font-weight", "bold").text(title);
 
     var y = 10;
+    var numElements = void 0,
+        elementHeight = void 0,
+        text = void 0;
     // Size Key
     if (typeof sizeScale !== "undefined") {
       // Calcualate a range of 5 numbers between min and max of range
@@ -3385,15 +3389,15 @@ function componentLegend () {
       }
       sizeScale.range(range);
 
-      var numElements = sizeScale.range().length;
-      var elementHeight = (height - 45) / numElements;
+      numElements = sizeScale.range().length;
+      elementHeight = (height - 45) / numElements;
 
       var sizeKey = legendBox.append('g').attr("transform", "translate(5, 20)");
 
-      for (var index = 0; index < numElements; index++) {
-        sizeKey.append('circle').attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("r", sizeScale.range()[index]);
+      for (var size = 0; size < numElements; size++) {
+        sizeKey.append('circle').attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("r", sizeScale.range()[size]);
 
-        text = keyScaleRange('size', index);
+        text = keyScaleRange('size', size);
 
         sizeKey.append('text').attr("x", 40).attr("y", y + 5).text(text);
 
@@ -3413,9 +3417,9 @@ function componentLegend () {
 
         if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
-          var text = keyScaleRange('threshold', index);
+          text = keyScaleRange('threshold', index);
         } else {
-          var text = colorScale.domain()[index];
+          text = colorScale.domain()[index];
         }
 
         colorKey.append('text').attr("x", 40).attr("y", y + 10).text(text);
@@ -3428,18 +3432,22 @@ function componentLegend () {
    * Helper function to calculate the keys min and max values
    */
   function keyScaleRange(type, position) {
+    var domainMin = void 0,
+        domainMax = void 0,
+        domainSize = void 0,
+        rangeLength = void 0;
     switch (type) {
       case 'size':
-        var domainMin = Math.min.apply(Math, sizeScale.domain());
-        var domainMax = Math.max.apply(Math, sizeScale.domain());
-        var domainSize = domainMax - domainMin;
-        var rangeLength = sizeScale.range().length;
+        domainMin = Math.min.apply(Math, sizeScale.domain());
+        domainMax = Math.max.apply(Math, sizeScale.domain());
+        domainSize = domainMax - domainMin;
+        rangeLength = sizeScale.range().length;
         break;
       case 'color':
-        var domainMin = Math.min.apply(Math, colorScale.domain());
-        var domainMax = Math.max.apply(Math, colorScale.domain());
-        var domainSize = domainMax - domainMin;
-        var rangeLength = colorScale.range().length;
+        domainMin = Math.min.apply(Math, colorScale.domain());
+        domainMax = Math.max.apply(Math, colorScale.domain());
+        domainSize = domainMax - domainMin;
+        rangeLength = colorScale.range().length;
         break;
       case 'threshold':
         var min = colorScale.domain()[position];

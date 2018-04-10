@@ -11,21 +11,21 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var radius = 150;
-  var innerRadius;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var colorScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 300;
+  let height = 300;
+  let radius = 150;
+  let innerRadius;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let colorScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === 'undefined') ?
@@ -47,25 +47,25 @@ export default function() {
    */
   function my(selection) {
     // Pie Generator
-    var pie = d3.pie()
+    let pie = d3.pie()
       .value(function(d) { return d.value; })
       .sort(null)
       .padAngle(0.015);
 
     // Arc Generator
-    var arc = d3.arc()
+    let arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(radius)
       .cornerRadius(2);
 
     // Outer Arc Generator
-    var outerArc = d3.arc()
+    let outerArc = d3.arc()
       .innerRadius(radius * 0.9)
       .outerRadius(radius * 0.9);
 
     // Arc Tween
-    var arcTween = function(d) {
-      var i = d3.interpolate(this._current, d);
+    let arcTween = function(d) {
+      let i = d3.interpolate(this._current, d);
       this._current = i(0);
       return function(t) {
         return arc(i(t));
@@ -73,7 +73,7 @@ export default function() {
     };
 
     // Mid Angle
-    var midAngle = function(d) {
+    let midAngle = function(d) {
       return d.startAngle + (d.endAngle - d.startAngle) / 2;
     };
 
@@ -81,10 +81,10 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -96,7 +96,7 @@ export default function() {
       series.append("g").attr("class", "lines");
 
       // Slices
-      var slices = series.select(".slices")
+      let slices = series.select(".slices")
         .selectAll("path.slice")
         .data(function(d) {
           return pie(d.values);
@@ -119,7 +119,7 @@ export default function() {
         .remove();
 
       // Labels
-      var labels = series.select(".labels")
+      let labels = series.select(".labels")
         .selectAll("text.label")
         .data(function(d) {
           return pie(d.values);
@@ -137,21 +137,21 @@ export default function() {
         })
         .attrTween("transform", function(d) {
           this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
+          let interpolate = d3.interpolate(this._current, d);
           this._current = interpolate(0);
           return function(t) {
-            var d2 = interpolate(t);
-            var pos = outerArc.centroid(d2);
+            let d2 = interpolate(t);
+            let pos = outerArc.centroid(d2);
             pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
             return "translate(" + pos + ")";
           };
         })
         .styleTween("text-anchor", function(d) {
           this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
+          let interpolate = d3.interpolate(this._current, d);
           this._current = interpolate(0);
           return function(t) {
-            var d2 = interpolate(t);
+            let d2 = interpolate(t);
             return midAngle(d2) < Math.PI ? "start" : "end";
           };
         });
@@ -160,7 +160,7 @@ export default function() {
         .remove();
 
       // Slice to Label Lines
-      var lines = series.select(".lines")
+      let lines = series.select(".lines")
         .selectAll("polyline.line")
         .data(function(d) {
           return pie(d.values);
@@ -174,11 +174,11 @@ export default function() {
         .duration(transition.duration)
         .attrTween("points", function(d) {
           this._current = this._current || d;
-          var interpolate = d3.interpolate(this._current, d);
+          let interpolate = d3.interpolate(this._current, d);
           this._current = interpolate(0);
           return function(t) {
-            var d2 = interpolate(t);
-            var pos = outerArc.centroid(d2);
+            let d2 = interpolate(t);
+            let pos = outerArc.centroid(d2);
             pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
             return [arc.centroid(d2), outerArc.centroid(d2), pos];
           };
@@ -230,7 +230,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -11,13 +11,13 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var radius = 150;
-  var radialScale;
-  var ringScale;
+  let width = 300;
+  let height = 300;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let radius = 150;
+  let radialScale;
+  let ringScale;
 
   /**
    * Initialise Data and Scales
@@ -37,17 +37,17 @@ export default function() {
       init(data);
 
       // Create axis group
-      var axisSelect = selection.selectAll('.axis')
+      let axisSelect = selection.selectAll('.axis')
         .data([0]);
 
-      var axis = axisSelect.enter()
+      let axis = axisSelect.enter()
         .append("g")
         .classed("axis", true)
         .on("click", function(d) { dispatch.call("customClick", this, d); })
         .merge(axisSelect);
 
       // Outer circle
-      var outerCircle = axis.selectAll(".outerCircle")
+      let outerCircle = axis.selectAll(".outerCircle")
         .data([radius])
         .enter()
         .append("circle")
@@ -58,25 +58,25 @@ export default function() {
         .attr('stroke', '#ddd');
 
       // Tick circles
+      let tickData, tickPadding;
       if (typeof ringScale.ticks === "function") {
         // scaleLinear
-        var tickData = ringScale.ticks();
-
-        var tickPadding = 0;
+        tickData = ringScale.ticks();
+        tickPadding = 0;
       } else {
         // scaleBand
-        var tickData = ringScale.domain();
-        var tickPadding = ringScale.bandwidth() / 2;
+        tickData = ringScale.domain();
+        tickPadding = ringScale.bandwidth() / 2;
       }
-      var tickCirclesGroupSelect = axis.selectAll(".tickCircles")
+      let tickCirclesGroupSelect = axis.selectAll(".tickCircles")
         .data([tickData]);
 
-      var tickCirclesGroup = tickCirclesGroupSelect.enter()
+      let tickCirclesGroup = tickCirclesGroupSelect.enter()
         .append("g")
         .classed("tickCircles", true)
         .merge(tickCirclesGroupSelect);
 
-      var tickCircles = tickCirclesGroup.selectAll("circle")
+      let tickCircles = tickCirclesGroup.selectAll("circle")
         .data(function(d) { return d; });
 
       tickCircles.enter()
@@ -92,16 +92,16 @@ export default function() {
         .remove();
 
       // Spokes
-      var spokeCount;
-      var spokeData = [];
+      let spokeCount;
+      let spokeData = [];
       //if (typeof radialScale.ticks === "function") {
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
-        var min = d3.min(radialScale.domain());
-        var max = d3.max(radialScale.domain());
+        let min = d3.min(radialScale.domain());
+        let max = d3.max(radialScale.domain());
         spokeCount = radialScale.ticks().length;
-        var spokeIncrement = (max - min) / spokeCount;
-        for (var i = 0; i <= spokeCount; i++) {
+        let spokeIncrement = (max - min) / spokeCount;
+        for (let i = 0; i <= spokeCount; i++) {
           spokeData[i] = (spokeIncrement * i).toFixed(0);
         }
       } else {
@@ -111,17 +111,17 @@ export default function() {
         spokeData.push("");
       }
 
-      var spokesGroupSelect = axis.selectAll(".spokes")
+      let spokesGroupSelect = axis.selectAll(".spokes")
         .data([spokeData]);
 
-      var spokesGroup = spokesGroupSelect.enter()
+      let spokesGroup = spokesGroupSelect.enter()
         .append("g")
         .classed("spokes", true)
         .merge(spokesGroupSelect);
 
-      var spokes = spokesGroup.selectAll("line")
+      let spokes = spokesGroup.selectAll("line")
         .data(function(d) {
-          var spokeScale = d3.scaleLinear()
+          let spokeScale = d3.scaleLinear()
             .domain([0, spokeCount])
             .range(radialScale.range());
 

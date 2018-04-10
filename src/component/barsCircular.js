@@ -11,27 +11,27 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
-  var yScale;
-  var colorScale;
-  var radius = 150;
-  var innerRadius = 20;
-  var startAngle = 0;
-  var endAngle = 270;
-  var cornerRadius = 2;
+  let width = 300;
+  let height = 300;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let xScale;
+  let yScale;
+  let colorScale;
+  let radius = 150;
+  let innerRadius = 20;
+  let startAngle = 0;
+  let endAngle = 270;
+  let cornerRadius = 2;
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === 'undefined') ?
@@ -63,7 +63,7 @@ export default function() {
    */
   function my(selection) {
     // Arc Generator
-    var arc = d3.arc()
+    let arc = d3.arc()
       .startAngle(0)
       .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
       .outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
@@ -71,8 +71,8 @@ export default function() {
       .cornerRadius(cornerRadius);
 
     // Arc Tween
-    var arcTween = function(d) {
-      var i = d3.interpolate(this._current, d);
+    let arcTween = function(d) {
+      let i = d3.interpolate(this._current, d);
       this._current = i(0);
       return function(t) {
         return arc(i(t));
@@ -83,10 +83,10 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -94,7 +94,7 @@ export default function() {
         .merge(seriesSelect);
 
       // Add bars to series
-      var bars = series.selectAll(".bar")
+      let bars = series.selectAll(".bar")
         .data(function(d) { return d.values; });
 
       bars.enter()
@@ -181,7 +181,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

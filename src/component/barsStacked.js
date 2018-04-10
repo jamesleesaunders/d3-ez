@@ -11,22 +11,22 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 100;
-  var height = 300;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var yScale;
-  var xScale;
-  var colorScale;
+  let width = 100;
+  let height = 300;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let yScale;
+  let xScale;
+  let colorScale;
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var categoryTotal = slicedData.categoryTotal;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let categoryTotal = slicedData.categoryTotal;
 
     // If the yScale has not been passed then attempt to calculate.
     yScale = (typeof yScale === 'undefined') ?
@@ -45,10 +45,10 @@ export default function() {
   function my(selection) {
 
     // Stack Generator
-    var stacker = function(data) {
-      var series = [];
-      var y0 = 0;
-      var y1 = 0;
+    let stacker = function(data) {
+      let series = [];
+      let y0 = 0;
+      let y1 = 0;
       data.forEach(function(d, i) {
         y1 = y0 + d.value;
         series[i] = {
@@ -67,10 +67,10 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -78,7 +78,7 @@ export default function() {
         .merge(seriesSelect);
 
       // Add bars to series
-      var bars = series.selectAll(".bar")
+      let bars = series.selectAll(".bar")
         .data(function(d) { return stacker(d.values); });
 
       bars.enter()
@@ -149,7 +149,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

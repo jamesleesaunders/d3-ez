@@ -6,13 +6,13 @@ import * as d3 from "d3";
  */
 export default function() {
   // HTML List Element (Populated by 'my' function)
-  var listEl;
+  let listEl;
 
   // Default Options (Configurable via setters)
-  var classed = "htmlList";
+  let classed = "htmlList";
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Constructor
@@ -47,11 +47,11 @@ export default function() {
           return 0;
         }
 
-        var ul = d3.select(this)
+        let ul = d3.select(this)
           .on("click", collapse)
           .append("ul");
 
-        var li = ul.selectAll("li")
+        let li = ul.selectAll("li")
           .data(d.values)
           .enter()
           .append("li")
@@ -86,7 +86,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

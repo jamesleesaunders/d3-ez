@@ -9,18 +9,18 @@ export default function() {
   /**
    * Default Properties
    */
-  var sizeScale = undefined;
-  var sizeLabel = null;
-  var colorScale = undefined;
-  var colorLabel = null;
-  var title = null;
-  var width = 100;
-  var height = 150;
-  var opacity = 0.7;
-  var fill = "#ffffff";
-  var stroke = "#000000";
-  var strokewidth = "1px";
-  var spacing = 5;
+  let sizeScale = undefined;
+  let sizeLabel = null;
+  let colorScale = undefined;
+  let colorLabel = null;
+  let title = null;
+  let width = 100;
+  let height = 150;
+  let opacity = 0.7;
+  let fill = "#ffffff";
+  let stroke = "#000000";
+  let strokewidth = "1px";
+  let spacing = 5;
 
   /**
    * Constructor
@@ -30,7 +30,7 @@ export default function() {
     width = (width ? width : this.attr("width"));
 
     // Legend Box
-    var legendBox = selection.selectAll("#legendBox")
+    let legendBox = selection.selectAll("#legendBox")
       .data([0])
       .enter()
       .append("g")
@@ -44,35 +44,36 @@ export default function() {
       .attr("stroke-width", strokewidth)
       .attr("stroke", stroke);
 
-    var legendTitle = legendBox.append('g')
+    let legendTitle = legendBox.append('g')
       .attr("transform", "translate(5, 15)");
 
     legendTitle.append('text')
       .style("font-weight", "bold")
       .text(title);
 
-    var y = 10;
+    let y = 10;
+    let numElements, elementHeight, text;
     // Size Key
     if (typeof sizeScale !== "undefined") {
       // Calcualate a range of 5 numbers between min and max of range
-      var min = d3.min(sizeScale.range());
-      var max = d3.max(sizeScale.range());
-      var diff = max - min;
-      var step = diff / 4;
-      var range = [];
+      let min = d3.min(sizeScale.range());
+      let max = d3.max(sizeScale.range());
+      let diff = max - min;
+      let step = diff / 4;
+      let range = [];
       range[0] = min;
-      for (var s = 1; s < 5; s++) {
+      for (let s = 1; s < 5; s++) {
         range[s] = range[s - 1] + step;
       }
       sizeScale.range(range);
 
-      var numElements = sizeScale.range().length;
-      var elementHeight = ((height - 45) / numElements);
+      numElements = sizeScale.range().length;
+      elementHeight = ((height - 45) / numElements);
 
-      var sizeKey = legendBox.append('g')
+      let sizeKey = legendBox.append('g')
         .attr("transform", "translate(5, 20)");
 
-      for (var index = 0; index < numElements; index++) {
+      for (let size = 0; size < numElements; size++) {
         sizeKey.append('circle')
           .attr("cx", 17)
           .attr("cy", y)
@@ -80,9 +81,9 @@ export default function() {
           .attr("stroke-width", "1px")
           .attr("stroke", "grey")
           .attr("fill-opacity", 0.8)
-          .attr("r", sizeScale.range()[index]);
+          .attr("r", sizeScale.range()[size]);
 
-        text = keyScaleRange('size', index);
+        text = keyScaleRange('size', size);
 
         sizeKey.append('text')
           .attr("x", 40)
@@ -98,10 +99,10 @@ export default function() {
       numElements = colorScale.domain().length;
       elementHeight = ((height - 45) / numElements) - 5;
 
-      var colorKey = legendBox.append('g')
+      let colorKey = legendBox.append('g')
         .attr("transform", "translate(5, 20)");
 
-      for (var index = 0; index < numElements; index++) {
+      for (let index = 0; index < numElements; index++) {
         colorKey.append('rect')
           .attr("x", 10)
           .attr("y", y)
@@ -114,9 +115,9 @@ export default function() {
 
         if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
-          var text = keyScaleRange('threshold', index);
+          text = keyScaleRange('threshold', index);
         } else {
-          var text = colorScale.domain()[index];
+          text = colorScale.domain()[index];
         }
 
         colorKey.append('text')
@@ -132,40 +133,41 @@ export default function() {
    * Helper function to calculate the keys min and max values
    */
   function keyScaleRange(type, position) {
+    let domainMin, domainMax, domainSize, rangeLength;
     switch (type) {
       case 'size':
-        var domainMin = Math.min.apply(Math, sizeScale.domain());
-        var domainMax = Math.max.apply(Math, sizeScale.domain());
-        var domainSize = domainMax - domainMin;
-        var rangeLength = sizeScale.range().length;
+        domainMin = Math.min.apply(Math, sizeScale.domain());
+        domainMax = Math.max.apply(Math, sizeScale.domain());
+        domainSize = domainMax - domainMin;
+        rangeLength = sizeScale.range().length;
         break;
       case 'color':
-        var domainMin = Math.min.apply(Math, colorScale.domain());
-        var domainMax = Math.max.apply(Math, colorScale.domain());
-        var domainSize = domainMax - domainMin;
-        var rangeLength = colorScale.range().length;
+        domainMin = Math.min.apply(Math, colorScale.domain());
+        domainMax = Math.max.apply(Math, colorScale.domain());
+        domainSize = domainMax - domainMin;
+        rangeLength = colorScale.range().length;
         break;
       case 'threshold':
-        var min = colorScale.domain()[position];
-        var max = colorScale.domain()[position + 1];
+        let min = colorScale.domain()[position];
+        let max = colorScale.domain()[position + 1];
         rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max);
         return rangeStr;
         break;
     }
-    var rangeIncrement = domainSize / rangeLength;
-    var ranges = [];
-    var range = [];
-    var rangeStart = domainMin;
-    var rangeEnd = domainMin + rangeIncrement;
+    let rangeIncrement = domainSize / rangeLength;
+    let ranges = [];
+    let range = [];
+    let rangeStart = domainMin;
+    let rangeEnd = domainMin + rangeIncrement;
 
-    for (var i = 0; i < rangeLength; i++) {
+    for (let i = 0; i < rangeLength; i++) {
       range = [rangeStart, rangeEnd];
       ranges.push(range);
       rangeStart = rangeEnd;
       rangeEnd = rangeStart + rangeIncrement;
     }
 
-    var rangeStr = ranges[position][0].toFixed(0) + ' - ' + ranges[position][1].toFixed(0);
+    let rangeStr = ranges[position][0].toFixed(0) + ' - ' + ranges[position][1].toFixed(0);
     return rangeStr;
   }
 

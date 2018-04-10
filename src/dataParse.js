@@ -6,7 +6,7 @@ import * as d3 from "d3";
  */
 export default function(data) {
 
-  var levels = (function() {
+  let levels = (function() {
     if (data['key'] !== undefined) {
       return 1;
     } else {
@@ -14,8 +14,8 @@ export default function(data) {
     }
   })();
 
-  var groupName = (function() {
-    var ret;
+  let groupName = (function() {
+    let ret;
     if (1 === levels) {
       ret = d3.values(data)[0];
     }
@@ -23,8 +23,8 @@ export default function(data) {
     return ret;
   })();
 
-  var groupNames = (function() {
-    var ret;
+  let groupNames = (function() {
+    let ret;
     if (levels > 1) {
       ret = data.map(function(d) {
         return d.key;
@@ -34,14 +34,14 @@ export default function(data) {
     return ret;
   })();
 
-  var groupTotals = (function() {
-    var ret;
+  let groupTotals = (function() {
+    let ret;
     if (levels > 1) {
       ret = {};
       d3.map(data).values().forEach(function(d) {
-        var groupName = d.key;
+        let groupName = d.key;
         d.values.forEach(function(d) {
-          var categoryValue = +d.value;
+          let categoryValue = +d.value;
 
           ret[groupName] = (typeof(ret[groupName]) === "undefined" ? 0 : ret[groupName]);
           ret[groupName] += categoryValue;
@@ -52,8 +52,8 @@ export default function(data) {
     return ret;
   })();
 
-  var groupTotalsMax = (function() {
-    var ret;
+  let groupTotalsMax = (function() {
+    let ret;
     if (levels > 1) {
       ret = d3.max(d3.values(groupTotals));
     }
@@ -61,14 +61,14 @@ export default function(data) {
     return ret;
   })();
 
-  var union = function(array1, array2) {
-    var ret = [];
-    var arr = array1.concat(array2);
-    var len = arr.length;
-    var assoc = {};
+  let union = function(array1, array2) {
+    let ret = [];
+    let arr = array1.concat(array2);
+    let len = arr.length;
+    let assoc = {};
 
     while (len--) {
-      var item = arr[len];
+      let item = arr[len];
 
       if (!assoc[item]) {
         ret.unshift(item);
@@ -79,9 +79,9 @@ export default function(data) {
     return ret;
   };
 
-  var categoryNames = (function() {
+  let categoryNames = (function() {
 
-    var ret = [];
+    let ret = [];
     if (1 === levels) {
       ret = d3.values(data.values).map(function(d) {
         return d.key;
@@ -89,9 +89,9 @@ export default function(data) {
 
     } else {
       d3.map(data).values().forEach(function(d) {
-        var tmp = [];
+        let tmp = [];
         d.values.forEach(function(d, i) {
-          var categoryName = d.key;
+          let categoryName = d.key;
           tmp[i] = categoryName;
         });
 
@@ -102,8 +102,8 @@ export default function(data) {
     return ret;
   })();
 
-  var categoryTotal = (function() {
-    var ret;
+  let categoryTotal = (function() {
+    let ret;
     if (1 === levels) {
       ret = d3.sum(data.values, function(d) {
         return d.value;
@@ -113,14 +113,14 @@ export default function(data) {
     return ret;
   })();
 
-  var categoryTotals = (function() {
-    var ret;
+  let categoryTotals = (function() {
+    let ret;
     if (levels > 1) {
       ret = {};
       d3.map(data).values().forEach(function(d) {
         d.values.forEach(function(d) {
-          var categoryName = d.key;
-          var categoryValue = +d.value;
+          let categoryName = d.key;
+          let categoryValue = +d.value;
 
           ret[categoryName] = (typeof(ret[categoryName]) === "undefined" ? 0 : ret[categoryName]);
           ret[categoryName] += categoryValue;
@@ -131,8 +131,8 @@ export default function(data) {
     return ret;
   })();
 
-  var categoryTotalsMax = (function() {
-    var ret;
+  let categoryTotalsMax = (function() {
+    let ret;
     if (levels > 1) {
       ret = d3.max(d3.values(categoryTotals));
     }
@@ -140,8 +140,8 @@ export default function(data) {
     return ret;
   })();
 
-  var minValue = (function() {
-    var ret;
+  let minValue = (function() {
+    let ret;
     if (1 === levels) {
       ret = d3.min(data.values, function(d) {
         return d.value;
@@ -157,8 +157,8 @@ export default function(data) {
     return +ret;
   })();
 
-  var maxValue = (function() {
-    var ret;
+  let maxValue = (function() {
+    let ret;
     if (1 === levels) {
       ret = d3.max(data.values, function(d) {
         return d.value;
@@ -175,10 +175,10 @@ export default function(data) {
     return +ret;
   })();
 
-  var decimalPlaces = function(num) {
-    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+  let decimalPlaces = function(num) {
+    let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
-    var ret = Math.max(
+    let ret = Math.max(
       0,
       // Number of digits right of decimal point.
       (match[1] ? match[1].length : 0)
@@ -189,8 +189,8 @@ export default function(data) {
     return ret;
   };
 
-  var maxDecimalPlace = (function() {
-    var ret = 0;
+  let maxDecimalPlace = (function() {
+    let ret = 0;
     if (levels > 1) {
       d3.map(data).values().forEach(function(d) {
         d.values.forEach(function(d) {
@@ -203,9 +203,9 @@ export default function(data) {
   })();
 
   // If thresholds values are not already set attempt to auto-calculate some thresholds
-  var thresholds = (function() {
-    var distance = maxValue - minValue;
-    var ret = [
+  let thresholds = (function() {
+    let distance = maxValue - minValue;
+    let ret = [
       (minValue + (0.15 * distance)).toFixed(maxDecimalPlace),
       (minValue + (0.40 * distance)).toFixed(maxDecimalPlace),
       (minValue + (0.55 * distance)).toFixed(maxDecimalPlace),
@@ -215,7 +215,7 @@ export default function(data) {
     return ret;
   })();
 
-  var my = {
+  let my = {
     'levels': levels,
     'groupName': groupName,
     'groupNames': groupNames,

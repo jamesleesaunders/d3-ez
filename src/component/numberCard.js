@@ -11,21 +11,21 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 400;
-  var height = 100;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-  var colorScale;
-  var xScale;
-  var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 400;
+  let height = 100;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+  let colorScale;
+  let xScale;
+  let yScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -37,16 +37,16 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    var cellWidth = xScale.bandwidth();
+    let cellWidth = xScale.bandwidth();
 
     selection.each(function(data) {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -54,7 +54,7 @@ export default function() {
         .merge(seriesSelect);
 
       // Add numbers to series
-      var numbers = series.selectAll(".number")
+      let numbers = series.selectAll(".number")
         .data(function(d) { return d.values; });
 
       numbers.enter().append("text")
@@ -120,7 +120,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

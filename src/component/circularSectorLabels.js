@@ -11,14 +11,14 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var radius;
-  var startAngle = 0;
-  var endAngle = 360;
-  var capitalizeLabels = false;
-  var textAnchor = "centre";
-  var radialScale;
+  let width = 300;
+  let height = 300;
+  let radius;
+  let startAngle = 0;
+  let endAngle = 360;
+  let capitalizeLabels = false;
+  let textAnchor = "centre";
+  let radialScale;
 
   /**
    * Initialise Data and Scales
@@ -37,20 +37,20 @@ export default function() {
     selection.each(function(data) {
       init(data);
 
-      var labelsSelect = selection.selectAll('.circularLabels')
+      let labelsSelect = selection.selectAll('.circularLabels')
         .data(function(d) { return [d]; });
 
-      var labels = labelsSelect.enter()
+      let labels = labelsSelect.enter()
         .append("g")
         .classed("circularLabels", true)
         .merge(labelsSelect);
 
       // Labels
-      var defSelect = labels.selectAll("def")
+      let defSelect = labels.selectAll("def")
         .data([radius]);
 
       // Generate rendom path def ID if there are more than one on the page.
-      var pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
+      let pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
       defSelect.enter()
         .append("def")
         .append("path")
@@ -63,15 +63,15 @@ export default function() {
       defSelect.exit()
         .remove();
 
-      var tickCount;
-      var tickData = [];
+      let tickCount;
+      let tickData = [];
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
-        var min = d3.min(radialScale.domain());
-        var max = d3.max(radialScale.domain());
+        let min = d3.min(radialScale.domain());
+        let max = d3.max(radialScale.domain());
         tickCount = radialScale.ticks().length;
-        var tickIncrement = (max - min) / tickCount;
-        for (var i = 0; i <= tickCount; i++) {
+        let tickIncrement = (max - min) / tickCount;
+        for (let i = 0; i <= tickCount; i++) {
           tickData[i] = (tickIncrement * i).toFixed(0);
         }
       } else {
@@ -80,9 +80,9 @@ export default function() {
         tickCount = tickData.length;
       }
 
-      var textSelect = labels.selectAll("text")
+      let textSelect = labels.selectAll("text")
         .data(function(d) {
-          var tickScale = d3.scaleLinear()
+          let tickScale = d3.scaleLinear()
             .domain([0, tickCount])
             .range(radialScale.range());
 
@@ -100,7 +100,7 @@ export default function() {
         .append("textPath")
         .attr("xlink:href", "#" + pathId)
         .text(function(d) {
-          var text = d.value;
+          let text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;
         })
         .attr("startOffset", function(d) {
@@ -112,7 +112,7 @@ export default function() {
       textSelect.transition()
         .select("textPath")
         .text(function(d) {
-          var text = d.value;
+          let text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;
         })
         .attr("startOffset", function(d) {

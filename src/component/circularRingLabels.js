@@ -11,14 +11,14 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 300;
-  var height = 300;
-  var radius;
-  var startAngle = 0;
-  var endAngle = 360;
-  var capitalizeLabels = false;
-  var textAnchor = "centre";
-  var radialScale;
+  let width = 300;
+  let height = 300;
+  let radius;
+  let startAngle = 0;
+  let endAngle = 360;
+  let capitalizeLabels = false;
+  let textAnchor = "centre";
+  let radialScale;
 
   /**
    * Initialise Data and Scales
@@ -34,20 +34,20 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    var radData = radialScale.domain();
+    let radData = radialScale.domain();
 
     selection.each(function(data) {
       init(data);
 
-      var labelsSelect = selection.selectAll('.radialLabels')
+      let labelsSelect = selection.selectAll('.radialLabels')
         .data(function(d) { return [d]; });
 
-      var labels = labelsSelect.enter()
+      let labels = labelsSelect.enter()
         .append("g")
         .classed("radialLabels", true)
         .merge(labelsSelect);
 
-      var defSelect = labels.selectAll("def")
+      let defSelect = labels.selectAll("def")
         .data(radData);
 
       defSelect.enter()
@@ -57,17 +57,17 @@ export default function() {
           return "radialLabelPath" + "-" + i;
         })
         .attr("d", function(d, i) {
-          var r = radialScale(d);
-          var arc = d3.arc().outerRadius(r).innerRadius(r);
-          var pathConf = {
+          let r = radialScale(d);
+          let arc = d3.arc().outerRadius(r).innerRadius(r);
+          let pathConf = {
             startAngle: (startAngle * Math.PI) / 180,
             endAngle: (endAngle * Math.PI) / 180
           };
-          var pathStr = arc(pathConf).split(/[A-Z]/);
+          let pathStr = arc(pathConf).split(/[A-Z]/);
           return "M" + pathStr[1] + "A" + pathStr[2];
         });
 
-      var textSelect = labels.selectAll("text")
+      let textSelect = labels.selectAll("text")
         .data(radData);
 
       textSelect.enter()

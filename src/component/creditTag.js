@@ -9,20 +9,20 @@ export default function() {
   /**
    * Default Properties
    */
-  var text = "d3-ez.net";
-  var href = "http://d3-ez.net";
+  let text = "d3-ez.net";
+  let href = "http://d3-ez.net";
 
   /**
    * Constructor
    */
   function my(selection) {
-    var creditTag = selection.selectAll("#creditTag")
+    let creditTag = selection.selectAll("#creditTag")
       .data([0])
       .enter()
       .append("g")
       .attr("id", "creditTag");
 
-    var creditText = creditTag.append("text")
+    let creditText = creditTag.append("text")
       .text(text)
       .style("text-anchor", "end")
       .attr("xlink:href", href)

@@ -11,21 +11,21 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 400;
-  var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 400;
+  let height = 400;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = palette.categorical(3);
+  let colorScale;
+  let xScale;
+  let yScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -41,10 +41,10 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
         .attr("fill", function(d) { return colorScale(d.key); })
@@ -53,7 +53,7 @@ export default function() {
         .merge(seriesSelect);
 
       // Add dots to series
-      var dots = series.selectAll(".dot")
+      let dots = series.selectAll(".dot")
         .data(function(d) { return d.values; });
 
       dots.enter()
@@ -118,7 +118,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -6,18 +6,18 @@ import * as d3 from "d3";
  */
 export default function() {
   // HTML Table Element (Populated by 'my' function)
-  var tableEl;
+  let tableEl;
 
   // Default Options (Configurable via setters)
-  var classed = "htmlTable";
-  var width = 800;
+  let classed = "htmlTable";
+  let width = 800;
 
   // Data Options (Populated by 'init' function)
-  var rowNames = [];
-  var columnNames = [];
+  let rowNames = [];
+  let columnNames = [];
 
   // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data
@@ -54,12 +54,12 @@ export default function() {
         tableEl.selectAll("*")
           .remove();
       }
-      var head = tableEl.append("thead");
-      var foot = tableEl.append("tfoot");
-      var body = tableEl.append("tbody");
+      let head = tableEl.append("thead");
+      let foot = tableEl.append("tfoot");
+      let body = tableEl.append("tbody");
 
       // Add table headings
-      var hdr = head.append("tr");
+      let hdr = head.append("tr");
 
       hdr.selectAll("th")
         .data(function() {
@@ -74,10 +74,10 @@ export default function() {
         });
 
       // Add table body
-      var rowsSelect = body.selectAll("tr")
+      let rowsSelect = body.selectAll("tr")
         .data(data);
 
-      var rows = rowsSelect.enter()
+      let rows = rowsSelect.enter()
         .append("tr")
         .attr("class", function(d) {
           return d.key;
@@ -124,7 +124,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -9,16 +9,16 @@ export default function() {
   /**
    * Default Properties
    */
-  var color = "steelblue";
-  var opacity = 1;
-  var strokeColor = "#000000";
-  var strokeWidth = 1;
-  var radius = 8;
-  var label = null;
-  var display = 'block';
-  var fontSize = 10;
-  var classed = "labeledNode";
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
+  let color = "steelblue";
+  let opacity = 1;
+  let strokeColor = "#000000";
+  let strokeWidth = 1;
+  let radius = 8;
+  let label = null;
+  let display = 'block';
+  let fontSize = 10;
+  let classed = "labeledNode";
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
   /**
    * Constructor
@@ -31,9 +31,9 @@ export default function() {
     }
 
     selection.each(function(data) {
-      var r = sizeAccessor(data);
+      let r = sizeAccessor(data);
 
-      var node = d3.select(this)
+      let node = d3.select(this)
         .attr("class", classed);
 
       node.append("circle")
@@ -113,7 +113,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

@@ -11,21 +11,21 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 400;
-  var height = 100;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var colorScale;
-  var xScale;
-  var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 400;
+  let height = 100;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  let colorScale;
+  let xScale;
+  let yScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -37,17 +37,17 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    var cellHeight = yScale.bandwidth();
-    var cellWidth = xScale.bandwidth();
+    let cellHeight = yScale.bandwidth();
+    let cellWidth = xScale.bandwidth();
 
     selection.each(function(data) {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed('series', true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -55,13 +55,13 @@ export default function() {
         .merge(seriesSelect);
 
       // Add cells to series
-      var cells = series.selectAll(".cell")
+      let cells = series.selectAll(".cell")
         .data(function(d) {
-          var seriesName = d.key;
-          var seriesValues = d.values;
+          let seriesName = d.key;
+          let seriesValues = d.values;
 
           return seriesValues.map(function(el) {
-            var o = Object.assign({}, el);
+            let o = Object.assign({}, el);
             o.series = seriesName;
             return o;
           });
@@ -131,7 +131,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

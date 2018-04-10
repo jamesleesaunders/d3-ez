@@ -11,22 +11,22 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 400;
-  var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = ["green", "red"];
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale;
-  var yScale;
-  var colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
-  var candleWidth = 3;
+  let width = 400;
+  let height = 400;
+  let transition = { ease: d3.easeBounce, duration: 500 };
+  let colors = ["green", "red"];
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let xScale;
+  let yScale;
+  let colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
+  let candleWidth = 3;
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -37,25 +37,25 @@ export default function() {
   /**
    * Constructor
    */
-  var my = function(selection) {
+  let my = function(selection) {
     // Is Up Day
-    var isUpDay = function(d) {
+    let isUpDay = function(d) {
       return d.close > d.open;
     };
 
     // Is Down Day
-    var isDownDay = function(d) {
+    let isDownDay = function(d) {
       return !isUpDay(d);
     };
 
     // Line Function
-    var line = d3.line()
+    let line = d3.line()
       .x(function(d) { return d.x; })
       .y(function(d) { return d.y; });
 
     // High Low Lines
-    var highLowLines = function(bars) {
-      var paths = bars.selectAll('.high-low-line')
+    let highLowLines = function(bars) {
+      let paths = bars.selectAll('.high-low-line')
         .data(function(d) { return [d]; });
 
       paths.enter()
@@ -70,8 +70,8 @@ export default function() {
     };
 
     // Open Close Bars
-    var openCloseBars = function(bars) {
-      var rect = bars.selectAll('.open-close-bar')
+    let openCloseBars = function(bars) {
+      let rect = bars.selectAll('.open-close-bar')
         .data(function(d) { return [d]; });
 
       rect.enter()
@@ -92,11 +92,11 @@ export default function() {
     };
 
     // Open Close Ticks
-    var openCloseTicks = function(bars) {
-      var open = bars.selectAll('.open-tick')
+    let openCloseTicks = function(bars) {
+      let open = bars.selectAll('.open-tick')
         .data(function(d) { return [d]; });
 
-      var close = bars.selectAll('.close-tick')
+      let close = bars.selectAll('.close-tick')
         .data(function(d) { return [d]; });
 
       open.enter()
@@ -124,10 +124,10 @@ export default function() {
       init(data);
 
       // Create series group
-      var seriesSelect = d3.select(this).selectAll('.series')
+      let seriesSelect = d3.select(this).selectAll('.series')
         .data(function(d) { return [d]; });
 
-      var series = seriesSelect.enter()
+      let series = seriesSelect.enter()
         .append("g")
         .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
@@ -135,10 +135,10 @@ export default function() {
         .merge(seriesSelect);
 
       // Add bars to series
-      var barsSelect = series.selectAll(".bar")
+      let barsSelect = series.selectAll(".bar")
         .data(function(d) { return d.values; });
 
-      var bars = barsSelect.enter()
+      let bars = barsSelect.enter()
         .append("g")
         .classed("bar", true)
         .attr("fill", function(d) { return colorScale(isUpDay(d)); })
@@ -201,7 +201,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 

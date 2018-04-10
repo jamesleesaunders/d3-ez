@@ -9,10 +9,10 @@ export default function() {
   /**
    * Default Properties
    */
-  var mainText = "Title";
-  var subText = "Sub Title";
-  var height = 40;
-  var width = 200;
+  let mainText = "Title";
+  let subText = "Sub Title";
+  let height = 40;
+  let width = 200;
 
   /**
    * Constructor
@@ -23,25 +23,25 @@ export default function() {
       .enter()
       .append("g")
       .attr("id", "titleGroup");
-    var titleGroup = selection.select("#titleGroup");
+    let titleGroup = selection.select("#titleGroup");
 
     titleGroup.selectAll('.title').data([mainText])
       .enter()
       .append("text")
       .classed("title", true)
       .text(function(d) { return d; });
-    var title = titleGroup.select(".title").text(mainText);
+    let title = titleGroup.select(".title").text(mainText);
 
     titleGroup.selectAll('.subTitle').data([subText])
       .enter()
       .append("text")
       .classed("subTitle", true)
       .text(function(d) { return d; });
-    var subTitle = titleGroup.select(".subTitle").text(subText);
+    let subTitle = titleGroup.select(".subTitle").text(subText);
 
     // Centre Text
-    // var titleOffset = 0 - (title.node().getBBox().width / 2);
-    // var subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+    // let titleOffset = 0 - (title.node().getBBox().width / 2);
+    // let subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
     title.style("text-anchor", "middle")
       .attr("transform", "translate(0, 15)");
     subTitle.style("text-anchor", "middle")

@@ -11,21 +11,21 @@ export default function() {
   /**
    * Default Properties
    */
-  var width = 400;
-  var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 1500 };
-  var colors = palette.categorical(3);
-  var colorScale;
-  var xScale;
-  var yScale;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let width = 400;
+  let height = 400;
+  let transition = { ease: d3.easeBounce, duration: 1500 };
+  let colors = palette.categorical(3);
+  let colorScale;
+  let xScale;
+  let yScale;
+  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === 'undefined') ?
@@ -38,14 +38,14 @@ export default function() {
    */
   function my(selection) {
     // Line generation function
-    var line = d3.line()
+    let line = d3.line()
       .curve(d3.curveCardinal)
       .x(function(d) { return xScale(d.key); })
       .y(function(d) { return yScale(d.value); });
 
     // Line animation tween
-    var pathTween = function(data) {
-      var interpolate = d3.scaleQuantile()
+    let pathTween = function(data) {
+      let interpolate = d3.scaleQuantile()
         .domain([0, 1])
         .range(d3.range(1, data.length + 1));
       return function(t) {
@@ -57,7 +57,7 @@ export default function() {
       init(data);
 
       // Create series group
-      var series = selection.selectAll('.series')
+      let series = selection.selectAll('.series')
         .data(function(d) { return [d]; });
 
       series.enter()
@@ -118,7 +118,7 @@ export default function() {
   };
 
   my.on = function() {
-    var value = dispatch.on.apply(dispatch, arguments);
+    let value = dispatch.on.apply(dispatch, arguments);
     return value === dispatch ? my : value;
   };
 
