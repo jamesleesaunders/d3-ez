@@ -162,6 +162,7 @@ What type of chart is best for different types of data?
 * Pie charts for good to represent parts of a whole.
 * Histograms are good for showing distribution.
 * Line charts are good for showing time series data.
+* Circular heatmap is good for cyclic data (rolling hours, days, years).  
 
 For more information on which charts are good for different types of data see the [Data Viz Project](http://datavizproject.com/) or [Data Viz Catalogue](https://datavizcatalogue.com/index.html)
 
