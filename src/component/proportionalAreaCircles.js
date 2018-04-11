@@ -57,7 +57,7 @@ export default function() {
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);
 
-      series.attr("transform", function(d) {
+      series.attr("transform", function() {
         return "translate(0 , " + (cellHeight / 2) + ")";
       });
 

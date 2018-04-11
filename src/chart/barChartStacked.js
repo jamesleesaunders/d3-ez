@@ -54,7 +54,6 @@ export default function() {
     let slicedData = dataParse(data);
     let groupNames = slicedData.groupNames;
     let groupTotalsMax = slicedData.groupTotalsMax;
-    let maxValue = slicedData.maxValue;
     let categoryNames = slicedData.categoryNames;
 
     // Colour Scale

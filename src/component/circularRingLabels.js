@@ -56,7 +56,7 @@ export default function() {
         .attr("id", function(d, i) {
           return "radialLabelPath" + "-" + i;
         })
-        .attr("d", function(d, i) {
+        .attr("d", function(d) {
           let r = radialScale(d);
           let arc = d3.arc().outerRadius(r).innerRadius(r);
           let pathConf = {

@@ -1521,6 +1521,7 @@ function componentCircularAxis () {
       tickCircles.exit().remove();
 
       // Spokes
+      // TODO: Turn this into a function ?
       var spokeCount = void 0;
       var spokeData = [];
       //if (typeof radialScale.ticks === "function") {
@@ -1547,7 +1548,7 @@ function componentCircularAxis () {
       var spokes = spokesGroup.selectAll("line").data(function (d) {
         var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
 
-        return spokeData.map(function (d, i) {
+        return d.map(function (d, i) {
           return {
             value: d,
             rotate: spokeScale(i)
@@ -1645,7 +1646,7 @@ function componentCircularRingLabels () {
 
       defSelect.enter().append("def").append("path").attr("id", function (d, i) {
         return "radialLabelPath" + "-" + i;
-      }).attr("d", function (d, i) {
+      }).attr("d", function (d) {
         var r = radialScale(d);
         var arc = d3.arc().outerRadius(r).innerRadius(r);
         var pathConf = {
@@ -1747,25 +1748,8 @@ function componentCircularSectorLabels () {
     selection.each(function (data) {
       init(data);
 
-      var labelsSelect = selection.selectAll('.circularLabels').data(function (d) {
-        return [d];
-      });
-
-      var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
-
-      // Labels
-      var defSelect = labels.selectAll("def").data([radius]);
-
-      // Generate rendom path def ID if there are more than one on the page.
-      var pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
-      defSelect.enter().append("def").append("path").attr("id", pathId).attr("d", function (d) {
-        return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-      }).merge(defSelect);
-
-      defSelect.exit().remove();
-
+      // TODO: Turn this into a function ?
       var tickCount = void 0;
-      var tickData = [];
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
         var min = d3.min(radialScale.domain());
@@ -1781,10 +1765,27 @@ function componentCircularSectorLabels () {
         tickCount = tickData.length;
       }
 
+      var labelsSelect = selection.selectAll('.circularLabels').data(function (d) {
+        return [tickData];
+      });
+
+      var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
+
+      // Labels
+      var defSelect = labels.selectAll("def").data([radius]);
+
+      // Generate rendom path def ID if there are more than one on the page.
+      var pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
+      defSelect.enter().append("def").append("path").attr("id", pathId).attr("d", function (d) {
+        return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
+      }).merge(defSelect);
+
+      defSelect.exit().remove();
+
       var textSelect = labels.selectAll("text").data(function (d) {
         var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
 
-        return tickData.map(function (d, i) {
+        return d.map(function (d, i) {
           return {
             value: d,
             offset: tickScale(i) / 360 * 100
@@ -2937,7 +2938,7 @@ function componentProportionalAreaCircles () {
         dispatch.call("customSeriesClick", this, d);
       }).merge(seriesSelect);
 
-      series.attr("transform", function (d) {
+      series.attr("transform", function () {
         return "translate(0 , " + cellHeight / 2 + ")";
       });
 

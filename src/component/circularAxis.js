@@ -92,6 +92,7 @@ export default function() {
         .remove();
 
       // Spokes
+      // TODO: Turn this into a function ?
       let spokeCount;
       let spokeData = [];
       //if (typeof radialScale.ticks === "function") {
@@ -110,6 +111,7 @@ export default function() {
         spokeCount = spokeData.length;
         spokeData.push("");
       }
+      // TODO: END
 
       let spokesGroupSelect = axis.selectAll(".spokes")
         .data([spokeData]);
@@ -122,10 +124,10 @@ export default function() {
       let spokes = spokesGroup.selectAll("line")
         .data(function(d) {
           let spokeScale = d3.scaleLinear()
-            .domain([0, spokeCount])
+            .domain([0, spokeCount]) // TODO: spokeCount would have to change if above turned into function?
             .range(radialScale.range());
 
-          return spokeData.map(function(d, i) {
+          return d.map(function(d, i) {
             return {
               value: d,
               rotate: spokeScale(i)

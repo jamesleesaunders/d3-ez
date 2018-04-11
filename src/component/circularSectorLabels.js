@@ -37,8 +37,27 @@ export default function() {
     selection.each(function(data) {
       init(data);
 
+      // TODO: Turn this into a function ?
+      let tickCount;
+      let tickData = [];
+      if (typeof radialScale.ticks === "function") {
+        // scaleLinear
+        let min = d3.min(radialScale.domain());
+        let max = d3.max(radialScale.domain());
+        tickCount = radialScale.ticks().length;
+        let tickIncrement = (max - min) / tickCount;
+        for (let i = 0; i <= tickCount; i++) {
+          tickData[i] = (tickIncrement * i).toFixed(0);
+        }
+      } else {
+        // scaleBand
+        tickData = radialScale.domain();
+        tickCount = tickData.length;
+      }
+      // TODO: END
+
       let labelsSelect = selection.selectAll('.circularLabels')
-        .data(function(d) { return [d]; });
+        .data(function(d) { return [tickData]; });
 
       let labels = labelsSelect.enter()
         .append("g")
@@ -63,30 +82,13 @@ export default function() {
       defSelect.exit()
         .remove();
 
-      let tickCount;
-      let tickData = [];
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        let min = d3.min(radialScale.domain());
-        let max = d3.max(radialScale.domain());
-        tickCount = radialScale.ticks().length;
-        let tickIncrement = (max - min) / tickCount;
-        for (let i = 0; i <= tickCount; i++) {
-          tickData[i] = (tickIncrement * i).toFixed(0);
-        }
-      } else {
-        // scaleBand
-        tickData = radialScale.domain();
-        tickCount = tickData.length;
-      }
-
       let textSelect = labels.selectAll("text")
         .data(function(d) {
           let tickScale = d3.scaleLinear()
             .domain([0, tickCount])
             .range(radialScale.range());
 
-          return tickData.map(function(d, i) {
+          return d.map(function(d, i) {
             return {
               value: d,
               offset: ((tickScale(i) / 360) * 100)

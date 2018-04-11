@@ -25,10 +25,7 @@ export default function() {
   let legend = undefined;
   let title = undefined;
   let creditTag = componentCreditTag();
-  let description = "";
   let yAxisLabel = "";
-
-  let colorScale = undefined;
 
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 

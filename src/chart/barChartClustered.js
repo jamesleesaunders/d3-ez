@@ -53,7 +53,6 @@ export default function() {
     // Slice Data, calculate totals, max etc.
     let slicedData = dataParse(data);
     let groupNames = slicedData.groupNames;
-    let groupTotalsMax = slicedData.groupTotalsMax;
     let maxValue = slicedData.maxValue;
     let categoryNames = slicedData.categoryNames;
 
