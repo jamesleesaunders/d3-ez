@@ -1540,13 +1540,15 @@ function componentCircularAxis () {
         spokeCount = spokeData.length;
         spokeData.push("");
       }
+      // TODO: END
 
       var spokesGroupSelect = axis.selectAll(".spokes").data([spokeData]);
 
       var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
 
       var spokes = spokesGroup.selectAll("line").data(function (d) {
-        var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
+        var spokeScale = d3.scaleLinear().domain([0, spokeCount]) // TODO: spokeCount would have to change if above turned into function?
+        .range(radialScale.range());
 
         return d.map(function (d, i) {
           return {
@@ -1750,6 +1752,7 @@ function componentCircularSectorLabels () {
 
       // TODO: Turn this into a function ?
       var tickCount = void 0;
+      var tickData = [];
       if (typeof radialScale.ticks === "function") {
         // scaleLinear
         var min = d3.min(radialScale.domain());
@@ -1764,6 +1767,7 @@ function componentCircularSectorLabels () {
         tickData = radialScale.domain();
         tickCount = tickData.length;
       }
+      // TODO: END
 
       var labelsSelect = selection.selectAll('.circularLabels').data(function (d) {
         return [tickData];
