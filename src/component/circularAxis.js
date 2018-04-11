@@ -57,19 +57,30 @@ export default function() {
         .attr('stroke-width', 2)
         .attr('stroke', '#ddd');
 
-      // Tick circles
-      let tickData, tickPadding;
-      if (typeof ringScale.ticks === "function") {
-        // scaleLinear
-        tickData = ringScale.ticks();
-        tickPadding = 0;
-      } else {
-        // scaleBand
-        tickData = ringScale.domain();
-        tickPadding = ringScale.bandwidth() / 2;
+      // Tick Data Generator
+      let tickData = function() {
+        let tickArray, tickPadding;
+        if (typeof ringScale.ticks === "function") {
+          // scaleLinear
+          tickArray = ringScale.ticks();
+          tickPadding = 0;
+        } else {
+          // scaleBand
+          tickArray = ringScale.domain();
+          tickPadding = ringScale.bandwidth() / 2;
+        }
+
+        return tickArray.map(function(d, i) {
+          return {
+            value: d,
+            radius: ringScale(d),
+            padding: tickPadding
+          }
+        });
       }
+
       let tickCirclesGroupSelect = axis.selectAll(".tickCircles")
-        .data([tickData]);
+        .data(function(d) { return [tickData()]; });
 
       let tickCirclesGroup = tickCirclesGroupSelect.enter()
         .append("g")
@@ -86,35 +97,45 @@ export default function() {
         .attr('stroke', '#ddd')
         .merge(tickCircles)
         .transition()
-        .attr("r", function(d) { return (ringScale(d) + tickPadding); });
+        .attr("r", function(d) { return (d.radius + d.padding); });
 
       tickCircles.exit()
         .remove();
 
-      // Spokes
-      // TODO: Turn this into a function ?
-      let spokeCount;
-      let spokeData = [];
-      //if (typeof radialScale.ticks === "function") {
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        let min = d3.min(radialScale.domain());
-        let max = d3.max(radialScale.domain());
-        spokeCount = radialScale.ticks().length;
-        let spokeIncrement = (max - min) / spokeCount;
-        for (let i = 0; i <= spokeCount; i++) {
-          spokeData[i] = (spokeIncrement * i).toFixed(0);
+      // Spoke Data Generator
+      let spokeData = function() {
+        let spokeCount = 0;
+        let spokeArray = [];
+        if (typeof radialScale.ticks === "function") {
+          // scaleLinear
+          let min = d3.min(radialScale.domain());
+          let max = d3.max(radialScale.domain());
+          spokeCount = radialScale.ticks().length;
+          let spokeIncrement = (max - min) / spokeCount;
+          for (let i = 0; i <= spokeCount; i++) {
+            spokeArray[i] = (spokeIncrement * i).toFixed(0);
+          }
+        } else {
+          // scaleBand
+          spokeArray = radialScale.domain();
+          spokeCount = spokeArray.length;
+          spokeArray.push('');
         }
-      } else {
-        // scaleBand
-        spokeData = radialScale.domain();
-        spokeCount = spokeData.length;
-        spokeData.push("");
+
+        let spokeScale = d3.scaleLinear()
+          .domain([0, spokeCount])
+          .range(radialScale.range());
+
+        return spokeArray.map(function(d, i) {
+          return {
+            value: d,
+            rotate: spokeScale(i)
+          }
+        });
       }
-      // TODO: END
 
       let spokesGroupSelect = axis.selectAll(".spokes")
-        .data([spokeData]);
+        .data(function() { return [spokeData()]; });
 
       let spokesGroup = spokesGroupSelect.enter()
         .append("g")
@@ -122,18 +143,7 @@ export default function() {
         .merge(spokesGroupSelect);
 
       let spokes = spokesGroup.selectAll("line")
-        .data(function(d) {
-          let spokeScale = d3.scaleLinear()
-            .domain([0, spokeCount]) // TODO: spokeCount would have to change if above turned into function?
-            .range(radialScale.range());
-
-          return d.map(function(d, i) {
-            return {
-              value: d,
-              rotate: spokeScale(i)
-            }
-          });
-        });
+        .data(function(d) { return d; });
 
       spokes.enter()
         .append("line")
