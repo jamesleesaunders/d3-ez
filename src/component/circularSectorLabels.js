@@ -37,27 +37,46 @@ export default function() {
     selection.each(function(data) {
       init(data);
 
-      // TODO: Turn this into a function ?
-      let tickCount;
-      let tickData = [];
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        let min = d3.min(radialScale.domain());
-        let max = d3.max(radialScale.domain());
-        tickCount = radialScale.ticks().length;
-        let tickIncrement = (max - min) / tickCount;
-        for (let i = 0; i <= tickCount; i++) {
-          tickData[i] = (tickIncrement * i).toFixed(0);
+      // Tick Data Generator
+      let tickData = function() {
+        let tickCount = 0;
+        let tickArray = [];
+
+        if (typeof radialScale.ticks === "function") {
+          // scaleLinear
+          let min = d3.min(radialScale.domain());
+          let max = d3.max(radialScale.domain());
+          tickCount = radialScale.ticks().length;
+          let tickIncrement = (max - min) / tickCount;
+          for (let i = 0; i <= tickCount; i++) {
+            tickArray[i] = (tickIncrement * i).toFixed(0);
+          }
+        } else {
+          // scaleBand
+          tickArray = radialScale.domain();
+          tickCount = tickArray.length;
         }
-      } else {
-        // scaleBand
-        tickData = radialScale.domain();
-        tickCount = tickData.length;
+
+        let tickScale = d3.scaleLinear()
+          .domain([0, tickCount])
+          .range(radialScale.range());
+
+        return tickArray.map(function(d, i) {
+          return {
+            value: d,
+            offset: ((tickScale(i) / 360) * 100)
+          }
+        });
       }
-      // TODO: END
+
+      // Unique id so that the text path defs are unique - is there a better way to do this?
+      let uId = selection.attr("id") ?
+        selection.attr("id") :
+        "uid-" + Math.floor(1000 + Math.random() * 9000);
+      selection.attr("id", uId);
 
       let labelsSelect = selection.selectAll('.circularLabels')
-        .data(function(d) { return [tickData]; });
+        .data(function(d) { return [tickData()]; });
 
       let labels = labelsSelect.enter()
         .append("g")
@@ -68,12 +87,13 @@ export default function() {
       let defSelect = labels.selectAll("def")
         .data([radius]);
 
-      // Generate rendom path def ID if there are more than one on the page.
-      let pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
       defSelect.enter()
         .append("def")
         .append("path")
-        .attr("id", pathId)
+        .attr("id", function() {
+          let pathId = selection.attr("id") + "-path";
+          return pathId;
+        })
         .attr("d", function(d) {
           return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
         })
@@ -83,24 +103,16 @@ export default function() {
         .remove();
 
       let textSelect = labels.selectAll("text")
-        .data(function(d) {
-          let tickScale = d3.scaleLinear()
-            .domain([0, tickCount])
-            .range(radialScale.range());
-
-          return d.map(function(d, i) {
-            return {
-              value: d,
-              offset: ((tickScale(i) / 360) * 100)
-            }
-          });
-        });
+        .data(function(d) { return d; });
 
       textSelect.enter()
         .append("text")
         .style("text-anchor", textAnchor)
         .append("textPath")
-        .attr("xlink:href", "#" + pathId)
+        .attr("xlink:href", function() {
+          let pathId = selection.attr("id") + "-path";
+          return "#" + pathId;
+        })
         .text(function(d) {
           let text = d.value;
           return capitalizeLabels ? text.toUpperCase() : text;

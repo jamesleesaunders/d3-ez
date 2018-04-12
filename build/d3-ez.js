@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.2.8";
+var version = "3.2.9";
 
 /**
  * Base Functions - Data Parse
@@ -1494,19 +1494,32 @@ function componentCircularAxis () {
         return d;
       }).style("fill", "none").attr('stroke-width', 2).attr('stroke', '#ddd');
 
-      // Tick circles
-      var tickData = void 0,
-          tickPadding = void 0;
-      if (typeof ringScale.ticks === "function") {
-        // scaleLinear
-        tickData = ringScale.ticks();
-        tickPadding = 0;
-      } else {
-        // scaleBand
-        tickData = ringScale.domain();
-        tickPadding = ringScale.bandwidth() / 2;
-      }
-      var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data([tickData]);
+      // Tick Data Generator
+      var tickData = function tickData() {
+        var tickArray = void 0,
+            tickPadding = void 0;
+        if (typeof ringScale.ticks === "function") {
+          // scaleLinear
+          tickArray = ringScale.ticks();
+          tickPadding = 0;
+        } else {
+          // scaleBand
+          tickArray = ringScale.domain();
+          tickPadding = ringScale.bandwidth() / 2;
+        }
+
+        return tickArray.map(function (d, i) {
+          return {
+            value: d,
+            radius: ringScale(d),
+            padding: tickPadding
+          };
+        });
+      };
+
+      var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data(function (d) {
+        return [tickData()];
+      });
 
       var tickCirclesGroup = tickCirclesGroupSelect.enter().append("g").classed("tickCircles", true).merge(tickCirclesGroupSelect);
 
@@ -1515,47 +1528,49 @@ function componentCircularAxis () {
       });
 
       tickCircles.enter().append("circle").style("fill", "none").attr('stroke-width', 1).attr('stroke', '#ddd').merge(tickCircles).transition().attr("r", function (d) {
-        return ringScale(d) + tickPadding;
+        return d.radius + d.padding;
       });
 
       tickCircles.exit().remove();
 
-      // Spokes
-      // TODO: Turn this into a function ?
-      var spokeCount = void 0;
-      var spokeData = [];
-      //if (typeof radialScale.ticks === "function") {
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        var min = d3.min(radialScale.domain());
-        var max = d3.max(radialScale.domain());
-        spokeCount = radialScale.ticks().length;
-        var spokeIncrement = (max - min) / spokeCount;
-        for (var i = 0; i <= spokeCount; i++) {
-          spokeData[i] = (spokeIncrement * i).toFixed(0);
+      // Spoke Data Generator
+      var spokeData = function spokeData() {
+        var spokeCount = 0;
+        var spokeArray = [];
+        if (typeof radialScale.ticks === "function") {
+          // scaleLinear
+          var min = d3.min(radialScale.domain());
+          var max = d3.max(radialScale.domain());
+          spokeCount = radialScale.ticks().length;
+          var spokeIncrement = (max - min) / spokeCount;
+          for (var i = 0; i <= spokeCount; i++) {
+            spokeArray[i] = (spokeIncrement * i).toFixed(0);
+          }
+        } else {
+          // scaleBand
+          spokeArray = radialScale.domain();
+          spokeCount = spokeArray.length;
+          spokeArray.push('');
         }
-      } else {
-        // scaleBand
-        spokeData = radialScale.domain();
-        spokeCount = spokeData.length;
-        spokeData.push("");
-      }
-      // TODO: END
 
-      var spokesGroupSelect = axis.selectAll(".spokes").data([spokeData]);
+        var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
 
-      var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
-
-      var spokes = spokesGroup.selectAll("line").data(function (d) {
-        var spokeScale = d3.scaleLinear().domain([0, spokeCount]) // TODO: spokeCount would have to change if above turned into function?
-        .range(radialScale.range());
-
-        return d.map(function (d, i) {
+        return spokeArray.map(function (d, i) {
           return {
             value: d,
             rotate: spokeScale(i)
           };
         });
+      };
+
+      var spokesGroupSelect = axis.selectAll(".spokes").data(function () {
+        return [spokeData()];
+      });
+
+      var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
+
+      var spokes = spokesGroup.selectAll("line").data(function (d) {
+        return d;
       });
 
       spokes.enter().append("line").attr("id", function (d) {
@@ -1750,27 +1765,42 @@ function componentCircularSectorLabels () {
     selection.each(function (data) {
       init(data);
 
-      // TODO: Turn this into a function ?
-      var tickCount = void 0;
-      var tickData = [];
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        var min = d3.min(radialScale.domain());
-        var max = d3.max(radialScale.domain());
-        tickCount = radialScale.ticks().length;
-        var tickIncrement = (max - min) / tickCount;
-        for (var i = 0; i <= tickCount; i++) {
-          tickData[i] = (tickIncrement * i).toFixed(0);
+      // Tick Data Generator
+      var tickData = function tickData() {
+        var tickCount = 0;
+        var tickArray = [];
+
+        if (typeof radialScale.ticks === "function") {
+          // scaleLinear
+          var min = d3.min(radialScale.domain());
+          var max = d3.max(radialScale.domain());
+          tickCount = radialScale.ticks().length;
+          var tickIncrement = (max - min) / tickCount;
+          for (var i = 0; i <= tickCount; i++) {
+            tickArray[i] = (tickIncrement * i).toFixed(0);
+          }
+        } else {
+          // scaleBand
+          tickArray = radialScale.domain();
+          tickCount = tickArray.length;
         }
-      } else {
-        // scaleBand
-        tickData = radialScale.domain();
-        tickCount = tickData.length;
-      }
-      // TODO: END
+
+        var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
+
+        return tickArray.map(function (d, i) {
+          return {
+            value: d,
+            offset: tickScale(i) / 360 * 100
+          };
+        });
+      };
+
+      // Unique id so that the text path defs are unique - is there a better way to do this?
+      var uId = selection.attr("id") ? selection.attr("id") : "uid-" + Math.floor(1000 + Math.random() * 9000);
+      selection.attr("id", uId);
 
       var labelsSelect = selection.selectAll('.circularLabels').data(function (d) {
-        return [tickData];
+        return [tickData()];
       });
 
       var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
@@ -1778,26 +1808,23 @@ function componentCircularSectorLabels () {
       // Labels
       var defSelect = labels.selectAll("def").data([radius]);
 
-      // Generate rendom path def ID if there are more than one on the page.
-      var pathId = "label-path-" + Math.floor(1000 + Math.random() * 9000);
-      defSelect.enter().append("def").append("path").attr("id", pathId).attr("d", function (d) {
+      defSelect.enter().append("def").append("path").attr("id", function () {
+        var pathId = selection.attr("id") + "-path";
+        return pathId;
+      }).attr("d", function (d) {
         return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
       }).merge(defSelect);
 
       defSelect.exit().remove();
 
       var textSelect = labels.selectAll("text").data(function (d) {
-        var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
-
-        return d.map(function (d, i) {
-          return {
-            value: d,
-            offset: tickScale(i) / 360 * 100
-          };
-        });
+        return d;
       });
 
-      textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", "#" + pathId).text(function (d) {
+      textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
+        var pathId = selection.attr("id") + "-path";
+        return "#" + pathId;
+      }).text(function (d) {
         var text = d.value;
         return capitalizeLabels ? text.toUpperCase() : text;
       }).attr("startOffset", function (d) {
@@ -5506,8 +5533,10 @@ function chartPolarAreaChart () {
       chart.select(".polarArea").datum(data).call(polarArea);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale);
-      chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
+      // We reverse the yScale
+      var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
+      var verticalAxis = d3.axisLeft(axisScale);
+      chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(xScale).textAnchor("start");
