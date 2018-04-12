@@ -142,9 +142,14 @@ export default function() {
         .call(polarArea);
 
       // Vertical Axis
-      let verticalAxis = d3.axisLeft(yScale);
+      // We reverse the yScale
+      let axisScale = d3.scaleLinear()
+        .domain(yScale.domain())
+        .range(yScale.range().reverse())
+        .nice();
+      let verticalAxis = d3.axisLeft(axisScale);
       chart.select(".verticalAxis")
-        .attr("transform", "translate(0," + -(chartH / 2) + ")")
+        .attr("transform", "translate(0," + -radius + ")")
         .call(verticalAxis);
 
       // Circular Labels

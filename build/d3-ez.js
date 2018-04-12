@@ -5533,8 +5533,10 @@ function chartPolarAreaChart () {
       chart.select(".polarArea").datum(data).call(polarArea);
 
       // Vertical Axis
-      var verticalAxis = d3.axisLeft(yScale);
-      chart.select(".verticalAxis").attr("transform", "translate(0," + -(chartH / 2) + ")").call(verticalAxis);
+      // We reverse the yScale
+      var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
+      var verticalAxis = d3.axisLeft(axisScale);
+      chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
 
       // Circular Labels
       var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(xScale).textAnchor("start");
