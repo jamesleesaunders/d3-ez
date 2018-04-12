@@ -1821,7 +1821,7 @@ function componentCircularSectorLabels () {
         return d;
       });
 
-      textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function (d, i, j) {
+      textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
         var pathId = selection.attr("id") + "-path";
         return "#" + pathId;
       }).text(function (d) {

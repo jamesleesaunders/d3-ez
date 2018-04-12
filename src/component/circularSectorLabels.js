@@ -109,7 +109,7 @@ export default function() {
         .append("text")
         .style("text-anchor", textAnchor)
         .append("textPath")
-        .attr("xlink:href", function(d, i, j) {
+        .attr("xlink:href", function() {
           let pathId = selection.attr("id") + "-path";
           return "#" + pathId;
         })
