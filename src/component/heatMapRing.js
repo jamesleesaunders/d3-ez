@@ -33,17 +33,17 @@ export default function() {
     let maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = (typeof radius === 'undefined') ?
+    radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
       radius;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = (typeof yScale === 'undefined') ?
+    yScale = (typeof yScale === "undefined") ?
       d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) :
       yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === 'undefined') ?
+    colorScale = (typeof colorScale === "undefined") ?
       d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
@@ -73,7 +73,7 @@ export default function() {
       init(data);
 
       // Create series group
-      let seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll(".series")
         .data(function(d) { return [d]; });
 
       let series = seriesSelect.enter()
@@ -98,7 +98,7 @@ export default function() {
       segments.enter()
         .append("path")
         .attr("d", arc)
-        .attr("fill", 'black')
+        .attr("fill", "black")
         .classed("segment", true)
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })

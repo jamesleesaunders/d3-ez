@@ -60,8 +60,8 @@ export default function() {
     let groupNames = slicedData.groupNames;
 
     let valDomain = [minValue, maxValue];
-    let sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function(d) {
-      return d['value'];
+    let sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function(d) {
+      return d["value"];
     })];
 
     // Colour Scale

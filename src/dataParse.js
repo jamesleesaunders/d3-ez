@@ -7,7 +7,7 @@ import * as d3 from "d3";
 export default function(data) {
 
   let levels = (function() {
-    if (data['key'] !== undefined) {
+    if (data["key"] !== undefined) {
       return 1;
     } else {
       return 2;
@@ -176,7 +176,7 @@ export default function(data) {
   })();
 
   let decimalPlaces = function(num) {
-    let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    let match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+\-]?\d+))?$/);
     if (!match) { return 0; }
     let ret = Math.max(
       0,
@@ -216,19 +216,19 @@ export default function(data) {
   })();
 
   let my = {
-    'levels': levels,
-    'groupName': groupName,
-    'groupNames': groupNames,
-    'groupTotals': groupTotals,
-    'groupTotalsMax': groupTotalsMax,
-    'categoryNames': categoryNames,
-    'categoryTotal': categoryTotal,
-    'categoryTotals': categoryTotals,
-    'categoryTotalsMax': categoryTotalsMax,
-    'minValue': minValue,
-    'maxValue': maxValue,
-    'maxDecimalPlace': maxDecimalPlace,
-    'thresholds': thresholds
+    levels: levels,
+    groupName: groupName,
+    groupNames: groupNames,
+    groupTotals: groupTotals,
+    groupTotalsMax: groupTotalsMax,
+    categoryNames: categoryNames,
+    categoryTotal: categoryTotal,
+    categoryTotals: categoryTotals,
+    categoryTotalsMax: categoryTotalsMax,
+    minValue: minValue,
+    maxValue: maxValue,
+    maxDecimalPlace: maxDecimalPlace,
+    thresholds: thresholds
   };
 
   return my;

@@ -28,7 +28,7 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === 'undefined') ?
+    colorScale = (typeof colorScale === "undefined") ?
       d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
@@ -57,7 +57,7 @@ export default function() {
       init(data);
 
       // Create series group
-      let series = selection.selectAll('.series')
+      let series = selection.selectAll(".series")
         .data(function(d) { return [d]; });
 
       series.enter()

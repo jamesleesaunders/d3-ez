@@ -21,7 +21,7 @@ var version = "3.2.9";
 function dataParse (data) {
 
   var levels = function () {
-    if (data['key'] !== undefined) {
+    if (data["key"] !== undefined) {
       return 1;
     } else {
       return 2;
@@ -188,7 +188,7 @@ function dataParse (data) {
   }();
 
   var decimalPlaces = function decimalPlaces(num) {
-    var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+\-]?\d+))?$/);
     if (!match) {
       return 0;
     }
@@ -223,19 +223,19 @@ function dataParse (data) {
   }();
 
   var my = {
-    'levels': levels,
-    'groupName': groupName,
-    'groupNames': groupNames,
-    'groupTotals': groupTotals,
-    'groupTotalsMax': groupTotalsMax,
-    'categoryNames': categoryNames,
-    'categoryTotal': categoryTotal,
-    'categoryTotals': categoryTotals,
-    'categoryTotalsMax': categoryTotalsMax,
-    'minValue': minValue,
-    'maxValue': maxValue,
-    'maxDecimalPlace': maxDecimalPlace,
-    'thresholds': thresholds
+    levels: levels,
+    groupName: groupName,
+    groupNames: groupNames,
+    groupTotals: groupTotals,
+    groupTotalsMax: groupTotalsMax,
+    categoryNames: categoryNames,
+    categoryTotal: categoryTotal,
+    categoryTotals: categoryTotals,
+    categoryTotalsMax: categoryTotalsMax,
+    minValue: minValue,
+    maxValue: maxValue,
+    maxDecimalPlace: maxDecimalPlace,
+    thresholds: thresholds
   };
 
   return my;
@@ -402,12 +402,12 @@ function componentTitle () {
     selection.selectAll("#titleGroup").data([0]).enter().append("g").attr("id", "titleGroup");
     var titleGroup = selection.select("#titleGroup");
 
-    titleGroup.selectAll('.title').data([mainText]).enter().append("text").classed("title", true).text(function (d) {
+    titleGroup.selectAll(".title").data([mainText]).enter().append("text").classed("title", true).text(function (d) {
       return d;
     });
     var title = titleGroup.select(".title").text(mainText);
 
-    titleGroup.selectAll('.subTitle').data([subText]).enter().append("text").classed("subTitle", true).text(function (d) {
+    titleGroup.selectAll(".subTitle").data([subText]).enter().append("text").classed("subTitle", true).text(function (d) {
       return d;
     });
     var subTitle = titleGroup.select(".subTitle").text(subText);
@@ -468,9 +468,9 @@ function base () {
   var chartTop = 0;
   var classed = "d3ez";
 
-  var chart = undefined;
-  var legend = undefined;
-  var title = undefined;
+  var chart = void 0;
+  var legend = void 0;
+  var title = void 0;
   var creditTag = componentCreditTag();
   var yAxisLabel = "";
 
@@ -580,7 +580,7 @@ function base () {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
       // If the caller has passed a plain string convert it to a title object.
-      title = componentTitle().mainText(_).subText('');
+      title = componentTitle().mainText(_).subText("");
     } else {
       title = _;
     }
@@ -633,18 +633,18 @@ function componentBarsCircular () {
     var maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    innerRadius = typeof innerRadius === 'undefined' ? radius / 4 : innerRadius;
+    innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === 'undefined' ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
+    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
 
     // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === 'undefined' ? d3.scaleBand().domain(categoryNames).rangeRound([innerRadius, radius]).padding(0.15) : xScale;
+    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([innerRadius, radius]).padding(0.15) : xScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -673,7 +673,7 @@ function componentBarsCircular () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -798,10 +798,10 @@ function componentBarsStacked () {
     var categoryTotal = slicedData.categoryTotal;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === 'undefined' ? d3.scaleLinear().domain([0, categoryTotal]).range([0, height]) : yScale;
+    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, categoryTotal]).range([0, height]) : yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -832,11 +832,11 @@ function componentBarsStacked () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
-      var series = seriesSelect.enter().append("g").classed('series', true).on("mouseover", function (d) {
+      var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function (d) {
         dispatch.call("customSeriesMouseOver", this, d);
       }).on("click", function (d) {
         dispatch.call("customSeriesClick", this, d);
@@ -937,13 +937,13 @@ function componentBarsVertical () {
     var maxValue = slicedData.maxValue;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === 'undefined' ? d3.scaleLinear().domain([0, maxValue]).range([0, height]) : yScale;
+    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]) : yScale;
 
     // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === 'undefined' ? d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) : xScale;
+    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) : xScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -954,7 +954,7 @@ function componentBarsVertical () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -1051,7 +1051,7 @@ function componentLabeledNode () {
   var strokeWidth = 1;
   var radius = 8;
   var label = null;
-  var display = 'block';
+  var display = "block";
   var fontSize = 10;
   var classed = "labeledNode";
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
@@ -1172,7 +1172,7 @@ function componentBubbles () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -1183,11 +1183,11 @@ function componentBubbles () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
-      var series = seriesSelect.enter().append("g").classed('series', true).on("mouseover", function (d) {
+      var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function (d) {
         dispatch.call("customSeriesMouseOver", this, d);
       }).on("click", function (d) {
         dispatch.call("customSeriesClick", this, d);
@@ -1316,7 +1316,7 @@ function componentCandleSticks () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -1337,26 +1337,26 @@ function componentCandleSticks () {
 
     // High Low Lines
     var highLowLines = function highLowLines(bars) {
-      var paths = bars.selectAll('.high-low-line').data(function (d) {
+      var paths = bars.selectAll(".high-low-line").data(function (d) {
         return [d];
       });
 
-      paths.enter().append('path').classed('high-low-line', true).attr('d', function (d) {
+      paths.enter().append("path").classed("high-low-line", true).attr("d", function (d) {
         return line([{ x: xScale(d.date), y: yScale(d.high) }, { x: xScale(d.date), y: yScale(d.low) }]);
       });
     };
 
     // Open Close Bars
     var openCloseBars = function openCloseBars(bars) {
-      var rect = bars.selectAll('.open-close-bar').data(function (d) {
+      var rect = bars.selectAll(".open-close-bar").data(function (d) {
         return [d];
       });
 
-      rect.enter().append('rect').classed('open-close-bar', true).attr('x', function (d) {
+      rect.enter().append("rect").classed("open-close-bar", true).attr("x", function (d) {
         return xScale(d.date) - candleWidth;
-      }).attr('y', function (d) {
+      }).attr("y", function (d) {
         return isUpDay(d) ? yScale(d.close) : yScale(d.open);
-      }).attr('width', candleWidth * 2).attr('height', function (d) {
+      }).attr("width", candleWidth * 2).attr("height", function (d) {
         return isUpDay(d) ? yScale(d.open) - yScale(d.close) : yScale(d.close) - yScale(d.open);
       });
     };
@@ -1365,7 +1365,7 @@ function componentCandleSticks () {
       init(data);
 
       // Create series group
-      var seriesSelect = d3.select(this).selectAll('.series').data(function (d) {
+      var seriesSelect = d3.select(this).selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -1472,7 +1472,7 @@ function componentCircularAxis () {
    */
   function init(data) {
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
   }
 
   /**
@@ -1483,7 +1483,7 @@ function componentCircularAxis () {
       init(data);
 
       // Create axis group
-      var axisSelect = selection.selectAll('.axis').data([0]);
+      var axisSelect = selection.selectAll(".axis").data([0]);
 
       var axis = axisSelect.enter().append("g").classed("axis", true).on("click", function (d) {
         dispatch.call("customClick", this, d);
@@ -1492,7 +1492,7 @@ function componentCircularAxis () {
       // Outer circle
       var outerCircle = axis.selectAll(".outerCircle").data([radius]).enter().append("circle").classed("outerCircle", true).attr("r", function (d) {
         return d;
-      }).style("fill", "none").attr('stroke-width', 2).attr('stroke', '#ddd');
+      }).style("fill", "none").attr("stroke-width", 2).attr("stroke", "#ddd");
 
       // Tick Data Generator
       var tickData = function tickData() {
@@ -1508,7 +1508,7 @@ function componentCircularAxis () {
           tickPadding = ringScale.bandwidth() / 2;
         }
 
-        return tickArray.map(function (d, i) {
+        return tickArray.map(function (d) {
           return {
             value: d,
             radius: ringScale(d),
@@ -1527,7 +1527,7 @@ function componentCircularAxis () {
         return d;
       });
 
-      tickCircles.enter().append("circle").style("fill", "none").attr('stroke-width', 1).attr('stroke', '#ddd').merge(tickCircles).transition().attr("r", function (d) {
+      tickCircles.enter().append("circle").style("fill", "none").attr("stroke-width", 1).attr("stroke", "#ddd").merge(tickCircles).transition().attr("r", function (d) {
         return d.radius + d.padding;
       });
 
@@ -1550,7 +1550,7 @@ function componentCircularAxis () {
           // scaleBand
           spokeArray = radialScale.domain();
           spokeCount = spokeArray.length;
-          spokeArray.push('');
+          spokeArray.push("");
         }
 
         var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
@@ -1641,7 +1641,7 @@ function componentCircularRingLabels () {
    */
   function init(data) {
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
   }
 
   /**
@@ -1653,7 +1653,7 @@ function componentCircularRingLabels () {
     selection.each(function (data) {
       init(data);
 
-      var labelsSelect = selection.selectAll('.radialLabels').data(function (d) {
+      var labelsSelect = selection.selectAll(".radialLabels").data(function (d) {
         return [d];
       });
 
@@ -1755,7 +1755,7 @@ function componentCircularSectorLabels () {
    */
   function init(data) {
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
   }
 
   /**
@@ -1799,7 +1799,7 @@ function componentCircularSectorLabels () {
       var uId = selection.attr("id") ? selection.attr("id") : "uid-" + Math.floor(1000 + Math.random() * 9000);
       selection.attr("id", uId);
 
-      var labelsSelect = selection.selectAll('.circularLabels').data(function (d) {
+      var labelsSelect = selection.selectAll(".circularLabels").data(function () {
         return [tickData()];
       });
 
@@ -1924,12 +1924,12 @@ function componentDonut () {
     var categoryNames = slicedData.categoryNames;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    innerRadius = typeof innerRadius === 'undefined' ? radius / 4 : innerRadius;
+    innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -1965,7 +1965,7 @@ function componentDonut () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -2122,13 +2122,13 @@ function componentHeatMapRing () {
     var maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === 'undefined' ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
+    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -2148,7 +2148,7 @@ function componentHeatMapRing () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -2169,7 +2169,7 @@ function componentHeatMapRing () {
       });
 
       // Ring Segments
-      segments.enter().append("path").attr("d", arc).attr("fill", 'black').classed("segment", true).on("mouseover", function (d) {
+      segments.enter().append("path").attr("d", arc).attr("fill", "black").classed("segment", true).on("mouseover", function (d) {
         dispatch.call("customValueMouseOver", this, d);
       }).on("click", function (d) {
         dispatch.call("customValueClick", this, d);
@@ -2265,7 +2265,7 @@ function componentHeatMapRow () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -2279,11 +2279,11 @@ function componentHeatMapRow () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
-      var series = seriesSelect.enter().append("g").classed('series', true).on("mouseover", function (d) {
+      var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function (d) {
         dispatch.call("customSeriesMouseOver", this, d);
       }).on("click", function (d) {
         dispatch.call("customSeriesClick", this, d);
@@ -2578,7 +2578,7 @@ function componentLineChart () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -2604,7 +2604,7 @@ function componentLineChart () {
       init(data);
 
       // Create series group
-      var series = selection.selectAll('.series').data(function (d) {
+      var series = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -2690,7 +2690,7 @@ function componentNumberCard () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -2703,11 +2703,11 @@ function componentNumberCard () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
-      var series = seriesSelect.enter().append("g").classed('series', true).on("mouseover", function (d) {
+      var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function (d) {
         dispatch.call("customSeriesMouseOver", this, d);
       }).on("click", function (d) {
         dispatch.call("customSeriesClick", this, d);
@@ -2721,7 +2721,7 @@ function componentNumberCard () {
       numbers.enter().append("text").attr("class", "number").attr("x", function (d) {
         return xScale(d.key) + cellWidth / 2;
       }).attr("y", 0).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function (d) {
-        return d['value'];
+        return d["value"];
       }).on("mouseover", function (d) {
         dispatch.call("customValueMouseOver", this, d);
       }).on("click", function (d) {
@@ -2810,10 +2810,10 @@ function componentPolarArea () {
     var categoryNames = slicedData.categoryNames;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -2822,7 +2822,7 @@ function componentPolarArea () {
   function my(selection) {
     // Calculate Radius and Angles
     var defaultRadius = Math.min(width, height) / 2;
-    radius = typeof radius === 'undefined' ? defaultRadius : radius;
+    radius = typeof radius === "undefined" ? defaultRadius : radius;
     startAngle = d3.min(xScale.range());
     endAngle = d3.max(xScale.range());
 
@@ -2838,7 +2838,7 @@ function componentPolarArea () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -2944,7 +2944,7 @@ function componentProportionalAreaCircles () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -2963,7 +2963,7 @@ function componentProportionalAreaCircles () {
         return [d];
       });
 
-      var series = seriesSelect.enter().append("g").classed('series', true).on("mouseover", function (d) {
+      var series = seriesSelect.enter().append("g").classed("series", true).on("mouseover", function (d) {
         dispatch.call("customSeriesMouseOver", this, d);
       }).on("click", function (d) {
         dispatch.call("customSeriesClick", this, d);
@@ -3095,7 +3095,7 @@ function componentScatterPlot () {
     var categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
   }
 
   /**
@@ -3106,11 +3106,11 @@ function componentScatterPlot () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
-      var series = seriesSelect.enter().append("g").classed('series', true).attr("fill", function (d) {
+      var series = seriesSelect.enter().append("g").classed("series", true).attr("fill", function (d) {
         return colorScale(d.key);
       }).on("mouseover", function (d) {
         dispatch.call("customSeriesMouseOver", this, d);
@@ -3217,16 +3217,16 @@ function componentRoseChartSector () {
     var maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(width, height) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === 'undefined' ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]) : yScale;
+    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]) : yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === 'undefined' ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
+    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().range(colors).domain(categoryNames) : colorScale;
 
     // If the xScale has been passed then re-calculate the start and end angles.
-    if (typeof xScale !== 'undefined') {
+    if (typeof xScale !== "undefined") {
       startAngle = xScale(data.key);
       endAngle = xScale(data.key) + xScale.bandwidth();
     }
@@ -3267,7 +3267,7 @@ function componentRoseChartSector () {
       init(data);
 
       // Create series group
-      var seriesSelect = selection.selectAll('.series').data(function (d) {
+      var seriesSelect = selection.selectAll(".series").data(function (d) {
         return [d];
       });
 
@@ -3399,9 +3399,9 @@ function componentLegend () {
 
     legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", fill).attr("stroke-width", strokewidth).attr("stroke", stroke);
 
-    var legendTitle = legendBox.append('g').attr("transform", "translate(5, 15)");
+    var legendTitle = legendBox.append("g").attr("transform", "translate(5, 15)");
 
-    legendTitle.append('text').style("font-weight", "bold").text(title);
+    legendTitle.append("text").style("font-weight", "bold").text(title);
 
     var y = 10;
     var numElements = void 0,
@@ -3424,37 +3424,37 @@ function componentLegend () {
       numElements = sizeScale.range().length;
       elementHeight = (height - 45) / numElements;
 
-      var sizeKey = legendBox.append('g').attr("transform", "translate(5, 20)");
+      var sizeKey = legendBox.append("g").attr("transform", "translate(5, 20)");
 
       for (var size = 0; size < numElements; size++) {
-        sizeKey.append('circle').attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("r", sizeScale.range()[size]);
+        sizeKey.append("circle").attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("r", sizeScale.range()[size]);
 
-        text = keyScaleRange('size', size);
+        text = keyScaleRange("size", size);
 
-        sizeKey.append('text').attr("x", 40).attr("y", y + 5).text(text);
+        sizeKey.append("text").attr("x", 40).attr("y", y + 5).text(text);
 
         y = y + (elementHeight + spacing);
       }
     }
 
     // Colour Key
-    if (typeof colorScale !== 'undefined') {
+    if (typeof colorScale !== "undefined") {
       numElements = colorScale.domain().length;
       elementHeight = (height - 45) / numElements - 5;
 
-      var colorKey = legendBox.append('g').attr("transform", "translate(5, 20)");
+      var colorKey = legendBox.append("g").attr("transform", "translate(5, 20)");
 
       for (var index = 0; index < numElements; index++) {
-        colorKey.append('rect').attr("x", 10).attr("y", y).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("width", 20).attr("height", elementHeight);
+        colorKey.append("rect").attr("x", 10).attr("y", y).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("width", 20).attr("height", elementHeight);
 
         if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
-          text = keyScaleRange('threshold', index);
+          text = keyScaleRange("threshold", index);
         } else {
           text = colorScale.domain()[index];
         }
 
-        colorKey.append('text').attr("x", 40).attr("y", y + 10).text(text);
+        colorKey.append("text").attr("x", 40).attr("y", y + 10).text(text);
         y = y + (elementHeight + spacing);
       }
     }
@@ -3469,22 +3469,22 @@ function componentLegend () {
         domainSize = void 0,
         rangeLength = void 0;
     switch (type) {
-      case 'size':
+      case "size":
         domainMin = Math.min.apply(Math, sizeScale.domain());
         domainMax = Math.max.apply(Math, sizeScale.domain());
         domainSize = domainMax - domainMin;
         rangeLength = sizeScale.range().length;
         break;
-      case 'color':
+      case "color":
         domainMin = Math.min.apply(Math, colorScale.domain());
         domainMax = Math.max.apply(Math, colorScale.domain());
         domainSize = domainMax - domainMin;
         rangeLength = colorScale.range().length;
         break;
-      case 'threshold':
+      case "threshold":
         var min = colorScale.domain()[position];
         var max = colorScale.domain()[position + 1];
-        rangeStr = isNaN(max) ? "> " + min : min + ' - ' + max;
+        rangeStr = isNaN(max) ? "> " + min : min + " - " + max;
         return rangeStr;
         break;
     }
@@ -3501,7 +3501,7 @@ function componentLegend () {
       rangeEnd = rangeStart + rangeIncrement;
     }
 
-    var rangeStr = ranges[position][0].toFixed(0) + ' - ' + ranges[position][1].toFixed(0);
+    var rangeStr = ranges[position][0].toFixed(0) + " - " + ranges[position][1].toFixed(0);
     return rangeStr;
   }
 
@@ -3627,9 +3627,9 @@ function chartBarChartCircular () {
     chartH = height - (margin.top + margin.bottom);
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(chartW, chartH) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
 
-    innerRadius = typeof innerRadius === 'undefined' ? radius / 4 : innerRadius;
+    innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -4212,7 +4212,7 @@ function chartBarChartVertical () {
 
         svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-        chart = svg.append("g").classed('chart', true);
+        chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("xAxis axis", true);
         chart.append("g").classed("yAxis axis", true);
         chart.append("g").classed("barChart", true);
@@ -4353,9 +4353,9 @@ function chartBubbleChart () {
       return d3.extent([].concat.apply([], serExts));
     }
 
-    var xDomain = extents('x');
-    var yDomain = extents('y');
-    var sizeDomain = extents('value');
+    var xDomain = extents("x");
+    var yDomain = extents("y");
+    var sizeDomain = extents("value");
     var categoryNames = data.map(function (d) {
       return d.key;
     });
@@ -4589,7 +4589,7 @@ function chartCandlestickChart () {
 
         svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-        chart = svg.append("g").classed('chart', true);
+        chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("xAxis axis", true);
         chart.append("g").classed("yAxis axis", true);
         chart.append("g").classed("candleSticks", true);
@@ -4720,9 +4720,9 @@ function chartDonutChart () {
     chartH = height - (margin.top + margin.bottom);
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(chartW, chartH) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
 
-    innerRadius = typeof innerRadius === 'undefined' ? radius / 2 : innerRadius;
+    innerRadius = typeof innerRadius === "undefined" ? radius / 2 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -4886,9 +4886,9 @@ function chartHeatMapRadial () {
     chartH = height - (margin.top + margin.bottom);
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(chartW, chartH) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
 
-    innerRadius = typeof innerRadius === 'undefined' ? radius / 4 : innerRadius;
+    innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -5469,7 +5469,7 @@ function chartPolarAreaChart () {
     chartH = height - (margin.top + margin.bottom);
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(chartW, chartH) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);
@@ -5672,8 +5672,8 @@ function chartPunchCard () {
     var groupNames = slicedData.groupNames;
 
     var valDomain = [minValue, maxValue];
-    var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]['values'], function (d) {
-      return d['value'];
+    var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function (d) {
+      return d["value"];
     })];
 
     // Colour Scale
@@ -5854,7 +5854,7 @@ function chartRoseChart () {
     chartH = height - margin.top - margin.bottom;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === 'undefined' ? Math.min(chartW, chartH) / 2 : radius;
+    radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
 
     // Slice Data, calculate totals, max etc.
     var slicedData = dataParse(data);

@@ -25,7 +25,7 @@ export default function() {
    */
   function init(data) {
     // If the radius has not been passed then calculate it from width/height.
-    radius = (typeof radius === 'undefined') ?
+    radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
       radius;
   }
@@ -39,7 +39,7 @@ export default function() {
     selection.each(function(data) {
       init(data);
 
-      let labelsSelect = selection.selectAll('.radialLabels')
+      let labelsSelect = selection.selectAll(".radialLabels")
         .data(function(d) { return [d]; });
 
       let labels = labelsSelect.enter()

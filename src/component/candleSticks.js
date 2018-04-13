@@ -29,7 +29,7 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === 'undefined') ?
+    colorScale = (typeof colorScale === "undefined") ?
       d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
@@ -55,13 +55,13 @@ export default function() {
 
     // High Low Lines
     let highLowLines = function(bars) {
-      let paths = bars.selectAll('.high-low-line')
+      let paths = bars.selectAll(".high-low-line")
         .data(function(d) { return [d]; });
 
       paths.enter()
-        .append('path')
-        .classed('high-low-line', true)
-        .attr('d', function(d) {
+        .append("path")
+        .classed("high-low-line", true)
+        .attr("d", function(d) {
           return line([
             { x: xScale(d.date), y: yScale(d.high) },
             { x: xScale(d.date), y: yScale(d.low) }
@@ -71,20 +71,20 @@ export default function() {
 
     // Open Close Bars
     let openCloseBars = function(bars) {
-      let rect = bars.selectAll('.open-close-bar')
+      let rect = bars.selectAll(".open-close-bar")
         .data(function(d) { return [d]; });
 
       rect.enter()
-        .append('rect')
-        .classed('open-close-bar', true)
-        .attr('x', function(d) {
+        .append("rect")
+        .classed("open-close-bar", true)
+        .attr("x", function(d) {
           return xScale(d.date) - candleWidth;
         })
-        .attr('y', function(d) {
+        .attr("y", function(d) {
           return isUpDay(d) ? yScale(d.close) : yScale(d.open);
         })
-        .attr('width', candleWidth * 2)
-        .attr('height', function(d) {
+        .attr("width", candleWidth * 2)
+        .attr("height", function(d) {
           return isUpDay(d) ?
             yScale(d.open) - yScale(d.close) :
             yScale(d.close) - yScale(d.open);
@@ -93,16 +93,16 @@ export default function() {
 
     // Open Close Ticks
     let openCloseTicks = function(bars) {
-      let open = bars.selectAll('.open-tick')
+      let open = bars.selectAll(".open-tick")
         .data(function(d) { return [d]; });
 
-      let close = bars.selectAll('.close-tick')
+      let close = bars.selectAll(".close-tick")
         .data(function(d) { return [d]; });
 
       open.enter()
-        .append('path')
-        .classed('open-tick', true)
-        .attr('d', function(d) {
+        .append("path")
+        .classed("open-tick", true)
+        .attr("d", function(d) {
           return line([
             { x: xScale(d.date) - candleWidth, y: yScale(d.open) },
             { x: xScale(d.date), y: yScale(d.open) }
@@ -110,9 +110,9 @@ export default function() {
         });
 
       close.enter()
-        .append('path')
-        .classed('close-tick', true)
-        .attr('d', function(d) {
+        .append("path")
+        .classed("close-tick", true)
+        .attr("d", function(d) {
           return line([
             { x: xScale(d.date), y: yScale(d.close) },
             { x: xScale(d.date) + candleWidth, y: yScale(d.close) }
@@ -124,7 +124,7 @@ export default function() {
       init(data);
 
       // Create series group
-      let seriesSelect = d3.select(this).selectAll('.series')
+      let seriesSelect = d3.select(this).selectAll(".series")
         .data(function(d) { return [d]; });
 
       let series = seriesSelect.enter()

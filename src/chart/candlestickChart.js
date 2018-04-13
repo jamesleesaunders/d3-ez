@@ -119,7 +119,7 @@ export default function() {
           .attr("width", width)
           .attr("height", height);
 
-        chart = svg.append("g").classed('chart', true);
+        chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("xAxis axis", true);
         chart.append("g").classed("yAxis axis", true);
         chart.append("g").classed("candleSticks", true);

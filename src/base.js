@@ -21,9 +21,9 @@ export default function() {
   let chartTop = 0;
   let classed = "d3ez";
 
-  let chart = undefined;
-  let legend = undefined;
-  let title = undefined;
+  let chart;
+  let legend;
+  let title;
   let creditTag = componentCreditTag();
   let yAxisLabel = "";
 
@@ -150,7 +150,7 @@ export default function() {
     if (!arguments.length) return title;
     if (typeof _ === "string") {
       // If the caller has passed a plain string convert it to a title object.
-      title = componentTitle().mainText(_).subText('');
+      title = componentTitle().mainText(_).subText("");
     } else {
       title = _;
     }

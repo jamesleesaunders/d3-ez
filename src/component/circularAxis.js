@@ -24,7 +24,7 @@ export default function() {
    */
   function init(data) {
     // If the radius has not been passed then calculate it from width/height.
-    radius = (typeof radius === 'undefined') ?
+    radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
       radius;
   }
@@ -37,7 +37,7 @@ export default function() {
       init(data);
 
       // Create axis group
-      let axisSelect = selection.selectAll('.axis')
+      let axisSelect = selection.selectAll(".axis")
         .data([0]);
 
       let axis = axisSelect.enter()
@@ -54,8 +54,8 @@ export default function() {
         .classed("outerCircle", true)
         .attr("r", function(d) { return d; })
         .style("fill", "none")
-        .attr('stroke-width', 2)
-        .attr('stroke', '#ddd');
+        .attr("stroke-width", 2)
+        .attr("stroke", "#ddd");
 
       // Tick Data Generator
       let tickData = function() {
@@ -70,14 +70,14 @@ export default function() {
           tickPadding = ringScale.bandwidth() / 2;
         }
 
-        return tickArray.map(function(d, i) {
+        return tickArray.map(function(d) {
           return {
             value: d,
             radius: ringScale(d),
             padding: tickPadding
           }
         });
-      }
+      };
 
       let tickCirclesGroupSelect = axis.selectAll(".tickCircles")
         .data(function(d) { return [tickData()]; });
@@ -93,8 +93,8 @@ export default function() {
       tickCircles.enter()
         .append("circle")
         .style("fill", "none")
-        .attr('stroke-width', 1)
-        .attr('stroke', '#ddd')
+        .attr("stroke-width", 1)
+        .attr("stroke", "#ddd")
         .merge(tickCircles)
         .transition()
         .attr("r", function(d) { return (d.radius + d.padding); });
@@ -119,7 +119,7 @@ export default function() {
           // scaleBand
           spokeArray = radialScale.domain();
           spokeCount = spokeArray.length;
-          spokeArray.push('');
+          spokeArray.push("");
         }
 
         let spokeScale = d3.scaleLinear()
@@ -132,7 +132,7 @@ export default function() {
             rotate: spokeScale(i)
           }
         });
-      }
+      };
 
       let spokesGroupSelect = axis.selectAll(".spokes")
         .data(function() { return [spokeData()]; });

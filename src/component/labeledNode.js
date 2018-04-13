@@ -15,7 +15,7 @@ export default function() {
   let strokeWidth = 1;
   let radius = 8;
   let label = null;
-  let display = 'block';
+  let display = "block";
   let fontSize = 10;
   let classed = "labeledNode";
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");

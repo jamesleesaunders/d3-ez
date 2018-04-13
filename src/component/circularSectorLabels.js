@@ -25,7 +25,7 @@ export default function() {
    */
   function init(data) {
     // If the radius has not been passed then calculate it from width/height.
-    radius = (typeof radius === 'undefined') ?
+    radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
       radius;
   }
@@ -67,7 +67,7 @@ export default function() {
             offset: ((tickScale(i) / 360) * 100)
           }
         });
-      }
+      };
 
       // Unique id so that the text path defs are unique - is there a better way to do this?
       let uId = selection.attr("id") ?
@@ -75,8 +75,8 @@ export default function() {
         "uid-" + Math.floor(1000 + Math.random() * 9000);
       selection.attr("id", uId);
 
-      let labelsSelect = selection.selectAll('.circularLabels')
-        .data(function(d) { return [tickData()]; });
+      let labelsSelect = selection.selectAll(".circularLabels")
+        .data(function() { return [tickData()]; });
 
       let labels = labelsSelect.enter()
         .append("g")

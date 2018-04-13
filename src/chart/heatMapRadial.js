@@ -52,11 +52,11 @@ export default function() {
     chartH = height - (margin.top + margin.bottom);
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = (typeof radius === 'undefined') ?
+    radius = (typeof radius === "undefined") ?
       (Math.min(chartW, chartH) / 2) :
       radius;
 
-    innerRadius = (typeof innerRadius === 'undefined') ?
+    innerRadius = (typeof innerRadius === "undefined") ?
       (radius / 4) :
       innerRadius;
 

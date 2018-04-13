@@ -67,9 +67,9 @@ export default function() {
       return d3.extent([].concat.apply([], serExts));
     }
 
-    let xDomain = extents('x');
-    let yDomain = extents('y');
-    let sizeDomain = extents('value');
+    let xDomain = extents("x");
+    let yDomain = extents("y");
+    let sizeDomain = extents("value");
     let categoryNames = data.map(function(d) {
       return d.key;
     });

@@ -34,26 +34,26 @@ export default function() {
     let maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
-    radius = (typeof radius === 'undefined') ?
+    radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
       radius;
 
-    innerRadius = (typeof innerRadius === 'undefined') ?
+    innerRadius = (typeof innerRadius === "undefined") ?
       (radius / 4) :
       innerRadius;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = (typeof yScale === 'undefined') ?
+    yScale = (typeof yScale === "undefined") ?
       d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) :
       yScale;
 
     // If the xScale has not been passed then attempt to calculate.
-    xScale = (typeof xScale === 'undefined') ?
+    xScale = (typeof xScale === "undefined") ?
       d3.scaleBand().domain(categoryNames).rangeRound([innerRadius, radius]).padding(0.15) :
       xScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === 'undefined') ?
+    colorScale = (typeof colorScale === "undefined") ?
       d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
@@ -83,7 +83,7 @@ export default function() {
       init(data);
 
       // Create series group
-      let seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll(".series")
         .data(function(d) { return [d]; });
 
       let series = seriesSelect.enter()

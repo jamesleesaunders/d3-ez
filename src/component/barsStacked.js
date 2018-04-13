@@ -29,12 +29,12 @@ export default function() {
     let categoryTotal = slicedData.categoryTotal;
 
     // If the yScale has not been passed then attempt to calculate.
-    yScale = (typeof yScale === 'undefined') ?
+    yScale = (typeof yScale === "undefined") ?
       d3.scaleLinear().domain([0, categoryTotal]).range([0, height]) :
       yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === 'undefined') ?
+    colorScale = (typeof colorScale === "undefined") ?
       d3.scaleOrdinal().range(colors).domain(categoryNames) :
       colorScale;
   }
@@ -67,12 +67,12 @@ export default function() {
       init(data);
 
       // Create series group
-      let seriesSelect = selection.selectAll('.series')
+      let seriesSelect = selection.selectAll(".series")
         .data(function(d) { return [d]; });
 
       let series = seriesSelect.enter()
         .append("g")
-        .classed('series', true)
+        .classed("series", true)
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
         .merge(seriesSelect);

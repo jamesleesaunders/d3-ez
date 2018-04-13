@@ -44,10 +44,10 @@ export default function() {
       .attr("stroke-width", strokewidth)
       .attr("stroke", stroke);
 
-    let legendTitle = legendBox.append('g')
+    let legendTitle = legendBox.append("g")
       .attr("transform", "translate(5, 15)");
 
-    legendTitle.append('text')
+    legendTitle.append("text")
       .style("font-weight", "bold")
       .text(title);
 
@@ -70,11 +70,11 @@ export default function() {
       numElements = sizeScale.range().length;
       elementHeight = ((height - 45) / numElements);
 
-      let sizeKey = legendBox.append('g')
+      let sizeKey = legendBox.append("g")
         .attr("transform", "translate(5, 20)");
 
       for (let size = 0; size < numElements; size++) {
-        sizeKey.append('circle')
+        sizeKey.append("circle")
           .attr("cx", 17)
           .attr("cy", y)
           .attr("fill", "lightgrey")
@@ -83,9 +83,9 @@ export default function() {
           .attr("fill-opacity", 0.8)
           .attr("r", sizeScale.range()[size]);
 
-        text = keyScaleRange('size', size);
+        text = keyScaleRange("size", size);
 
-        sizeKey.append('text')
+        sizeKey.append("text")
           .attr("x", 40)
           .attr("y", y + 5)
           .text(text);
@@ -95,15 +95,15 @@ export default function() {
     }
 
     // Colour Key
-    if (typeof colorScale !== 'undefined') {
+    if (typeof colorScale !== "undefined") {
       numElements = colorScale.domain().length;
       elementHeight = ((height - 45) / numElements) - 5;
 
-      let colorKey = legendBox.append('g')
+      let colorKey = legendBox.append("g")
         .attr("transform", "translate(5, 20)");
 
       for (let index = 0; index < numElements; index++) {
-        colorKey.append('rect')
+        colorKey.append("rect")
           .attr("x", 10)
           .attr("y", y)
           .attr("fill", colorScale.range()[index])
@@ -115,12 +115,12 @@ export default function() {
 
         if (!isNaN(colorScale.domain()[index])) {
           // If the scale is a threshold scale.
-          text = keyScaleRange('threshold', index);
+          text = keyScaleRange("threshold", index);
         } else {
           text = colorScale.domain()[index];
         }
 
-        colorKey.append('text')
+        colorKey.append("text")
           .attr("x", 40)
           .attr("y", y + 10)
           .text(text);
@@ -135,22 +135,22 @@ export default function() {
   function keyScaleRange(type, position) {
     let domainMin, domainMax, domainSize, rangeLength;
     switch (type) {
-      case 'size':
+      case "size":
         domainMin = Math.min.apply(Math, sizeScale.domain());
         domainMax = Math.max.apply(Math, sizeScale.domain());
         domainSize = domainMax - domainMin;
         rangeLength = sizeScale.range().length;
         break;
-      case 'color':
+      case "color":
         domainMin = Math.min.apply(Math, colorScale.domain());
         domainMax = Math.max.apply(Math, colorScale.domain());
         domainSize = domainMax - domainMin;
         rangeLength = colorScale.range().length;
         break;
-      case 'threshold':
+      case "threshold":
         let min = colorScale.domain()[position];
         let max = colorScale.domain()[position + 1];
-        rangeStr = (isNaN(max) ? "> " + min : min + ' - ' + max);
+        rangeStr = (isNaN(max) ? "> " + min : min + " - " + max);
         return rangeStr;
         break;
     }
@@ -167,7 +167,7 @@ export default function() {
       rangeEnd = rangeStart + rangeIncrement;
     }
 
-    let rangeStr = ranges[position][0].toFixed(0) + ' - ' + ranges[position][1].toFixed(0);
+    let rangeStr = ranges[position][0].toFixed(0) + " - " + ranges[position][1].toFixed(0);
     return rangeStr;
   }
 
