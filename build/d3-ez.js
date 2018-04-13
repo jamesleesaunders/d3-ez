@@ -1,9 +1,9 @@
-/** 
- * d3-ez 
- * 
- * @author James Saunders [james@saunders-family.net] 
- * @copyright Copyright (C) 2018 James Saunders 
- * @license GPLv3 
+/**
+ * d3-ez
+ *
+ * @author James Saunders [james@saunders-family.net]
+ * @copyright Copyright (C) 2018 James Saunders
+ * @license GPLv3
  */
 
 (function (global, factory) {

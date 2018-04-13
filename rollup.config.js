@@ -1,12 +1,12 @@
 import json from 'rollup-plugin-json';
 import babel from 'rollup-plugin-babel';
 
-var banner = "/** \n\
- * d3-ez \n\
- * \n\
- * @author James Saunders [james@saunders-family.net] \n\
- * @copyright Copyright (C) 2018 James Saunders \n\
- * @license GPLv3 \n\
+var banner = "/**\n\
+ * d3-ez\n\
+ *\n\
+ * @author James Saunders [james@saunders-family.net]\n\
+ * @copyright Copyright (C) 2018 James Saunders\n\
+ * @license GPLv3\n\
  */\n";
 
 export default {
