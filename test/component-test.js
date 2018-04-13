@@ -1,5 +1,3 @@
-"use strict";
-
 let d3Ez = require("../");
 let tape = require("tape");
 let jsdom = require("jsdom");
@@ -20,7 +18,7 @@ function readSvgFile(file) {
   let str = fs.readFileSync(file)
     .toString("utf-8")
     .replace(/[\n\r\t]+/g, "")
-    .replace(/\>\s+\</g, "><");
+    .replace(/>\s+</g, "><");
 
     return str;
 }

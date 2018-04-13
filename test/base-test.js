@@ -1,5 +1,3 @@
-"use strict";
-
 let d3Ez = require("../");
 let tape = require("tape");
 let jsdom = require("jsdom");

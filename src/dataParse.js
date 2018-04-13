@@ -176,7 +176,7 @@ export default function(data) {
   })();
 
   let decimalPlaces = function(num) {
-    let match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+\-]?\d+))?$/);
+    let match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) { return 0; }
     let ret = Math.max(
       0,
@@ -232,4 +232,4 @@ export default function(data) {
   };
 
   return my;
-};
+}

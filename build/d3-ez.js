@@ -188,7 +188,7 @@ function dataParse (data) {
   }();
 
   var decimalPlaces = function decimalPlaces(num) {
-    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+\-]?\d+))?$/);
+    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
     if (!match) {
       return 0;
     }
@@ -3977,7 +3977,6 @@ function chartBarChartStacked () {
    * Scales and Axis
    */
   var xScale = void 0;
-  var xScale2 = void 0;
   var yScale = void 0;
   var xAxis = void 0;
   var yAxis = void 0;
@@ -4012,8 +4011,6 @@ function chartBarChartStacked () {
     xScale = d3.scaleBand().domain(groupNames).rangeRound([0, chartW]).padding(0.1);
 
     yScale = d3.scaleLinear().range([0, chartH]).domain([0, groupTotalsMax]);
-
-    xScale2 = d3.scaleBand().domain(categoryNames).rangeRound([0, xScale.bandwidth()]).padding(0.1);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);

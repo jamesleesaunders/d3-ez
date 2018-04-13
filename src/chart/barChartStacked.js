@@ -32,7 +32,6 @@ export default function() {
    * Scales and Axis
    */
   let xScale;
-  let xScale2;
   let yScale;
   let xAxis;
   let yAxis;
@@ -74,11 +73,6 @@ export default function() {
     yScale = d3.scaleLinear()
       .range([0, chartH])
       .domain([0, groupTotalsMax]);
-
-    xScale2 = d3.scaleBand()
-      .domain(categoryNames)
-      .rangeRound([0, xScale.bandwidth()])
-      .padding(0.1);
 
     // X & Y Axis
     xAxis = d3.axisBottom(xScale);
@@ -216,4 +210,4 @@ export default function() {
   };
 
   return my;
-};
+}
