@@ -1,10 +1,12 @@
-var d3Ez = require("../");
-var tape = require("tape");
-var jsdom = require("jsdom");
-var d3 = require("d3");
-var fs = require("fs");
+"use strict";
 
-var data = {
+let d3Ez = require("../");
+let tape = require("tape");
+let jsdom = require("jsdom");
+let d3 = require("d3");
+let fs = require("fs");
+
+let data = {
   key: "Fruit",
   values: [
     { key: "Apples", value: 9 },
@@ -14,8 +16,8 @@ var data = {
   ]
 };
 
-tape('setup', function(t) {
-  var JSDOM = jsdom.JSDOM;
+tape("setup", function(t) {
+  let JSDOM = jsdom.JSDOM;
   global.document = new JSDOM().window.document;
   t.end();
 });
@@ -28,21 +30,21 @@ tape("Test index module", function(t) {
 });
 
 tape("Test dataParse module", function(t) {
-  var result = d3Ez.ez.dataParse(data);
-  var expected = {
+  let result = d3Ez.ez.dataParse(data);
+  let expected = {
     levels: 1,
-    groupName: 'Fruit',
+    groupName: "Fruit",
     groupNames: undefined,
     groupTotals: undefined,
     groupTotalsMax: undefined,
-    categoryNames: ['Apples', 'Oranges', 'Grapes', 'Bananas'],
+    categoryNames: ["Apples", "Oranges", "Grapes", "Bananas"],
     categoryTotal: 24,
     categoryTotals: undefined,
     categoryTotalsMax: undefined,
     minValue: 3,
     maxValue: 9,
     maxDecimalPlace: 0,
-    thresholds: ['4', '5', '6', '8']
+    thresholds: ["4", "5", "6", "8"]
   };
   t.deepEqual(result, expected, "Produces data analysis");
 
@@ -50,7 +52,7 @@ tape("Test dataParse module", function(t) {
 });
 
 tape("Test title module", function(t) {
-  var title = d3Ez.ez.component.title().mainText("Foo").subText("Bar");
+  let title = d3Ez.ez.component.title().mainText("Foo").subText("Bar");
   t.equal(title.mainText(), "Foo", "Returns main title");
   t.equal(title.subText(), "Bar", "Returns sub-title");
 
@@ -58,23 +60,23 @@ tape("Test title module", function(t) {
 });
 
 tape("Test legend module", function(t) {
-  var legend = d3Ez.ez.component.legend().title("Foo Bar");
+  let legend = d3Ez.ez.component.legend().title("Foo Bar");
   t.equal(legend.title(), "Foo Bar", "Returns legend title");
 
   t.end();
 });
 
 tape("Test palette module", function(t) {
-  var palette1 = d3Ez.ez.palette.categorical(1);
-  var expected1 = ['#5da5da', '#faa43a', '#60bd68', '#f17cb0', '#b2912f', '#b276b2', '#decf3f', '#f15854', '#4d4d4d'];
+  let palette1 = d3Ez.ez.palette.categorical(1);
+  let expected1 = ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
   t.deepEqual(palette1, expected1, "Categorical palette");
 
-  var palette2 = d3Ez.ez.palette.sequential("#5da5da", 6);
-  var expected2 = ['#417499', '#4c87b3', '#579bcd', '#63afe7', '#6ec3ff', '#79d7ff'];
+  let palette2 = d3Ez.ez.palette.sequential("#5da5da", 6);
+  let expected2 = ["#417499", "#4c87b3", "#579bcd", "#63afe7", "#6ec3ff", "#79d7ff"];
   t.deepEqual(palette2, expected2, "Sequential palette");
 
-  var palette3 = d3Ez.ez.palette.lumShift(['#5da5da', '#faa43a'], 1);
-  var expected3 = ['#baffff', '#ffff74'];
+  let palette3 = d3Ez.ez.palette.lumShift(["#5da5da", "#faa43a"], 1);
+  let expected3 = ["#baffff", "#ffff74"];
   t.deepEqual(palette3, expected3, "Luminance-shift palette");
 
   t.end();
