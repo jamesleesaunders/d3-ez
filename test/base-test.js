@@ -82,6 +82,9 @@ tape("Test legend keyScaleRange helper", function(t) {
   legend.colorScale(colorScale);
   t.equal(legend._keyScaleRange("color", 0), "1 - 17");
   t.equal(legend._keyScaleRange("color", 1), "17 - 34");
+  t.equal(legend._keyScaleRange("color", 2), "34 - 50");
+
+  legend.colorScale(colorScale);
   t.equal(legend._keyScaleRange("threshold", 0), "1 - 50");
   t.equal(legend._keyScaleRange("threshold", 1), "> 50");
 
