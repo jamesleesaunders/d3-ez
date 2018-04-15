@@ -3550,6 +3550,8 @@ function componentLegend () {
     return my;
   };
 
+  my._keyScaleRange = keyScaleRange;
+
   return my;
 }
 

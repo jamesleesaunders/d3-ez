@@ -64,6 +64,30 @@ tape("Test legend module", function(t) {
   t.end();
 });
 
+tape("Test legend keyScaleRange helper", function(t) {
+  let sizeScale = d3.scaleLinear()
+    .range([0, 100])
+    .domain([1, 50]);
+
+  let colorScale = d3.scaleLinear()
+    .range(["#599ad3", "#727272", "#f1595f"])
+    .domain([1, 50]);
+
+  let legend = d3Ez.ez.component.legend();
+
+  legend.sizeScale(sizeScale);
+  t.equal(legend._keyScaleRange("size", 0), "1 - 26");
+  t.equal(legend._keyScaleRange("size", 1), "26 - 50");
+
+  legend.colorScale(colorScale);
+  t.equal(legend._keyScaleRange("color", 0), "1 - 17");
+  t.equal(legend._keyScaleRange("color", 1), "17 - 34");
+  t.equal(legend._keyScaleRange("threshold", 0), "1 - 50");
+  t.equal(legend._keyScaleRange("threshold", 1), "> 50");
+
+  t.end();
+});
+
 tape("Test palette module", function(t) {
   let palette1 = d3Ez.ez.palette.categorical(1);
   let expected1 = ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
