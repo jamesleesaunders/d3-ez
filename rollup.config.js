@@ -28,6 +28,8 @@ export default {
       presets: [["es2015", { modules: false }]],
       plugins: ["external-helpers"]
     }),
-    json({ exclude: ["node_modules/**"] })
+    json({
+      exclude: ["node_modules/**"]
+    })
   ]
 };
