@@ -2,7 +2,6 @@ let d3Ez = require("../");
 let tape = require("tape");
 let jsdom = require("jsdom");
 let d3 = require("d3");
-let fs = require("fs");
 
 let data = {
   key: "Fruit",

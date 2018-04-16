@@ -1,7 +1,7 @@
-import json from 'rollup-plugin-json';
-import babel from 'rollup-plugin-babel';
+import json from "rollup-plugin-json";
+import babel from "rollup-plugin-babel";
 
-var banner = "/**\n\
+let banner = "/**\n\
  * d3-ez\n\
  *\n\
  * @author James Saunders [james@saunders-family.net]\n\
@@ -10,28 +10,24 @@ var banner = "/**\n\
  */\n";
 
 export default {
-  input: 'index.js',
+  input: "index.js",
   output: {
-    file: 'build/d3-ez.js',
-    format: 'umd',
+    file: "build/d3-ez.js",
+    format: "umd",
     extend: true,
-    name: 'd3',
+    name: "d3",
     banner: banner,
     strict: true,
-    globals: {
-      'd3': 'd3'
-    }
+    globals: { d3: "d3" }
   },
-  external: ['d3'],
+  external: ["d3"],
   plugins: [
     babel({
-      exclude: ['node_modules/**', '*.json'],
+      exclude: ["node_modules/**", "*.json"],
       babelrc: false,
-      presets: [['es2015', {'modules': false}]],
-      plugins: ['external-helpers']
+      presets: [["es2015", { modules: false }]],
+      plugins: ["external-helpers"]
     }),
-    json({
-      exclude: ['node_modules/**']
-    })
+    json({ exclude: ["node_modules/**"] })
   ]
 };

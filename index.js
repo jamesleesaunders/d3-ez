@@ -14,7 +14,7 @@ import { default as base } from "./src/base";
 import { default as component } from "./src/component";
 import { default as chart } from "./src/chart";
 
-var my = {
+let my = {
   version: version,
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
