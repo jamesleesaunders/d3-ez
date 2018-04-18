@@ -19,14 +19,14 @@ tape("setup", function(t) {
   t.end();
 });
 
-tape("Test index module", function(t) {
+tape("indexTest", function(t) {
   t.equal(d3Ez.ez.author, "James Saunders", "Returns author");
   t.equal(d3Ez.ez.license, "GPL-3.0", "Returns license");
 
   t.end();
 });
 
-tape("Test dataParse module", function(t) {
+tape("dataParseTest", function(t) {
   let result = d3Ez.ez.dataParse(data);
   let expected = {
     levels: 1,
@@ -48,7 +48,7 @@ tape("Test dataParse module", function(t) {
   t.end();
 });
 
-tape("Test title module", function(t) {
+tape("titleTest", function(t) {
   let title = d3Ez.ez.component.title().mainText("Foo").subText("Bar");
   t.equal(title.mainText(), "Foo", "Returns main title");
   t.equal(title.subText(), "Bar", "Returns sub-title");
@@ -56,14 +56,12 @@ tape("Test title module", function(t) {
   t.end();
 });
 
-tape("Test legend module", function(t) {
-  let legend = d3Ez.ez.component.legend().title("Foo Bar");
+tape("legendTest", function(t) {
+  let legend = d3Ez.ez.component.legend();
+
+  legend.title("Foo Bar");
   t.equal(legend.title(), "Foo Bar", "Returns legend title");
 
-  t.end();
-});
-
-tape("Test legend keyScaleRange helper", function(t) {
   let sizeScale = d3.scaleLinear()
     .range([0, 100])
     .domain([1, 50]);
@@ -71,8 +69,6 @@ tape("Test legend keyScaleRange helper", function(t) {
   let colorScale = d3.scaleLinear()
     .range(["#599ad3", "#727272", "#f1595f"])
     .domain([1, 50]);
-
-  let legend = d3Ez.ez.component.legend();
 
   legend.sizeScale(sizeScale);
   t.equal(legend._keyScaleRange("size", 0), "1 - 26");
@@ -90,7 +86,7 @@ tape("Test legend keyScaleRange helper", function(t) {
   t.end();
 });
 
-tape("Test palette module", function(t) {
+tape("paletteTest", function(t) {
   let palette1 = d3Ez.ez.palette.categorical(1);
   let expected1 = ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
   t.deepEqual(palette1, expected1, "Categorical palette");

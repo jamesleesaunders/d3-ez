@@ -5,7 +5,7 @@ CSS_FILES :=       css/global.css \
                    css/htmlTable.css \
                    css/barChart.css \
                    css/bubbleChart.css \
-                   css/candlestickChart.css \
+                   css/candleSticks.css \
                    css/donutChart.css \
                    css/heatMapRadial.css \
                    css/heatMapTable.css \

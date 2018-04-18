@@ -31,7 +31,7 @@ export default function() {
   let innerRadius;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let colorScale;
 
@@ -55,14 +55,10 @@ export default function() {
     let slicedData = dataParse(data);
     let categoryNames = slicedData.categoryNames;
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
   }
 
   /**
@@ -103,7 +99,7 @@ export default function() {
       let donutChart = component.donut()
         .radius(radius)
         .innerRadius(innerRadius)
-        .colorScale(colorScale)
+        .colors(colors)
         .dispatch(dispatch);
 
       chart.datum(data)

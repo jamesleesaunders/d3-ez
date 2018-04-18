@@ -31,7 +31,7 @@ export default function() {
   let innerRadius;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
@@ -65,20 +65,15 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
     let groupNames = slicedData.groupNames;
 
-    // If thresholds values are not already set
-    // attempt to auto-calculate some thresholds.
+    // If thresholds values are not set attempt to auto-calculate the thresholds.
     if (!thresholds) {
       thresholds = slicedData.thresholds;
     }
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleThreshold()
-        .range(colors)
-        .domain(thresholds);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleThreshold().domain(thresholds).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -132,10 +127,11 @@ export default function() {
       let heatMapRing = component.heatMapRing()
         .radius(function(d) { return yScale(d.key) })
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
-        .colorScale(colorScale)
-        .yScale(yScale)
-        .xScale(xScale)
-        .dispatch(dispatch);
+        .startAngle(startAngle)
+        .endAngle(endAngle)
+        .colors(colors)
+        .dispatch(dispatch)
+        .thresholds(thresholds);
 
       let seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
         .data(function(d) { return d; });
@@ -144,7 +140,6 @@ export default function() {
         .append("g")
         .attr("class", "seriesGroup")
         .merge(seriesGroup)
-        .datum(function(d) { return d; })
         .call(heatMapRing);
 
       seriesGroup.exit()
@@ -213,6 +208,12 @@ export default function() {
     if (!arguments.length) return colorScale;
     colorScale = _;
     return this;
+  };
+
+  my.thresholds = function(_) {
+    if (!arguments.length) return thresholds;
+    thresholds = _;
+    return my;
   };
 
   my.transition = function(_) {

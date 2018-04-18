@@ -19,6 +19,7 @@ export default function() {
   let xScale;
   let yScale;
   let colorScale;
+  let classed = "barsVertical";
 
   /**
    * Initialise Data and Scales
@@ -28,42 +29,39 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
     let maxValue = slicedData.maxValue;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = (typeof yScale === "undefined") ?
-      d3.scaleLinear().domain([0, maxValue]).range([0, height]) :
-      yScale;
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // If the xScale has not been passed then attempt to calculate.
     xScale = (typeof xScale === "undefined") ?
       d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) :
       xScale;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
-      colorScale;
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    selection.each(function(data) {
-      init(data);
+    init(selection.data());
+    selection.each(function() {
 
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Add bars to series
-      let bars = series.selectAll(".bar")
+      let bars = seriesGroup.selectAll(".bar")
         .data(function(d) { return d.values; });
 
       bars.enter()
@@ -111,6 +109,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

@@ -19,38 +19,59 @@ export default function() {
   let xScale;
   let yScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "scatterPlot";
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
     let slicedData = dataParse(data);
-    let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
+    let maxValue = slicedData.maxValue;
+    let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleOrdinal().domain(groupNames).range(colors) :
       colorScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleTime().domain(dateDomain).range([0, width]) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain([0, (maxValue * 1.05)]).range([height, 0]) :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    selection.each(function(data) {
-      init(data);
+    init(selection.data());
+    selection.each(function() {
+
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
+        .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Create series group
-      let seriesSelect = selection.selectAll(".series")
+      let seriesDots = seriesGroup.selectAll(".seriesDots")
         .data(function(d) { return [d]; });
 
-      let series = seriesSelect.enter()
+      let series = seriesDots.enter()
         .append("g")
-        .classed("series", true)
+        .classed("seriesDots", true)
         .attr("fill", function(d) { return colorScale(d.key); })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .merge(seriesDots);
 
       // Add dots to series
       let dots = series.selectAll(".dot")
@@ -96,6 +117,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

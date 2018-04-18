@@ -29,13 +29,10 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
-  let xScale2;
   let yScale;
-  let xAxis;
-  let yAxis;
   let colorScale;
 
   /**
@@ -47,8 +44,8 @@ export default function() {
    * Initialise Data, Scales and Series
    */
   function init(data) {
-    chartW = width - margin.left - margin.right;
-    chartH = height - margin.top - margin.bottom;
+    chartW = width - (margin.left + margin.right);
+    chartH = height - (margin.top + margin.bottom);
 
     // Slice Data, calculate totals, max etc.
     let slicedData = dataParse(data);
@@ -56,14 +53,10 @@ export default function() {
     let maxValue = slicedData.maxValue;
     let categoryNames = slicedData.categoryNames;
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -72,17 +65,9 @@ export default function() {
       .padding(0.1);
 
     yScale = d3.scaleLinear()
-      .range([0, chartH])
-      .domain([0, maxValue]);
-
-    xScale2 = d3.scaleBand()
-      .domain(categoryNames)
-      .rangeRound([0, xScale.bandwidth()])
-      .padding(0.1);
-
-    // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
-    yAxis = d3.axisLeft(yScale);
+      .domain([0, maxValue])
+      .range([chartH, 0])
+      .nice();
   }
 
   /**
@@ -90,6 +75,7 @@ export default function() {
    */
   function my(selection) {
     selection.each(function(data) {
+      // Initialise Data
       init(data);
 
       // Create SVG and Chart containers (if they do not already exist)
@@ -108,8 +94,8 @@ export default function() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true)
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true)
           .append("text")
           .attr("transform", "rotate(-90)")
           .attr("y", -35)
@@ -126,20 +112,10 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
-      chart.select(".x-axis")
-        .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis);
-
-      chart.select(".y-axis")
-        .call(yAxis);
-
       let barsVertical = component.barsVertical()
         .width(xScale.bandwidth())
         .height(chartH)
-        .colorScale(colorScale)
-        .xScale(xScale2)
-        .yScale(yScale)
+        .colors(colors)
         .dispatch(dispatch);
 
       // Create bar group
@@ -150,12 +126,22 @@ export default function() {
         .append("g")
         .classed("seriesGroup", true)
         .attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
-        .datum(function(d) { return d; })
         .merge(seriesGroup)
         .call(barsVertical);
 
       seriesGroup.exit()
         .remove();
+
+      // Add X Axis to chart
+      let xAxis = d3.axisBottom(xScale);
+      chart.select(".xAxis")
+        .attr("transform", "translate(0," + chartH + ")")
+        .call(xAxis);
+
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
+      chart.select(".yAxis")
+        .call(yAxis);
     });
   }
 

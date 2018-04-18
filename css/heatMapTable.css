@@ -11,6 +11,6 @@
   cursor: pointer;
 }
 
-.heatMapTable .x-axis path, .heatMapTable .y-axis path {
+.heatMapTable .xAxis path, .heatMapTable .yAxis path {
   display: none;
 }

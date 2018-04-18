@@ -29,12 +29,10 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
-  let xAxis;
-  let yAxis;
   let colorScale;
 
   /**
@@ -58,13 +56,10 @@ export default function() {
       yAxisLabel = slicedData.groupName;
     }
 
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -74,11 +69,8 @@ export default function() {
 
     yScale = d3.scaleLinear()
       .domain([0, maxValue])
-      .range([0, chartH]);
-
-    // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
-    yAxis = d3.axisLeft(yScale);
+      .range([chartH, 0])
+      .nice();
   }
 
   /**
@@ -118,22 +110,36 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
+      // Add bars to the chart
+      let barsVertical = component.barsVertical()
+        .width(chartW)
+        .height(chartH)
+        .colors(colors)
+        .dispatch(dispatch);
+
+      chart.select(".barChart")
+        .datum(data)
+        .call(barsVertical);
+
+      // Add X Axis to chart
+      let xAxis = d3.axisBottom(xScale);
       chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis);
 
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
       chart.select(".yAxis")
         .call(yAxis);
 
-      // Add labels to chart
+      // Add Labels to chart
       let ylabel = chart.select(".yAxis")
-        .selectAll(".y-label")
+        .selectAll(".yAxisLabel")
         .data([data.key]);
 
       ylabel.enter()
         .append("text")
-        .classed("y-label", true)
+        .classed("yAxisLabel", true)
         .attr("transform", "rotate(-90)")
         .attr("y", -40)
         .attr("dy", ".71em")
@@ -144,19 +150,6 @@ export default function() {
         .text(function(d) {
           return (d);
         });
-
-      // Add bars to the chart
-      let barsVertical = component.barsVertical()
-        .width(chartW)
-        .height(chartH)
-        .colorScale(colorScale)
-        .yScale(yScale)
-        .xScale(xScale)
-        .dispatch(dispatch);
-
-      chart.select(".barChart")
-        .datum(data)
-        .call(barsVertical);
     });
   }
 

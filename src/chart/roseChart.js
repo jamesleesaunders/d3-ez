@@ -54,14 +54,10 @@ export default function() {
     let maxValue = slicedData.maxValue;
     let categoryNames = slicedData.categoryNames;
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -69,8 +65,8 @@ export default function() {
       .rangeRound([0, 360]);
 
     yScale = d3.scaleLinear()
-      .range([0, radius])
-      .domain([0, maxValue]);
+      .domain([0, maxValue])
+      .range([0, radius]);
   }
 
   /**
@@ -111,8 +107,9 @@ export default function() {
       let roseChartSector = component.roseChartSector()
         .radius(radius)
         .yScale(yScale)
+        //.colorScale(colorScale)
+        .colors(colors)
         .stacked(false)
-        .colorScale(colorScale)
         .dispatch(dispatch);
 
       // Create series group
@@ -122,7 +119,6 @@ export default function() {
       seriesGroup.enter()
         .append("g")
         .classed("seriesGroup", true)
-        .datum(function(d) { return d; })
         .merge(seriesGroup)
         .each(function(d) {
           let startAngle = xScale(d.key);

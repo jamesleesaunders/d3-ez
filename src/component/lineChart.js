@@ -19,59 +19,80 @@ export default function() {
   let xScale;
   let yScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "lineChart";
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
     let slicedData = dataParse(data);
-    let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
+    let maxValue = slicedData.maxValue;
+    let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleOrdinal().domain(groupNames).range(colors) :
       colorScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleTime().domain(dateDomain).range([0, width]) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain([0, (maxValue * 1.05)]).range([height, 0]) :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    // Line generation function
-    let line = d3.line()
-      .curve(d3.curveCardinal)
-      .x(function(d) { return xScale(d.key); })
-      .y(function(d) { return yScale(d.value); });
+    init(selection.data());
+    selection.each(function() {
 
-    // Line animation tween
-    let pathTween = function(data) {
-      let interpolate = d3.scaleQuantile()
-        .domain([0, 1])
-        .range(d3.range(1, data.length + 1));
-      return function(t) {
-        return line(data.slice(0, interpolate(t)));
+      // Line generation function
+      let line = d3.line()
+        .curve(d3.curveCardinal)
+        .x(function(d) { return xScale(d.key); })
+        .y(function(d) { return yScale(d.value); });
+
+      // Line animation tween
+      let pathTween = function(data) {
+        let interpolate = d3.scaleQuantile()
+          .domain([0, 1])
+          .range(d3.range(1, data.length + 1));
+        return function(t) {
+          return line(data.slice(0, interpolate(t)));
+        };
       };
-    };
 
-    selection.each(function(data) {
-      init(data);
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
+        .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Create series group
-      let series = selection.selectAll(".series")
+      let seriesLine = seriesGroup.selectAll(".seriesLine")
         .data(function(d) { return [d]; });
 
-      series.enter()
+      seriesLine.enter()
         .append("path")
-        .attr("class", "series")
+        .attr("class", "seriesLine")
         .attr("stroke-width", 1.5)
         .attr("stroke", function(d) { return colorScale(d.key); })
         .attr("fill", "none")
-        .merge(series)
+        .merge(seriesLine)
         .transition()
         .duration(transition.duration)
         .attrTween("d", function(d) { return pathTween(d.values); });
 
-      series.exit()
+      seriesLine.exit()
         .transition()
         .style("opacity", 0)
         .remove();
@@ -96,6 +117,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

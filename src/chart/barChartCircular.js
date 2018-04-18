@@ -31,7 +31,7 @@ export default function() {
   let innerRadius;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
@@ -64,13 +64,10 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
     let maxValue = slicedData.maxValue;
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not been passed then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -79,7 +76,7 @@ export default function() {
       .padding(0.15);
 
     yScale = d3.scaleLinear()
-      .domain([0, maxValue])
+      .domain([maxValue, 0])
       .range([startAngle, endAngle]);
   }
 
@@ -88,6 +85,7 @@ export default function() {
    */
   function my(selection) {
     selection.each(function(data) {
+      // Initialise Data
       init(data);
 
       // Create SVG element (if it does not exist already)
@@ -142,9 +140,7 @@ export default function() {
       let barsCircular = component.barsCircular()
         .radius(radius)
         .innerRadius(innerRadius)
-        .yScale(yScale)
-        .xScale(xScale)
-        .colorScale(colorScale)
+        .colors(colors)
         .dispatch(dispatch);
 
       chart.select(".barsCircular")

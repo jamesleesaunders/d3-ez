@@ -17,7 +17,7 @@ export default function() {
   let classed = "punchCard";
   let width = 400;
   let height = 300;
-  let margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  let margin = { top: 50, right: 20, bottom: 20, left: 50 };
   let transition = { ease: d3.easeBounce, duration: 500 };
   let colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -29,13 +29,11 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let sizeScale;
   let xScale;
   let yScale;
-  let xAxis;
-  let yAxis;
   let colorScale;
 
   /**
@@ -64,14 +62,10 @@ export default function() {
       return d["value"];
     })];
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleLinear()
-        .domain(valDomain)
-        .range(colors);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleLinear().domain(valDomain).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -83,10 +77,6 @@ export default function() {
       .domain(groupNames)
       .range([0, chartH])
       .padding(0.05);
-
-    // X & Y Axis
-    xAxis = d3.axisTop(xScale);
-    yAxis = d3.axisLeft(yScale);
 
     // Size Scale
     sizeScale = d3.scaleLinear()
@@ -130,25 +120,14 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
-      chart.select(".xAxis")
-        .call(xAxis)
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", -8)
-        .attr("transform", "rotate(60)")
-        .style("text-anchor", "end");
-
-      chart.select(".yAxis")
-        .call(yAxis);
-
       let proportionalAreaCircles = component.proportionalAreaCircles()
         .width(chartW)
         .height(chartH)
-        .colorScale(colorScale)
+        //.yScale(yScale)
+        //.xScale(xScale)
+        //.colorScale(colorScale)
+        .colors(colors)
         .sizeScale(sizeScale)
-        .yScale(yScale)
-        .xScale(xScale)
         .dispatch(dispatch);
 
       let seriesGroup = chart.selectAll(".seriesGroup")
@@ -157,13 +136,26 @@ export default function() {
       seriesGroup.enter().append("g")
         .attr("class", "seriesGroup")
         .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
-        .datum(function(d) { return d; })
         .merge(seriesGroup)
         .call(proportionalAreaCircles);
 
       seriesGroup.exit()
         .remove();
 
+      // Add X Axis to chart
+      let xAxis = d3.axisTop(xScale);
+      chart.select(".xAxis")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", -8)
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
+
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
+      chart.select(".yAxis")
+        .call(yAxis);
     });
   }
 

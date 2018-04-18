@@ -19,6 +19,7 @@ export default function() {
   let colors = palette.categorical(3);
   let colorScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "donut";
 
   /**
    * Initialise Data and Scales
@@ -38,7 +39,7 @@ export default function() {
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
       colorScale;
   }
 
@@ -46,57 +47,55 @@ export default function() {
    * Constructor
    */
   function my(selection) {
-    // Pie Generator
-    let pie = d3.pie()
-      .value(function(d) { return d.value; })
-      .sort(null)
-      .padAngle(0.015);
-
-    // Arc Generator
-    let arc = d3.arc()
-      .innerRadius(innerRadius)
-      .outerRadius(radius)
-      .cornerRadius(2);
-
-    // Outer Arc Generator
-    let outerArc = d3.arc()
-      .innerRadius(radius * 0.9)
-      .outerRadius(radius * 0.9);
-
-    // Arc Tween
-    let arcTween = function(d) {
-      let i = d3.interpolate(this._current, d);
-      this._current = i(0);
-      return function(t) {
-        return arc(i(t));
-      };
-    };
-
-    // Mid Angle
-    let midAngle = function(d) {
-      return d.startAngle + (d.endAngle - d.startAngle) / 2;
-    };
-
     selection.each(function(data) {
       init(data);
 
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
+      // Pie Generator
+      let pie = d3.pie()
+        .value(function(d) { return d.value; })
+        .sort(null)
+        .padAngle(0.015);
 
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Arc Generator
+      let arc = d3.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(radius)
+        .cornerRadius(2);
+
+      // Outer Arc Generator
+      let outerArc = d3.arc()
+        .innerRadius(radius * 0.9)
+        .outerRadius(radius * 0.9);
+
+      // Arc Tween
+      let arcTween = function(d) {
+        let i = d3.interpolate(this._current, d);
+        this._current = i(0);
+        return function(t) {
+          return arc(i(t));
+        };
+      };
+
+      // Mid Angle
+      let midAngle = function(d) {
+        return d.startAngle + (d.endAngle - d.startAngle) / 2;
+      };
+
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
-      series.append("g").attr("class", "slices");
-      series.append("g").attr("class", "labels");
-      series.append("g").attr("class", "lines");
+      // TODO: I am not sure the below will work for updates?
+      seriesGroup.append("g").attr("class", "slices");
+      seriesGroup.append("g").attr("class", "labels");
+      seriesGroup.append("g").attr("class", "lines");
 
       // Slices
-      let slices = series.select(".slices")
+      let slices = seriesGroup.select(".slices")
         .selectAll("path.slice")
         .data(function(d) {
           return pie(d.values);
@@ -119,7 +118,7 @@ export default function() {
         .remove();
 
       // Labels
-      let labels = series.select(".labels")
+      let labels = seriesGroup.select(".labels")
         .selectAll("text.label")
         .data(function(d) {
           return pie(d.values);
@@ -160,7 +159,7 @@ export default function() {
         .remove();
 
       // Slice to Label Lines
-      let lines = series.select(".lines")
+      let lines = seriesGroup.select(".lines")
         .selectAll("polyline.line")
         .data(function(d) {
           return pie(d.values);
@@ -187,7 +186,6 @@ export default function() {
       lines.exit()
         .remove();
     });
-
   }
 
   /**
@@ -220,6 +218,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 
