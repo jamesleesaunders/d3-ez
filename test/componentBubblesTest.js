@@ -62,11 +62,12 @@ tape("componentBubblesTest", function(t) {
     .classed("seriesGroup", true)
     .call(myChart);
 
+  let expected = readSvgFile("./test/svg/componentBubbles.svg");
+
   // Wait for transitions to complete
   setTimeout(function() {
-    let result = chartHolder.html();
-    let expected = readSvgFile("./test/svg/componentBubbles.svg");
-    t.equal(result, expected);
+    let actual = chartHolder.html();
+    t.equal(expected, actual);
     t.end();
   }, 600);
 });

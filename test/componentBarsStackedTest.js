@@ -3,6 +3,8 @@ let tape = require("tape");
 let jsdom = require("jsdom");
 let d3 = require("d3");
 let fs = require("fs");
+let DOMParser = require('xmldom').DOMParser;
+let XMLSerializer = require('xmldom').XMLSerializer;
 
 let data = {
   key: "Fruit",
@@ -15,12 +17,18 @@ let data = {
 };
 
 function readSvgFile(file) {
-  let str = fs.readFileSync(file)
+  let xmlString = fs.readFileSync(file)
     .toString("utf-8")
     .replace(/[\n\r\t]+/g, "")
     .replace(/>\s+</g, "><");
 
-  return str;
+  //let parser = new DOMParser();
+  //let dom = parser.parseFromString(xmlString, "image/svg+xml");
+
+  //let xmlserializer = new XMLSerializer()
+  //let xmlReturn = xmlserializer.serializeToString(dom);
+
+  return xmlString;
 }
 
 tape("setup", function(t) {
@@ -42,11 +50,13 @@ tape("componentBarsStackedTest", function(t) {
     .datum(data)
     .call(myChart);
 
+  let expected = readSvgFile("./test/svg/componentBarsStacked.svg");
+
   // Wait for transitions to complete
   setTimeout(function() {
-    let result = chartHolder.html();
-    let expected = readSvgFile("./test/svg/componentBarsStacked.svg");
-    t.equal(result, expected);
+    let actual = chartHolder.html();
+
+    t.equal(expected, actual);
     t.end();
   }, 600);
 });

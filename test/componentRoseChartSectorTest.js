@@ -44,11 +44,12 @@ tape("componentRoseChartSectorTest", function(t) {
     .datum(data)
     .call(myChart);
 
+  let expected = readSvgFile("./test/svg/componentRoseChartSector.svg");
+
   // Wait for transitions to complete
   setTimeout(function() {
-    let result = chartHolder.html();
-    let expected = readSvgFile("./test/svg/componentRoseChartSector.svg");
-    t.equal(result, expected);
+    let actual = chartHolder.html();
+    t.equal(expected, actual);
     t.end();
   }, 600);
 });
