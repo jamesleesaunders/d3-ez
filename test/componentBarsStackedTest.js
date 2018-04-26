@@ -3,8 +3,8 @@ let tape = require("tape");
 let jsdom = require("jsdom");
 let d3 = require("d3");
 let fs = require("fs");
-let DOMParser = require('xmldom').DOMParser;
-let XMLSerializer = require('xmldom').XMLSerializer;
+//let DOMParser = require('xmldom').DOMParser;
+//let XMLSerializer = require('xmldom').XMLSerializer;
 
 let data = {
   key: "Fruit",
