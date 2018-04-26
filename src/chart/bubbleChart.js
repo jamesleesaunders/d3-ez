@@ -133,7 +133,9 @@ export default function() {
       let bubbles = component.bubbles()
         .width(chartW)
         .height(chartH)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .minRadius(minRadius)
         .maxRadius(maxRadius)
         .dispatch(dispatch);

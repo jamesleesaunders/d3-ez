@@ -99,7 +99,7 @@ export default function() {
       let donutChart = component.donut()
         .radius(radius)
         .innerRadius(innerRadius)
-        .colors(colors)
+        .colorScale(colorScale)
         .dispatch(dispatch);
 
       chart.datum(data)

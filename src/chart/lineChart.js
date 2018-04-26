@@ -120,19 +120,17 @@ export default function() {
       let lineChart = component.lineChart()
         .width(chartW)
         .height(chartH)
-        //.colorScale(colorScale)
-        .colors(colors)
-        //.yScale(yScale)
-        //.xScale(xScale)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .dispatch(dispatch);
 
       let scatterPlot = component.scatterPlot()
         .width(chartW)
         .height(chartH)
-        //.colorScale(colorScale)
-        .colors(colors)
-        //.yScale(yScale)
-        //.xScale(xScale)
+        .colorScale(colorScale)
+        .yScale(yScale)
+        .xScale(xScale)
         .dispatch(dispatch);
 
       let lineGroup = chart.selectAll(".lineGroup")

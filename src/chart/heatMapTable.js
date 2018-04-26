@@ -113,7 +113,9 @@ export default function() {
       let heatMapRow = component.heatMapRow()
         .width(chartW)
         .height(chartH)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .dispatch(dispatch)
         .thresholds(thresholds);
 

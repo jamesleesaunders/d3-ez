@@ -140,7 +140,9 @@ export default function() {
       let barsCircular = component.barsCircular()
         .radius(radius)
         .innerRadius(innerRadius)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        //.yScale(yScale)
         .dispatch(dispatch);
 
       chart.select(".barsCircular")

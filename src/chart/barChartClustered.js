@@ -115,7 +115,9 @@ export default function() {
       let barsVertical = component.barsVertical()
         .width(xScale.bandwidth())
         .height(chartH)
-        .colors(colors)
+        .colorScale(colorScale)
+        //.xScale(xScale)
+        //.yScale(yScale)
         .dispatch(dispatch);
 
       // Create bar group

@@ -128,10 +128,9 @@ export default function() {
       // Radial Bar Chart
       let polarArea = component.polarArea()
         .radius(radius)
-        //.xScale(xScale)
-        //.yScale(yScale)
-        //.colorScale(colorScale)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .dispatch(dispatch);
 
       chart.select(".polarArea")

@@ -3951,7 +3951,9 @@ function chartBarChartCircular () {
       chart.select(".circularSectorLabels").call(circularSectorLabels);
 
       // Radial Bar Chart
-      var barsCircular = component.barsCircular().radius(radius).innerRadius(innerRadius).colors(colors).dispatch(dispatch);
+      var barsCircular = component.barsCircular().radius(radius).innerRadius(innerRadius).colorScale(colorScale).xScale(xScale)
+      //.yScale(yScale)
+      .dispatch(dispatch);
 
       chart.select(".barsCircular").datum(data).call(barsCircular);
 
@@ -4117,7 +4119,10 @@ function chartBarChartClustered () {
       // Update the chart dimensions
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
-      var barsVertical = component.barsVertical().width(xScale.bandwidth()).height(chartH).colors(colors).dispatch(dispatch);
+      var barsVertical = component.barsVertical().width(xScale.bandwidth()).height(chartH).colorScale(colorScale)
+      //.xScale(xScale)
+      //.yScale(yScale)
+      .dispatch(dispatch);
 
       // Create bar group
       var seriesGroup = chart.selectAll(".seriesGroup").data(data);
@@ -4286,7 +4291,9 @@ function chartBarChartStacked () {
       // Update the chart dimensions
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
-      var barsStacked = component.barsStacked().width(xScale.bandwidth()).height(chartH).colors(colors).dispatch(dispatch);
+      var barsStacked = component.barsStacked().width(xScale.bandwidth()).height(chartH).colorScale(colorScale)
+      //.yScale(yScale)
+      .dispatch(dispatch);
 
       // Create bar group
       var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
@@ -4454,7 +4461,9 @@ function chartBarChartVertical () {
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
       // Add bars to the chart
-      var barsVertical = component.barsVertical().width(chartW).height(chartH).colors(colors).dispatch(dispatch);
+      var barsVertical = component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale)
+      //.yScale(yScale)
+      .dispatch(dispatch);
 
       chart.select(".barChart").datum(data).call(barsVertical);
 
@@ -4634,7 +4643,7 @@ function chartBubbleChart () {
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
       // Add bubbles to the chart
-      var bubbles = component.bubbles().width(chartW).height(chartH).colors(colors).minRadius(minRadius).maxRadius(maxRadius).dispatch(dispatch);
+      var bubbles = component.bubbles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).minRadius(minRadius).maxRadius(maxRadius).dispatch(dispatch);
 
       var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
         return d;
@@ -4833,7 +4842,7 @@ function chartCandlestickChart () {
       //   .attr('clip-path', 'url(#plotAreaClip)');
 
       // Add candles to the chart
-      var candleSticks = component.candleSticks().width(chartW).height(chartH).colors(colors).dispatch(dispatch);
+      var candleSticks = component.candleSticks().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
       chart.select(".seriesGroup").datum(data).call(candleSticks);
 
@@ -4989,7 +4998,7 @@ function chartDonutChart () {
       chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
 
       // Add the chart
-      var donutChart = component.donut().radius(radius).innerRadius(innerRadius).colors(colors).dispatch(dispatch);
+      var donutChart = component.donut().radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
 
       chart.datum(data).call(donutChart);
     });
@@ -5168,7 +5177,7 @@ function chartHeatMapRadial () {
         return yScale(d.key);
       }).innerRadius(function (d) {
         return yScale(d.key) + yScale.bandwidth();
-      }).startAngle(startAngle).endAngle(endAngle).colors(colors).dispatch(dispatch).thresholds(thresholds);
+      }).startAngle(startAngle).endAngle(endAngle).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
       var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup").data(function (d) {
         return d;
@@ -5354,7 +5363,7 @@ function chartHeatMapTable () {
       // Update the chart dimensions
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
-      var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colors(colors).dispatch(dispatch).thresholds(thresholds);
+      var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
       var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
         return d;
@@ -5528,19 +5537,9 @@ function chartLineChart () {
       // Update the chart dimensions
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
-      var lineChart = component.lineChart().width(chartW).height(chartH)
-      //.colorScale(colorScale)
-      .colors(colors)
-      //.yScale(yScale)
-      //.xScale(xScale)
-      .dispatch(dispatch);
+      var lineChart = component.lineChart().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
-      var scatterPlot = component.scatterPlot().width(chartW).height(chartH)
-      //.colorScale(colorScale)
-      .colors(colors)
-      //.yScale(yScale)
-      //.xScale(xScale)
-      .dispatch(dispatch);
+      var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
       var lineGroup = chart.selectAll(".lineGroup").data(function (d) {
         return d;
@@ -5737,11 +5736,7 @@ function chartPolarAreaChart () {
       chart.select(".circularAxis").call(circularAxis);
 
       // Radial Bar Chart
-      var polarArea = component.polarArea().radius(radius)
-      //.xScale(xScale)
-      //.yScale(yScale)
-      //.colorScale(colorScale)
-      .colors(colors).dispatch(dispatch);
+      var polarArea = component.polarArea().radius(radius).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
       chart.select(".polarArea").datum(data).call(polarArea);
 
@@ -5930,11 +5925,7 @@ function chartPunchCard () {
       // Update the chart dimensions
       chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
-      var proportionalAreaCircles = component.proportionalAreaCircles().width(chartW).height(chartH)
-      //.yScale(yScale)
-      //.xScale(xScale)
-      //.colorScale(colorScale)
-      .colors(colors).sizeScale(sizeScale).dispatch(dispatch);
+      var proportionalAreaCircles = component.proportionalAreaCircles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).sizeScale(sizeScale).dispatch(dispatch);
 
       var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
         return d;
@@ -6109,9 +6100,7 @@ function chartRoseChart () {
       // Update the chart dimensions
       chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH);
 
-      var roseChartSector = component.roseChartSector().radius(radius).yScale(yScale)
-      //.colorScale(colorScale)
-      .colors(colors).stacked(false).dispatch(dispatch);
+      var roseChartSector = component.roseChartSector().radius(radius).colorScale(colorScale).yScale(yScale).stacked(false).dispatch(dispatch);
 
       // Create series group
       var seriesGroup = chart.selectAll(".seriesGroup").data(data);

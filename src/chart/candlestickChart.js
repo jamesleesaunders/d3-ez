@@ -137,7 +137,9 @@ export default function() {
       let candleSticks = component.candleSticks()
         .width(chartW)
         .height(chartH)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .dispatch(dispatch);
 
       chart.select(".seriesGroup")

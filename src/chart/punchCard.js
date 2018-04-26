@@ -123,10 +123,9 @@ export default function() {
       let proportionalAreaCircles = component.proportionalAreaCircles()
         .width(chartW)
         .height(chartH)
-        //.yScale(yScale)
-        //.xScale(xScale)
-        //.colorScale(colorScale)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .sizeScale(sizeScale)
         .dispatch(dispatch);
 

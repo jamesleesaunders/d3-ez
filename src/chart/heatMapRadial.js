@@ -129,7 +129,9 @@ export default function() {
         .innerRadius(function(d) { return yScale(d.key) + yScale.bandwidth(); })
         .startAngle(startAngle)
         .endAngle(endAngle)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
         .dispatch(dispatch)
         .thresholds(thresholds);
 

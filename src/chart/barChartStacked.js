@@ -114,7 +114,8 @@ export default function() {
       let barsStacked = component.barsStacked()
         .width(xScale.bandwidth())
         .height(chartH)
-        .colors(colors)
+        .colorScale(colorScale)
+        //.yScale(yScale)
         .dispatch(dispatch);
 
       // Create bar group

@@ -114,7 +114,9 @@ export default function() {
       let barsVertical = component.barsVertical()
         .width(chartW)
         .height(chartH)
-        .colors(colors)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        //.yScale(yScale)
         .dispatch(dispatch);
 
       chart.select(".barChart")
