@@ -61,14 +61,10 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
     let maxValue = slicedData.maxValue;
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -132,9 +128,9 @@ export default function() {
       // Radial Bar Chart
       let polarArea = component.polarArea()
         .radius(radius)
+        .colorScale(colorScale)
         .xScale(xScale)
         .yScale(yScale)
-        .colorScale(colorScale)
         .dispatch(dispatch);
 
       chart.select(".polarArea")

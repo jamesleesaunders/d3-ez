@@ -20,138 +20,156 @@ export default function() {
   let yScale;
   let colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
   let candleWidth = 3;
+  let classed = "candleSticks";
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    let slicedData = dataParse(data);
-    let categoryNames = slicedData.categoryNames;
+    // Slice Data, calculate totals, max etc.
+    let maxDate = d3.max(data.values, function(d) {
+      return d.date;
+    });
+    let minDate = d3.min(data.values, function(d) {
+      return d.date;
+    });
+
+    let xDomain = [
+      new Date(minDate - 8.64e7),
+      new Date(maxDate + 8.64e7)
+    ];
+    let yDomain = [
+      d3.min(data.values, function(d) { return d.low; }),
+      d3.max(data.values, function(d) { return d.high; })
+    ];
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleOrdinal().domain([true, false]).range(colors) :
       colorScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleTime().domain(xDomain).range([0, width]) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain(yDomain).range([height, 0]).nice() :
+      yScale;
   }
 
   /**
    * Constructor
    */
   let my = function(selection) {
-    // Is Up Day
-    let isUpDay = function(d) {
-      return d.close > d.open;
-    };
+    init(selection.data()[0]);
+    selection.each(function() {
 
-    // Is Down Day
-    let isDownDay = function(d) {
-      return !isUpDay(d);
-    };
+      // Is Up Day
+      let isUpDay = function(d) {
+        return d.close > d.open;
+      };
 
-    // Line Function
-    let line = d3.line()
-      .x(function(d) { return d.x; })
-      .y(function(d) { return d.y; });
+      // Line Function
+      let line = d3.line()
+        .x(function(d) { return d.x; })
+        .y(function(d) { return d.y; });
 
-    // High Low Lines
-    let highLowLines = function(bars) {
-      let paths = bars.selectAll(".high-low-line")
-        .data(function(d) { return [d]; });
+      // High Low Lines
+      let highLowLines = function(bars) {
+        let paths = bars.selectAll(".high-low-line")
+          .data(function(d) { return [d]; });
 
-      paths.enter()
-        .append("path")
-        .classed("high-low-line", true)
-        .attr("d", function(d) {
-          return line([
-            { x: xScale(d.date), y: yScale(d.high) },
-            { x: xScale(d.date), y: yScale(d.low) }
-          ]);
-        });
-    };
+        paths.enter()
+          .append("path")
+          .classed("high-low-line", true)
+          .attr("d", function(d) {
+            return line([
+              { x: xScale(d.date), y: yScale(d.high) },
+              { x: xScale(d.date), y: yScale(d.low) }
+            ]);
+          });
+      };
 
-    // Open Close Bars
-    let openCloseBars = function(bars) {
-      let rect = bars.selectAll(".open-close-bar")
-        .data(function(d) { return [d]; });
+      // Open Close Bars
+      let openCloseBars = function(bars) {
+        let rect = bars.selectAll(".open-close-bar")
+          .data(function(d) { return [d]; });
 
-      rect.enter()
-        .append("rect")
-        .classed("open-close-bar", true)
-        .attr("x", function(d) {
-          return xScale(d.date) - candleWidth;
-        })
-        .attr("y", function(d) {
-          return isUpDay(d) ? yScale(d.close) : yScale(d.open);
-        })
-        .attr("width", candleWidth * 2)
-        .attr("height", function(d) {
-          return isUpDay(d) ?
-            yScale(d.open) - yScale(d.close) :
-            yScale(d.close) - yScale(d.open);
-        });
-    };
+        rect.enter()
+          .append("rect")
+          .classed("open-close-bar", true)
+          .attr("x", function(d) {
+            return xScale(d.date) - candleWidth;
+          })
+          .attr("y", function(d) {
+            return isUpDay(d) ? yScale(d.close) : yScale(d.open);
+          })
+          .attr("width", candleWidth * 2)
+          .attr("height", function(d) {
+            return isUpDay(d) ?
+              yScale(d.open) - yScale(d.close) :
+              yScale(d.close) - yScale(d.open);
+          });
+      };
 
-    // Open Close Ticks
-    let openCloseTicks = function(bars) {
-      let open = bars.selectAll(".open-tick")
-        .data(function(d) { return [d]; });
+      // Open Close Ticks
+      let openCloseTicks = function(bars) {
+        let open = bars.selectAll(".open-tick")
+          .data(function(d) { return [d]; });
 
-      let close = bars.selectAll(".close-tick")
-        .data(function(d) { return [d]; });
+        let close = bars.selectAll(".close-tick")
+          .data(function(d) { return [d]; });
 
-      open.enter()
-        .append("path")
-        .classed("open-tick", true)
-        .attr("d", function(d) {
-          return line([
-            { x: xScale(d.date) - candleWidth, y: yScale(d.open) },
-            { x: xScale(d.date), y: yScale(d.open) }
-          ]);
-        });
+        open.enter()
+          .append("path")
+          .classed("open-tick", true)
+          .attr("d", function(d) {
+            return line([
+              { x: xScale(d.date) - candleWidth, y: yScale(d.open) },
+              { x: xScale(d.date), y: yScale(d.open) }
+            ]);
+          });
 
-      close.enter()
-        .append("path")
-        .classed("close-tick", true)
-        .attr("d", function(d) {
-          return line([
-            { x: xScale(d.date), y: yScale(d.close) },
-            { x: xScale(d.date) + candleWidth, y: yScale(d.close) }
-          ]);
-        });
-    };
+        close.enter()
+          .append("path")
+          .classed("close-tick", true)
+          .attr("d", function(d) {
+            return line([
+              { x: xScale(d.date), y: yScale(d.close) },
+              { x: xScale(d.date) + candleWidth, y: yScale(d.close) }
+            ]);
+          });
+      };
 
-    selection.each(function(data) {
-      init(data);
-
-      // Create series group
-      let seriesSelect = d3.select(this).selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
-      // Add bars to series
-      let barsSelect = series.selectAll(".bar")
+      // Add candles to series
+      let candlesSelect = seriesGroup.selectAll(".candle")
         .data(function(d) { return d.values; });
 
-      let bars = barsSelect.enter()
+      let candles = candlesSelect.enter()
         .append("g")
-        .classed("bar", true)
+        .classed("candle", true)
         .attr("fill", function(d) { return colorScale(isUpDay(d)); })
         .attr("stroke", function(d) { return colorScale(isUpDay(d)); })
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-        .merge(barsSelect);
+        .merge(candlesSelect);
 
-      highLowLines(bars);
-      openCloseBars(bars);
-      // openCloseTicks(bars);
+      highLowLines(candles);
+      openCloseBars(candles);
+      // openCloseTicks(candles);
 
-      bars.exit().remove();
+      candles.exit()
+        .remove();
     });
   };
 
@@ -173,6 +191,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

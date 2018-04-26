@@ -21,6 +21,11 @@ export default function() {
   let yScale;
   let sizeScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "proportionalAreaCircles";
+
+  let minRadius = 2;
+  let maxRadius = 20;
+  let useGlobalScale = true;
 
   /**
    * Initialise Data and Scales
@@ -28,42 +33,54 @@ export default function() {
   function init(data) {
     let slicedData = dataParse(data);
     let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
+    let maxValue = slicedData.maxValue;
+    let minValue = slicedData.minValue;
+
+    let valDomain = [minValue, maxValue];
+    let sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function(d) {
+      return d["value"];
+    })];
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleLinear().domain(valDomain).range(colors) :
       colorScale;
+
+    // If the sizeScale has not been passed then attempt to calculate.
+    sizeScale = (typeof sizeScale === "undefined") ?
+      d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) :
+      sizeScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.05) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleBand().domain(groupNames).range([0, height]).padding(0.05) :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    // Calculate cell sizes
-    let cellHeight = yScale.bandwidth();
-    let cellWidth = xScale.bandwidth();
+    init(selection.data());
+    selection.each(function() {
 
-    selection.each(function(data) {
-      init(data);
+      // Calculate cell sizes
+      let cellHeight = yScale.bandwidth();
+      let cellWidth = xScale.bandwidth();
 
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
-
-      series.attr("transform", function() {
-        return "translate(0 , " + (cellHeight / 2) + ")";
-      });
-
-      // Add spots to series
-      let spots = series.selectAll(".punchSpot")
-        .data(function(d) { return d.values; });
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       let spot = componentLabeledNode()
         .radius(function(d) { return sizeScale(d.value); })
@@ -73,17 +90,21 @@ export default function() {
         .classed("punchSpot")
         .dispatch(dispatch);
 
+      // Add spots to series
+      let spots = seriesGroup.selectAll(".punchSpot")
+        .data(function(d) { return d.values; });
+
       spots.enter()
         .append("g")
         .call(spot)
         .attr("transform", function(d) {
-          return "translate(" + (cellWidth / 2 + xScale(d.key)) + ",0)";
+          return "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + (cellHeight / 2) + ")";
         })
         .on("mouseover", function(d) {
           d3.select(this).select("text").style("display", "block");
           dispatch.call("customValueMouseOver", this, d);
         })
-        .on("mouseout", function(d) {
+        .on("mouseout", function() {
           d3.select(this).select("text").style("display", "none");
         })
         .on("click", function(d) {
@@ -92,10 +113,11 @@ export default function() {
         .merge(spots);
 
       /*
-      spots.enter().append("circle")
+      spots.enter()
+        .append("circle")
         .attr("class", "punchSpot")
         .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
-        .attr("cy", 0)
+        .attr("cy", function(d) { return (cellHeight / 2); })
         .attr("r", 0)
         .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
         .on("click", function(d) { dispatch.call("customValueClick", this, d); })
@@ -131,6 +153,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

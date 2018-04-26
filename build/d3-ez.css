@@ -185,20 +185,20 @@ table.htmlTable {
 
 /* === Candlestick Chart Styles === */
 
-.candlestickChart .series .bar {
+.candleSticks .candle {
   stroke: black;
   vector-effect: non-scaling-stroke;
 }
 
-.candlestickChart .series .bar path.high-low-line {
+.candleSticks .candle path.high-low-line {
   stroke-width: 0.8px;
 }
 
-.candlestickChart .series .bar rect.open-close-bar {
+.candleSticks .candle rect.open-close-bar {
   stroke-width: 1px;
 }
 
-.candlestickChart .series .bar path.open-tick, .candlestickChart .bar path.close-tick {
+.candleSticks .candle path.open-tick, .candleSticks .candle path.close-tick {
   stroke-width: 0.8px;
 }
 
@@ -262,7 +262,7 @@ table.htmlTable {
   cursor: pointer;
 }
 
-.heatMapTable .x-axis path, .heatMapTable .y-axis path {
+.heatMapTable .xAxis path, .heatMapTable .yAxis path {
   display: none;
 }
 

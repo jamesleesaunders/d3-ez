@@ -17,7 +17,7 @@ export default function() {
   let classed = "heatMapTable";
   let width = 400;
   let height = 300;
-  let margin = { top: 45, right: 20, bottom: 20, left: 45 };
+  let margin = { top: 50, right: 20, bottom: 20, left: 50 };
   let transition = { ease: d3.easeBounce, duration: 500 };
   let colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -29,13 +29,11 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
   let colorScale;
-  let xAxis;
-  let yAxis;
 
   /**
    * Other Customisation Options
@@ -54,20 +52,15 @@ export default function() {
     let categoryNames = slicedData.categoryNames;
     let groupNames = slicedData.groupNames;
 
-    // If thresholds values are not already set
-    // attempt to auto-calculate some thresholds.
+    // If thresholds values are not set attempt to auto-calculate the thresholds.
     if (!thresholds) {
       thresholds = slicedData.thresholds;
     }
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleThreshold()
-        .domain(thresholds)
-        .range(colors);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleThreshold().domain(thresholds).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleBand()
@@ -79,10 +72,6 @@ export default function() {
       .domain(groupNames)
       .range([0, chartH])
       .padding(0.1);
-
-    // X & Y Axis
-    xAxis = d3.axisTop(xScale);
-    yAxis = d3.axisLeft(yScale);
   }
 
   /**
@@ -109,8 +98,8 @@ export default function() {
           .attr("height", height);
 
         chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("x-axis axis", true);
-        chart.append("g").classed("y-axis axis", true);
+        chart.append("g").classed("xAxis axis", true);
+        chart.append("g").classed("yAxis axis", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -121,25 +110,14 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
-      chart.select(".x-axis")
-        .call(xAxis)
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", -8)
-        .attr("transform", "rotate(60)")
-        .style("text-anchor", "end");
-
-      chart.select(".y-axis")
-        .call(yAxis);
-
       let heatMapRow = component.heatMapRow()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
-        .yScale(yScale)
         .xScale(xScale)
-        .dispatch(dispatch);
+        .yScale(yScale)
+        .dispatch(dispatch)
+        .thresholds(thresholds);
 
       let seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; });
@@ -147,13 +125,26 @@ export default function() {
       seriesGroup.enter().append("g")
         .attr("class", "seriesGroup")
         .attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
-        .datum(function(d) { return d; })
         .merge(seriesGroup)
         .call(heatMapRow);
 
       seriesGroup.exit()
         .remove();
 
+      // Add X Axis to chart
+      let xAxis = d3.axisTop(xScale);
+      chart.select(".xAxis")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", -8)
+        .attr("transform", "rotate(60)")
+        .style("text-anchor", "end");
+
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
+      chart.select(".yAxis")
+        .call(yAxis);
     });
   }
 

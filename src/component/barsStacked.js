@@ -17,68 +17,64 @@ export default function() {
   let colors = palette.categorical(3);
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
   let yScale;
-  let xScale;
   let colorScale;
+  let classed = "barsStacked";
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
     let slicedData = dataParse(data);
+    let groupTotalsMax = slicedData.groupTotalsMax;
     let categoryNames = slicedData.categoryNames;
-    let categoryTotal = slicedData.categoryTotal;
-
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = (typeof yScale === "undefined") ?
-      d3.scaleLinear().domain([0, categoryTotal]).range([0, height]) :
-      yScale;
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
       colorScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain([0, groupTotalsMax]).range([0, height]).nice() :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
+    init(selection.data());
+    selection.each(function() {
 
-    // Stack Generator
-    let stacker = function(data) {
-      let series = [];
-      let y0 = 0;
-      let y1 = 0;
-      data.forEach(function(d, i) {
-        y1 = y0 + d.value;
-        series[i] = {
-          key: d.key,
-          value: d.value,
-          y0: y0,
-          y1: y1
-        };
-        y0 += d.value;
-      });
+      // Stack Generator
+      let stacker = function(data) {
+        let series = [];
+        let y0 = 0;
+        let y1 = 0;
+        data.forEach(function(d, i) {
+          y1 = y0 + d.value;
+          series[i] = {
+            key: d.key,
+            value: d.value,
+            y0: y0,
+            y1: y1
+          };
+          y0 += d.value;
+        });
 
-      return series;
-    };
+        return series;
+      };
 
-    selection.each(function(data) {
-      init(data);
-
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Add bars to series
-      let bars = series.selectAll(".bar")
+      let bars = seriesGroup.selectAll(".bar")
         .data(function(d) { return stacker(d.values); });
 
       bars.enter()
@@ -130,15 +126,15 @@ export default function() {
     return my;
   };
 
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
+    return this;
+  };
+
   my.yScale = function(_) {
     if (!arguments.length) return yScale;
     yScale = _;
-    return my;
-  };
-
-  my.xScale = function(_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
     return my;
   };
 

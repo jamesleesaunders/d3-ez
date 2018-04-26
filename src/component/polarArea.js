@@ -22,6 +22,7 @@ export default function() {
   let xScale;
   let yScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "polarArea";
 
   /**
    * Initialise Data and Scales
@@ -29,6 +30,7 @@ export default function() {
   function init(data) {
     let slicedData = dataParse(data);
     let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === "undefined") ?
@@ -37,52 +39,55 @@ export default function() {
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
       colorScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice() :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    // Calculate Radius and Angles
-    let defaultRadius = Math.min(width, height) / 2;
-    radius = (typeof radius === "undefined") ? defaultRadius : radius;
-    startAngle = d3.min(xScale.range());
-    endAngle = d3.max(xScale.range());
+    init(selection.data());
+    selection.each(function() {
 
-    // Pie Generator
-    let pie = d3.pie()
-      .value(1)
-      .sort(null)
-      .startAngle(startAngle * (Math.PI / 180))
-      .endAngle(endAngle * (Math.PI / 180))
-      .padAngle(0);
+      // Pie Generator
+      startAngle = d3.min(xScale.range());
+      endAngle = d3.max(xScale.range());
+      let pie = d3.pie()
+        .value(1)
+        .sort(null)
+        .startAngle(startAngle * (Math.PI / 180))
+        .endAngle(endAngle * (Math.PI / 180))
+        .padAngle(0);
 
-    // Arc Generator
-    let arc = d3.arc()
-      .outerRadius(function(d) {
-        return yScale(d.data.value);
-      })
-      .innerRadius(0)
-      .cornerRadius(2);
+      // Arc Generator
+      let arc = d3.arc()
+        .outerRadius(function(d) {
+          return yScale(d.data.value);
+        })
+        .innerRadius(0)
+        .cornerRadius(2);
 
-    selection.each(function(data) {
-      init(data);
-
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Add segments to series
-      let segments = series.selectAll(".segment")
+      let segments = seriesGroup.selectAll(".segment")
         .data(function(d) { return pie(d.values); });
 
       segments.enter()
@@ -128,6 +133,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

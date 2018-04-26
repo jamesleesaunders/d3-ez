@@ -29,12 +29,10 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
-  let xAxis;
-  let yAxis;
   let colorScale;
 
   /**
@@ -62,28 +60,19 @@ export default function() {
     });
     let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(groupNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(groupNames).range(colors) :
+      colorScale;
 
     // X & Y Scales
     xScale = d3.scaleTime()
-      .range([0, chartW])
-      .domain(dateDomain);
+      .domain(dateDomain)
+      .range([0, chartW]);
 
     yScale = d3.scaleLinear()
-      .range([chartH, 0])
-      .domain([0, (maxValue * 1.05)]);
-
-    // X & Y Axis
-    xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b-%y"));
-    yAxis = d3.axisLeft(yScale);
+      .domain([0, (maxValue * 1.05)])
+      .range([chartH, 0]);
   }
 
   /**
@@ -128,25 +117,12 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
-      chart.select(".xAxis")
-        .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");
-
-      chart.select(".yAxis")
-        .call(yAxis);
-
       let lineChart = component.lineChart()
         .width(chartW)
         .height(chartH)
         .colorScale(colorScale)
-        .yScale(yScale)
         .xScale(xScale)
+        .yScale(yScale)
         .dispatch(dispatch);
 
       let scatterPlot = component.scatterPlot()
@@ -176,12 +152,28 @@ export default function() {
       dotGroup.enter().append("g")
         .attr("class", "dotGroup")
         .style("fill", function(d) { return colorScale(d.key); })
-        .datum(function(d) { return d; })
         .merge(dotGroup)
         .call(scatterPlot);
 
       dotGroup.exit()
         .remove();
+
+      // Add X Axis to chart
+      let xAxis = d3.axisBottom(xScale)
+        .tickFormat(d3.timeFormat("%d-%b-%y"));
+      chart.select(".xAxis")
+        .attr("transform", "translate(0," + chartH + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
+
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
+      chart.select(".yAxis")
+        .call(yAxis);
     });
   }
 

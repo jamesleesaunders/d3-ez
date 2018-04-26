@@ -29,13 +29,11 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
   let sizeScale;
-  let xAxis;
-  let yAxis;
   let colorScale;
 
   /**
@@ -49,12 +47,12 @@ export default function() {
    * Initialise Data, Scales and Series
    */
   function init(data) {
-    chartW = width - margin.left - margin.right;
-    chartH = height - margin.top - margin.bottom;
+    chartW = width - (margin.left + margin.right);
+    chartH = height - (margin.top + margin.bottom);
 
-    // Slice Data, calculate totals, max etc.
+    // Calculate the extents for each series.
+    // TODO: use dataParse() ?
     function extents(key) {
-      // Calculate the extents for each series.
       let serExts = [];
       d3.map(data).values().forEach(function(d) {
         let vals = d.values.map(function(e) {
@@ -66,7 +64,6 @@ export default function() {
       // Calculate overall extent.
       return d3.extent([].concat.apply([], serExts));
     }
-
     let xDomain = extents("x");
     let yDomain = extents("y");
     let sizeDomain = extents("value");
@@ -74,33 +71,26 @@ export default function() {
       return d.key;
     });
 
-    // Colour Scale
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain(categoryNames);
-    }
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
-    // X, Y & Z Scales
+    // If the sizeScale has not been passed then attempt to calculate.
+    sizeScale = (typeof sizeScale === "undefined") ?
+      d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) :
+      sizeScale;
+
+    // X & Y Scales
     xScale = d3.scaleLinear()
-      .range([0, chartW])
       .domain(xDomain)
+      .range([0, chartW])
       .nice();
 
     yScale = d3.scaleLinear()
-      .range([chartH, 0])
       .domain(yDomain)
+      .range([chartH, 0])
       .nice();
-
-    sizeScale = d3.scaleLinear()
-      .range([minRadius, maxRadius])
-      .domain(sizeDomain);
-
-    // X & Y Axis
-    xAxis = d3.axisBottom(xScale);
-    yAxis = d3.axisLeft(yScale);
   }
 
   /**
@@ -129,7 +119,6 @@ export default function() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("xAxis axis", true);
         chart.append("g").classed("yAxis axis", true);
-        chart.append("g").classed("bubbles", true);
       } else {
         chart = selection.select(".chart");
       }
@@ -140,7 +129,32 @@ export default function() {
         .attr("width", chartW)
         .attr("height", chartH);
 
-      // Add axis to chart
+      // Add bubbles to the chart
+      let bubbles = component.bubbles()
+        .width(chartW)
+        .height(chartH)
+        .colorScale(colorScale)
+        .xScale(xScale)
+        .yScale(yScale)
+        .minRadius(minRadius)
+        .maxRadius(maxRadius)
+        .dispatch(dispatch);
+
+      let seriesGroup = chart.selectAll(".seriesGroup")
+        .data(function(d) { return d; });
+
+      seriesGroup.enter()
+        .append("g")
+        .data(function(d) { return d; })
+        .attr("class", "seriesGroup")
+        .merge(seriesGroup)
+        .call(bubbles);
+
+      seriesGroup.exit()
+        .remove();
+
+      // Add X Axis to chart
+      let xAxis = d3.axisBottom(xScale);
       chart.select(".xAxis")
         .attr("transform", "translate(0," + chartH + ")")
         .call(xAxis)
@@ -150,31 +164,10 @@ export default function() {
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)");
 
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
       chart.select(".yAxis")
         .call(yAxis);
-
-      // Add bubbles to the chart
-      let bubbles = component.bubbles()
-        .width(chartW)
-        .height(chartH)
-        .colorScale(colorScale)
-        .xScale(xScale)
-        .yScale(yScale)
-        .sizeScale(sizeScale)
-        .dispatch(dispatch);
-
-      let bubbleGroup = chart.selectAll(".bubbleGroup")
-        .data(function(d) { return d; });
-
-      bubbleGroup.enter().append("g")
-        .attr("class", "bubbleGroup")
-        .datum(function(d) { return d; })
-        .merge(bubbleGroup)
-        .call(bubbles);
-
-      bubbleGroup.exit()
-        .remove();
-
     });
   }
 
@@ -220,6 +213,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return this;
+  };
+
+  my.sizeScale = function(_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
     return this;
   };
 

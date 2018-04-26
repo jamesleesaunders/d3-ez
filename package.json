@@ -1,6 +1,6 @@
 {
   "name": "d3-ez",
-  "version": "3.2.9",
+  "version": "3.3.0",
   "description": "D3 Easy Reusable Chart Library",
   "license": "GPL-3.0",
   "keywords": [
@@ -27,7 +27,7 @@
   "module": "index",
   "scripts": {
     "pretest": "make",
-    "test": "tape 'test/**/*-test.js'"
+    "test": "tape 'test/**/*Test.js'"
   },
   "peerDependencies": {
     "d3": "^4.0.0"

@@ -1,8 +1,6 @@
-<svg width="400" height="400">
-	<g class="series">
-		<rect class="bar" fill="#3f51b5" width="82" x="15" y="0" rx="0" ry="0" height="400"></rect>
-		<rect class="bar" fill="#ff9800" width="82" x="111" y="266.6666666666667" rx="0" ry="0" height="133.33333333333331"></rect>
-		<rect class="bar" fill="#8bc34a" width="82" x="207" y="177.77777777777777" rx="0" ry="0" height="222.22222222222223"></rect>
-		<rect class="bar" fill="#9c27b0" width="82" x="303" y="88.88888888888886" rx="0" ry="0" height="311.11111111111114"></rect>
-	</g>
+<svg width="400" height="400" class="barsVertical" id="Fruit">
+	<rect class="bar" fill="#3f51b5" width="82" x="15" y="0" rx="0" ry="0" height="400"></rect>
+	<rect class="bar" fill="#ff9800" width="82" x="111" y="266.6666666666667" rx="0" ry="0" height="133.33333333333331"></rect>
+	<rect class="bar" fill="#8bc34a" width="82" x="207" y="177.77777777777777" rx="0" ry="0" height="222.22222222222223"></rect>
+	<rect class="bar" fill="#9c27b0" width="82" x="303" y="88.88888888888886" rx="0" ry="0" height="311.11111111111114"></rect>
 </svg>

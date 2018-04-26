@@ -19,6 +19,8 @@ export default function() {
   let xScale;
   let yScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "heatMapRow";
+  let thresholds;
 
   /**
    * Initialise Data and Scales
@@ -26,36 +28,49 @@ export default function() {
   function init(data) {
     let slicedData = dataParse(data);
     let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
+
+    // If thresholds values are not set attempt to auto-calculate the thresholds.
+    if (!thresholds) {
+      thresholds = slicedData.thresholds;
+    }
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleThreshold().domain(thresholds).range(colors) :
       colorScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.1) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleBand().domain(groupNames).range([0, height]).padding(0.1) :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    let cellHeight = yScale.bandwidth();
-    let cellWidth = xScale.bandwidth();
+    init(selection.data());
+    selection.each(function() {
 
-    selection.each(function(data) {
-      init(data);
+      let cellHeight = yScale.bandwidth();
+      let cellWidth = xScale.bandwidth();
 
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
-      // Add cells to series
-      let cells = series.selectAll(".cell")
+      // Add cells to series group
+      let cells = seriesGroup.selectAll(".cell")
         .data(function(d) {
           let seriesName = d.key;
           let seriesValues = d.values;
@@ -109,6 +124,18 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
+    return my;
+  };
+
+  my.thresholds = function(_) {
+    if (!arguments.length) return thresholds;
+    thresholds = _;
     return my;
   };
 

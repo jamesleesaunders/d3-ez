@@ -19,6 +19,7 @@ export default function() {
   let xScale;
   let yScale;
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+  let classed = "numberCard";
 
   /**
    * Initialise Data and Scales
@@ -26,41 +27,55 @@ export default function() {
   function init(data) {
     let slicedData = dataParse(data);
     let categoryNames = slicedData.categoryNames;
+    let groupNames = slicedData.groupNames;
+    let maxValue = slicedData.maxValue;
+    let minValue = slicedData.minValue;
+
+    let valDomain = [minValue, maxValue];
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
+      d3.scaleLinear().domain(valDomain).range(colors) :
       colorScale;
+
+    // If the xScale has not been passed then attempt to calculate.
+    xScale = (typeof xScale === "undefined") ?
+      d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.05) :
+      xScale;
+
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleBand().domain(groupNames).range([0, height]).padding(0.05) :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    let cellWidth = xScale.bandwidth();
+    init(selection.data());
+    selection.each(function() {
 
-    selection.each(function(data) {
-      init(data);
+      // Calculate cell sizes
+      let cellHeight = yScale.bandwidth();
+      let cellWidth = xScale.bandwidth();
 
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Add numbers to series
-      let numbers = series.selectAll(".number")
+      let numbers = seriesGroup.selectAll(".number")
         .data(function(d) { return d.values; });
 
       numbers.enter().append("text")
         .attr("class", "number")
         .attr("x", function(d) { return (xScale(d.key) + cellWidth / 2); })
-        .attr("y", 0)
+        .attr("y", function(d) { return (cellHeight / 2); })
         .attr("text-anchor", "middle")
         .attr("dominant-baseline", "central")
         .text(function(d) {
@@ -98,6 +113,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 

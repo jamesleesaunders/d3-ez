@@ -29,12 +29,10 @@ export default function() {
   let chartH;
 
   /**
-   * Scales and Axis
+   * Scales
    */
   let xScale;
   let yScale;
-  let xAxis;
-  let yAxis;
   let colorScale;
 
   /**
@@ -61,39 +59,33 @@ export default function() {
     let minDate = d3.min(data.values, function(d) {
       return d.date;
     });
+    let xDomain = [
+      new Date(minDate - 8.64e7),
+      new Date(maxDate + 8.64e7)
+    ];
+    let yDomain = [
+      d3.min(data.values, function(d) { return d.low; }),
+      d3.max(data.values, function(d) { return d.high; })
+    ];
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain([true, false]).range(colors) :
+      colorScale;
+
+    // X & Y Scales
+    xScale = d3.scaleTime()
+      .domain(xDomain)
+      .range([0, chartW]);
+
+    yScale = d3.scaleLinear()
+      .domain(yDomain)
+      .range([chartH, 0])
+      .nice();
 
     //if (!yAxisLabel) {
     //  yAxisLabel = slicedData.groupName;
     //}
-
-    if (!colorScale) {
-      // If the colorScale has not already been passed
-      // then attempt to calculate.
-      colorScale = d3.scaleOrdinal()
-        .range(colors)
-        .domain([true, false]);
-    }
-
-    // X & Y Scales
-    xScale = d3.scaleTime()
-      .domain([
-        new Date(minDate - 8.64e7),
-        new Date(maxDate + 8.64e7)
-      ])
-      .range([0, chartW]);
-
-    yScale = d3.scaleLinear()
-      .domain([
-        d3.min(data.values, function(d) { return d.low; }),
-        d3.max(data.values, function(d) { return d.high; })
-      ])
-      .range([chartH, 0])
-      .nice();
-
-    // X & Y Axis
-    xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.timeFormat("%d-%b-%y"));
-    yAxis = d3.axisLeft(yScale);
   }
 
   /**
@@ -122,7 +114,7 @@ export default function() {
         chart = svg.append("g").classed("chart", true);
         chart.append("g").classed("xAxis axis", true);
         chart.append("g").classed("yAxis axis", true);
-        chart.append("g").classed("candleSticks", true);
+        chart.append("g").classed("seriesGroup", true);
       } else {
         chart = svg.select(".chart");
       }
@@ -132,38 +124,6 @@ export default function() {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .attr("width", chartW)
         .attr("height", chartH);
-
-      // Add axis to chart
-      chart.select(".xAxis")
-        .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");
-
-      chart.select(".yAxis")
-        .call(yAxis);
-
-      // Add labels to chart
-      let ylabel = chart.select(".yAxis")
-        .selectAll(".y-label")
-        .data([data.key]);
-
-      ylabel.enter()
-        .append("text")
-        .classed("y-label", true)
-        .attr("transform", "rotate(-90)")
-        .attr("y", -40)
-        .attr("dy", ".71em")
-        .attr("fill", "#000000")
-        .style("text-anchor", "end")
-        .merge(ylabel)
-        .transition()
-        .text(function(d) {
-          return (d);
-        });
 
       // Add Clip Path
       // chart.append('clipPath')
@@ -177,14 +137,50 @@ export default function() {
       let candleSticks = component.candleSticks()
         .width(chartW)
         .height(chartH)
+        .colorScale(colorScale)
         .xScale(xScale)
         .yScale(yScale)
-        .colorScale(colorScale)
         .dispatch(dispatch);
 
-      chart.select(".candleSticks")
+      chart.select(".seriesGroup")
         .datum(data)
         .call(candleSticks);
+
+      // Add X Axis to chart
+      let xAxis = d3.axisBottom(xScale)
+        .tickFormat(d3.timeFormat("%d-%b-%y"));
+      chart.select(".xAxis")
+        .attr("transform", "translate(0," + chartH + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
+
+      // Add Y Axis to chart
+      let yAxis = d3.axisLeft(yScale);
+      chart.select(".yAxis")
+        .call(yAxis);
+
+      // Add Labels to chart
+      let ylabel = chart.select(".yAxis")
+        .selectAll(".yAxisLabel")
+        .data([data.key]);
+
+      ylabel.enter()
+        .append("text")
+        .classed("yAxisLabel", true)
+        .attr("transform", "rotate(-90)")
+        .attr("y", -40)
+        .attr("dy", ".71em")
+        .attr("fill", "#000000")
+        .style("text-anchor", "end")
+        .merge(ylabel)
+        .transition()
+        .text(function(d) {
+          return (d);
+        });
     });
   }
 

@@ -80,7 +80,7 @@ export default function() {
       };
 
       let tickCirclesGroupSelect = axis.selectAll(".tickCircles")
-        .data(function(d) { return [tickData()]; });
+        .data(function() { return [tickData()]; });
 
       let tickCirclesGroup = tickCirclesGroupSelect.enter()
         .append("g")

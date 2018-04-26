@@ -24,15 +24,12 @@ export default function() {
   let startAngle = 0;
   let endAngle = 270;
   let cornerRadius = 2;
+  let classed = "barsCircular";
 
   /**
    * Initialise Data and Scales
    */
   function init(data) {
-    let slicedData = dataParse(data);
-    let categoryNames = slicedData.categoryNames;
-    let maxValue = slicedData.maxValue;
-
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
@@ -42,59 +39,60 @@ export default function() {
       (radius / 4) :
       innerRadius;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = (typeof yScale === "undefined") ?
-      d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) :
-      yScale;
+    let slicedData = dataParse(data);
+    let categoryNames = slicedData.categoryNames;
+    let maxValue = slicedData.maxValue;
+
+    // If the colorScale has not been passed then attempt to calculate.
+    colorScale = (typeof colorScale === "undefined") ?
+      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      colorScale;
 
     // If the xScale has not been passed then attempt to calculate.
     xScale = (typeof xScale === "undefined") ?
       d3.scaleBand().domain(categoryNames).rangeRound([innerRadius, radius]).padding(0.15) :
       xScale;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().range(colors).domain(categoryNames) :
-      colorScale;
+    // If the yScale has not been passed then attempt to calculate.
+    yScale = (typeof yScale === "undefined") ?
+      d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) :
+      yScale;
   }
 
   /**
    * Constructor
    */
   function my(selection) {
-    // Arc Generator
-    let arc = d3.arc()
-      .startAngle(0)
-      .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
-      .outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
-      .innerRadius(function(d) { return (xScale(d.key)); })
-      .cornerRadius(cornerRadius);
+    init(selection.data());
+    selection.each(function() {
 
-    // Arc Tween
-    let arcTween = function(d) {
-      let i = d3.interpolate(this._current, d);
-      this._current = i(0);
-      return function(t) {
-        return arc(i(t));
+      // Arc Generator
+      let arc = d3.arc()
+        .startAngle(0)
+        .endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
+        .outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
+        .innerRadius(function(d) { return (xScale(d.key)); })
+        .cornerRadius(cornerRadius);
+
+      // Arc Tween
+      let arcTween = function(d) {
+        let i = d3.interpolate(this._current, d);
+        this._current = i(0);
+        return function(t) {
+          return arc(i(t));
+        };
       };
-    };
 
-    selection.each(function(data) {
-      init(data);
-
-      // Create series group
-      let seriesSelect = selection.selectAll(".series")
-        .data(function(d) { return [d]; });
-
-      let series = seriesSelect.enter()
-        .append("g")
-        .classed("series", true)
+      // Update series group
+      let seriesGroup = d3.select(this);
+      seriesGroup
+        .classed(classed, true)
+        .attr("id", function(d) { return d.key; })
         .on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
-        .merge(seriesSelect);
+        .on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
       // Add bars to series
-      let bars = series.selectAll(".bar")
+      let bars = seriesGroup.selectAll(".bar")
         .data(function(d) { return d.values; });
 
       bars.enter()
@@ -159,6 +157,12 @@ export default function() {
   my.colorScale = function(_) {
     if (!arguments.length) return colorScale;
     colorScale = _;
+    return my;
+  };
+
+  my.colors = function(_) {
+    if (!arguments.length) return colors;
+    colors = _;
     return my;
   };
 
