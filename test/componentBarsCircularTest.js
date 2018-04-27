@@ -22,12 +22,6 @@ function readSvgFile(file) {
     .replace(/[\n\r\t]+/g, "")
     .replace(/>\s+</g, "><");
 
-  // let parser = new DOMParser();
-  // let dom = parser.parseFromString(str, "image/svg+xml");
-
-  // let xmlserializer = new XMLSerializer()
-  // let str = xmlserializer.serializeToString(dom);
-
   return str;
 }
 
@@ -39,18 +33,18 @@ tape("setup", function(t) {
 
 tape("componentBarsStackedTest", function(t) {
   let chartHolder = d3.select(document.createElement("div"));
-  let myChart = d3Ez.ez.component.barsStacked()
-    .width(100)
+  let myChart = d3Ez.ez.component.barsCircular()
+    .width(300)
     .height(300);
 
   chartHolder
     .append("svg")
-    .attr("width", 100)
+    .attr("width", 300)
     .attr("height", 300)
     .datum(data)
     .call(myChart);
 
-  let expected = readSvgFile("./test/svg/componentBarsStacked.svg");
+  let expected = readSvgFile("./test/svg/componentBarsCircular.svg");
 
   // Wait for transitions to complete
   setTimeout(function() {

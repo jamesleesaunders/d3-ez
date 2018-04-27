@@ -49,7 +49,7 @@ tape("componentRoseChartSectorTest", function(t) {
   // Wait for transitions to complete
   setTimeout(function() {
     let actual = chartHolder.html();
-    t.equal(expected, actual);
+    t.equal(actual, expected);
     t.end();
   }, 600);
 });
