@@ -5,14 +5,13 @@
   <title>d3-ez : Test</title>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../../build/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+  <link rel="stylesheet" type="text/css" href="../../build/d3-ez.css" />
 </head>
 
 <body>
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    // Generate some data
     var data = [
       {key: "Europe", values: [
         {key: "UK", value: "1.8", x: "3.7", y: "76.4", series: "Europe"},
@@ -31,29 +30,21 @@
       ]}
     ];
 
-    var height = 200;
-    var width = 200;
-    var colors = ['#599ad3', '#727272', '#f1595f']
-
-    var categoryNames = ['Europe', 'Africa', 'Asia'];
-
-    var colorScale = d3.scaleOrdinal()
-      .range(colors)
-      .domain(categoryNames);
+    var height = 300;
+    var width = 300;
 
     // Configure chart components
     var myChart = d3.ez.component.bubbles()
       .width(width)
-      .height(height)
-      .colors(colors);
+      .height(height);
 
     // Attach data and chart to 'chartholder' element
-    var chart = d3.select("#chartholder")
+    var svg = d3.select("#chartholder")
       .append('svg')
       .attr('width', width)
       .attr('height', height);
 
-    var seriesGroup = chart.selectAll(".seriesGroup")
+    var seriesGroup = svg.selectAll(".seriesGroup")
       .data(data);
 
     seriesGroup.enter()
