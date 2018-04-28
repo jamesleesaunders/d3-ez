@@ -71,8 +71,9 @@ export default function() {
       .range([0, chartW]);
 
     yScale = d3.scaleLinear()
-      .domain([0, (maxValue * 1.05)])
-      .range([chartH, 0]);
+      .domain([0, maxValue])
+      .range([chartH, 0])
+      .nice();
   }
 
   /**
@@ -133,29 +134,18 @@ export default function() {
         .xScale(xScale)
         .dispatch(dispatch);
 
-      let lineGroup = chart.selectAll(".lineGroup")
+      let seriesGroup = chart.selectAll(".seriesGroup")
         .data(function(d) { return d; });
 
-      lineGroup.enter().append("g")
-        .attr("class", "lineGroup")
+      seriesGroup.enter().append("g")
+        .attr("class", "seriesGroup")
         .style("fill", function(d) { return colorScale(d.key); })
         .datum(function(d) { return d; })
-        .merge(lineGroup)
-        .call(lineChart).call(scatterPlot);
-
-      lineGroup.exit()
-        .remove();
-
-      let dotGroup = chart.selectAll(".dotGroup")
-        .data(function(d) { return d; });
-
-      dotGroup.enter().append("g")
-        .attr("class", "dotGroup")
-        .style("fill", function(d) { return colorScale(d.key); })
-        .merge(dotGroup)
+        .merge(seriesGroup)
+        .call(lineChart)
         .call(scatterPlot);
 
-      dotGroup.exit()
+      seriesGroup.exit()
         .remove();
 
       // Add X Axis to chart
