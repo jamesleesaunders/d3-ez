@@ -16,13 +16,13 @@ let data = {
   ]
 };
 
-function readSvgFile(file) {
+function readSvgFile(file, element) {
   let str = fs.readFileSync(file)
     .toString("utf-8")
     .replace(/[\n\r\t]+/g, "")
     .replace(/>\s+</g, "><");
 
-  return str;
+  return element.insertAdjacentHTML("beforeend", str);
 }
 
 tape("setup", function(t) {
@@ -32,23 +32,28 @@ tape("setup", function(t) {
 });
 
 tape("componentBarsStackedTest", function(t) {
-  let chartHolder = d3.select(document.createElement("div"));
+  // Load 'exected' svg file into first div.
+  let actualDiv = document.createElement("div");
+  readSvgFile("./test/svg/componentBarsCircular.svg", actualDiv);
+
+  // Construct 'actual' svg using d3-ez component.
+  let expectedDiv = document.createElement("div");
+
   let myChart = d3Ez.ez.component.barsCircular()
     .width(300)
     .height(300);
 
-  chartHolder
-    .append("svg")
+  let chartHolder = d3.select(expectedDiv);
+  chartHolder.append("svg")
     .attr("width", 300)
     .attr("height", 300)
     .datum(data)
     .call(myChart);
 
-  let expected = readSvgFile("./test/svg/componentBarsCircular.svg");
-
   // Wait for transitions to complete
   setTimeout(function() {
-    let actual = chartHolder.html();
+    let actual = actualDiv.getElementsByTagName("svg")[0].innerHTML;
+    let expected = expectedDiv.getElementsByTagName("svg")[0].innerHTML;
 
     t.equal(actual, expected);
     t.end();

@@ -20,7 +20,7 @@ function readSvgFile(file, element) {
     .replace(/[\n\r\t]+/g, "")
     .replace(/>\s+</g, "><");
 
-  return element.insertAdjacentHTML('beforeend', str);
+  return element.insertAdjacentHTML("beforeend", str);
 }
 
 tape("setup", function(t) {
@@ -41,8 +41,8 @@ tape("componentBarsStackedTest", function(t) {
     .width(100)
     .height(300);
 
-  d3.select(expectedDiv)
-    .append("svg")
+  let chartHolder = d3.select(expectedDiv);
+  chartHolder.append("svg")
     .attr("width", 100)
     .attr("height", 300)
     .datum(data)
