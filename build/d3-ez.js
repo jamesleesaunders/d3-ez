@@ -3469,7 +3469,7 @@ function componentRoseChartSector () {
   function init(data) {
     var slicedData = dataParse(data);
     var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+    var maxValue = stacked ? slicedData.groupTotalsMax : slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
@@ -3493,7 +3493,6 @@ function componentRoseChartSector () {
   function my(selection) {
     init(selection.data());
     selection.each(function () {
-
       // Stack Generator
       var stacker = function stacker(data) {
         // Calculate inner and outer radius values

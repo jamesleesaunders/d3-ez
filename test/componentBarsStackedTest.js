@@ -30,6 +30,9 @@ tape("setup", function(t) {
 });
 
 tape("componentBarsStackedTest", function(t) {
+  let width = 300;
+  let height = 300;
+
   // Load 'exected' svg file into first div.
   let actualDiv = document.createElement("div");
   readSvgFile("./test/svg/componentBarsStacked.svg", actualDiv);
@@ -38,13 +41,13 @@ tape("componentBarsStackedTest", function(t) {
   let expectedDiv = document.createElement("div");
 
   let myChart = d3Ez.ez.component.barsStacked()
-    .width(100)
-    .height(300);
+    .width(width)
+    .height(height);
 
   let chartHolder = d3.select(expectedDiv);
   chartHolder.append("svg")
-    .attr("width", 100)
-    .attr("height", 300)
+    .attr("width", width)
+    .attr("height", height)
     .datum(data)
     .call(myChart);
 

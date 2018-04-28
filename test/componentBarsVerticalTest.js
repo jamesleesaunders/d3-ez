@@ -29,8 +29,10 @@ tape("setup", function(t) {
   t.end();
 });
 
-
 tape("componentBarsVerticalTest", function(t) {
+  let width = 300;
+  let height = 300;
+
   // Load 'exected' svg file into first div.
   let actualDiv = document.createElement("div");
   readSvgFile("./test/svg/componentBarsVertical.svg", actualDiv);
@@ -38,12 +40,14 @@ tape("componentBarsVerticalTest", function(t) {
   // Construct 'actual' svg using d3-ez component.
   let expectedDiv = document.createElement("div");
 
-  let myChart = d3Ez.ez.component.barsVertical();
+  let myChart = d3Ez.ez.component.barsVertical()
+    .width(width)
+    .height(height);
 
   let chartHolder = d3.select(expectedDiv);
   chartHolder.append("svg")
-    .attr("width", 400)
-    .attr("height", 400)
+    .attr("width", width)
+    .attr("height", height)
     .datum(data)
     .call(myChart);
 

@@ -30,6 +30,12 @@ tape("setup", function(t) {
 });
 
 tape("componentRoseChartSectorTest", function(t) {
+  let width = 300;
+  let height = 300;
+  let radius = 300;
+  let startAngle = 90;
+  let endAngle = 120;
+
   // Load 'exected' svg file into first div.
   let actualDiv = document.createElement("div");
   readSvgFile("./test/svg/componentRoseChartSector.svg", actualDiv);
@@ -38,15 +44,15 @@ tape("componentRoseChartSectorTest", function(t) {
   let expectedDiv = document.createElement("div");
 
   let myChart = d3Ez.ez.component.roseChartSector()
-    .radius(100)
-    .startAngle(90)
-    .endAngle(120)
+    .radius(radius)
+    .startAngle(startAngle)
+    .endAngle(endAngle)
     .stacked(true);
 
   let chartHolder = d3.select(expectedDiv);
   chartHolder.append("svg")
-    .attr("width", 300)
-    .attr("height", 300)
+    .attr("width", width)
+    .attr("height", height)
     .datum(data)
     .call(myChart);
 

@@ -31,7 +31,7 @@ export default function() {
   function init(data) {
     let slicedData = dataParse(data);
     let categoryNames = slicedData.categoryNames;
-    let maxValue = slicedData.maxValue;
+    let maxValue = stacked ? slicedData.groupTotalsMax : slicedData.maxValue;
 
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === "undefined") ?
@@ -61,7 +61,6 @@ export default function() {
   function my(selection) {
     init(selection.data());
     selection.each(function() {
-
       // Stack Generator
       let stacker = function(data) {
         // Calculate inner and outer radius values

@@ -3,8 +3,6 @@ let tape = require("tape");
 let jsdom = require("jsdom");
 let d3 = require("d3");
 let fs = require("fs");
-//let DOMParser = require('xmldom').DOMParser;
-//let XMLSerializer = require('xmldom').XMLSerializer;
 
 let data = {
   key: "Fruit",
@@ -32,6 +30,11 @@ tape("setup", function(t) {
 });
 
 tape("componentBarsStackedTest", function(t) {
+  let width = 300;
+  let height = 300;
+  let radius = 150;
+  let innerRadius = 10;
+
   // Load 'exected' svg file into first div.
   let actualDiv = document.createElement("div");
   readSvgFile("./test/svg/componentBarsCircular.svg", actualDiv);
@@ -40,15 +43,15 @@ tape("componentBarsStackedTest", function(t) {
   let expectedDiv = document.createElement("div");
 
   let myChart = d3Ez.ez.component.barsCircular()
-    .radius(100)
-    .innerRadius(10);
+    .radius(radius)
+    .innerRadius(innerRadius);
 
   let chartHolder = d3.select(expectedDiv);
   chartHolder.append("svg")
-    .attr("width", 200)
-    .attr("height", 200)
+    .attr("width", width)
+    .attr("height", height)
     .append('g')
-    .attr('transform', 'translate(' + 200 / 2 + ',' + 200 / 2 + ')')
+    .attr('transform', 'translate(' + radius + ',' + radius + ')')
     .datum(data)
     .call(myChart);
 

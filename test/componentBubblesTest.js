@@ -45,6 +45,9 @@ tape("setup", function(t) {
 });
 
 tape("componentBubblesTest", function(t) {
+  let width = 300;
+  let height = 300;
+
   // Load 'exected' svg file into first div.
   let actualDiv = document.createElement("div");
   readSvgFile("./test/svg/componentBubbles.svg", actualDiv);
@@ -53,13 +56,13 @@ tape("componentBubblesTest", function(t) {
   let expectedDiv = document.createElement("div");
 
   let myChart = d3Ez.ez.component.bubbles()
-    .width(300)
-    .height(300);
+    .width(width)
+    .height(height);
 
   let chartHolder = d3.select(expectedDiv);
   let svg = chartHolder.append("svg")
-    .attr("width", 300)
-    .attr("height", 300);
+    .attr("width", width)
+    .attr("height", height);
 
   let seriesGroup = svg.selectAll(".seriesGroup")
     .data(data);
