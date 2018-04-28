@@ -5,146 +5,42 @@
   <title>d3-ez : Test</title>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="../../build/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+  <link rel="stylesheet" type="text/css" href="../../build/d3-ez.css" />
 </head>
 
 <body>
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    // Generate some data
-    var data = [{
-    		"key": "April",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 0.4456449819211225},
-    		  {"key": "Other Causes", "value": 0.9964924734072947},
-    		  {"key": "Wounds & Injuries", "value": 0}
-    		]
-    	},
-    	{
-    		"key": "May",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 0.5683963816037488},
-    		  {"key": "Other Causes", "value": 0.4895920708911949},
-    		  {"key": "Wounds & Injuries", "value": 0}
-    		]
-    	},
-    	{
-    		"key": "June",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 0.44910035513382074},
-    		  {"key": "Other Causes", "value": 0.32754009741648094},
-    		  {"key": "Wounds & Injuries", "value": 0}
-    		]
-    	},
-    	{
-    		"key": "July",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 2.5198752498583787},
-    		  {"key": "Other Causes", "value": 0.6374836167230692},
-    		  {"key": "Wounds & Injuries", "value": 0}
-    		]
-    	},
-    	{
-    		"key": "August",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 3.622833452074941},
-    		  {"key": "Other Causes", "value": 0.6916402468357198},
-    		  {"key": "Wounds & Injuries", "value": 0.1268051149517051}
-    		]
-    	},
-    	{
-    		"key": "September",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 3.5400350582804325},
-    		  {"key": "Other Causes", "value": 1.0544621569781183},
-    		  {"key": "Wounds & Injuries", "value": 1.135124846264534}
-    		]
-    	},
-    	{
-    		"key": "October",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 2.7958136622844134},
-    		  {"key": "Other Causes", "value": 1.4099183817581236},
-    		  {"key": "Wounds & Injuries", "value": 1.4322551129152805}
-    		]
-    	},
-    	{
-    		"key": "November",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 3.7318295398530563},
-    		  {"key": "Other Causes", "value": 1.3228827724548429},
-    		  {"key": "Wounds & Injuries", "value": 2.175974271395484}
-    		]
-    	},
-    	{
-    		"key": "December",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 4.839824098184857},
-    		  {"key": "Other Causes", "value": 1.334330824701245},
-    		  {"key": "Wounds & Injuries", "value": 1.2436865215332569}
-    		]
-    	},
-    	{
-    		"key": "January",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 6.195987379762899},
-    		  {"key": "Other Causes", "value": 2.122295180558012},
-    		  {"key": "Wounds & Injuries", "value": 1.0734562589519998}
-    		]
-    	},
-    	{
-    		"key": "February",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 5.688204115256894},
-    		  {"key": "Other Causes", "value": 2.3471837961012283},
-    		  {"key": "Wounds & Injuries", "value": 0.800611516345369}
-    		]
-    	},
-    	{
-    		"key": "March",
-    		"values": [
-    		  {"key": "Zymotic Diseases", "value": 4.404162171879019},
-    		  {"key": "Other Causes", "value": 1.6644435360395322},
-    		  {"key": "Wounds & Injuries", "value": 0.7189720273746245}
-    		]
-    	}
-    ];
-    var series = data[11];
+    let data = {
+      key: "Fruit",
+      values: [
+        { key: "Apples", value: 9 },
+        { key: "Oranges", value: 3 },
+        { key: "Grapes", value: 5 },
+        { key: "Bananas", value: 7 }
+      ]
+    };
 
-    var height = 200;
-    var width = 200;
-    var radius = 100;
-    var colors = ['#599ad3', '#727272', '#f1595f']
-
-    var categoryNames = d3.values(series)[1].map(function(d) { return d.key; });
-
-    var colorScale = d3.scaleOrdinal()
-      .range(colors)
-      .domain(categoryNames);
+    let width = 300;
+    let height = 300;
+    let radius = 150;
+    let innerRadius = 10;
 
     // Configure chart components
     var myChart = d3.ez.component.barsCircular()
       .radius(radius)
-      .innerRadius(10)
-      .colorScale(colorScale);
+      .innerRadius(innerRadius);
 
     // Attach data and chart to 'chartholder' element
-    var chartHolder = d3.select("#chartholder")
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .append('g')
-      .attr('transform', 'translate(' + width/2+ ',' + height/2 + ')');
-
-    chartHolder.datum(series)
+    var chartHolder = d3.select("#chartholder");
+    chartHolder.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + radius + "," + radius + ")")
+      .datum(data)
       .call(myChart);
-
-    /*
-    chartHolder.append('circle')
-      .attr('r', radius)
-      .attr('fill', '#f1595f');
-    */
 
   </script>
 </body>

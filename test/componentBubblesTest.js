@@ -29,13 +29,13 @@ let data = [
   }
 ];
 
-function readSvgFile(file) {
+function readSvgFile(file, element) {
   let str = fs.readFileSync(file)
     .toString("utf-8")
     .replace(/[\n\r\t]+/g, "")
     .replace(/>\s+</g, "><");
 
-  return str;
+  return element.insertAdjacentHTML("beforeend", str);
 }
 
 tape("setup", function(t) {
@@ -45,16 +45,26 @@ tape("setup", function(t) {
 });
 
 tape("componentBubblesTest", function(t) {
-  let chartHolder = d3.select(document.createElement("div"));
+  let width = 300;
+  let height = 300;
+
+  // Load 'exected' svg file into first div.
+  let actualDiv = document.createElement("div");
+  readSvgFile("./test/svg/componentBubbles.svg", actualDiv);
+
+  // Construct 'actual' svg using d3-ez component.
+  let expectedDiv = document.createElement("div");
+
   let myChart = d3Ez.ez.component.bubbles()
-    .width(300)
-    .height(300);
+    .width(width)
+    .height(height);
 
-  let chart = chartHolder.append('svg')
-    .attr("width", 300)
-    .attr("height", 300);
+  let chartHolder = d3.select(expectedDiv);
+  let svg = chartHolder.append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
-  let seriesGroup = chart.selectAll(".seriesGroup")
+  let seriesGroup = svg.selectAll(".seriesGroup")
     .data(data);
 
   seriesGroup.enter()
@@ -64,9 +74,10 @@ tape("componentBubblesTest", function(t) {
 
   // Wait for transitions to complete
   setTimeout(function() {
-    let result = chartHolder.html();
-    let expected = readSvgFile("./test/svg/componentBubbles.svg");
-    t.equal(result, expected);
+    let actual = actualDiv.getElementsByTagName("svg")[0].innerHTML;
+    let expected = expectedDiv.getElementsByTagName("svg")[0].innerHTML;
+
+    t.equal(actual, expected);
     t.end();
   }, 600);
 });
