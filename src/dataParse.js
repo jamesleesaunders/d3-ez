@@ -144,12 +144,12 @@ export default function(data) {
     let ret;
     if (1 === levels) {
       ret = d3.min(data.values, function(d) {
-        return d.value;
+        return +d.value;
       });
     } else {
       d3.map(data).values().forEach(function(d) {
         d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, d.value]));
+          ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, +d.value]));
         });
       });
     }
@@ -161,13 +161,13 @@ export default function(data) {
     let ret;
     if (1 === levels) {
       ret = d3.max(data.values, function(d) {
-        return d.value;
+        return +d.value;
       });
 
     } else {
       d3.map(data).values().forEach(function(d) {
         d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? d.value : d3.max([ret, d.value]));
+          ret = (typeof(ret) === "undefined" ? d.value : d3.max([ret, +d.value]));
         });
       });
     }

@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.3.1";
+var version = "3.3.2";
 
 /**
  * Base Functions - Data Parse
@@ -157,12 +157,12 @@ function dataParse (data) {
     var ret = void 0;
     if (1 === levels) {
       ret = d3.min(data.values, function (d) {
-        return d.value;
+        return +d.value;
       });
     } else {
       d3.map(data).values().forEach(function (d) {
         d.values.forEach(function (d) {
-          ret = typeof ret === "undefined" ? d.value : d3.min([ret, d.value]);
+          ret = typeof ret === "undefined" ? d.value : d3.min([ret, +d.value]);
         });
       });
     }
@@ -174,12 +174,12 @@ function dataParse (data) {
     var ret = void 0;
     if (1 === levels) {
       ret = d3.max(data.values, function (d) {
-        return d.value;
+        return +d.value;
       });
     } else {
       d3.map(data).values().forEach(function (d) {
         d.values.forEach(function (d) {
-          ret = typeof ret === "undefined" ? d.value : d3.max([ret, d.value]);
+          ret = typeof ret === "undefined" ? d.value : d3.max([ret, +d.value]);
         });
       });
     }
@@ -5502,7 +5502,7 @@ function chartLineChart () {
     // X & Y Scales
     xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
 
-    yScale = d3.scaleLinear().domain([0, maxValue * 1.05]).range([chartH, 0]);
+    yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
   }
 
   /**
@@ -5540,27 +5540,17 @@ function chartLineChart () {
 
       var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-      var lineGroup = chart.selectAll(".lineGroup").data(function (d) {
+      var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
         return d;
       });
 
-      lineGroup.enter().append("g").attr("class", "lineGroup").style("fill", function (d) {
+      seriesGroup.enter().append("g").attr("class", "seriesGroup").style("fill", function (d) {
         return colorScale(d.key);
       }).datum(function (d) {
         return d;
-      }).merge(lineGroup).call(lineChart).call(scatterPlot);
+      }).merge(seriesGroup).call(lineChart).call(scatterPlot);
 
-      lineGroup.exit().remove();
-
-      var dotGroup = chart.selectAll(".dotGroup").data(function (d) {
-        return d;
-      });
-
-      dotGroup.enter().append("g").attr("class", "dotGroup").style("fill", function (d) {
-        return colorScale(d.key);
-      }).merge(dotGroup).call(scatterPlot);
-
-      dotGroup.exit().remove();
+      seriesGroup.exit().remove();
 
       // Add X Axis to chart
       var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
