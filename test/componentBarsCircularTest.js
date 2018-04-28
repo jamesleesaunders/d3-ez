@@ -40,13 +40,15 @@ tape("componentBarsStackedTest", function(t) {
   let expectedDiv = document.createElement("div");
 
   let myChart = d3Ez.ez.component.barsCircular()
-    .width(300)
-    .height(300);
+    .radius(100)
+    .innerRadius(10);
 
   let chartHolder = d3.select(expectedDiv);
   chartHolder.append("svg")
-    .attr("width", 300)
-    .attr("height", 300)
+    .attr("width", 200)
+    .attr("height", 200)
+    .append('g')
+    .attr('transform', 'translate(' + 200 / 2 + ',' + 200 / 2 + ')')
     .datum(data)
     .call(myChart);
 
