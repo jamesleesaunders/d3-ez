@@ -22,13 +22,16 @@ function readSvgFile(file) {
     .replace(/[\n\r\t]+/g, "")
     .replace(/>\s+</g, "><");
 
-  // let parser = new DOMParser();
-  // let dom = parser.parseFromString(str, "image/svg+xml");
+  let div = document.createElement('div');
+  div.innerHTML = str;
 
-  // let xmlserializer = new XMLSerializer()
-  // let str = xmlserializer.serializeToString(dom);
+  let container = document.createDocumentFragment();
+  for (let i = 0; i < div.childNodes.length; i++) {
+    let node = div.childNodes[i].cloneNode(true);
+    container.appendChild(node);
+  }
 
-  return str;
+  return container.childNodes[0];
 }
 
 tape("setup", function(t) {
@@ -38,7 +41,9 @@ tape("setup", function(t) {
 });
 
 tape("componentBarsStackedTest", function(t) {
-  let chartHolder = d3.select(document.createElement("div"));
+  let div = document.createElement("div");
+  let chartHolder = d3.select(div);
+
   let myChart = d3Ez.ez.component.barsStacked()
     .width(100)
     .height(300);
@@ -54,9 +59,12 @@ tape("componentBarsStackedTest", function(t) {
 
   // Wait for transitions to complete
   setTimeout(function() {
-    let actual = chartHolder.html();
+    let actual = div.getElementsByTagName("svg")[0];
 
-    t.equal(actual, expected);
+    // console.log(expected.innerHTML);
+    // console.log(actual.innerHTML);
+
+    t.equal(actual.isEqualNode(expected), true);
     t.end();
   }, 600);
 });
