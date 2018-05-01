@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.3.2";
+var version = "3.3.3";
 
 /**
  * Base Functions - Data Parse
