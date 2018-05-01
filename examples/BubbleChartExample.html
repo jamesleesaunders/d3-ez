@@ -3,7 +3,7 @@
 
 <head>
   <title>d3-ez : Bubble Chart Example</title>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="../build/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
 </head>
@@ -14,7 +14,7 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.csv("data/hans_rosling_2007.csv", function(error, csv) {
+    d3.csv("data/hans_rosling_2007.csv").then(function(csv) {
       // Hans Rosling Data Source: https://plot.ly/~LeoDKFZ/0.embed
 
       var colors = [d3.rgb(31, 119, 180), d3.rgb(255, 127, 14), d3.rgb(44, 160, 44), d3.rgb(214, 39, 40), d3.rgb(148, 103, 189)];

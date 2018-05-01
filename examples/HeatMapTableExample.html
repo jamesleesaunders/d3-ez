@@ -3,7 +3,7 @@
 
 <head>
   <title>d3-ez : Heat Map (Tabular) Example</title>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="../build/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
 </head>
@@ -14,7 +14,7 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.json("data/world_temperatures.json", function(error, json) {
+    d3.json("data/world_temperatures.json").then(function(json) {
       // World Temperature Data Source: http://www.holiday-weather.com/london/averages/
 
       var colors = ["#d7191c", "#fdae61", "#abd9e9", "#2c7bb6"].reverse();

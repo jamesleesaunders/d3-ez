@@ -30,7 +30,7 @@
     "test": "tape 'test/**/*Test.js'"
   },
   "peerDependencies": {
-    "d3": "^4.0.0"
+    "d3": "^5.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -47,6 +47,6 @@
     "vows": "0.8"
   },
   "dependencies": {
-    "d3": "^4.0.0"
+    "d3": "^5.0.0"
   }
 }
