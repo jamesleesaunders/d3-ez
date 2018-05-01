@@ -274,14 +274,15 @@ table.htmlTable {
     transform: scale(1);
   }
   to {
-    transform: scale(1.5);
+    transform: scale(1.8);
   }
 }
 
-.lineChart .dot:hover {
-  animation-duration: 0.2s;
-  animation-name: circleTransition;
+.lineChart circle.dot:hover {
+  transform-box: fill-box;
   transform-origin: center center;
+  animation-duration: 0.3s;
+  animation-name: circleTransition;
 }
 
 
