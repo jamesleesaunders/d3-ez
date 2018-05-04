@@ -19,6 +19,7 @@ import { default as componentScatterPlot } from "./component/scatterPlot";
 import { default as componentRoseChartSector } from "./component/roseChartSector";
 import { default as componentLabeledNode } from "./component/labeledNode";
 import { default as componentLegend } from "./component/legend";
+import { default as componentLegendSize } from "./component/legendSize";
 import { default as componentTitle } from "./component/title";
 import { default as componentCreditTag } from "./component/creditTag";
 
@@ -39,6 +40,7 @@ export default {
   htmlTable: componentHtmlTable,
   labeledNode: componentLabeledNode,
   legend: componentLegend,
+  legendSize: componentLegendSize,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,

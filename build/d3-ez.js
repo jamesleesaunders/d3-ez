@@ -1550,119 +1550,110 @@ function componentCircularAxis () {
   var ringScale = void 0;
 
   /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
-  }
-
-  /**
    * Constructor
    */
   function my(selection) {
-    selection.each(function (data) {
-      init(data);
+    // If the radius has not been passed then calculate it from width/height.
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-      // Create axis group
-      var axisSelect = selection.selectAll(".axis").data([0]);
+    // Create axis group
+    var axisSelect = selection.selectAll(".axis").data([0]);
 
-      var axis = axisSelect.enter().append("g").classed("axis", true).on("click", function (d) {
-        dispatch.call("customClick", this, d);
-      }).merge(axisSelect);
+    var axis = axisSelect.enter().append("g").classed("axis", true).on("click", function (d) {
+      dispatch.call("customClick", this, d);
+    }).merge(axisSelect);
 
-      // Outer circle
-      var outerCircle = axis.selectAll(".outerCircle").data([radius]).enter().append("circle").classed("outerCircle", true).attr("r", function (d) {
-        return d;
-      }).style("fill", "none").attr("stroke-width", 2).attr("stroke", "#ddd");
+    // Outer circle
+    var outerCircle = axis.selectAll(".outerCircle").data([radius]).enter().append("circle").classed("outerCircle", true).attr("r", function (d) {
+      return d;
+    }).style("fill", "none").attr("stroke-width", 2).attr("stroke", "#ddd");
 
-      // Tick Data Generator
-      var tickData = function tickData() {
-        var tickArray = void 0,
-            tickPadding = void 0;
-        if (typeof ringScale.ticks === "function") {
-          // scaleLinear
-          tickArray = ringScale.ticks();
-          tickPadding = 0;
-        } else {
-          // scaleBand
-          tickArray = ringScale.domain();
-          tickPadding = ringScale.bandwidth() / 2;
-        }
+    // Tick Data Generator
+    var tickData = function tickData() {
+      var tickArray = void 0,
+          tickPadding = void 0;
+      if (typeof ringScale.ticks === "function") {
+        // scaleLinear
+        tickArray = ringScale.ticks();
+        tickPadding = 0;
+      } else {
+        // scaleBand
+        tickArray = ringScale.domain();
+        tickPadding = ringScale.bandwidth() / 2;
+      }
 
-        return tickArray.map(function (d) {
-          return {
-            value: d,
-            radius: ringScale(d),
-            padding: tickPadding
-          };
-        });
-      };
-
-      var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data(function () {
-        return [tickData()];
+      return tickArray.map(function (d) {
+        return {
+          value: d,
+          radius: ringScale(d),
+          padding: tickPadding
+        };
       });
+    };
 
-      var tickCirclesGroup = tickCirclesGroupSelect.enter().append("g").classed("tickCircles", true).merge(tickCirclesGroupSelect);
-
-      var tickCircles = tickCirclesGroup.selectAll("circle").data(function (d) {
-        return d;
-      });
-
-      tickCircles.enter().append("circle").style("fill", "none").attr("stroke-width", 1).attr("stroke", "#ddd").merge(tickCircles).transition().attr("r", function (d) {
-        return d.radius + d.padding;
-      });
-
-      tickCircles.exit().remove();
-
-      // Spoke Data Generator
-      var spokeData = function spokeData() {
-        var spokeCount = 0;
-        var spokeArray = [];
-        if (typeof radialScale.ticks === "function") {
-          // scaleLinear
-          var min = d3.min(radialScale.domain());
-          var max = d3.max(radialScale.domain());
-          spokeCount = radialScale.ticks().length;
-          var spokeIncrement = (max - min) / spokeCount;
-          for (var i = 0; i <= spokeCount; i++) {
-            spokeArray[i] = (spokeIncrement * i).toFixed(0);
-          }
-        } else {
-          // scaleBand
-          spokeArray = radialScale.domain();
-          spokeCount = spokeArray.length;
-          spokeArray.push("");
-        }
-
-        var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
-
-        return spokeArray.map(function (d, i) {
-          return {
-            value: d,
-            rotate: spokeScale(i)
-          };
-        });
-      };
-
-      var spokesGroupSelect = axis.selectAll(".spokes").data(function () {
-        return [spokeData()];
-      });
-
-      var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
-
-      var spokes = spokesGroup.selectAll("line").data(function (d) {
-        return d;
-      });
-
-      spokes.enter().append("line").attr("id", function (d) {
-        return d.value;
-      }).attr("y2", -radius).merge(spokes).attr("transform", function (d) {
-        return "rotate(" + d.rotate + ")";
-      });
-
-      spokes.exit().remove();
+    var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data(function () {
+      return [tickData()];
     });
+
+    var tickCirclesGroup = tickCirclesGroupSelect.enter().append("g").classed("tickCircles", true).merge(tickCirclesGroupSelect);
+
+    var tickCircles = tickCirclesGroup.selectAll("circle").data(function (d) {
+      return d;
+    });
+
+    tickCircles.enter().append("circle").style("fill", "none").attr("stroke-width", 1).attr("stroke", "#ddd").merge(tickCircles).transition().attr("r", function (d) {
+      return d.radius + d.padding;
+    });
+
+    tickCircles.exit().remove();
+
+    // Spoke Data Generator
+    var spokeData = function spokeData() {
+      var spokeCount = 0;
+      var spokeArray = [];
+      if (typeof radialScale.ticks === "function") {
+        // scaleLinear
+        var min = d3.min(radialScale.domain());
+        var max = d3.max(radialScale.domain());
+        spokeCount = radialScale.ticks().length;
+        var spokeIncrement = (max - min) / spokeCount;
+        for (var i = 0; i <= spokeCount; i++) {
+          spokeArray[i] = (spokeIncrement * i).toFixed(0);
+        }
+      } else {
+        // scaleBand
+        spokeArray = radialScale.domain();
+        spokeCount = spokeArray.length;
+        spokeArray.push("");
+      }
+
+      var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
+
+      return spokeArray.map(function (d, i) {
+        return {
+          value: d,
+          rotate: spokeScale(i)
+        };
+      });
+    };
+
+    var spokesGroupSelect = axis.selectAll(".spokes").data(function () {
+      return [spokeData()];
+    });
+
+    var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
+
+    var spokes = spokesGroup.selectAll("line").data(function (d) {
+      return d;
+    });
+
+    spokes.enter().append("line").attr("id", function (d) {
+      return d.value;
+    }).attr("y2", -radius).merge(spokes).attr("transform", function (d) {
+      return "rotate(" + d.rotate + ")";
+    });
+
+    spokes.exit().remove();
   }
 
   /**
@@ -1715,54 +1706,44 @@ function componentCircularRingLabels () {
   var radius = void 0;
   var startAngle = 0;
   var endAngle = 360;
+  var capitalizeLabels = false;
   var textAnchor = "centre";
   var radialScale = void 0;
-
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
-  }
 
   /**
    * Constructor
    */
   function my(selection) {
+    // If the radius has not been passed then calculate it from width/height.
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+
+    var labelsSelect = selection.selectAll(".radialLabels").data([0]);
+
+    var labels = labelsSelect.enter().append("g").classed("radialLabels", true).merge(labelsSelect);
+
     var radData = radialScale.domain();
 
-    selection.each(function (data) {
-      init(data);
+    var defSelect = labels.selectAll("def").data(radData);
 
-      var labelsSelect = selection.selectAll(".radialLabels").data(function (d) {
-        return [d];
-      });
+    defSelect.enter().append("def").append("path").attr("id", function (d, i) {
+      return "radialLabelPath" + "-" + i;
+    }).attr("d", function (d) {
+      var r = radialScale(d);
+      var arc = d3.arc().outerRadius(r).innerRadius(r);
+      var pathConf = {
+        startAngle: startAngle * Math.PI / 180,
+        endAngle: endAngle * Math.PI / 180
+      };
+      var pathStr = arc(pathConf).split(/[A-Z]/);
+      return "M" + pathStr[1] + "A" + pathStr[2];
+    });
 
-      var labels = labelsSelect.enter().append("g").classed("radialLabels", true).merge(labelsSelect);
+    var textSelect = labels.selectAll("text").data(radData);
 
-      var defSelect = labels.selectAll("def").data(radData);
-
-      defSelect.enter().append("def").append("path").attr("id", function (d, i) {
-        return "radialLabelPath" + "-" + i;
-      }).attr("d", function (d) {
-        var r = radialScale(d);
-        var arc = d3.arc().outerRadius(r).innerRadius(r);
-        var pathConf = {
-          startAngle: startAngle * Math.PI / 180,
-          endAngle: endAngle * Math.PI / 180
-        };
-        var pathStr = arc(pathConf).split(/[A-Z]/);
-        return "M" + pathStr[1] + "A" + pathStr[2];
-      });
-
-      var textSelect = labels.selectAll("text").data(radData);
-
-      textSelect.enter().append("text").style("text-anchor", "start").attr("dy", -5).attr("dx", 5).append("textPath").attr("xlink:href", function (d, i) {
-        return "#radialLabelPath" + "-" + i;
-      }).attr("startOffset", "0%").text(function (d) {
-        return d;
-      });
+    textSelect.enter().append("text").style("text-anchor", "start").attr("dy", -5).attr("dx", 5).append("textPath").attr("xlink:href", function (d, i) {
+      return "#radialLabelPath" + "-" + i;
+    }).attr("startOffset", "0%").text(function (d) {
+      return d;
     });
   }
 
@@ -1796,6 +1777,12 @@ function componentCircularRingLabels () {
   my.endAngle = function (_) {
     if (!arguments.length) return endAngle;
     endAngle = _;
+    return this;
+  };
+
+  my.capitalizeLabels = function (_) {
+    if (!arguments.length) return capitalizeLabels;
+    capitalizeLabels = _;
     return this;
   };
 
@@ -1833,97 +1820,88 @@ function componentCircularSectorLabels () {
   var radialScale = void 0;
 
   /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
-  }
-
-  /**
    * Constructor
    */
   function my(selection) {
-    selection.each(function (data) {
-      init(data);
+    // If the radius has not been passed then calculate it from width/height.
+    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-      // Tick Data Generator
-      var tickData = function tickData() {
-        var tickCount = 0;
-        var tickArray = [];
+    // Tick Data Generator
+    var tickData = function tickData() {
+      var tickCount = 0;
+      var tickArray = [];
 
-        if (typeof radialScale.ticks === "function") {
-          // scaleLinear
-          var min = d3.min(radialScale.domain());
-          var max = d3.max(radialScale.domain());
-          tickCount = radialScale.ticks().length;
-          var tickIncrement = (max - min) / tickCount;
-          for (var i = 0; i <= tickCount; i++) {
-            tickArray[i] = (tickIncrement * i).toFixed(0);
-          }
-        } else {
-          // scaleBand
-          tickArray = radialScale.domain();
-          tickCount = tickArray.length;
+      if (typeof radialScale.ticks === "function") {
+        // scaleLinear
+        var min = d3.min(radialScale.domain());
+        var max = d3.max(radialScale.domain());
+        tickCount = radialScale.ticks().length;
+        var tickIncrement = (max - min) / tickCount;
+        for (var i = 0; i <= tickCount; i++) {
+          tickArray[i] = (tickIncrement * i).toFixed(0);
         }
+      } else {
+        // scaleBand
+        tickArray = radialScale.domain();
+        tickCount = tickArray.length;
+      }
 
-        var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
+      var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
 
-        return tickArray.map(function (d, i) {
-          return {
-            value: d,
-            offset: tickScale(i) / 360 * 100
-          };
-        });
-      };
-
-      // Unique id so that the text path defs are unique - is there a better way to do this?
-      var uId = selection.attr("id") ? selection.attr("id") : "uid-" + Math.floor(1000 + Math.random() * 9000);
-      selection.attr("id", uId);
-
-      var labelsSelect = selection.selectAll(".circularLabels").data(function () {
-        return [tickData()];
+      return tickArray.map(function (d, i) {
+        return {
+          value: d,
+          offset: tickScale(i) / 360 * 100
+        };
       });
+    };
 
-      var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
+    // Unique id so that the text path defs are unique - is there a better way to do this?
+    var uId = selection.attr("id") ? selection.attr("id") : "uid-" + Math.floor(1000 + Math.random() * 9000);
+    selection.attr("id", uId);
 
-      // Labels
-      var defSelect = labels.selectAll("def").data([radius]);
-
-      defSelect.enter().append("def").append("path").attr("id", function () {
-        var pathId = selection.attr("id") + "-path";
-        return pathId;
-      }).attr("d", function (d) {
-        return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-      }).merge(defSelect);
-
-      defSelect.exit().remove();
-
-      var textSelect = labels.selectAll("text").data(function (d) {
-        return d;
-      });
-
-      textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
-        var pathId = selection.attr("id") + "-path";
-        return "#" + pathId;
-      }).text(function (d) {
-        var text = d.value;
-        return capitalizeLabels ? text.toUpperCase() : text;
-      }).attr("startOffset", function (d) {
-        return d.offset + "%";
-      }).attr("id", function (d) {
-        return d.value;
-      }).merge(textSelect);
-
-      textSelect.transition().select("textPath").text(function (d) {
-        var text = d.value;
-        return capitalizeLabels ? text.toUpperCase() : text;
-      }).attr("startOffset", function (d) {
-        return d.offset + "%";
-      });
-
-      textSelect.exit().remove();
+    var labelsSelect = selection.selectAll(".circularLabels").data(function () {
+      return [tickData()];
     });
+
+    var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
+
+    // Labels
+    var defSelect = labels.selectAll("def").data([radius]);
+
+    defSelect.enter().append("def").append("path").attr("id", function () {
+      var pathId = selection.attr("id") + "-path";
+      return pathId;
+    }).attr("d", function (d) {
+      return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
+    }).merge(defSelect);
+
+    defSelect.exit().remove();
+
+    var textSelect = labels.selectAll("text").data(function (d) {
+      return d;
+    });
+
+    textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
+      var pathId = selection.attr("id") + "-path";
+      return "#" + pathId;
+    }).text(function (d) {
+      var text = d.value;
+      return capitalizeLabels ? text.toUpperCase() : text;
+    }).attr("startOffset", function (d) {
+      return d.offset + "%";
+    }).attr("id", function (d) {
+      return d.value;
+    }).merge(textSelect);
+
+    textSelect.transition().select("textPath").text(function (d) {
+      var text = d.value;
+      return capitalizeLabels ? text.toUpperCase() : text;
+    }).attr("startOffset", function (d) {
+      return d.offset + "%";
+    });
+
+    textSelect.exit().remove();
   }
 
   /**
@@ -3814,6 +3792,108 @@ function componentLegend () {
   return my;
 }
 
+/**
+ * Reusable Legend Component
+ *
+ */
+function componentLegendSize () {
+
+  /**
+   * Default Properties
+   */
+  var width = 100;
+  var height = 150;
+  var sizeScale = undefined;
+  var items = 4;
+
+  /**
+   * Constructor
+   */
+  function my(selection) {
+    height = height ? height : this.attr("height");
+    width = width ? width : this.attr("width");
+
+    // Legend Box
+    var legendSelect = selection.selectAll("#legendBox").data([0]);
+
+    var legend = legendSelect.enter().append("g").attr("id", "legendBox").attr("width", width).attr("height", height).merge(legendSelect);
+
+    var data = function data() {
+      // Calculate radiusScale
+      var valueMin = d3.min(sizeScale.domain());
+      var valueMax = d3.max(sizeScale.domain());
+      var valueStep = (valueMax - valueMin) / (items - 1);
+      var valueRange = Array(items).fill().map(function (v, i) {
+        return valueMin + valueStep * i;
+      });
+
+      // Calculate yScale
+      var yStep = height / (items * 2);
+      var yDomain = [0, items - 1];
+      var yRange = [yStep, height - yStep];
+      var yScale = d3.scaleLinear().domain(yDomain).range(yRange);
+
+      return valueRange.map(function (v, i) {
+        return {
+          x: sizeScale(valueMax),
+          y: yScale(i),
+          r: sizeScale(valueRange[i]),
+          text: v
+        };
+      });
+    };
+
+    var elementSelect = legend.selectAll(".legendItem").data(data);
+
+    var elements = elementSelect.enter().append("g").classed("legendItem", true).attr("transform", function (d) {
+      return "translate(0," + d.y + ")";
+    }).merge(elementSelect);
+
+    elements.exit().remove();
+
+    elements.append("circle").attr("r", function (d) {
+      return d.r;
+    }).attr("cx", function (d) {
+      return d.x;
+    }).style("fill", "#ff0000").attr("stroke", "#ddd").attr("stroke-width", 1);
+
+    elements.append("text").text(function (d) {
+      return d.text;
+    }).attr("dominant-baseline", "middle").attr("dx", function (d) {
+      return d.x * 2 + 5;
+    });
+  }
+
+  /**
+   * Configuration Getters & Setters
+   */
+  my.sizeScale = function (_) {
+    if (!arguments.length) return sizeScale;
+    sizeScale = _;
+    return my;
+  };
+
+  my.height = function (_) {
+    if (!arguments.length) return height;
+    height = _;
+    return my;
+  };
+
+  my.width = function (_) {
+    if (!arguments.length) return width;
+    width = _;
+    return my;
+  };
+
+  my.items = function (_) {
+    if (!arguments.length) return items;
+    items = _;
+    return my;
+  };
+
+  return my;
+}
+
 var component = {
   barsCircular: componentBarsCircular,
   barsStacked: componentBarsStacked,
@@ -3831,6 +3911,7 @@ var component = {
   htmlTable: componentHtmlTable,
   labeledNode: componentLabeledNode,
   legend: componentLegend,
+  legendSize: componentLegendSize,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
