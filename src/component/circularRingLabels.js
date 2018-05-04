@@ -21,70 +21,60 @@ export default function() {
   let radialScale;
 
   /**
-   * Initialise Data and Scales
+   * Constructor
    */
-  function init(data) {
+  function my(selection) {
     // If the radius has not been passed then calculate it from width/height.
     radius = (typeof radius === "undefined") ?
       (Math.min(width, height) / 2) :
       radius;
-  }
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
+    let labelsSelect = selection.selectAll(".radialLabels")
+      .data([0]);
+
+    let labels = labelsSelect.enter()
+      .append("g")
+      .classed("radialLabels", true)
+      .merge(labelsSelect);
+
     let radData = radialScale.domain();
 
-    selection.each(function(data) {
-      init(data);
+    let defSelect = labels.selectAll("def")
+      .data(radData);
 
-      let labelsSelect = selection.selectAll(".radialLabels")
-        .data(function(d) { return [d]; });
+    defSelect.enter()
+      .append("def")
+      .append("path")
+      .attr("id", function(d, i) {
+        return "radialLabelPath" + "-" + i;
+      })
+      .attr("d", function(d) {
+        let r = radialScale(d);
+        let arc = d3.arc().outerRadius(r).innerRadius(r);
+        let pathConf = {
+          startAngle: (startAngle * Math.PI) / 180,
+          endAngle: (endAngle * Math.PI) / 180
+        };
+        let pathStr = arc(pathConf).split(/[A-Z]/);
+        return "M" + pathStr[1] + "A" + pathStr[2];
+      });
 
-      let labels = labelsSelect.enter()
-        .append("g")
-        .classed("radialLabels", true)
-        .merge(labelsSelect);
+    let textSelect = labels.selectAll("text")
+      .data(radData);
 
-      let defSelect = labels.selectAll("def")
-        .data(radData);
-
-      defSelect.enter()
-        .append("def")
-        .append("path")
-        .attr("id", function(d, i) {
-          return "radialLabelPath" + "-" + i;
-        })
-        .attr("d", function(d) {
-          let r = radialScale(d);
-          let arc = d3.arc().outerRadius(r).innerRadius(r);
-          let pathConf = {
-            startAngle: (startAngle * Math.PI) / 180,
-            endAngle: (endAngle * Math.PI) / 180
-          };
-          let pathStr = arc(pathConf).split(/[A-Z]/);
-          return "M" + pathStr[1] + "A" + pathStr[2];
-        });
-
-      let textSelect = labels.selectAll("text")
-        .data(radData);
-
-      textSelect.enter()
-        .append("text")
-        .style("text-anchor", "start")
-        .attr("dy", -5)
-        .attr("dx", 5)
-        .append("textPath")
-        .attr("xlink:href", function(d, i) {
-          return "#radialLabelPath" + "-" + i;
-        })
-        .attr("startOffset", "0%")
-        .text(function(d) {
-          return d;
-        });
-
-    });
+    textSelect.enter()
+      .append("text")
+      .style("text-anchor", "start")
+      .attr("dy", -5)
+      .attr("dx", 5)
+      .append("textPath")
+      .attr("xlink:href", function(d, i) {
+        return "#radialLabelPath" + "-" + i;
+      })
+      .attr("startOffset", "0%")
+      .text(function(d) {
+        return d;
+      });
   }
 
   /**
@@ -117,6 +107,12 @@ export default function() {
   my.endAngle = function(_) {
     if (!arguments.length) return endAngle;
     endAngle = _;
+    return this;
+  };
+
+  my.capitalizeLabels = function(_) {
+    if (!arguments.length) return capitalizeLabels;
+    capitalizeLabels = _;
     return this;
   };
 
