@@ -30,16 +30,31 @@
     let minRadius = 5;
     let maxRadius = 25;
 
+    let colors = ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
+
     let sizeScale = d3.scaleLinear()
       .domain([minValue, maxValue])
       .range([minRadius, maxRadius]);
 
+    let colorScale = d3.scaleOrdinal()
+      .domain(['Apples', 'Oranges', 'Grapes', 'Bananas'])
+      .range(colors);
+
     // Configure chart components
-    var myChart = d3.ez.component.legendSize()
+    /*
+    var myChart = d3.ez.component.legendSizeScale()
       .sizeScale(sizeScale)
       .width(width)
       .height(height)
-      .items(4);
+      .itemCount(4);
+    */
+
+    // Configure chart components
+    var myChart = d3.ez.component.legendColorScale()
+      .colorScale(colorScale)
+      .width(width)
+      .height(height)
+      .itemType("line");
 
     // Attach data and chart to 'chartholder' element
     var chartHolder = d3.select("#chartholder");

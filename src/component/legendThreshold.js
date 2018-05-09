@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Legend Component
+ * Reusable Threshold Color Scale Legend Component
  *
  */
 export default function() {
@@ -10,8 +10,8 @@ export default function() {
    * Default Properties
    */
   let width = 100;
-  let height = 150;
-  let sizeScale = undefined;
+  let height = 200;
+  let colorScale = undefined;
   let items = 4;
 
   /**
@@ -89,9 +89,9 @@ export default function() {
   /**
    * Configuration Getters & Setters
    */
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
+  my.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
     return my;
   };
 

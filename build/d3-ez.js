@@ -3608,203 +3608,224 @@ function componentRoseChartSector () {
  */
 function componentLegend () {
 
-  /**
-   * Default Properties
-   */
-  var sizeScale = undefined;
-  var sizeLabel = null;
-  var colorScale = undefined;
-  var colorLabel = null;
-  var title = null;
-  var width = 100;
-  var height = 150;
-  var opacity = 0.7;
-  var fill = "#ffffff";
-  var stroke = "#000000";
-  var strokewidth = "1px";
-  var spacing = 5;
+	/**
+  * Default Properties
+  */
+	var sizeScale = undefined;
+	var colorScale = undefined;
+	var title = null;
+	var width = 100;
+	var height = 150;
+	var opacity = 0.7;
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    height = height ? height : this.attr("height");
-    width = width ? width : this.attr("width");
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		height = height ? height : this.attr("height");
+		width = width ? width : this.attr("width");
 
-    // Legend Box
-    var legendBox = selection.selectAll("#legendBox").data([0]).enter().append("g").attr("id", "legendBox");
+		// Legend Box
+		var legendBox = selection.selectAll("#legendBox").data([0]).enter().append("g").attr("id", "legendBox");
 
-    legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", fill).attr("stroke-width", strokewidth).attr("stroke", stroke);
+		legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", "#ffffff").attr("stroke-width", 1).attr("stroke", "#000000");
 
-    var legendTitle = legendBox.append("g").attr("transform", "translate(5, 15)");
+		var legend = void 0;
 
-    legendTitle.append("text").style("font-weight", "bold").text(title);
+		// Size Legend
+		if (typeof sizeScale !== "undefined") {
+			legend = d3.ez.component.legendSizeScale().sizeScale(sizeScale).itemCount(4);
+		}
 
-    var y = 10;
-    var numElements = void 0,
-        elementHeight = void 0,
-        text = void 0;
-    // Size Key
-    if (typeof sizeScale !== "undefined") {
-      // Calcualate a range of 5 numbers between min and max of range
-      var min = d3.min(sizeScale.range());
-      var max = d3.max(sizeScale.range());
-      var diff = max - min;
-      var step = diff / 4;
-      var range = [];
-      range[0] = min;
-      for (var s = 1; s < 5; s++) {
-        range[s] = range[s - 1] + step;
-      }
-      sizeScale.range(range);
+		// Colour Legend
+		if (typeof colorScale !== "undefined") {
+			legend = d3.ez.component.legendColorScale().colorScale(colorScale).itemType("rect");
 
-      numElements = sizeScale.range().length;
-      elementHeight = (height - 45) / numElements;
+			if (scaleType(colorScale) === "threshold") {
+				console.log("threshold");
+			} else {
+				console.log("categorical");
+			}
+		}
+		legend.width(width - 10).height(height - 15);
 
-      var sizeKey = legendBox.append("g").attr("transform", "translate(5, 20)");
+		legendBox.append("g").attr("transform", "translate(10, 5)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").text(title);
 
-      for (var size = 0; size < numElements; size++) {
-        sizeKey.append("circle").attr("cx", 17).attr("cy", y).attr("fill", "lightgrey").attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("r", sizeScale.range()[size]);
+		legendBox.append("g").attr("transform", "translate(10, 15)").call(legend);
+	}
 
-        text = keyScaleRange("size", size);
+	/**
+  * Detect Scale Type
+  */
+	function scaleType(scale) {
+		var s = scale.copy();
+		if (s.domain([1, 2]).range([1, 2])(1.5) === 1) {
+			return "ordinal";
+		} else if (typeof s.invert !== "function") {
+			return "threshold";
+		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) === 1.5) {
+			return "linear";
+		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) instanceof Date) {
+			return "time";
+		} else {
+			return "not supported";
+		}
+	}
 
-        sizeKey.append("text").attr("x", 40).attr("y", y + 5).text(text);
+	/**
+  * Configuration Getters & Setters
+  */
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
 
-        y = y + (elementHeight + spacing);
-      }
-    }
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
 
-    // Colour Key
-    if (typeof colorScale !== "undefined") {
-      numElements = colorScale.domain().length;
-      elementHeight = (height - 45) / numElements - 5;
+	my.sizeScale = function (_) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _;
+		return my;
+	};
 
-      var colorKey = legendBox.append("g").attr("transform", "translate(5, 20)");
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-      for (var index = 0; index < numElements; index++) {
-        colorKey.append("rect").attr("x", 10).attr("y", y).attr("fill", colorScale.range()[index]).attr("stroke-width", "1px").attr("stroke", "grey").attr("fill-opacity", 0.8).attr("width", 20).attr("height", elementHeight);
+	my.title = function (_) {
+		if (!arguments.length) return title;
+		title = _;
+		return my;
+	};
 
-        if (!isNaN(colorScale.domain()[index])) {
-          // If the scale is a threshold scale.
-          text = keyScaleRange("threshold", index);
-        } else {
-          text = colorScale.domain()[index];
-        }
-
-        colorKey.append("text").attr("x", 40).attr("y", y + 10).text(text);
-        y = y + (elementHeight + spacing);
-      }
-    }
-  }
-
-  /**
-   * Helper function to calculate the keys min and max values
-   */
-  function keyScaleRange(type, position) {
-    var domainMin = void 0,
-        domainMax = void 0,
-        domainSize = void 0,
-        rangeLength = void 0;
-    switch (type) {
-      case "size":
-        domainMin = Math.min.apply(Math, sizeScale.domain());
-        domainMax = Math.max.apply(Math, sizeScale.domain());
-        domainSize = domainMax - domainMin;
-        rangeLength = sizeScale.range().length;
-        break;
-      case "color":
-        domainMin = Math.min.apply(Math, colorScale.domain());
-        domainMax = Math.max.apply(Math, colorScale.domain());
-        domainSize = domainMax - domainMin;
-        rangeLength = colorScale.range().length;
-        break;
-      case "threshold":
-        var min = colorScale.domain()[position];
-        var max = colorScale.domain()[position + 1];
-        rangeStr = isNaN(max) ? "> " + min : min + " - " + max;
-        return rangeStr;
-        break;
-    }
-    var rangeIncrement = domainSize / rangeLength;
-    var ranges = [];
-    var range = [];
-    var rangeStart = domainMin;
-    var rangeEnd = domainMin + rangeIncrement;
-
-    for (var i = 0; i < rangeLength; i++) {
-      range = [rangeStart, rangeEnd];
-      ranges.push(range);
-      rangeStart = rangeEnd;
-      rangeEnd = rangeStart + rangeIncrement;
-    }
-
-    var rangeStr = ranges[position][0].toFixed(0) + " - " + ranges[position][1].toFixed(0);
-    return rangeStr;
-  }
-
-  /**
-   * Configuration Getters & Setters
-   */
-  my.sizeScale = function (_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
-    return my;
-  };
-
-  my.sizeLabel = function (_) {
-    if (!arguments.length) return sizeLabel;
-    sizeLabel = _;
-    return my;
-  };
-
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
-
-  my.colorLabel = function (_) {
-    if (!arguments.length) return colorLabel;
-    colorLabel = _;
-    return my;
-  };
-
-  my.title = function (_) {
-    if (!arguments.length) return title;
-    title = _;
-    return my;
-  };
-
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return my;
-  };
-
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return my;
-  };
-
-  my._keyScaleRange = keyScaleRange;
-
-  return my;
+	return my;
 }
 
 /**
- * Reusable Legend Component
+ * Reusable Size Scale Legend Component
  *
  */
-function componentLegendSize () {
+function componentLegendSizeScale () {
+
+	/**
+  * Default Properties
+  */
+	var width = 100;
+	var height = 200;
+	var sizeScale = undefined;
+	var itemCount = 4;
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		height = height ? height : this.attr("height");
+		width = width ? width : this.attr("width");
+
+		// Legend Box
+		var legendSelect = selection.selectAll("#legendBox").data([0]);
+
+		var legend = legendSelect.enter().append("g").attr("id", "legendBox").attr("width", width).attr("height", height).merge(legendSelect);
+
+		var data = function data() {
+			// Calculate radiusScale
+			var domainMin = d3.min(sizeScale.domain());
+			var domainMax = d3.max(sizeScale.domain());
+			var increment = (domainMax - domainMin) / itemCount;
+			var ranges = Array(itemCount).fill().map(function (v, i) {
+				var rangeStart = domainMin + increment * i;
+				var rangeEnd = domainMin + increment * (i + 1);
+				return [rangeStart, rangeEnd];
+			});
+
+			// Calculate yScale
+			var yStep = height / (itemCount * 2);
+			var yDomain = [0, itemCount - 1];
+			var yRange = [yStep, height - yStep];
+			var yScale = d3.scaleLinear().domain(yDomain).range(yRange);
+
+			return ranges.map(function (v, i) {
+				return {
+					x: sizeScale(domainMax),
+					y: yScale(i),
+					r: sizeScale(ranges[i][0]),
+					text: v[0].toFixed(0) + " - " + v[1].toFixed(0)
+				};
+			});
+		};
+
+		var itemsSelect = legend.selectAll(".legendItem").data(data);
+
+		var items = itemsSelect.enter().append("g").classed("legendItem", true).attr("transform", function (d) {
+			return "translate(0," + d.y + ")";
+		}).merge(itemsSelect);
+
+		items.exit().remove();
+
+		items.append("circle").attr("r", function (d) {
+			return d.r;
+		}).attr("cx", function (d) {
+			return d.x;
+		}).attr("fill", "lightgrey").attr("stroke", "grey").attr("stroke-width", 1);
+
+		items.append("text").text(function (d) {
+			return d.text;
+		}).attr("dominant-baseline", "middle").attr("x", function (d) {
+			return d.x * 2 + 5;
+		});
+	}
+
+	/**
+  * Configuration Getters & Setters
+  */
+	my.sizeScale = function (_) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _;
+		return my;
+	};
+
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
+
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
+
+	my.itemCount = function (_) {
+		if (!arguments.length) return itemCount;
+		itemCount = _;
+		return my;
+	};
+
+	return my;
+}
+
+/**
+ * Reusable Color Scale Legend Component
+ *
+ */
+function componentLegendColorScale () {
 
   /**
    * Default Properties
    */
   var width = 100;
-  var height = 150;
-  var sizeScale = undefined;
-  var items = 4;
+  var height = 200;
+  var colorScale = undefined;
+  var itemCount = void 0;
+  var itemType = "rect";
 
   /**
    * Constructor
@@ -3819,57 +3840,70 @@ function componentLegendSize () {
     var legend = legendSelect.enter().append("g").attr("id", "legendBox").attr("width", width).attr("height", height).merge(legendSelect);
 
     var data = function data() {
-      // Calculate radiusScale
-      var valueMin = d3.min(sizeScale.domain());
-      var valueMax = d3.max(sizeScale.domain());
-      var valueStep = (valueMax - valueMin) / (items - 1);
-      var valueRange = Array(items).fill().map(function (v, i) {
-        return valueMin + valueStep * i;
-      });
+      var domain = colorScale.domain();
+      itemCount = domain.length;
+      var itemHeight = height / itemCount - 20;
+      var itemWidth = 20;
 
-      // Calculate yScale
-      var yStep = height / (items * 2);
-      var yDomain = [0, items - 1];
-      var yRange = [yStep, height - yStep];
-      var yScale = d3.scaleLinear().domain(yDomain).range(yRange);
-
-      return valueRange.map(function (v, i) {
+      return domain.map(function (v, i) {
         return {
-          x: sizeScale(valueMax),
-          y: yScale(i),
-          r: sizeScale(valueRange[i]),
+          y: 10 + (itemHeight + 20) * i,
+          width: itemWidth,
+          height: itemHeight,
+          color: colorScale(v),
           text: v
         };
       });
     };
 
-    var elementSelect = legend.selectAll(".legendItem").data(data);
+    var itemsSelect = legend.selectAll(".legendItem").data(data);
 
-    var elements = elementSelect.enter().append("g").classed("legendItem", true).attr("transform", function (d) {
+    var items = itemsSelect.enter().append("g").classed("legendItem", true).attr("transform", function (d) {
       return "translate(0," + d.y + ")";
-    }).merge(elementSelect);
+    }).merge(itemsSelect);
 
-    elements.exit().remove();
+    items.exit().remove();
 
-    elements.append("circle").attr("r", function (d) {
-      return d.r;
-    }).attr("cx", function (d) {
-      return d.x;
-    }).style("fill", "#ff0000").attr("stroke", "#ddd").attr("stroke-width", 1);
+    switch (itemType) {
+      case "line":
+        items.append("line").attr("x1", function () {
+          return 0;
+        }).attr("y1", function (d) {
+          return d.height / 2;
+        }).attr("x2", function (d) {
+          return d.width;
+        }).attr("y2", function (d) {
+          return d.height / 2;
+        }).attr("stroke", function (d) {
+          return d.color;
+        }).attr("stroke-width", 1);
+        break;
 
-    elements.append("text").text(function (d) {
+      case "rect":
+      default:
+        items.append("rect").attr("width", function (d) {
+          return d.width;
+        }).attr("height", function (d) {
+          return d.height;
+        }).style("fill", function (d) {
+          return d.color;
+        }).attr("stroke", "#ddd").attr("stroke-width", 1);
+        break;
+    }
+
+    items.append("text").text(function (d) {
       return d.text;
-    }).attr("dominant-baseline", "middle").attr("dx", function (d) {
-      return d.x * 2 + 5;
+    }).attr("dominant-baseline", "middle").attr("x", 40).attr("y", function (d) {
+      return d.height / 2;
     });
   }
 
   /**
    * Configuration Getters & Setters
    */
-  my.sizeScale = function (_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
+  my.colorScale = function (_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
     return my;
   };
 
@@ -3885,9 +3919,9 @@ function componentLegendSize () {
     return my;
   };
 
-  my.items = function (_) {
-    if (!arguments.length) return items;
-    items = _;
+  my.itemType = function (_) {
+    if (!arguments.length) return itemType;
+    itemType = _;
     return my;
   };
 
@@ -3911,7 +3945,8 @@ var component = {
   htmlTable: componentHtmlTable,
   labeledNode: componentLabeledNode,
   legend: componentLegend,
-  legendSize: componentLegendSize,
+  legendSizeScale: componentLegendSizeScale,
+  legendColorScale: componentLegendColorScale,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
@@ -5356,166 +5391,166 @@ function chartHeatMapRadial () {
  */
 function chartHeatMapTable () {
 
-  /**
-   * Default Properties
-   */
-  var svg = void 0;
-  var chart = void 0;
-  var classed = "heatMapTable";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 50, right: 20, bottom: 20, left: 50 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	/**
+  * Default Properties
+  */
+	var svg = void 0;
+	var chart = void 0;
+	var classed = "heatMapTable";
+	var width = 400;
+	var height = 300;
+	var margin = { top: 50, right: 20, bottom: 20, left: 50 };
+	var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Chart Dimensions
-   */
-  var chartW = void 0;
-  var chartH = void 0;
+	/**
+  * Chart Dimensions
+  */
+	var chartW = void 0;
+	var chartH = void 0;
 
-  /**
-   * Scales
-   */
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
+	/**
+  * Scales
+  */
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
 
-  /**
-   * Other Customisation Options
-   */
-  var thresholds = void 0;
+	/**
+  * Other Customisation Options
+  */
+	var thresholds = void 0;
 
-  /**
-   * Initialise Data, Scales and Series
-   */
-  function init(data) {
-    chartW = width - margin.left - margin.right;
-    chartH = height - margin.top - margin.bottom;
+	/**
+  * Initialise Data, Scales and Series
+  */
+	function init(data) {
+		chartW = width - margin.left - margin.right;
+		chartH = height - margin.top - margin.bottom;
 
-    // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+		// Slice Data, calculate totals, max etc.
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var groupNames = slicedData.groupNames;
 
-    // If thresholds values are not set attempt to auto-calculate the thresholds.
-    if (!thresholds) {
-      thresholds = slicedData.thresholds;
-    }
+		// If thresholds values are not set attempt to auto-calculate the thresholds.
+		if (!thresholds) {
+			thresholds = slicedData.thresholds;
+		}
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
 
-    // X & Y Scales
-    xScale = d3.scaleBand().domain(categoryNames).range([0, chartW]).padding(0.1);
+		// X & Y Scales
+		xScale = d3.scaleBand().domain(categoryNames).range([0, chartW]).padding(0.1);
 
-    yScale = d3.scaleBand().domain(groupNames).range([0, chartH]).padding(0.1);
-  }
+		yScale = d3.scaleBand().domain(groupNames).range([0, chartH]).padding(0.1);
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    selection.each(function (data) {
-      // Initialise Data
-      init(data);
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		selection.each(function (data) {
+			// Initialise Data
+			init(data);
 
-      // Create SVG and Chart containers (if they do not already exist)
-      if (!svg) {
-        svg = function (selection) {
-          var el = selection._groups[0][0];
-          if (!!el.ownerSVGElement || el.tagName === "svg") {
-            return selection;
-          } else {
-            return selection.append("svg");
-          }
-        }(d3.select(this));
+			// Create SVG and Chart containers (if they do not already exist)
+			if (!svg) {
+				svg = function (selection) {
+					var el = selection._groups[0][0];
+					if (!!el.ownerSVGElement || el.tagName === "svg") {
+						return selection;
+					} else {
+						return selection.append("svg");
+					}
+				}(d3.select(this));
 
-        svg.classed("d3ez", true).attr("width", width).attr("height", height);
+				svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-        chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("xAxis axis", true);
-        chart.append("g").classed("yAxis axis", true);
-      } else {
-        chart = selection.select(".chart");
-      }
+				chart = svg.append("g").classed("chart", true);
+				chart.append("g").classed("xAxis axis", true);
+				chart.append("g").classed("yAxis axis", true);
+			} else {
+				chart = selection.select(".chart");
+			}
 
-      // Update the chart dimensions
-      chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
+			// Update the chart dimensions
+			chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH);
 
-      var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
+			var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
-      var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
-        return d;
-      });
+			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+				return d;
+			});
 
-      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr("transform", function (d) {
-        return "translate(0, " + yScale(d.key) + ")";
-      }).merge(seriesGroup).call(heatMapRow);
+			seriesGroup.enter().append("g").attr("class", "seriesGroup").attr("transform", function (d) {
+				return "translate(0, " + yScale(d.key) + ")";
+			}).merge(seriesGroup).call(heatMapRow);
 
-      seriesGroup.exit().remove();
+			seriesGroup.exit().remove();
 
-      // Add X Axis to chart
-      var xAxis = d3.axisTop(xScale);
-      chart.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+			// Add X Axis to chart
+			var xAxis = d3.axisTop(xScale);
+			chart.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
-      // Add Y Axis to chart
-      var yAxis = d3.axisLeft(yScale);
-      chart.select(".yAxis").call(yAxis);
-    });
-  }
+			// Add Y Axis to chart
+			var yAxis = d3.axisLeft(yScale);
+			chart.select(".yAxis").call(yAxis);
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.margin = function (_) {
-    if (!arguments.length) return margin;
-    margin = _;
-    return this;
-  };
+	my.margin = function (_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return this;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return this;
+	};
 
-  my.thresholds = function (_) {
-    if (!arguments.length) return thresholds;
-    thresholds = _;
-    return this;
-  };
+	my.thresholds = function (_) {
+		if (!arguments.length) return thresholds;
+		thresholds = _;
+		return this;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
