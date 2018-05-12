@@ -1,117 +1,88 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Threshold Color Scale Legend Component
- *
+ * Reusable Threshold Legend Component
+ * https://bl.ocks.org/mbostock/4573883
  */
 export default function() {
 
-  /**
-   * Default Properties
-   */
-  let width = 100;
-  let height = 200;
-  let colorScale = undefined;
-  let items = 4;
+	/**
+	 * Default Properties
+	 */
+	let width = 100;
+	let height = 200;
+	let thresholdScale = undefined;
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    height = (height ? height : this.attr("height"));
-    width = (width ? width : this.attr("width"));
+	/**
+	 * Constructor
+	 */
+	function my(selection) {
+		height = (height ? height : this.attr("height"));
+		width = (width ? width : this.attr("width"));
 
-    // Legend Box
-    let legendSelect = selection.selectAll("#legendBox")
-      .data([0]);
+		// Legend Box
+		let legendSelect = selection.selectAll("#legendBox")
+			.data([0]);
 
-    let legend = legendSelect.enter()
-      .append("g")
-      .attr("id", "legendBox")
-      .attr("width", width)
-      .attr("height", height)
-      .merge(legendSelect);
+		let legend = legendSelect.enter()
+			.append("g")
+			.attr("id", "legendBox")
+			.attr("width", width)
+			.attr("height", height)
+			.merge(legendSelect);
 
-    let data = function() {
-      // Calculate radiusScale
-      let valueMin = d3.min(sizeScale.domain());
-      let valueMax = d3.max(sizeScale.domain());
-      let valueStep = (valueMax - valueMin) / (items - 1);
-      let valueRange = Array(items).fill().map(function(v, i) {
-        return valueMin + (valueStep * i);
-      });
+		let domainMin = d3.min(thresholdScale.domain());
+		let domainMax = d3.max(thresholdScale.domain());
+		let domainMargin = (domainMax - domainMin) * 0.1;
 
-      // Calculate yScale
-      let yStep = height / (items * 2);
-      let yDomain = [0, (items - 1)];
-      let yRange = [yStep, (height - yStep)];
-      let yScale = d3.scaleLinear()
-        .domain(yDomain)
-        .range(yRange);
+		let x = d3.scaleLinear()
+			.domain([domainMin - domainMargin, domainMax + domainMargin])
+			.range([0, height]);
 
-      return valueRange.map(function(v, i) {
-        return {
-          x: sizeScale(valueMax),
-          y: yScale(i),
-          r: sizeScale(valueRange[i]),
-          text: v
-        }
-      });
-    };
+		let xAxis = d3.axisRight(x)
+			.tickSize(13)
+			.tickValues(thresholdScale.domain());
 
-    let elementSelect = legend.selectAll(".legendItem")
-      .data(data);
+		let g = legend.call(xAxis);
+		g.select(".domain")
+			.remove();
 
-    let elements = elementSelect.enter()
-      .append("g")
-      .classed("legendItem", true)
-      .attr("transform", function(d) {
-        return "translate(0," + d.y + ")";
-      })
-      .merge(elementSelect);
+		g.selectAll("rect")
+			.data(thresholdScale.range().map(function(color) {
+				let d = thresholdScale.invertExtent(color);
+				if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
+				if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
 
-    elements.exit()
-      .remove();
+				return d;
+			}))
+			.enter()
+			.insert("rect", ".tick")
+			.attr("width", 10)
+			.attr("y", function(d) { return x(d[0]); })
+			.attr("height", function(d) { return x(d[1]) - x(d[0]); })
+			.attr("fill", function(d) { return thresholdScale(d[0]); });
+	}
 
-    elements.append("circle")
-      .attr("r", function(d) { return d.r; })
-      .attr("cx", function(d) { return d.x; })
-      .style("fill", "#ff0000")
-      .attr("stroke", "#ddd")
-      .attr("stroke-width", 1);
+	/**
+	 * Configuration Getters & Setters
+	 */
+	my.thresholdScale = function(_) {
+		if (!arguments.length) return thresholdScale;
+		thresholdScale = _;
+		return my;
+	};
 
-    elements.append("text")
-      .text(function(d) { return d.text; })
-      .attr("dominant-baseline", "middle")
-      .attr("dx", function(d) { return (d.x * 2) + 5; });
-  }
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.colorScale = function(_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
 
-  my.height = function(_) {
-    if (!arguments.length) return height;
-    height = _;
-    return my;
-  };
-
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
-    return my;
-  };
-
-  my.items = function(_) {
-    if (!arguments.length) return items;
-    items = _;
-    return my;
-  };
-
-  return my;
+	return my;
 }

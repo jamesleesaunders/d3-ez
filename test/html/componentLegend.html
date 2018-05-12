@@ -40,21 +40,29 @@
       .domain(['Apples', 'Oranges', 'Grapes', 'Bananas'])
       .range(colors);
 
+    let thresholdScale = d3.scaleThreshold()
+      .domain([-13, -3, 18, 32])
+      .range([d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65), d3.rgb(0, 0, 0)]);
+
     // Configure chart components
     /*
-    var myChart = d3.ez.component.legendSizeScale()
+    var myChart = d3.ez.component.legendSize()
       .sizeScale(sizeScale)
       .width(width)
       .height(height)
       .itemCount(4);
-    */
 
-    // Configure chart components
-    var myChart = d3.ez.component.legendColorScale()
+    var myChart = d3.ez.component.legendCategorical()
       .colorScale(colorScale)
       .width(width)
       .height(height)
       .itemType("line");
+    */
+
+    var myChart = d3.ez.component.legendThreshold()
+      .thresholdScale(thresholdScale)
+      .width(width)
+      .height(height);
 
     // Attach data and chart to 'chartholder' element
     var chartHolder = d3.select("#chartholder");

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Size Scale Legend Component
+ * Reusable Size Legend Component
  *
  */
 export default function() {

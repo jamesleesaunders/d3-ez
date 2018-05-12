@@ -40,7 +40,7 @@ tape("dataParseTest", function(t) {
     minValue: 3,
     maxValue: 9,
     maxDecimalPlace: 0,
-    thresholds: ["4", "5", "6", "8"]
+    thresholds: [4, 5, 6, 8]
   };
   let actual = d3Ez.ez.dataParse(data);
   t.deepEqual(actual, expected, "Produces data analysis");

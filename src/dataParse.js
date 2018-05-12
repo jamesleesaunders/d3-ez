@@ -206,10 +206,10 @@ export default function(data) {
   let thresholds = (function() {
     let distance = maxValue - minValue;
     let ret = [
-      (minValue + (0.15 * distance)).toFixed(maxDecimalPlace),
-      (minValue + (0.40 * distance)).toFixed(maxDecimalPlace),
-      (minValue + (0.55 * distance)).toFixed(maxDecimalPlace),
-      (minValue + (0.90 * distance)).toFixed(maxDecimalPlace)
+      +(minValue + (0.15 * distance)).toFixed(maxDecimalPlace),
+      +(minValue + (0.40 * distance)).toFixed(maxDecimalPlace),
+      +(minValue + (0.55 * distance)).toFixed(maxDecimalPlace),
+      +(minValue + (0.90 * distance)).toFixed(maxDecimalPlace)
 		];
 
     return ret;

@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.3.3";
+var version = "3.3.4";
 
 /**
  * Base Functions - Data Parse
@@ -217,7 +217,7 @@ function dataParse (data) {
   // If thresholds values are not already set attempt to auto-calculate some thresholds
   var thresholds = function () {
     var distance = maxValue - minValue;
-    var ret = [(minValue + 0.15 * distance).toFixed(maxDecimalPlace), (minValue + 0.40 * distance).toFixed(maxDecimalPlace), (minValue + 0.55 * distance).toFixed(maxDecimalPlace), (minValue + 0.90 * distance).toFixed(maxDecimalPlace)];
+    var ret = [+(minValue + 0.15 * distance).toFixed(maxDecimalPlace), +(minValue + 0.40 * distance).toFixed(maxDecimalPlace), +(minValue + 0.55 * distance).toFixed(maxDecimalPlace), +(minValue + 0.90 * distance).toFixed(maxDecimalPlace)];
 
     return ret;
   }();
@@ -3603,10 +3603,10 @@ function componentRoseChartSector () {
 }
 
 /**
- * Reusable Size Scale Legend Component
+ * Reusable Size Legend Component
  *
  */
-function componentLegendSizeScale () {
+function componentLegendSize () {
 
 	/**
   * Default Properties
@@ -3707,10 +3707,10 @@ function componentLegendSizeScale () {
 }
 
 /**
- * Reusable Color Scale Legend Component
+ * Reusable Categorical Legend Component
  *
  */
-function componentLegendColorScale () {
+function componentLegendCategorical () {
 
   /**
    * Default Properties
@@ -3781,7 +3781,7 @@ function componentLegendColorScale () {
           return d.height;
         }).style("fill", function (d) {
           return d.color;
-        }).attr("stroke", "#ddd").attr("stroke-width", 1);
+        }).attr("stroke", "#dddddd").attr("stroke-width", 1);
         break;
     }
 
@@ -3823,6 +3823,81 @@ function componentLegendColorScale () {
 }
 
 /**
+ * Reusable Threshold Legend Component
+ * https://bl.ocks.org/mbostock/4573883
+ */
+function componentLegendThreshold () {
+
+	/**
+  * Default Properties
+  */
+	var width = 100;
+	var height = 200;
+	var thresholdScale = undefined;
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		height = height ? height : this.attr("height");
+		width = width ? width : this.attr("width");
+
+		// Legend Box
+		var legendSelect = selection.selectAll("#legendBox").data([0]);
+
+		var legend = legendSelect.enter().append("g").attr("id", "legendBox").attr("width", width).attr("height", height).merge(legendSelect);
+
+		var domainMin = d3.min(thresholdScale.domain());
+		var domainMax = d3.max(thresholdScale.domain());
+		var domainMargin = (domainMax - domainMin) * 0.1;
+
+		var x = d3.scaleLinear().domain([domainMin - domainMargin, domainMax + domainMargin]).range([0, height]);
+
+		var xAxis = d3.axisRight(x).tickSize(13).tickValues(thresholdScale.domain());
+
+		var g = legend.call(xAxis);
+		g.select(".domain").remove();
+
+		g.selectAll("rect").data(thresholdScale.range().map(function (color) {
+			var d = thresholdScale.invertExtent(color);
+			if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
+			if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
+
+			return d;
+		})).enter().insert("rect", ".tick").attr("width", 10).attr("y", function (d) {
+			return x(d[0]);
+		}).attr("height", function (d) {
+			return x(d[1]) - x(d[0]);
+		}).attr("fill", function (d) {
+			return thresholdScale(d[0]);
+		});
+	}
+
+	/**
+  * Configuration Getters & Setters
+  */
+	my.thresholdScale = function (_) {
+		if (!arguments.length) return thresholdScale;
+		thresholdScale = _;
+		return my;
+	};
+
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
+
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
+
+	return my;
+}
+
+/**
  * Reusable Legend Component
  *
  */
@@ -3854,24 +3929,24 @@ function componentLegend () {
 
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {
-			legend = componentLegendSizeScale().sizeScale(sizeScale).itemCount(4);
+			legend = componentLegendSize().sizeScale(sizeScale).itemCount(4);
 		}
 
 		// Colour Legend
 		if (typeof colorScale !== "undefined") {
-			legend = componentLegendColorScale().colorScale(colorScale).itemType("rect");
-
 			if (scaleType(colorScale) === "threshold") {
 				// console.log("threshold");
+				legend = componentLegendThreshold().thresholdScale(colorScale);
 			} else {
-					// console.log("categorical");
-				}
+				// console.log("categorical");
+				legend = componentLegendCategorical().colorScale(colorScale).itemType("rect");
+			}
 		}
-		legend.width(width - 10).height(height - 15);
 
 		legendBox.append("g").attr("transform", "translate(10, 5)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").text(title);
 
-		legendBox.append("g").attr("transform", "translate(10, 15)").call(legend);
+		legend.width(width - 20).height(height - 35);
+		legendBox.append("g").attr("transform", "translate(10, 20)").call(legend);
 	}
 
 	/**
@@ -3945,8 +4020,9 @@ var component = {
   htmlTable: componentHtmlTable,
   labeledNode: componentLabeledNode,
   legend: componentLegend,
-  legendSizeScale: componentLegendSizeScale,
-  legendColorScale: componentLegendColorScale,
+  legendSize: componentLegendSize,
+  legendCategorical: componentLegendCategorical,
+  legendThreshold: componentLegendThreshold,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,
   polarArea: componentPolarArea,
@@ -5200,7 +5276,7 @@ function chartHeatMapRadial () {
   var height = 300;
   var margin = { top: 20, right: 20, bottom: 20, left: 20 };
   var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
   var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**
@@ -5400,7 +5476,7 @@ function chartHeatMapTable () {
 	var width = 400;
 	var height = 300;
 	var margin = { top: 50, right: 20, bottom: 20, left: 50 };
-	var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+	var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**

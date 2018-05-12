@@ -57,14 +57,14 @@
 }
 
 .htmlList ul {
+	/* Indentation */
   margin-left: 1em;
-  /* Indentation */
   position: relative;
 }
 
 .htmlList ul ul {
+	/* Indentation / 2 */
   margin-left: .5em;
-  /* Indentation / 2 */
 }
 
 .htmlList ul:before {
@@ -174,7 +174,7 @@ table.htmlTable {
 .bubbleChart .bubble circle {
   opacity: 0.5;
   stroke: white;
-  stroke-width: 1;
+  stroke-width: 1px;
 }
 
 .bubbleChart .bubble:hover circle {

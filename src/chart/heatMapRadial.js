@@ -19,7 +19,7 @@ export default function() {
   let height = 300;
   let margin = { top: 20, right: 20, bottom: 20, left: 20 };
   let transition = { ease: d3.easeBounce, duration: 500 };
-  let colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+  let colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
   /**

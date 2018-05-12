@@ -1,6 +1,7 @@
 import * as d3 from "d3";
-import { default as componentLegendSizeScale } from "./legendSizeScale";
-import { default as componentLegendColorScale } from "./legendColorScale";
+import { default as componentLegendSize } from "./legendSize";
+import { default as componentLegendCategorical } from "./legendCategorical";
+import { default as componentLegendThreshold } from "./legendThreshold";
 
 /**
  * Reusable Legend Component
@@ -44,25 +45,25 @@ export default function() {
 
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {
-			legend = componentLegendSizeScale()
+			legend = componentLegendSize()
 				.sizeScale(sizeScale)
 				.itemCount(4);
 		}
 
 		// Colour Legend
 		if (typeof colorScale !== "undefined") {
-			legend = componentLegendColorScale()
-				.colorScale(colorScale)
-				.itemType("rect");
-
 			if (scaleType(colorScale) === "threshold") {
 				// console.log("threshold");
+				legend = componentLegendThreshold()
+					.thresholdScale(colorScale);
 			} else {
 				// console.log("categorical");
+				legend = componentLegendCategorical()
+					.colorScale(colorScale)
+					.itemType("rect");
 			}
 
 		}
-		legend.width(width - 10).height(height - 15);
 
 		legendBox.append("g")
 			.attr("transform", "translate(10, 5)")
@@ -71,8 +72,9 @@ export default function() {
 			.attr("dominant-baseline", "hanging")
 			.text(title);
 
+		legend.width(width - 20).height(height - 35);
 		legendBox.append("g")
-			.attr("transform", "translate(10, 15)")
+			.attr("transform", "translate(10, 20)")
 			.call(legend);
 	}
 

@@ -7,14 +7,14 @@
 }
 
 .htmlList ul {
+	/* Indentation */
   margin-left: 1em;
-  /* Indentation */
   position: relative;
 }
 
 .htmlList ul ul {
+	/* Indentation / 2 */
   margin-left: .5em;
-  /* Indentation / 2 */
 }
 
 .htmlList ul:before {

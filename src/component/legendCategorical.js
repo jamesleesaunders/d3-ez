@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Color Scale Legend Component
+ * Reusable Categorical Legend Component
  *
  */
 export default function() {
@@ -81,7 +81,7 @@ export default function() {
           .attr("width", function(d) { return d.width; })
           .attr("height", function(d) { return d.height; })
           .style("fill", function(d) { return d.color; })
-          .attr("stroke", "#ddd")
+          .attr("stroke", "#dddddd")
           .attr("stroke-width", 1);
         break;
     }
