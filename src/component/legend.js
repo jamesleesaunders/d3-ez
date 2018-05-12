@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import { default as componentLegendSizeScale } from "./legendSizeScale";
+import { default as componentLegendColorScale } from "./legendColorScale";
 
 /**
  * Reusable Legend Component
@@ -42,21 +44,21 @@ export default function() {
 
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {
-			legend = d3.ez.component.legendSizeScale()
+			legend = componentLegendSizeScale()
 				.sizeScale(sizeScale)
 				.itemCount(4);
 		}
 
 		// Colour Legend
 		if (typeof colorScale !== "undefined") {
-			legend = d3.ez.component.legendColorScale()
+			legend = componentLegendColorScale()
 				.colorScale(colorScale)
 				.itemType("rect");
 
 			if (scaleType(colorScale) === "threshold") {
-				console.log("threshold");
+				// console.log("threshold");
 			} else {
-				console.log("categorical");
+				// console.log("categorical");
 			}
 
 		}

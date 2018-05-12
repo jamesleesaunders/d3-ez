@@ -3603,112 +3603,6 @@ function componentRoseChartSector () {
 }
 
 /**
- * Reusable Legend Component
- *
- */
-function componentLegend () {
-
-	/**
-  * Default Properties
-  */
-	var sizeScale = undefined;
-	var colorScale = undefined;
-	var title = null;
-	var width = 100;
-	var height = 150;
-	var opacity = 0.7;
-
-	/**
-  * Constructor
-  */
-	function my(selection) {
-		height = height ? height : this.attr("height");
-		width = width ? width : this.attr("width");
-
-		// Legend Box
-		var legendBox = selection.selectAll("#legendBox").data([0]).enter().append("g").attr("id", "legendBox");
-
-		legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", "#ffffff").attr("stroke-width", 1).attr("stroke", "#000000");
-
-		var legend = void 0;
-
-		// Size Legend
-		if (typeof sizeScale !== "undefined") {
-			legend = d3.ez.component.legendSizeScale().sizeScale(sizeScale).itemCount(4);
-		}
-
-		// Colour Legend
-		if (typeof colorScale !== "undefined") {
-			legend = d3.ez.component.legendColorScale().colorScale(colorScale).itemType("rect");
-
-			if (scaleType(colorScale) === "threshold") {
-				console.log("threshold");
-			} else {
-				console.log("categorical");
-			}
-		}
-		legend.width(width - 10).height(height - 15);
-
-		legendBox.append("g").attr("transform", "translate(10, 5)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").text(title);
-
-		legendBox.append("g").attr("transform", "translate(10, 15)").call(legend);
-	}
-
-	/**
-  * Detect Scale Type
-  */
-	function scaleType(scale) {
-		var s = scale.copy();
-		if (s.domain([1, 2]).range([1, 2])(1.5) === 1) {
-			return "ordinal";
-		} else if (typeof s.invert !== "function") {
-			return "threshold";
-		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) === 1.5) {
-			return "linear";
-		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) instanceof Date) {
-			return "time";
-		} else {
-			return "not supported";
-		}
-	}
-
-	/**
-  * Configuration Getters & Setters
-  */
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function (_) {
-		if (!arguments.length) return width;
-		width = _;
-		return my;
-	};
-
-	my.sizeScale = function (_) {
-		if (!arguments.length) return sizeScale;
-		sizeScale = _;
-		return my;
-	};
-
-	my.colorScale = function (_) {
-		if (!arguments.length) return colorScale;
-		colorScale = _;
-		return my;
-	};
-
-	my.title = function (_) {
-		if (!arguments.length) return title;
-		title = _;
-		return my;
-	};
-
-	return my;
-}
-
-/**
  * Reusable Size Scale Legend Component
  *
  */
@@ -3926,6 +3820,112 @@ function componentLegendColorScale () {
   };
 
   return my;
+}
+
+/**
+ * Reusable Legend Component
+ *
+ */
+function componentLegend () {
+
+	/**
+  * Default Properties
+  */
+	var sizeScale = undefined;
+	var colorScale = undefined;
+	var title = null;
+	var width = 100;
+	var height = 150;
+	var opacity = 0.7;
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		height = height ? height : this.attr("height");
+		width = width ? width : this.attr("width");
+
+		// Legend Box
+		var legendBox = selection.selectAll("#legendBox").data([0]).enter().append("g").attr("id", "legendBox");
+
+		legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", "#ffffff").attr("stroke-width", 1).attr("stroke", "#000000");
+
+		var legend = void 0;
+
+		// Size Legend
+		if (typeof sizeScale !== "undefined") {
+			legend = componentLegendSizeScale().sizeScale(sizeScale).itemCount(4);
+		}
+
+		// Colour Legend
+		if (typeof colorScale !== "undefined") {
+			legend = componentLegendColorScale().colorScale(colorScale).itemType("rect");
+
+			if (scaleType(colorScale) === "threshold") {
+				// console.log("threshold");
+			} else {
+					// console.log("categorical");
+				}
+		}
+		legend.width(width - 10).height(height - 15);
+
+		legendBox.append("g").attr("transform", "translate(10, 5)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").text(title);
+
+		legendBox.append("g").attr("transform", "translate(10, 15)").call(legend);
+	}
+
+	/**
+  * Detect Scale Type
+  */
+	function scaleType(scale) {
+		var s = scale.copy();
+		if (s.domain([1, 2]).range([1, 2])(1.5) === 1) {
+			return "ordinal";
+		} else if (typeof s.invert !== "function") {
+			return "threshold";
+		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) === 1.5) {
+			return "linear";
+		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) instanceof Date) {
+			return "time";
+		} else {
+			return "not supported";
+		}
+	}
+
+	/**
+  * Configuration Getters & Setters
+  */
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
+
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
+
+	my.sizeScale = function (_) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _;
+		return my;
+	};
+
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
+
+	my.title = function (_) {
+		if (!arguments.length) return title;
+		title = _;
+		return my;
+	};
+
+	return my;
 }
 
 var component = {
