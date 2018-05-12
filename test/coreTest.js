@@ -62,27 +62,6 @@ tape("legendTest", function(t) {
   legend.title("Foo Bar");
   t.equal(legend.title(), "Foo Bar", "Returns legend title");
 
-  let sizeScale = d3.scaleLinear()
-    .range([0, 100])
-    .domain([1, 50]);
-
-  let colorScale = d3.scaleLinear()
-    .range(["#599ad3", "#727272", "#f1595f"])
-    .domain([1, 50]);
-
-  legend.sizeScale(sizeScale);
-  t.equal(legend._keyScaleRange("size", 0), "1 - 26");
-  t.equal(legend._keyScaleRange("size", 1), "26 - 50");
-
-  legend.colorScale(colorScale);
-  t.equal(legend._keyScaleRange("color", 0), "1 - 17");
-  t.equal(legend._keyScaleRange("color", 1), "17 - 34");
-  t.equal(legend._keyScaleRange("color", 2), "34 - 50");
-
-  legend.colorScale(colorScale);
-  t.equal(legend._keyScaleRange("threshold", 0), "1 - 50");
-  t.equal(legend._keyScaleRange("threshold", 1), "> 50");
-
   t.end();
 });
 

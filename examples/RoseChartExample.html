@@ -3,7 +3,7 @@
 
 <head>
   <title>d3-ez : Rose Chart Example</title>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="../build/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
 </head>
@@ -14,7 +14,7 @@
   <div>Value: <span id="message"></span></div>
 
   <script type="text/javascript">
-    d3.json("data/nightingale_rose.json", function(error, json) {
+    d3.json("data/nightingale_rose.json").then(function(json) {
       // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
 
       var colors = ["#599ad3", "#727272", "#f1595f"];

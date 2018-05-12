@@ -25,7 +25,7 @@ export default {
     babel({
       exclude: ["node_modules/**", "*.json"],
       babelrc: false,
-      presets: [["es2015", { modules: false }]],
+      presets: [["env", { modules: false }]],
       plugins: ["external-helpers"]
     }),
     json({

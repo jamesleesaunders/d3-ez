@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>d3-ez : Test</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="../../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../build/d3-ez.css" />
+</head>
+
+<body>
+  <div id="chartholder"></div>
+
+  <script type="text/javascript">
+    let data = {
+      key: "Fruit",
+      values: [
+        { key: "Apples", value: 9 },
+        { key: "Oranges", value: 3 },
+        { key: "Grapes", value: 5 },
+        { key: "Bananas", value: 7 }
+      ]
+    };
+
+    let width = 100;
+    let height = 200;
+
+    let minValue = 3;
+    let maxValue = 9;
+    let minRadius = 5;
+    let maxRadius = 25;
+
+    let colors = ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
+
+    let sizeScale = d3.scaleLinear()
+      .domain([minValue, maxValue])
+      .range([minRadius, maxRadius]);
+
+    let colorScale = d3.scaleOrdinal()
+      .domain(['Apples', 'Oranges', 'Grapes', 'Bananas'])
+      .range(colors);
+
+    // Configure chart components
+    /*
+    var myChart = d3.ez.component.legendSizeScale()
+      .sizeScale(sizeScale)
+      .width(width)
+      .height(height)
+      .itemCount(4);
+    */
+
+    // Configure chart components
+    var myChart = d3.ez.component.legendColorScale()
+      .colorScale(colorScale)
+      .width(width)
+      .height(height)
+      .itemType("line");
+
+    // Attach data and chart to 'chartholder' element
+    var chartHolder = d3.select("#chartholder");
+    chartHolder.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .call(myChart);
+
+  </script>
+</body>
+
+</html>
