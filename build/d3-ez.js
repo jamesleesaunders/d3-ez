@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.3.4";
+var version = "3.3.5";
 
 /**
  * Base Functions - Data Parse
@@ -3710,7 +3710,7 @@ function componentLegendSize () {
  * Reusable Categorical Legend Component
  *
  */
-function componentLegendCategorical () {
+function componentLegendColor () {
 
   /**
    * Default Properties
@@ -3853,18 +3853,17 @@ function componentLegendThreshold () {
 
 		var x = d3.scaleLinear().domain([domainMin - domainMargin, domainMax + domainMargin]).range([0, height]);
 
-		var xAxis = d3.axisRight(x).tickSize(13).tickValues(thresholdScale.domain());
+		var xAxis = d3.axisRight(x).tickSize(30).tickValues(thresholdScale.domain());
 
-		var g = legend.call(xAxis);
-		g.select(".domain").remove();
+		var axis = legend.call(xAxis);
+		axis.select(".domain").remove();
 
-		g.selectAll("rect").data(thresholdScale.range().map(function (color) {
+		axis.selectAll("rect").data(thresholdScale.range().map(function (color) {
 			var d = thresholdScale.invertExtent(color);
 			if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
 			if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
-
 			return d;
-		})).enter().insert("rect", ".tick").attr("width", 10).attr("y", function (d) {
+		})).enter().insert("rect", ".tick").attr("width", 20).attr("y", function (d) {
 			return x(d[0]);
 		}).attr("height", function (d) {
 			return x(d[1]) - x(d[0]);
@@ -3935,11 +3934,9 @@ function componentLegend () {
 		// Colour Legend
 		if (typeof colorScale !== "undefined") {
 			if (scaleType(colorScale) === "threshold") {
-				// console.log("threshold");
 				legend = componentLegendThreshold().thresholdScale(colorScale);
 			} else {
-				// console.log("categorical");
-				legend = componentLegendCategorical().colorScale(colorScale).itemType("rect");
+				legend = componentLegendColor().colorScale(colorScale).itemType("rect");
 			}
 		}
 
@@ -4021,7 +4018,7 @@ var component = {
   labeledNode: componentLabeledNode,
   legend: componentLegend,
   legendSize: componentLegendSize,
-  legendCategorical: componentLegendCategorical,
+  legendCategorical: componentLegendColor,
   legendThreshold: componentLegendThreshold,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,

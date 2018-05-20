@@ -57,13 +57,13 @@
 }
 
 .htmlList ul {
-	/* Indentation */
+  /* Indentation */
   margin-left: 1em;
   position: relative;
 }
 
 .htmlList ul ul {
-	/* Indentation / 2 */
+  /* Indentation / 2 */
   margin-left: .5em;
 }
 
@@ -80,10 +80,10 @@
 
 .htmlList li {
   margin: 0;
-  padding: 0 1.5em;
   /* Indentation + .5em */
-  line-height: 2em;
+  padding: 0 1.5em;
   /* Default list item's line-height */
+  line-height: 2em;
   font-weight: bold;
   position: relative;
 }
@@ -91,23 +91,23 @@
 .htmlList ul li:before {
   content: '';
   display: block;
-  width: 10px;
   /* Same with Indentation */
+  width: 10px;
   height: 0;
   border-top: 1px solid;
-  margin-top: -1px;
   /* Border top width */
+  margin-top: -1px;
   position: absolute;
-  top: 1em;
   /* line-height / 2 */
+  top: 1em;
   left: 0;
 }
 
 .htmlList ul li:last-child:before {
   background: #ffffff;
   height: auto;
-  top: 1em;
   /* line-height / 2 */
+  top: 1em;
   bottom: 0;
 }
 

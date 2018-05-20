@@ -20,7 +20,7 @@ import { default as componentRoseChartSector } from "./component/roseChartSector
 import { default as componentLabeledNode } from "./component/labeledNode";
 import { default as componentLegend } from "./component/legend";
 import { default as componentLegendSize } from "./component/legendSize";
-import { default as componentLegendCategorical } from "./component/legendCategorical";
+import { default as componentLegendColor } from "./component/legendColor";
 import { default as componentLegendThreshold } from "./component/legendThreshold";
 import { default as componentTitle } from "./component/title";
 import { default as componentCreditTag } from "./component/creditTag";
@@ -43,7 +43,7 @@ export default {
   labeledNode: componentLabeledNode,
   legend: componentLegend,
   legendSize: componentLegendSize,
-  legendCategorical: componentLegendCategorical,
+  legendCategorical: componentLegendColor,
 	legendThreshold: componentLegendThreshold,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,

@@ -40,24 +40,23 @@ export default function() {
 			.range([0, height]);
 
 		let xAxis = d3.axisRight(x)
-			.tickSize(13)
+			.tickSize(30)
 			.tickValues(thresholdScale.domain());
 
-		let g = legend.call(xAxis);
-		g.select(".domain")
+		let axis = legend.call(xAxis);
+		axis.select(".domain")
 			.remove();
 
-		g.selectAll("rect")
+		axis.selectAll("rect")
 			.data(thresholdScale.range().map(function(color) {
 				let d = thresholdScale.invertExtent(color);
 				if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
 				if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
-
 				return d;
 			}))
 			.enter()
 			.insert("rect", ".tick")
-			.attr("width", 10)
+			.attr("width", 20)
 			.attr("y", function(d) { return x(d[0]); })
 			.attr("height", function(d) { return x(d[1]) - x(d[0]); })
 			.attr("fill", function(d) { return thresholdScale(d[0]); });

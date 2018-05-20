@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as componentLegendSize } from "./legendSize";
-import { default as componentLegendCategorical } from "./legendCategorical";
+import { default as componentLegendColor } from "./legendColor";
 import { default as componentLegendThreshold } from "./legendThreshold";
 
 /**
@@ -53,12 +53,10 @@ export default function() {
 		// Colour Legend
 		if (typeof colorScale !== "undefined") {
 			if (scaleType(colorScale) === "threshold") {
-				// console.log("threshold");
 				legend = componentLegendThreshold()
 					.thresholdScale(colorScale);
 			} else {
-				// console.log("categorical");
-				legend = componentLegendCategorical()
+				legend = componentLegendColor()
 					.colorScale(colorScale)
 					.itemType("rect");
 			}
