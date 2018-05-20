@@ -4018,7 +4018,7 @@ var component = {
   labeledNode: componentLabeledNode,
   legend: componentLegend,
   legendSize: componentLegendSize,
-  legendCategorical: componentLegendColor,
+  legendColor: componentLegendColor,
   legendThreshold: componentLegendThreshold,
   lineChart: componentLineChart,
   numberCard: componentNumberCard,

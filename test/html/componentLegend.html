@@ -52,17 +52,17 @@
       .height(height)
       .itemCount(4);
 
-    var myChart = d3.ez.component.legendColor()
-      .colorScale(colorScale)
-      .width(width)
-      .height(height)
-      .itemType("line");
-    */
-
     var myChart = d3.ez.component.legendThreshold()
       .thresholdScale(thresholdScale)
       .width(width)
       .height(height);
+    */
+
+    var myChart = d3.ez.component.legendColor()
+      .colorScale(colorScale)
+      .width(width)
+      .height(height)
+      .itemType("rect");
 
     // Attach data and chart to 'chartholder' element
     var chartHolder = d3.select("#chartholder");
