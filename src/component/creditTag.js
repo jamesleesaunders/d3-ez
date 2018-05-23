@@ -25,6 +25,7 @@ export default function() {
     let creditText = creditTag.append("text")
       .text(text)
       .style("text-anchor", "end")
+			.attr("baseline", "middle")
       .attr("xlink:href", href)
       .on("click", function() {
         window.open(href);

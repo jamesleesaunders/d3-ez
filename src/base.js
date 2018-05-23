@@ -16,8 +16,8 @@ export default function() {
   let width = 600;
   let height = 400;
   let margin = { top: 15, right: 15, bottom: 15, left: 15 };
-  let canvasW = 580;
-  let canvasH = 380;
+  let canvasW;
+  let canvasH;
   let chartTop = 0;
   let classed = "d3ez";
 
@@ -108,13 +108,13 @@ export default function() {
       // Add Title
       if (title) {
         canvas.select(".titlebox")
-          .attr("transform", "translate(" + width / 2 + "," + 0 + ")")
+          .attr("transform", "translate(" + canvasW / 2 + "," + 0 + ")")
           .call(title);
       }
 
       // Add Credit Tag
       canvas.select(".creditbox")
-        .attr("transform", "translate(" + (width - margin.right) + "," + (height - margin.bottom) + ")")
+        .attr("transform", "translate(" + canvasW + "," + canvasH + ")")
         .call(creditTag);
     });
   }
