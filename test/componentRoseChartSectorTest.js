@@ -43,7 +43,7 @@ tape("componentRoseChartSectorTest", function(t) {
   // Construct 'actual' svg using d3-ez component.
   let expectedDiv = document.createElement("div");
 
-  let myChart = d3Ez.ez.component.roseChartSector()
+  let myChart = d3Ez.component.roseChartSector()
     .radius(radius)
     .startAngle(startAngle)
     .endAngle(endAngle)
