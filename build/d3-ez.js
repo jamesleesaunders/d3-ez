@@ -12,7 +12,7 @@
 	(factory((global.d3 = global.d3 || {}),global.d3));
 }(this, (function (exports,d3) { 'use strict';
 
-var version = "3.3.5";
+var version = "3.3.6";
 
 /**
  * Base Functions - Data Parse
@@ -358,7 +358,7 @@ function componentCreditTag () {
   function my(selection) {
     var creditTag = selection.selectAll("#creditTag").data([0]).enter().append("g").attr("id", "creditTag");
 
-    var creditText = creditTag.append("text").text(text).style("text-anchor", "end").attr("xlink:href", href).on("click", function () {
+    var creditText = creditTag.append("text").text(text).style("text-anchor", "end").attr("baseline", "middle").attr("xlink:href", href).on("click", function () {
       window.open(href);
     });
   }
@@ -463,8 +463,8 @@ function base () {
   var width = 600;
   var height = 400;
   var margin = { top: 15, right: 15, bottom: 15, left: 15 };
-  var canvasW = 580;
-  var canvasH = 380;
+  var canvasW = void 0;
+  var canvasH = void 0;
   var chartTop = 0;
   var classed = "d3ez";
 
@@ -541,11 +541,11 @@ function base () {
 
       // Add Title
       if (title) {
-        canvas.select(".titlebox").attr("transform", "translate(" + width / 2 + "," + 0 + ")").call(title);
+        canvas.select(".titlebox").attr("transform", "translate(" + canvasW / 2 + "," + 0 + ")").call(title);
       }
 
       // Add Credit Tag
-      canvas.select(".creditbox").attr("transform", "translate(" + (width - margin.right) + "," + (height - margin.bottom) + ")").call(creditTag);
+      canvas.select(".creditbox").attr("transform", "translate(" + canvasW + "," + canvasH + ")").call(creditTag);
     });
   }
 
