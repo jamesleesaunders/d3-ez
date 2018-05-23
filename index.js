@@ -14,7 +14,7 @@ import { default as base } from "./src/base";
 import { default as component } from "./src/component";
 import { default as chart } from "./src/chart";
 
-let my = {
+export default {
   version: version,
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
@@ -26,4 +26,6 @@ let my = {
   chart: chart
 };
 
-export { my as ez };
+// export { my as ez };
+
+

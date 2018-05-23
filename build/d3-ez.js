@@ -7,10 +7,10 @@
  */
 
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3')) :
-	typeof define === 'function' && define.amd ? define(['exports', 'd3'], factory) :
-	(factory((global.d3 = global.d3 || {}),global.d3));
-}(this, (function (exports,d3) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('d3')) :
+	typeof define === 'function' && define.amd ? define(['d3'], factory) :
+	(global.d3 = global.d3 || {}, global.d3.ez = factory(global.d3));
+}(this, (function (d3) { 'use strict';
 
 var version = "3.3.6";
 
@@ -6376,7 +6376,7 @@ var chart = {
  * @license GPLv3
  */
 
-var my = {
+var index = {
   version: version,
   author: "James Saunders",
   copyright: "Copyright (C) 2018 James Saunders",
@@ -6388,8 +6388,8 @@ var my = {
   chart: chart
 };
 
-exports.ez = my;
+// export { my as ez };
 
-Object.defineProperty(exports, '__esModule', { value: true });
+return index;
 
 })));

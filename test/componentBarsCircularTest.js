@@ -42,7 +42,7 @@ tape("componentBarsStackedTest", function(t) {
   // Construct 'actual' svg using d3-ez component.
   let expectedDiv = document.createElement("div");
 
-  let myChart = d3Ez.ez.component.barsCircular()
+  let myChart = d3Ez.component.barsCircular()
     .radius(radius)
     .innerRadius(innerRadius);
 
