@@ -64,7 +64,7 @@ export default function() {
 		}
 
 		legendBox.append("g")
-			.attr("transform", "translate(10, 5)")
+			.attr("transform", "translate(10, 10)")
 			.append("text")
 			.style("font-weight", "bold")
 			.attr("dominant-baseline", "hanging")
@@ -72,7 +72,7 @@ export default function() {
 
 		legend.width(width - 20).height(height - 35);
 		legendBox.append("g")
-			.attr("transform", "translate(10, 20)")
+			.attr("transform", "translate(10, 25)")
 			.call(legend);
 	}
 

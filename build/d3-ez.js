@@ -12,7 +12,7 @@
 	(global.d3 = global.d3 || {}, global.d3.ez = factory(global.d3));
 }(this, (function (d3) { 'use strict';
 
-var version = "3.3.6";
+var version = "3.3.7";
 
 /**
  * Base Functions - Data Parse
@@ -3736,12 +3736,12 @@ function componentLegendColor () {
     var data = function data() {
       var domain = colorScale.domain();
       itemCount = domain.length;
-      var itemHeight = height / itemCount - 20;
+      var itemHeight = height / itemCount / 2;
       var itemWidth = 20;
 
       return domain.map(function (v, i) {
         return {
-          y: 10 + (itemHeight + 20) * i,
+          y: 10 + itemHeight * 2 * i,
           width: itemWidth,
           height: itemHeight,
           color: colorScale(v),
@@ -3778,7 +3778,7 @@ function componentLegendColor () {
         items.append("rect").attr("width", function (d) {
           return d.width;
         }).attr("height", function (d) {
-          return d.height;
+          console.log(d);return d.height;
         }).style("fill", function (d) {
           return d.color;
         }).attr("stroke", "#dddddd").attr("stroke-width", 1);
@@ -3940,10 +3940,10 @@ function componentLegend () {
 			}
 		}
 
-		legendBox.append("g").attr("transform", "translate(10, 5)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").text(title);
+		legendBox.append("g").attr("transform", "translate(10, 10)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").text(title);
 
 		legend.width(width - 20).height(height - 35);
-		legendBox.append("g").attr("transform", "translate(10, 20)").call(legend);
+		legendBox.append("g").attr("transform", "translate(10, 25)").call(legend);
 	}
 
 	/**

@@ -36,12 +36,12 @@ export default function() {
     let data = function() {
       let domain = colorScale.domain();
       itemCount = domain.length;
-      let itemHeight = (height / itemCount) - 20;
+      let itemHeight = (height / itemCount) / 2;
       let itemWidth = 20;
 
       return domain.map(function(v, i) {
         return {
-          y: 10 + ((itemHeight + 20) * i),
+          y: 10 + ((itemHeight * 2) * i),
           width: itemWidth,
           height: itemHeight,
           color: colorScale(v),
@@ -79,7 +79,7 @@ export default function() {
       default:
         items.append("rect")
           .attr("width", function(d) { return d.width; })
-          .attr("height", function(d) { return d.height; })
+          .attr("height", function(d) { console.log(d); return d.height; })
           .style("fill", function(d) { return d.color; })
           .attr("stroke", "#dddddd")
           .attr("stroke-width", 1);
