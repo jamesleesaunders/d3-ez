@@ -7,6 +7,7 @@ import { default as componentCircularAxis } from "./component/circularAxis";
 import { default as componentCircularRingLabels } from "./component/circularRingLabels";
 import { default as componentCircularSectorLabels } from "./component/circularSectorLabels";
 import { default as componentDonut } from "./component/donut";
+import { default as componentDonutLabels } from "./component/donutLabels";
 import { default as componentHeatMapRing } from "./component/heatMapRing";
 import { default as componentHeatMapRow } from "./component/heatMapRow";
 import { default as componentHtmlList } from "./component/htmlList";
@@ -36,6 +37,7 @@ export default {
   circularSectorLabels: componentCircularSectorLabels,
   creditTag: componentCreditTag,
   donut: componentDonut,
+	donutLabels: componentDonutLabels,
   heatMapRing: componentHeatMapRing,
   heatMapRow: componentHeatMapRow,
   htmlList: componentHtmlList,

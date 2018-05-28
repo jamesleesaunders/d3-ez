@@ -70,9 +70,9 @@ export default function() {
 			.attr("dominant-baseline", "hanging")
 			.text(title);
 
-		legend.width(width - 20).height(height - 35);
+		legend.width(width - 20).height(height - 40);
 		legendBox.append("g")
-			.attr("transform", "translate(10, 25)")
+			.attr("transform", "translate(10, 30)")
 			.call(legend);
 	}
 
