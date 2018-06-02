@@ -26,7 +26,10 @@ export default {
       exclude: ["node_modules/**", "*.json"],
       babelrc: false,
       presets: [["env", { modules: false }]],
-      plugins: ["external-helpers"]
+      plugins: [
+         "external-helpers",
+         "transform-object-assign"
+      ]
     }),
     json({
       exclude: ["node_modules/**"]
