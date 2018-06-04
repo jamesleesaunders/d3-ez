@@ -117,26 +117,26 @@ export default function() {
 			labels.exit()
 				.remove();
 
-			// Slice to Label Connectors
-			let connectorsGroupSelect = seriesGroup.selectAll("g.lines")
+			// Text Label to Slice Connectors
+			let connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
 				.data(function(d) {
 					return [d];
 				});
 
 			let connectorsGroup = connectorsGroupSelect.enter()
 				.append("g")
-				.attr("class", "lines")
+				.attr("class", "connectors")
 				.merge(connectorsGroupSelect);
 
-			let lines = connectorsGroup.selectAll("polyline.line")
+			let connectors = connectorsGroup.selectAll("polyline.connector")
 				.data(function(d) {
 					return pie(d.values);
 				});
 
-			lines.enter()
+			connectors.enter()
 				.append("polyline")
-				.attr("class", "line")
-				.merge(lines)
+				.attr("class", "connector")
+				.merge(connectors)
 				.transition()
 				.duration(transition.duration)
 				.attrTween("points", function(d) {
@@ -151,7 +151,7 @@ export default function() {
 					};
 				});
 
-			lines.exit()
+			connectors.exit()
 				.remove();
 		});
 	}

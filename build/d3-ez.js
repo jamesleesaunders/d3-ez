@@ -2187,18 +2187,18 @@ function componentDonutLabels () {
 
 			labels.exit().remove();
 
-			// Slice to Label Connectors
-			var connectorsGroupSelect = seriesGroup.selectAll("g.lines").data(function (d) {
+			// Text Label to Slice Connectors
+			var connectorsGroupSelect = seriesGroup.selectAll("g.connectors").data(function (d) {
 				return [d];
 			});
 
-			var connectorsGroup = connectorsGroupSelect.enter().append("g").attr("class", "lines").merge(connectorsGroupSelect);
+			var connectorsGroup = connectorsGroupSelect.enter().append("g").attr("class", "connectors").merge(connectorsGroupSelect);
 
-			var lines = connectorsGroup.selectAll("polyline.line").data(function (d) {
+			var connectors = connectorsGroup.selectAll("polyline.connector").data(function (d) {
 				return pie(d.values);
 			});
 
-			lines.enter().append("polyline").attr("class", "line").merge(lines).transition().duration(transition.duration).attrTween("points", function (d) {
+			connectors.enter().append("polyline").attr("class", "connector").merge(connectors).transition().duration(transition.duration).attrTween("points", function (d) {
 				this._current = this._current || d;
 				var interpolate = d3.interpolate(this._current, d);
 				this._current = interpolate(0);
@@ -2210,7 +2210,7 @@ function componentDonutLabels () {
 				};
 			});
 
-			lines.exit().remove();
+			connectors.exit().remove();
 		});
 	}
 

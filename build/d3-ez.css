@@ -216,7 +216,7 @@ table.htmlTable {
   cursor: pointer;
 }
 
-.donutChart polyline.line {
+.donutChart polyline.connector {
   opacity: .3;
   stroke: black;
   stroke-width: 2px;

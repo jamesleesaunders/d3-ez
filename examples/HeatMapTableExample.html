@@ -38,6 +38,8 @@
           div.html("<p><b>Point A:</b> " + d.key + "<br /><b>Point B:</b> " + d.series + "<br /><b>Value:</b> " + d.value + "</p>")
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY) + "px");
+
+          d3.select("#message").text(d.value);
         })
         .on("customValueMouseOut", function(d) {
           // Hide Tooltip
