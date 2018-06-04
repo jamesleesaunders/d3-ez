@@ -2147,17 +2147,19 @@ function componentDonutLabels () {
 			};
 
 			// Update series group
-			var labelsGroup = d3.select(this);
-			labelsGroup.classed(classed, true).attr("id", function (d) {
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
 				return d.key;
 			});
 
-			// TODO: I am not sure the below will work for updates?
-			labelsGroup.append("g").attr("class", "labels");
-			labelsGroup.append("g").attr("class", "lines");
+			// Text Labels
+			var labelsGroupSelect = seriesGroup.selectAll("g.labels").data(function (d) {
+				return [d];
+			});
 
-			// Labels
-			var labels = labelsGroup.select(".labels").selectAll("text.label").data(function (d) {
+			var labelsGroup = labelsGroupSelect.enter().append("g").attr("class", "labels").merge(labelsGroupSelect);
+
+			var labels = labelsGroup.selectAll("text.label").data(function (d) {
 				return pie(d.values);
 			});
 
@@ -2185,8 +2187,14 @@ function componentDonutLabels () {
 
 			labels.exit().remove();
 
-			// Slice to Label Lines
-			var lines = labelsGroup.select(".lines").selectAll("polyline.line").data(function (d) {
+			// Slice to Label Connectors
+			var connectorsGroupSelect = seriesGroup.selectAll("g.lines").data(function (d) {
+				return [d];
+			});
+
+			var connectorsGroup = connectorsGroupSelect.enter().append("g").attr("class", "lines").merge(connectorsGroupSelect);
+
+			var lines = connectorsGroup.selectAll("polyline.line").data(function (d) {
 				return pie(d.values);
 			});
 

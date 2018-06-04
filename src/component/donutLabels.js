@@ -62,18 +62,23 @@ export default function() {
 			};
 
 			// Update series group
-			let labelsGroup = d3.select(this);
-			labelsGroup
+			let seriesGroup = d3.select(this);
+			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; });
 
-			// TODO: I am not sure the below will work for updates?
-			labelsGroup.append("g").attr("class", "labels");
-			labelsGroup.append("g").attr("class", "lines");
+			// Text Labels
+			let labelsGroupSelect = seriesGroup.selectAll("g.labels")
+				.data(function(d) {
+					return [d];
+				});
 
-			// Labels
-			let labels = labelsGroup.select(".labels")
-				.selectAll("text.label")
+			let labelsGroup = labelsGroupSelect.enter()
+				.append("g")
+				.attr("class", "labels")
+				.merge(labelsGroupSelect);
+
+			let labels = labelsGroup.selectAll("text.label")
 				.data(function(d) {
 					return pie(d.values);
 				});
@@ -112,9 +117,18 @@ export default function() {
 			labels.exit()
 				.remove();
 
-			// Slice to Label Lines
-			let lines = labelsGroup.select(".lines")
-				.selectAll("polyline.line")
+			// Slice to Label Connectors
+			let connectorsGroupSelect = seriesGroup.selectAll("g.lines")
+				.data(function(d) {
+					return [d];
+				});
+
+			let connectorsGroup = connectorsGroupSelect.enter()
+				.append("g")
+				.attr("class", "lines")
+				.merge(connectorsGroupSelect);
+
+			let lines = connectorsGroup.selectAll("polyline.line")
 				.data(function(d) {
 					return pie(d.values);
 				});
