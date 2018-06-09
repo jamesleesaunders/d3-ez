@@ -12,7 +12,7 @@
 	(global.d3 = global.d3 || {}, global.d3.ez = factory(global.d3));
 }(this, (function (d3) { 'use strict';
 
-var version = "3.3.8";
+var version = "3.3.9";
 
 /**
  * Base Functions - Data Parse
@@ -3870,7 +3870,7 @@ function componentLegendColor () {
           return d.height / 2;
         }).attr("stroke", function (d) {
           return d.color;
-        }).attr("stroke-width", 1);
+        }).attr("stroke-width", 2);
         break;
 
       case "rect":

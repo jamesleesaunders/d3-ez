@@ -72,7 +72,7 @@ export default function() {
           .attr("x2", function(d) { return d.width; })
           .attr("y2", function(d) { return d.height / 2; })
           .attr("stroke", function(d) { return d.color; })
-          .attr("stroke-width", 1);
+          .attr("stroke-width", 2);
         break;
 
       case "rect":
