@@ -25,7 +25,3 @@ export default {
   component: component,
   chart: chart
 };
-
-// export { my as ez };
-
-

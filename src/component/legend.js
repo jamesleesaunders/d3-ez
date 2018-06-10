@@ -60,7 +60,6 @@ export default function() {
 					.colorScale(colorScale)
 					.itemType("rect");
 			}
-
 		}
 
 		legendBox.append("g")

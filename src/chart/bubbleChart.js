@@ -9,229 +9,234 @@ import { default as component } from "../component";
  */
 export default function() {
 
-  /**
-   * Default Properties
-   */
-  let svg;
-  let chart;
-  let classed = "bubbleChart";
-  let width = 400;
-  let height = 300;
-  let margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  let transition = { ease: d3.easeBounce, duration: 500 };
-  let colors = palette.categorical(3);
-  let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	/**
+	 * Default Properties
+	 */
+	let svg;
+	let chart;
+	let classed = "bubbleChart";
+	let width = 400;
+	let height = 300;
+	let margin = { top: 20, right: 20, bottom: 40, left: 40 };
+	let transition = { ease: d3.easeBounce, duration: 500 };
+	let colors = palette.categorical(3);
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Chart Dimensions
-   */
-  let chartW;
-  let chartH;
+	/**
+	 * Chart Dimensions
+	 */
+	let chartW;
+	let chartH;
 
-  /**
-   * Scales
-   */
-  let xScale;
-  let yScale;
-  let sizeScale;
-  let colorScale;
+	/**
+	 * Scales
+	 */
+	let xScale;
+	let yScale;
+	let sizeScale;
+	let colorScale;
 
-  /**
-   * Other Customisation Options
-   */
-  let minRadius = 3;
-  let maxRadius = 20;
-  let yAxisLabel;
+	/**
+	 * Other Customisation Options
+	 */
+	let minRadius = 3;
+	let maxRadius = 20;
+	let yAxisLabel;
 
-  /**
-   * Initialise Data, Scales and Series
-   */
-  function init(data) {
-    chartW = width - (margin.left + margin.right);
-    chartH = height - (margin.top + margin.bottom);
+	/**
+	 * Initialise Data, Scales and Series
+	 */
+	function init(data) {
+		chartW = width - (margin.left + margin.right);
+		chartH = height - (margin.top + margin.bottom);
 
-    // Calculate the extents for each series.
-    // TODO: use dataParse() ?
-    function extents(key) {
-      let serExts = [];
-      d3.map(data).values().forEach(function(d) {
-        let vals = d.values.map(function(e) {
-          return +e[key];
-        });
-        serExts.push(d3.extent(vals));
-      });
-      // Merge all the series extents into one array.
-      // Calculate overall extent.
-      return d3.extent([].concat.apply([], serExts));
-    }
-    let xDomain = extents("x");
-    let yDomain = extents("y");
-    let sizeDomain = extents("value");
-    let categoryNames = data.map(function(d) {
-      return d.key;
-    });
+		// Calculate the extents for each series.
+		// TODO: Use dataParse() ?
+		function extents(key) {
+			let serExts = [];
+			d3.map(data).values().forEach(function(d) {
+				let vals = d.values.map(function(e) {
+					return +e[key];
+				});
+				serExts.push(d3.extent(vals));
+			});
+			// Merge all the series extents into one array.
+			// Calculate overall extent.
+			return d3.extent([].concat.apply([], serExts));
+		}
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().domain(categoryNames).range(colors) :
-      colorScale;
+		let xDomain = extents("x");
+		let yDomain = extents("y");
+		let sizeDomain = extents("value");
+		let categoryNames = data.map(function(d) {
+			return d.key;
+		});
 
-    // If the sizeScale has not been passed then attempt to calculate.
-    sizeScale = (typeof sizeScale === "undefined") ?
-      d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) :
-      sizeScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = (typeof colorScale === "undefined") ?
+			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			colorScale;
 
-    // X & Y Scales
-    xScale = d3.scaleLinear()
-      .domain(xDomain)
-      .range([0, chartW])
-      .nice();
+		// If the sizeScale has not been passed then attempt to calculate.
+		sizeScale = (typeof sizeScale === "undefined") ?
+			d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) :
+			sizeScale;
 
-    yScale = d3.scaleLinear()
-      .domain(yDomain)
-      .range([chartH, 0])
-      .nice();
-  }
+		// X & Y Scales
+		xScale = d3.scaleLinear()
+			.domain(xDomain)
+			.range([0, chartW])
+			.nice();
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    selection.each(function(data) {
-      // Initialise Data
-      init(data);
+		yScale = d3.scaleLinear()
+			.domain(yDomain)
+			.range([chartH, 0])
+			.nice();
+	}
 
-      // Create SVG and Chart containers (if they do not already exist)
-      if (!svg) {
-        svg = (function(selection) {
-          let el = selection._groups[0][0];
-          if (!!el.ownerSVGElement || el.tagName === "svg") {
-            return selection;
-          } else {
-            return selection.append("svg");
-          }
-        })(d3.select(this));
+	/**
+	 * Constructor
+	 */
+	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+      svg = (function(selection) {
+        let el = selection._groups[0][0];
+        if (!!el.ownerSVGElement || el.tagName === "svg") {
+          return selection;
+        } else {
+          return selection.append("svg");
+        }
+      })(selection);
 
-        svg.classed("d3ez", true)
-          .attr("width", width)
-          .attr("height", height);
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
 
-        chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("xAxis axis", true);
-        chart.append("g").classed("yAxis axis", true);
-      } else {
-        chart = selection.select(".chart");
-      }
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
 
-      // Update the chart dimensions
-      chart.classed(classed, true)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .attr("width", chartW)
-        .attr("height", chartH);
+		// Update the chart dimensions and add layer groups
+		let layers = ["xAxis axis", "yAxis axis"];
+		chart.classed(classed, true)
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+			.attr("width", chartW)
+			.attr("height", chartH)
+			.selectAll("g")
+			.data(layers)
+			.enter()
+			.append("g")
+			.attr("class", function(d) { return d; });
 
-      // Add bubbles to the chart
-      let bubbles = component.bubbles()
-        .width(chartW)
-        .height(chartH)
-        .colorScale(colorScale)
-        .xScale(xScale)
-        .yScale(yScale)
-        .minRadius(minRadius)
-        .maxRadius(maxRadius)
-        .dispatch(dispatch);
+		selection.each(function(data) {
+			// Initialise Data
+			init(data);
 
-      let seriesGroup = chart.selectAll(".seriesGroup")
-        .data(function(d) { return d; });
+			// Bubble Chart
+			let bubbles = component.bubbles()
+				.width(chartW)
+				.height(chartH)
+				.colorScale(colorScale)
+				.xScale(xScale)
+				.yScale(yScale)
+				.minRadius(minRadius)
+				.maxRadius(maxRadius)
+				.dispatch(dispatch);
 
-      seriesGroup.enter()
-        .append("g")
-        .data(function(d) { return d; })
-        .attr("class", "seriesGroup")
-        .merge(seriesGroup)
-        .call(bubbles);
+			let seriesGroup = chart.selectAll(".seriesGroup")
+				.data(function(d) { return d; });
 
-      seriesGroup.exit()
-        .remove();
+			seriesGroup.enter()
+				.append("g")
+				.data(function(d) { return d; })
+				.attr("class", "seriesGroup")
+				.merge(seriesGroup)
+				.call(bubbles);
 
-      // Add X Axis to chart
-      let xAxis = d3.axisBottom(xScale);
-      chart.select(".xAxis")
-        .attr("transform", "translate(0," + chartH + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)");
+			seriesGroup.exit()
+				.remove();
 
-      // Add Y Axis to chart
-      let yAxis = d3.axisLeft(yScale);
-      chart.select(".yAxis")
-        .call(yAxis);
-    });
-  }
+			// X Axis
+			let xAxis = d3.axisBottom(xScale);
+			chart.select(".xAxis")
+				.attr("transform", "translate(0," + chartH + ")")
+				.call(xAxis)
+				.selectAll("text")
+				.style("text-anchor", "end")
+				.attr("dx", "-.8em")
+				.attr("dy", ".15em")
+				.attr("transform", "rotate(-65)");
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+			// Y Axis
+			let yAxis = d3.axisLeft(yScale);
+			chart.select(".yAxis")
+				.call(yAxis);
+		});
+	}
 
-  my.height = function(_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	/**
+	 * Configuration Getters & Setters
+	 */
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.margin = function(_) {
-    if (!arguments.length) return margin;
-    margin = _;
-    return this;
-  };
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.yAxisLabel = function(_) {
-    if (!arguments.length) return yAxisLabel;
-    yAxisLabel = _;
-    return this;
-  };
+	my.margin = function(_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};
 
-  my.transition = function(_) {
-    if (!arguments.length) return transition;
-    transition = _;
-    return this;
-  };
+	my.yAxisLabel = function(_) {
+		if (!arguments.length) return yAxisLabel;
+		yAxisLabel = _;
+		return this;
+	};
 
-  my.colors = function(_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};
 
-  my.colorScale = function(_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return this;
-  };
+	my.colors = function(_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
 
-  my.sizeScale = function(_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
-    return this;
-  };
+	my.colorScale = function(_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return this;
+	};
 
-  my.dispatch = function(_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.sizeScale = function(_) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _;
+		return this;
+	};
 
-  my.on = function() {
-    let value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.dispatch = function(_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  return my;
+	my.on = function() {
+		let value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
+	return my;
 }

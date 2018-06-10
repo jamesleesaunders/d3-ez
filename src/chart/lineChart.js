@@ -80,44 +80,43 @@ export default function() {
    * Constructor
    */
   function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+      svg = (function(selection) {
+        let el = selection._groups[0][0];
+        if (!!el.ownerSVGElement || el.tagName === "svg") {
+          return selection;
+        } else {
+          return selection.append("svg");
+        }
+      })(selection);
+
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
+
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
+
+		// Update the chart dimensions and add layer groups
+		let layers = ["xAxis axis", "yAxis axis"];
+		chart.classed(classed, true)
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+			.attr("width", chartW)
+			.attr("height", chartH)
+			.selectAll("g")
+			.data(layers)
+			.enter()
+			.append("g")
+			.attr("class", function(d) { return d; });
+
     selection.each(function(data) {
       // Initialise Data
       init(data);
 
-      // Create SVG and Chart containers (if they do not already exist)
-      if (!svg) {
-        svg = (function(selection) {
-          let el = selection._groups[0][0];
-          if (!!el.ownerSVGElement || el.tagName === "svg") {
-            return selection;
-          } else {
-            return selection.append("svg");
-          }
-        })(d3.select(this));
-
-        svg.classed("d3ez", true)
-          .attr("width", width)
-          .attr("height", height);
-
-        chart = svg.append("g").classed("chart", true);
-        chart.append("g").classed("xAxis axis", true);
-        chart.append("g").classed("yAxis axis", true)
-          .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", -35)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text(yAxisLabel);
-      } else {
-        chart = selection.select(".chart");
-      }
-
-      // Update the chart dimensions
-      chart.classed(classed, true)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .attr("width", chartW)
-        .attr("height", chartH);
-
+      // Line Chart
       let lineChart = component.lineChart()
         .width(chartW)
         .height(chartH)
@@ -126,6 +125,7 @@ export default function() {
         .yScale(yScale)
         .dispatch(dispatch);
 
+      // Scatter Plot
       let scatterPlot = component.scatterPlot()
         .width(chartW)
         .height(chartH)
@@ -148,7 +148,7 @@ export default function() {
       seriesGroup.exit()
         .remove();
 
-      // Add X Axis to chart
+      // X Axis
       let xAxis = d3.axisBottom(xScale)
         .tickFormat(d3.timeFormat("%d-%b-%y"));
       chart.select(".xAxis")
@@ -160,10 +160,17 @@ export default function() {
         .attr("dy", ".15em")
         .attr("transform", "rotate(-65)");
 
-      // Add Y Axis to chart
+      // Y Axis
       let yAxis = d3.axisLeft(yScale);
       chart.select(".yAxis")
-        .call(yAxis);
+        .call(yAxis)
+				.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", -40)
+				.attr("dy", ".71em")
+				.attr("fill", "#000000")
+				.style("text-anchor", "end")
+				.text(yAxisLabel);
     });
   }
 

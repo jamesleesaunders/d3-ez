@@ -65,39 +65,43 @@ export default function() {
 	 * Constructor
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+      svg = (function(selection) {
+        let el = selection._groups[0][0];
+        if (!!el.ownerSVGElement || el.tagName === "svg") {
+          return selection;
+        } else {
+          return selection.append("svg");
+        }
+      })(selection);
+
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
+
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
+
+		// Update the chart dimensions and add layer groups
+		let layers = ["slices", "labels"];
+		chart.classed(classed, true)
+			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+			.attr("width", chartW)
+			.attr("height", chartH)
+			.selectAll("g")
+			.data(layers)
+			.enter()
+			.append("g")
+			.attr("class", function(d) { return d; });
+
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
-			// Create SVG and Chart containers (if they do not already exist)
-			if (!svg) {
-				svg = (function(selection) {
-					let el = selection._groups[0][0];
-					if (!!el.ownerSVGElement || el.tagName === "svg") {
-						return selection;
-					} else {
-						return selection.append("svg");
-					}
-				})(d3.select(this));
-
-				svg.classed("d3ez", true)
-					.attr("width", width)
-					.attr("height", height);
-
-				chart = svg.append("g").classed("chart", true);
-				chart.append("g").attr("class", "slices");
-				chart.append("g").attr("class", "labels");
-			} else {
-				chart = svg.select(".chart");
-			}
-
-			// Update the chart dimensions
-			chart.classed(classed, true)
-				.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
-				.attr("width", chartW)
-				.attr("height", chartH);
-
-			// Add donut slices
+			// Donut Slices
 			let donutChart = component.donut()
 				.radius(radius)
 				.innerRadius(innerRadius)
@@ -108,7 +112,7 @@ export default function() {
 				.datum(data)
 				.call(donutChart);
 
-			// Add labels
+			// Donut Labels
 			let donutLabels = component.donutLabels()
 				.radius(radius)
 				.innerRadius(innerRadius);
