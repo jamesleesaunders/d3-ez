@@ -13,17 +13,17 @@ import { default as chartPunchCard } from "./chart/punchCard";
 import { default as chartRoseChart } from "./chart/roseChart";
 
 export default {
-  barChartCircular: chartBarChartCircular,
-  barChartClustered: chartBarChartClustered,
-  barChartStacked: chartBarChartStacked,
-  barChartVertical: chartBarChartVertical,
-  bubbleChart: chartBubbleChart,
-  candlestickChart: chartCandlestickChart,
-  donutChart: chartDonutChart,
-  heatMapRadial: chartHeatMapRadial,
-  heatMapTable: chartHeatMapTable,
-  lineChart: chartLineChart,
-  polarAreaChart: chartPolarAreaChart,
-  punchCard: chartPunchCard,
-  roseChart: chartRoseChart
+	barChartCircular: chartBarChartCircular,
+	barChartClustered: chartBarChartClustered,
+	barChartStacked: chartBarChartStacked,
+	barChartVertical: chartBarChartVertical,
+	bubbleChart: chartBubbleChart,
+	candlestickChart: chartCandlestickChart,
+	donutChart: chartDonutChart,
+	heatMapRadial: chartHeatMapRadial,
+	heatMapTable: chartHeatMapTable,
+	lineChart: chartLineChart,
+	polarAreaChart: chartPolarAreaChart,
+	punchCard: chartPunchCard,
+	roseChart: chartRoseChart
 };

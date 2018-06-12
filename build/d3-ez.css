@@ -9,353 +9,353 @@
 /* === Global Styles === */
 
 .d3ez {
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 10px;
+		font-family: "Helvetica Neue", Helvetica, sans-serif;
+		font-size: 10px;
 }
 
 /* === Axis Styles === */
 
 .d3ez .axis path, .axis line {
-  fill: none;
-  stroke: #b6b6b6;
-  shape-rendering: crispEdges;
+		fill: none;
+		stroke: #b6b6b6;
+		shape-rendering: crispEdges;
 }
 
 .d3ez .tick text {
-  fill: #000000;
+		fill: #000000;
 }
 
 /* === Title === */
 
 .d3ez #titleGroup text {
-  fill: #000000;
+		fill: #000000;
 }
 
 .d3ez text.title {
-  font-size: 14px;
-  font-weight: bold;
+		font-size: 14px;
+		font-weight: bold;
 }
 
 .d3ez text.subTitle {
-  font-size: 12px;
+		font-size: 12px;
 }
 
 /* === Credit Label === */
 
 .d3ez #creditTag text {
-  cursor: pointer;
-  fill: #cccccc;
+		cursor: pointer;
+		fill: #cccccc;
 }
 
 
 /* === HTML List Styles === */
 
 .htmlList, .htmlList ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+		margin: 0;
+		padding: 0;
+		list-style: none;
 }
 
 .htmlList ul {
-  /* Indentation */
-  margin-left: 1em;
-  position: relative;
+		/* Indentation */
+		margin-left: 1em;
+		position: relative;
 }
 
 .htmlList ul ul {
-  /* Indentation / 2 */
-  margin-left: .5em;
+		/* Indentation / 2 */
+		margin-left: .5em;
 }
 
 .htmlList ul:before {
-  content: '';
-  display: block;
-  width: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  border-left: 1px solid;
+		content: '';
+		display: block;
+		width: 0;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		border-left: 1px solid;
 }
 
 .htmlList li {
-  margin: 0;
-  /* Indentation + .5em */
-  padding: 0 1.5em;
-  /* Default list item's line-height */
-  line-height: 2em;
-  font-weight: bold;
-  position: relative;
+		margin: 0;
+		/* Indentation + .5em */
+		padding: 0 1.5em;
+		/* Default list item's line-height */
+		line-height: 2em;
+		font-weight: bold;
+		position: relative;
 }
 
 .htmlList ul li:before {
-  content: '';
-  display: block;
-  /* Same with Indentation */
-  width: 10px;
-  height: 0;
-  border-top: 1px solid;
-  /* Border top width */
-  margin-top: -1px;
-  position: absolute;
-  /* line-height / 2 */
-  top: 1em;
-  left: 0;
+		content: '';
+		display: block;
+		/* Same with Indentation */
+		width: 10px;
+		height: 0;
+		border-top: 1px solid;
+		/* Border top width */
+		margin-top: -1px;
+		position: absolute;
+		/* line-height / 2 */
+		top: 1em;
+		left: 0;
 }
 
 .htmlList ul li:last-child:before {
-  background: #ffffff;
-  height: auto;
-  /* line-height / 2 */
-  top: 1em;
-  bottom: 0;
+		background: #ffffff;
+		height: auto;
+		/* line-height / 2 */
+		top: 1em;
+		bottom: 0;
 }
 
 
 /* === HTML Table Styles === */
 
 table.htmlTable {
-  border-collapse: collapse;
-  table-layout: fixed;
+		border-collapse: collapse;
+		table-layout: fixed;
 }
 
 .htmlTable td, .htmlTable th {
-  border: 1px solid #333333;
+		border: 1px solid #333333;
 }
 
 .htmlTable thead th {
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #3380be;
-  border: 1px solid #ffffff;
+		font-weight: bold;
+		color: #ffffff;
+		background-color: #3380be;
+		border: 1px solid #ffffff;
 }
 
 .htmlTable tbody th {
-  font-weight: bold;
-  color: #000000;
-  background-color: #cccccc;
-  border: 1px solid #ffffff;
+		font-weight: bold;
+		color: #000000;
+		background-color: #cccccc;
+		border: 1px solid #ffffff;
 }
 
 .htmlTable tbody tr:hover {
-  background-color: #eeeeee;
+		background-color: #eeeeee;
 }
 
 
 /* === Bar Chart (Stacked & Grouped) Styles === */
 
 [class*="barChart"] rect.bar {
-  stroke: #999999;
-  stroke-width: 0.5px;
+		stroke: #999999;
+		stroke-width: 0.5px;
 }
 
 [class*="barChart"] rect.bar:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 /* === Bar Chart (Circular) Styles === */
 
 .barChartCircular path.bar {
-  stroke: #999999;
-  stroke-width: 0.5px;
+		stroke: #999999;
+		stroke-width: 0.5px;
 }
 
 .barChartCircular path.bar:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 
 /* === Bubble Chart Styles === */
 
 .bubbleChart .bubble circle {
-  opacity: 0.5;
-  stroke: white;
-  stroke-width: 1px;
+		opacity: 0.5;
+		stroke: white;
+		stroke-width: 1px;
 }
 
 .bubbleChart .bubble:hover circle {
-  opacity: 1;
-  cursor: pointer;
+		opacity: 1;
+		cursor: pointer;
 }
 
 
 /* === Candlestick Chart Styles === */
 
 .candleSticks .candle {
-  stroke: black;
-  vector-effect: non-scaling-stroke;
+		stroke: black;
+		vector-effect: non-scaling-stroke;
 }
 
 .candleSticks .candle path.high-low-line {
-  stroke-width: 0.8px;
+		stroke-width: 0.8px;
 }
 
 .candleSticks .candle rect.open-close-bar {
-  stroke-width: 1px;
+		stroke-width: 1px;
 }
 
 .candleSticks .candle path.open-tick, .candleSticks .candle path.close-tick {
-  stroke-width: 0.8px;
+		stroke-width: 0.8px;
 }
 
 
 /* === Donut Chart Styles === */
 
 .donutChart path.slice {
-  stroke: #999999;
-  stroke-width: 0.5px;
+		stroke: #999999;
+		stroke-width: 0.5px;
 }
 
 .donutChart path.slice:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 .donutChart polyline.connector {
-  opacity: .3;
-  stroke: black;
-  stroke-width: 2px;
-  fill: none;
+		opacity: .3;
+		stroke: black;
+		stroke-width: 2px;
+		fill: none;
 }
 
 
 /* === Circular Heat Chart Styles === */
 
 .heatMapRadial path.segment {
-  stroke: #999999;
-  stroke-width: 0.5px;
+		stroke: #999999;
+		stroke-width: 0.5px;
 }
 
 .heatMapRadial path.segment:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 .heatMapRadial .segmentLabels text {
-  font-size: 1.0em;
-  font-weight: bold;
+		font-size: 1.0em;
+		font-weight: bold;
 }
 
 .heatMapRadial .circularLabels text {
-  font-size: 1.1em;
-  font-weight: bold;
-  letter-spacing: -0.2px;
+		font-size: 1.1em;
+		font-weight: bold;
+		letter-spacing: -0.2px;
 }
 
 
 /* === Tabular Heat Chart Styles === */
 
 .heatMapTable rect.cell {
-  stroke: #999999;
-  stroke-width: 0.5px;
+		stroke: #999999;
+		stroke-width: 0.5px;
 }
 
 .heatMapTable rect.cell:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 .heatMapTable .xAxis path, .heatMapTable .yAxis path {
-  display: none;
+		display: none;
 }
 
 
 /* === Line Chart Styles === */
 
 @keyframes circleTransition {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.8);
-  }
+		from {
+				transform: scale(1);
+		}
+		to {
+				transform: scale(1.8);
+		}
 }
 
 .lineChart circle.dot:hover {
-  transform-box: fill-box;
-  transform-origin: center center;
-  animation-duration: 0.3s;
-  animation-name: circleTransition;
+		transform-box: fill-box;
+		transform-origin: center center;
+		animation-duration: 0.3s;
+		animation-name: circleTransition;
 }
 
 
 /* === Polar Area Chart Styles === */
 
 .polarArea path {
-  fill: none;
+		fill: none;
 }
 
 .polarArea path.segment {
-  fill: steelblue;
-  stroke-width: 0.5px;
-  stroke: #999999;
+		fill: steelblue;
+		stroke-width: 0.5px;
+		stroke: #999999;
 }
 
 .polarArea path.segment:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 .polarArea .outerCircle circle {
-  stroke: #aaa;
-  stroke-dasharray: 4, 4;
+		stroke: #aaa;
+		stroke-dasharray: 4, 4;
 }
 
 .polarArea .tickCircles circle {
-  stroke: #ddd;
-  stroke-dasharray: 2, 2;
+		stroke: #ddd;
+		stroke-dasharray: 2, 2;
 }
 
 .polarArea .spokes line {
-  stroke: #aaa;
-  stroke-width: 1px;
+		stroke: #aaa;
+		stroke-width: 1px;
 }
 
 .polarArea .circularLabels text {
-  font-size: 1.1em;
-  font-weight: bold;
-  letter-spacing: -0.2px;
+		font-size: 1.1em;
+		font-weight: bold;
+		letter-spacing: -0.2px;
 }
 
 
 /* === PunchCard Styles === */
 
 .punchCard .punchSpot circle {
-  stroke: #999999;
-  stroke-width: 0.5px;
+		stroke: #999999;
+		stroke-width: 0.5px;
 }
 
 .punchCard .punchSpot:hover circle {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 .punchCard text.punchValue {
-  font-size: 15px;
-  font-weight: bold;
+		font-size: 15px;
+		font-weight: bold;
 }
 
 
 /* === Rose Chart Styles === */
 
 .roseChartSector path.arc {
-  stroke-width: 0.5px;
-  stroke: #999999;
+		stroke-width: 0.5px;
+		stroke: #999999;
 }
 
 .roseChartSector path.arc:hover {
-  opacity: 0.7;
-  stroke: black;
-  cursor: pointer;
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
 }
 
 

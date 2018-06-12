@@ -9,40 +9,40 @@
 /* === Global Styles === */
 
 .d3ez {
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 10px;
+		font-family: "Helvetica Neue", Helvetica, sans-serif;
+		font-size: 10px;
 }
 
 /* === Axis Styles === */
 
 .d3ez .axis path, .axis line {
-  fill: none;
-  stroke: #b6b6b6;
-  shape-rendering: crispEdges;
+		fill: none;
+		stroke: #b6b6b6;
+		shape-rendering: crispEdges;
 }
 
 .d3ez .tick text {
-  fill: #000000;
+		fill: #000000;
 }
 
 /* === Title === */
 
 .d3ez #titleGroup text {
-  fill: #000000;
+		fill: #000000;
 }
 
 .d3ez text.title {
-  font-size: 14px;
-  font-weight: bold;
+		font-size: 14px;
+		font-weight: bold;
 }
 
 .d3ez text.subTitle {
-  font-size: 12px;
+		font-size: 12px;
 }
 
 /* === Credit Label === */
 
 .d3ez #creditTag text {
-  cursor: pointer;
-  fill: #cccccc;
+		cursor: pointer;
+		fill: #cccccc;
 }

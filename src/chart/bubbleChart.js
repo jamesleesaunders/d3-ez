@@ -100,14 +100,14 @@ export default function() {
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
-      svg = (function(selection) {
-        let el = selection._groups[0][0];
-        if (!!el.ownerSVGElement || el.tagName === "svg") {
-          return selection;
-        } else {
-          return selection.append("svg");
-        }
-      })(selection);
+			svg = (function(selection) {
+				let el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			})(selection);
 
 			svg.classed("d3ez", true)
 				.attr("width", width)

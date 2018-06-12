@@ -20,225 +20,225 @@ var version = "3.3.9";
  */
 function dataParse (data) {
 
-  var levels = function () {
-    if (data["key"] !== undefined) {
-      return 1;
-    } else {
-      return 2;
-    }
-  }();
+	var levels = function () {
+		if (data["key"] !== undefined) {
+			return 1;
+		} else {
+			return 2;
+		}
+	}();
 
-  var groupName = function () {
-    var ret = void 0;
-    if (1 === levels) {
-      ret = d3.values(data)[0];
-    }
+	var groupName = function () {
+		var ret = void 0;
+		if (1 === levels) {
+			ret = d3.values(data)[0];
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var groupNames = function () {
-    var ret = void 0;
-    if (levels > 1) {
-      ret = data.map(function (d) {
-        return d.key;
-      });
-    }
+	var groupNames = function () {
+		var ret = void 0;
+		if (levels > 1) {
+			ret = data.map(function (d) {
+				return d.key;
+			});
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var groupTotals = function () {
-    var ret = void 0;
-    if (levels > 1) {
-      ret = {};
-      d3.map(data).values().forEach(function (d) {
-        var groupName = d.key;
-        d.values.forEach(function (d) {
-          var categoryValue = +d.value;
+	var groupTotals = function () {
+		var ret = void 0;
+		if (levels > 1) {
+			ret = {};
+			d3.map(data).values().forEach(function (d) {
+				var groupName = d.key;
+				d.values.forEach(function (d) {
+					var categoryValue = +d.value;
 
-          ret[groupName] = typeof ret[groupName] === "undefined" ? 0 : ret[groupName];
-          ret[groupName] += categoryValue;
-        });
-      });
-    }
+					ret[groupName] = typeof ret[groupName] === "undefined" ? 0 : ret[groupName];
+					ret[groupName] += categoryValue;
+				});
+			});
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var groupTotalsMax = function () {
-    var ret = void 0;
-    if (levels > 1) {
-      ret = d3.max(d3.values(groupTotals));
-    }
+	var groupTotalsMax = function () {
+		var ret = void 0;
+		if (levels > 1) {
+			ret = d3.max(d3.values(groupTotals));
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var union = function union(array1, array2) {
-    var ret = [];
-    var arr = array1.concat(array2);
-    var len = arr.length;
-    var assoc = {};
+	var union = function union(array1, array2) {
+		var ret = [];
+		var arr = array1.concat(array2);
+		var len = arr.length;
+		var assoc = {};
 
-    while (len--) {
-      var item = arr[len];
+		while (len--) {
+			var item = arr[len];
 
-      if (!assoc[item]) {
-        ret.unshift(item);
-        assoc[item] = true;
-      }
-    }
+			if (!assoc[item]) {
+				ret.unshift(item);
+				assoc[item] = true;
+			}
+		}
 
-    return ret;
-  };
+		return ret;
+	};
 
-  var categoryNames = function () {
+	var categoryNames = function () {
 
-    var ret = [];
-    if (1 === levels) {
-      ret = d3.values(data.values).map(function (d) {
-        return d.key;
-      });
-    } else {
-      d3.map(data).values().forEach(function (d) {
-        var tmp = [];
-        d.values.forEach(function (d, i) {
-          var categoryName = d.key;
-          tmp[i] = categoryName;
-        });
+		var ret = [];
+		if (1 === levels) {
+			ret = d3.values(data.values).map(function (d) {
+				return d.key;
+			});
+		} else {
+			d3.map(data).values().forEach(function (d) {
+				var tmp = [];
+				d.values.forEach(function (d, i) {
+					var categoryName = d.key;
+					tmp[i] = categoryName;
+				});
 
-        ret = union(tmp, ret);
-      });
-    }
+				ret = union(tmp, ret);
+			});
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var categoryTotal = function () {
-    var ret = void 0;
-    if (1 === levels) {
-      ret = d3.sum(data.values, function (d) {
-        return d.value;
-      });
-    }
+	var categoryTotal = function () {
+		var ret = void 0;
+		if (1 === levels) {
+			ret = d3.sum(data.values, function (d) {
+				return d.value;
+			});
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var categoryTotals = function () {
-    var ret = void 0;
-    if (levels > 1) {
-      ret = {};
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          var categoryName = d.key;
-          var categoryValue = +d.value;
+	var categoryTotals = function () {
+		var ret = void 0;
+		if (levels > 1) {
+			ret = {};
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					var categoryName = d.key;
+					var categoryValue = +d.value;
 
-          ret[categoryName] = typeof ret[categoryName] === "undefined" ? 0 : ret[categoryName];
-          ret[categoryName] += categoryValue;
-        });
-      });
-    }
+					ret[categoryName] = typeof ret[categoryName] === "undefined" ? 0 : ret[categoryName];
+					ret[categoryName] += categoryValue;
+				});
+			});
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var categoryTotalsMax = function () {
-    var ret = void 0;
-    if (levels > 1) {
-      ret = d3.max(d3.values(categoryTotals));
-    }
+	var categoryTotalsMax = function () {
+		var ret = void 0;
+		if (levels > 1) {
+			ret = d3.max(d3.values(categoryTotals));
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var minValue = function () {
-    var ret = void 0;
-    if (1 === levels) {
-      ret = d3.min(data.values, function (d) {
-        return +d.value;
-      });
-    } else {
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          ret = typeof ret === "undefined" ? d.value : d3.min([ret, +d.value]);
-        });
-      });
-    }
+	var minValue = function () {
+		var ret = void 0;
+		if (1 === levels) {
+			ret = d3.min(data.values, function (d) {
+				return +d.value;
+			});
+		} else {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					ret = typeof ret === "undefined" ? d.value : d3.min([ret, +d.value]);
+				});
+			});
+		}
 
-    return +ret;
-  }();
+		return +ret;
+	}();
 
-  var maxValue = function () {
-    var ret = void 0;
-    if (1 === levels) {
-      ret = d3.max(data.values, function (d) {
-        return +d.value;
-      });
-    } else {
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          ret = typeof ret === "undefined" ? d.value : d3.max([ret, +d.value]);
-        });
-      });
-    }
+	var maxValue = function () {
+		var ret = void 0;
+		if (1 === levels) {
+			ret = d3.max(data.values, function (d) {
+				return +d.value;
+			});
+		} else {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					ret = typeof ret === "undefined" ? d.value : d3.max([ret, +d.value]);
+				});
+			});
+		}
 
-    return +ret;
-  }();
+		return +ret;
+	}();
 
-  var decimalPlaces = function decimalPlaces(num) {
-    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match) {
-      return 0;
-    }
-    var ret = Math.max(0,
-    // Number of digits right of decimal point.
-    (match[1] ? match[1].length : 0) - (
-    // Adjust for scientific notation.
-    match[2] ? +match[2] : 0));
+	var decimalPlaces = function decimalPlaces(num) {
+		var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		if (!match) {
+			return 0;
+		}
+		var ret = Math.max(0,
+		// Number of digits right of decimal point.
+		(match[1] ? match[1].length : 0) - (
+		// Adjust for scientific notation.
+		match[2] ? +match[2] : 0));
 
-    return ret;
-  };
+		return ret;
+	};
 
-  var maxDecimalPlace = function () {
-    var ret = 0;
-    if (levels > 1) {
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          ret = d3.max([ret, decimalPlaces(d.value)]);
-        });
-      });
-    }
+	var maxDecimalPlace = function () {
+		var ret = 0;
+		if (levels > 1) {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					ret = d3.max([ret, decimalPlaces(d.value)]);
+				});
+			});
+		}
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  // If thresholds values are not already set attempt to auto-calculate some thresholds
-  var thresholds = function () {
-    var distance = maxValue - minValue;
-    var ret = [+(minValue + 0.15 * distance).toFixed(maxDecimalPlace), +(minValue + 0.40 * distance).toFixed(maxDecimalPlace), +(minValue + 0.55 * distance).toFixed(maxDecimalPlace), +(minValue + 0.90 * distance).toFixed(maxDecimalPlace)];
+	// If thresholds values are not already set attempt to auto-calculate some thresholds
+	var thresholds = function () {
+		var distance = maxValue - minValue;
+		var ret = [+(minValue + 0.15 * distance).toFixed(maxDecimalPlace), +(minValue + 0.40 * distance).toFixed(maxDecimalPlace), +(minValue + 0.55 * distance).toFixed(maxDecimalPlace), +(minValue + 0.90 * distance).toFixed(maxDecimalPlace)];
 
-    return ret;
-  }();
+		return ret;
+	}();
 
-  var my = {
-    levels: levels,
-    groupName: groupName,
-    groupNames: groupNames,
-    groupTotals: groupTotals,
-    groupTotalsMax: groupTotalsMax,
-    categoryNames: categoryNames,
-    categoryTotal: categoryTotal,
-    categoryTotals: categoryTotals,
-    categoryTotalsMax: categoryTotalsMax,
-    minValue: minValue,
-    maxValue: maxValue,
-    maxDecimalPlace: maxDecimalPlace,
-    thresholds: thresholds
-  };
+	var my = {
+		levels: levels,
+		groupName: groupName,
+		groupNames: groupNames,
+		groupTotals: groupTotals,
+		groupTotalsMax: groupTotalsMax,
+		categoryNames: categoryNames,
+		categoryTotal: categoryTotal,
+		categoryTotals: categoryTotals,
+		categoryTotalsMax: categoryTotalsMax,
+		minValue: minValue,
+		maxValue: maxValue,
+		maxDecimalPlace: maxDecimalPlace,
+		thresholds: thresholds
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -251,93 +251,93 @@ function dataParse (data) {
  * d3.ez.palette.lumShift(d3.ez.palette.categorical(1), 0.2);
  */
 var palette = {
-  categorical: function categorical(index) {
-    // Categorical colour palettes are the ones that are used to separate items into
-    // distinct groups or categories.
-    switch (index) {
-      case 1:
-        // Stephen Few - Show Me the Numbers Book
-        //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
-        return ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
-      case 2:
-        // Color Brewer - http://colorbrewer2.com/
-        //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
-        return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
-      case 3:
-        // Google Design - http://www.google.com/design/spec/style/color.html
-        //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
-        return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
-    }
-  },
+	categorical: function categorical(index) {
+		// Categorical colour palettes are the ones that are used to separate items into
+		// distinct groups or categories.
+		switch (index) {
+			case 1:
+				// Stephen Few - Show Me the Numbers Book
+				//      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
+				return ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
+			case 2:
+				// Color Brewer - http://colorbrewer2.com/
+				//      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
+				return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
+			case 3:
+				// Google Design - http://www.google.com/design/spec/style/color.html
+				//      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
+				return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
+		}
+	},
 
-  diverging: function diverging(index) {
-    // Diverging colour palettes are used for quantitative data. Usually two different hues
-    // that diverge from a light colour, for the critical midpoint, toward dark colours.
-    switch (index) {
-      case 1:
-        // Color Brewer - Colourblind Safe
-        return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
-      case 2:
-        // Color Brewer - RAG
-        return ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850"];
-      case 3:
-        // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
-        return ["#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000"];
-    }
-  },
+	diverging: function diverging(index) {
+		// Diverging colour palettes are used for quantitative data. Usually two different hues
+		// that diverge from a light colour, for the critical midpoint, toward dark colours.
+		switch (index) {
+			case 1:
+				// Color Brewer - Colourblind Safe
+				return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
+			case 2:
+				// Color Brewer - RAG
+				return ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850"];
+			case 3:
+				// Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
+				return ["#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000"];
+		}
+	},
 
-  sequential: function sequential(origHex, count) {
-    // Sequential colour palettes are primarily used to encode quantitative differences.
-    // Quantitative values are arranged sequentially, from low to high.
-    var lumStep = 0.1;
-    var lumMax = lumStep * count / 2;
-    var lumMin = 0 - lumMax;
+	sequential: function sequential(origHex, count) {
+		// Sequential colour palettes are primarily used to encode quantitative differences.
+		// Quantitative values are arranged sequentially, from low to high.
+		var lumStep = 0.1;
+		var lumMax = lumStep * count / 2;
+		var lumMin = 0 - lumMax;
 
-    var lumScale = d3.scaleLinear().domain([1, count]).range([lumMin, lumMax]);
+		var lumScale = d3.scaleLinear().domain([1, count]).range([lumMin, lumMax]);
 
-    var result = [];
-    for (var i = 1; i <= count; i++) {
-      var lum = lumScale(i);
+		var result = [];
+		for (var i = 1; i <= count; i++) {
+			var lum = lumScale(i);
 
-      // Validate and normalise Hex value.
-      origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
-      if (origHex.length < 6) {
-        origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
-      }
+			// Validate and normalise Hex value.
+			origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
+			if (origHex.length < 6) {
+				origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
+			}
 
-      // Convert to decimal and change luminosity
-      var newHex = "#";
-      var c = void 0;
-      for (var j = 0; j < 3; j++) {
-        c = parseInt(origHex.substr(j * 2, 2), 16);
-        c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-        newHex += ("00" + c).substr(c.length);
-      }
-      result.push(newHex);
-    }
-    return result;
-  },
+			// Convert to decimal and change luminosity
+			var newHex = "#";
+			var c = void 0;
+			for (var j = 0; j < 3; j++) {
+				c = parseInt(origHex.substr(j * 2, 2), 16);
+				c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+				newHex += ("00" + c).substr(c.length);
+			}
+			result.push(newHex);
+		}
+		return result;
+	},
 
-  lumShift: function lumShift(colors, lum) {
-    var result = [];
-    colors.forEach(function addNumber(origHex, index) {
-      origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
-      if (origHex.length < 6) {
-        origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
-      }
-      lum = lum || 0;
+	lumShift: function lumShift(colors, lum) {
+		var result = [];
+		colors.forEach(function addNumber(origHex, index) {
+			origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
+			if (origHex.length < 6) {
+				origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
+			}
+			lum = lum || 0;
 
-      // Convert to decimal and change luminosity
-      var newHex = "#";
-      for (var i = 0; i < 3; i++) {
-        var c = parseInt(origHex.substr(i * 2, 2), 16);
-        c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-        newHex += ("00" + c).substr(c.length);
-      }
-      result[index] = newHex;
-    });
-    return result;
-  }
+			// Convert to decimal and change luminosity
+			var newHex = "#";
+			for (var i = 0; i < 3; i++) {
+				var c = parseInt(origHex.substr(i * 2, 2), 16);
+				c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+				newHex += ("00" + c).substr(c.length);
+			}
+			result[index] = newHex;
+		});
+		return result;
+	}
 };
 
 /**
@@ -346,39 +346,39 @@ var palette = {
  */
 function componentCreditTag () {
 
-  /**
-   * Default Properties
-   */
-  var text = "d3-ez.net";
-  var href = "http://d3-ez.net";
+	/**
+  * Default Properties
+  */
+	var text = "d3-ez.net";
+	var href = "http://d3-ez.net";
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    var creditTag = selection.selectAll("#creditTag").data([0]).enter().append("g").attr("id", "creditTag");
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		var creditTag = selection.selectAll("#creditTag").data([0]).enter().append("g").attr("id", "creditTag");
 
-    var creditText = creditTag.append("text").text(text).style("text-anchor", "end").attr("baseline", "middle").attr("xlink:href", href).on("click", function () {
-      window.open(href);
-    });
-  }
+		var creditText = creditTag.append("text").text(text).style("text-anchor", "end").attr("baseline", "middle").attr("xlink:href", href).on("click", function () {
+			window.open(href);
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.text = function (_) {
-    if (!arguments.length) return text;
-    text = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.text = function (_) {
+		if (!arguments.length) return text;
+		text = _;
+		return this;
+	};
 
-  my.href = function (_) {
-    if (!arguments.length) return href;
-    href = _;
-    return this;
-  };
+	my.href = function (_) {
+		if (!arguments.length) return href;
+		href = _;
+		return this;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -387,66 +387,66 @@ function componentCreditTag () {
  */
 function componentTitle () {
 
-  /**
-   * Default Properties
-   */
-  var mainText = "Title";
-  var subText = "Sub Title";
-  var height = 40;
-  var width = 200;
+	/**
+  * Default Properties
+  */
+	var mainText = "Title";
+	var subText = "Sub Title";
+	var height = 40;
+	var width = 200;
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    selection.selectAll("#titleGroup").data([0]).enter().append("g").attr("id", "titleGroup");
-    var titleGroup = selection.select("#titleGroup");
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		selection.selectAll("#titleGroup").data([0]).enter().append("g").attr("id", "titleGroup");
+		var titleGroup = selection.select("#titleGroup");
 
-    titleGroup.selectAll(".title").data([mainText]).enter().append("text").classed("title", true).text(function (d) {
-      return d;
-    });
-    var title = titleGroup.select(".title").text(mainText);
+		titleGroup.selectAll(".title").data([mainText]).enter().append("text").classed("title", true).text(function (d) {
+			return d;
+		});
+		var title = titleGroup.select(".title").text(mainText);
 
-    titleGroup.selectAll(".subTitle").data([subText]).enter().append("text").classed("subTitle", true).text(function (d) {
-      return d;
-    });
-    var subTitle = titleGroup.select(".subTitle").text(subText);
+		titleGroup.selectAll(".subTitle").data([subText]).enter().append("text").classed("subTitle", true).text(function (d) {
+			return d;
+		});
+		var subTitle = titleGroup.select(".subTitle").text(subText);
 
-    // Centre Text
-    // let titleOffset = 0 - (title.node().getBBox().width / 2);
-    // let subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
-    title.style("text-anchor", "middle").attr("transform", "translate(0, 15)");
-    subTitle.style("text-anchor", "middle").attr("transform", "translate(0, 30)");
-  }
+		// Centre Text
+		// let titleOffset = 0 - (title.node().getBBox().width / 2);
+		// let subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+		title.style("text-anchor", "middle").attr("transform", "translate(0, 15)");
+		subTitle.style("text-anchor", "middle").attr("transform", "translate(0, 30)");
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.mainText = function (_) {
-    if (!arguments.length) return mainText;
-    mainText = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.mainText = function (_) {
+		if (!arguments.length) return mainText;
+		mainText = _;
+		return this;
+	};
 
-  my.subText = function (_) {
-    if (!arguments.length) return subText;
-    subText = _;
-    return this;
-  };
+	my.subText = function (_) {
+		if (!arguments.length) return subText;
+		subText = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -607,174 +607,174 @@ function base () {
  */
 function componentBarsCircular () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
-  var radius = 150;
-  var innerRadius = 20;
-  var startAngle = 0;
-  var endAngle = 270;
-  var cornerRadius = 2;
-  var classed = "barsCircular";
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
+	var radius = 150;
+	var innerRadius = 20;
+	var startAngle = 0;
+	var endAngle = 270;
+	var cornerRadius = 2;
+	var classed = "barsCircular";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
+		innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
 
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = slicedData.maxValue;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([innerRadius, radius]).padding(0.15) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([innerRadius, radius]).padding(0.15) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Arc Generator
-      var arc = d3.arc().startAngle(0).endAngle(function (d) {
-        return yScale(d.value) * Math.PI / 180;
-      }).outerRadius(function (d) {
-        return xScale(d.key) + xScale.bandwidth();
-      }).innerRadius(function (d) {
-        return xScale(d.key);
-      }).cornerRadius(cornerRadius);
+			// Arc Generator
+			var arc = d3.arc().startAngle(0).endAngle(function (d) {
+				return yScale(d.value) * Math.PI / 180;
+			}).outerRadius(function (d) {
+				return xScale(d.key) + xScale.bandwidth();
+			}).innerRadius(function (d) {
+				return xScale(d.key);
+			}).cornerRadius(cornerRadius);
 
-      // Arc Tween
-      var arcTween = function arcTween(d) {
-        var i = d3.interpolate(this._current, d);
-        this._current = i(0);
-        return function (t) {
-          return arc(i(t));
-        };
-      };
+			// Arc Tween
+			var arcTween = function arcTween(d) {
+				var i = d3.interpolate(this._current, d);
+				this._current = i(0);
+				return function (t) {
+					return arc(i(t));
+				};
+			};
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add bars to series
-      var bars = seriesGroup.selectAll(".bar").data(function (d) {
-        return d.values;
-      });
+			// Add bars to series
+			var bars = seriesGroup.selectAll(".bar").data(function (d) {
+				return d.values;
+			});
 
-      bars.enter().append("path").attr("d", arc).classed("bar", true).style("fill", function (d) {
-        return colorScale(d.key);
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attrTween("d", arcTween);
+			bars.enter().append("path").attr("d", arc).classed("bar", true).style("fill", function (d) {
+				return colorScale(d.key);
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attrTween("d", arcTween);
 
-      bars.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			bars.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.innerRadius = function (_) {
-    if (!arguments.length) return innerRadius;
-    innerRadius = _;
-    return this;
-  };
+	my.innerRadius = function (_) {
+		if (!arguments.length) return innerRadius;
+		innerRadius = _;
+		return this;
+	};
 
-  my.startAngle = function (_) {
-    if (!arguments.length) return startAngle;
-    startAngle = _;
-    return this;
-  };
+	my.startAngle = function (_) {
+		if (!arguments.length) return startAngle;
+		startAngle = _;
+		return this;
+	};
 
-  my.endAngle = function (_) {
-    if (!arguments.length) return endAngle;
-    endAngle = _;
-    return this;
-  };
+	my.endAngle = function (_) {
+		if (!arguments.length) return endAngle;
+		endAngle = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -783,135 +783,135 @@ function componentBarsCircular () {
  */
 function componentBarsStacked () {
 
-  /**
-   * Default Properties
-   */
-  var width = 100;
-  var height = 300;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var yScale = void 0;
-  var colorScale = void 0;
-  var classed = "barsStacked";
+	/**
+  * Default Properties
+  */
+	var width = 100;
+	var height = 300;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var yScale = void 0;
+	var colorScale = void 0;
+	var classed = "barsStacked";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var groupTotalsMax = slicedData.groupTotalsMax;
-    var categoryNames = slicedData.categoryNames;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var groupTotalsMax = slicedData.groupTotalsMax;
+		var categoryNames = slicedData.categoryNames;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, groupTotalsMax]).range([0, height]).nice() : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, groupTotalsMax]).range([0, height]).nice() : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Stack Generator
-      var stacker = function stacker(data) {
-        var series = [];
-        var y0 = 0;
-        var y1 = 0;
-        data.forEach(function (d, i) {
-          y1 = y0 + d.value;
-          series[i] = {
-            key: d.key,
-            value: d.value,
-            y0: y0,
-            y1: y1
-          };
-          y0 += d.value;
-        });
+			// Stack Generator
+			var stacker = function stacker(data) {
+				var series = [];
+				var y0 = 0;
+				var y1 = 0;
+				data.forEach(function (d, i) {
+					y1 = y0 + d.value;
+					series[i] = {
+						key: d.key,
+						value: d.value,
+						y0: y0,
+						y1: y1
+					};
+					y0 += d.value;
+				});
 
-        return series;
-      };
+				return series;
+			};
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add bars to series
-      var bars = seriesGroup.selectAll(".bar").data(function (d) {
-        return stacker(d.values);
-      });
+			// Add bars to series
+			var bars = seriesGroup.selectAll(".bar").data(function (d) {
+				return stacker(d.values);
+			});
 
-      bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).attr("fill", function (d) {
-        return colorScale(d.key);
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("width", width).attr("x", 0).attr("y", function (d) {
-        return height - yScale(d.y1);
-      }).attr("height", function (d) {
-        return yScale(d.value);
-      });
+			bars.enter().append("rect").classed("bar", true).attr("width", width).attr("x", 0).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).attr("fill", function (d) {
+				return colorScale(d.key);
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("width", width).attr("x", 0).attr("y", function (d) {
+				return height - yScale(d.y1);
+			}).attr("height", function (d) {
+				return yScale(d.value);
+			});
 
-      bars.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			bars.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -920,130 +920,130 @@ function componentBarsStacked () {
  */
 function componentBarsVertical () {
 
-  /**
-   * Default Properties
-   */
-  var width = 400;
-  var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
-  var classed = "barsVertical";
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
+	var classed = "barsVertical";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = slicedData.maxValue;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add bars to series
-      var bars = seriesGroup.selectAll(".bar").data(function (d) {
-        return d.values;
-      });
+			// Add bars to series
+			var bars = seriesGroup.selectAll(".bar").data(function (d) {
+				return d.values;
+			});
 
-      bars.enter().append("rect").classed("bar", true).attr("fill", function (d) {
-        return colorScale(d.key);
-      }).attr("width", xScale.bandwidth()).attr("x", function (d) {
-        return xScale(d.key);
-      }).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
-        return xScale(d.key);
-      }).attr("y", function (d) {
-        return height - yScale(d.value);
-      }).attr("height", function (d) {
-        return yScale(d.value);
-      });
+			bars.enter().append("rect").classed("bar", true).attr("fill", function (d) {
+				return colorScale(d.key);
+			}).attr("width", xScale.bandwidth()).attr("x", function (d) {
+				return xScale(d.key);
+			}).attr("y", height).attr("rx", 0).attr("ry", 0).attr("height", 0).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+				return xScale(d.key);
+			}).attr("y", function (d) {
+				return height - yScale(d.value);
+			}).attr("height", function (d) {
+				return yScale(d.value);
+			});
 
-      bars.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			bars.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -1052,108 +1052,108 @@ function componentBarsVertical () {
  */
 function componentLabeledNode () {
 
-  /**
-   * Default Properties
-   */
-  var color = "steelblue";
-  var opacity = 1;
-  var strokeColor = "#000000";
-  var strokeWidth = 1;
-  var radius = 8;
-  var label = null;
-  var display = "block";
-  var fontSize = 10;
-  var classed = "labeledNode";
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
+	/**
+  * Default Properties
+  */
+	var color = "steelblue";
+	var opacity = 1;
+	var strokeColor = "#000000";
+	var strokeWidth = 1;
+	var radius = 8;
+	var label = null;
+	var display = "block";
+	var fontSize = 10;
+	var classed = "labeledNode";
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
+	/**
+  * Constructor
+  */
+	function my(selection) {
 
-    // Size Accessor
-    function sizeAccessor(_) {
-      return typeof radius === "function" ? radius(_) : radius;
-    }
+		// Size Accessor
+		function sizeAccessor(_) {
+			return typeof radius === "function" ? radius(_) : radius;
+		}
 
-    selection.each(function (data) {
-      var r = sizeAccessor(data);
+		selection.each(function (data) {
+			var r = sizeAccessor(data);
 
-      var node = d3.select(this).attr("class", classed);
+			var node = d3.select(this).attr("class", classed);
 
-      node.append("circle").attr("r", r).attr("fill-opacity", opacity)
-      //.style("stroke", strokeColor)
-      //.style("stroke-width", strokeWidth)
-      .style("fill", color);
+			node.append("circle").attr("r", r).attr("fill-opacity", opacity)
+			//.style("stroke", strokeColor)
+			//.style("stroke-width", strokeWidth)
+			.style("fill", color);
 
-      node.append("text").text(label).attr("dx", -r).attr("dy", -r).style("display", display).style("font-size", fontSize + "px").attr("alignment-baseline", "middle").style("text-anchor", "end");
-    });
-  }
+			node.append("text").text(label).attr("dx", -r).attr("dy", -r).style("display", display).style("font-size", fontSize + "px").attr("alignment-baseline", "middle").style("text-anchor", "end");
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.color = function (_) {
-    if (!arguments.length) return color;
-    color = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.color = function (_) {
+		if (!arguments.length) return color;
+		color = _;
+		return this;
+	};
 
-  my.opacity = function (_) {
-    if (!arguments.length) return opacity;
-    opacity = _;
-    return this;
-  };
+	my.opacity = function (_) {
+		if (!arguments.length) return opacity;
+		opacity = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.label = function (_) {
-    if (!arguments.length) return label;
-    label = _;
-    return this;
-  };
+	my.label = function (_) {
+		if (!arguments.length) return label;
+		label = _;
+		return this;
+	};
 
-  my.display = function (_) {
-    if (!arguments.length) return display;
-    display = _;
-    return this;
-  };
+	my.display = function (_) {
+		if (!arguments.length) return display;
+		display = _;
+		return this;
+	};
 
-  my.fontSize = function (_) {
-    if (!arguments.length) return fontSize;
-    fontSize = _;
-    return this;
-  };
+	my.fontSize = function (_) {
+		if (!arguments.length) return fontSize;
+		fontSize = _;
+		return this;
+	};
 
-  my.stroke = function (_width, _color) {
-    if (!arguments.length) return [strokeWidth, strokeColor];
-    strokeWidth = _width;
-    strokeColor = _color;
-    return this;
-  };
+	my.stroke = function (_width, _color) {
+		if (!arguments.length) return [strokeWidth, strokeColor];
+		strokeWidth = _width;
+		strokeColor = _color;
+		return this;
+	};
 
-  my.classed = function (_) {
-    if (!arguments.length) return classed;
-    classed = _;
-    return this;
-  };
+	my.classed = function (_) {
+		if (!arguments.length) return classed;
+		classed = _;
+		return this;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -1162,190 +1162,190 @@ function componentLabeledNode () {
  */
 function componentBubbles () {
 
-  /**
-   * Default Properties
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
+	var sizeScale = void 0;
+	var classed = "bubbles";
+
+	var minRadius = 10;
+	var maxRadius = 20;
+
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		// Calculate the extents for each series.
+		// TODO: use dataParse() ?
+		function extents(key) {
+			var serExts = [];
+			d3.map(data).values().forEach(function (d) {
+				var vals = d.values.map(function (e) {
+					return +e[key];
+				});
+				serExts.push(d3.extent(vals));
+			});
+			// Merge all the series extents into one array.
+			// Calculate overall extent.
+			return d3.extent([].concat.apply([], serExts));
+		}
+		var xDomain = extents("x");
+		var yDomain = extents("y");
+		var sizeDomain = extents("value");
+		var categoryNames = data.map(function (d) {
+			return d.key;
+		});
+
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+
+		// If the sizeScale has not been passed then attempt to calculate.
+		sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
+
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleLinear().domain(xDomain).range([0, width]).nice() : xScale;
+
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain(yDomain).range([height, 0]).nice() : yScale;
+	}
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
+
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
+
+			// Add bubbles to series
+			var bubble = componentLabeledNode().radius(function (d) {
+				return sizeScale(d.value);
+			}).color(function (d) {
+				return colorScale(d.series);
+			}).label(function (d) {
+				return d.key;
+			}).stroke(1, "white").display("none").classed("bubble").dispatch(dispatch);
+
+			var bubbles = seriesGroup.selectAll(".bubble").data(function (d) {
+				return d.values;
+			});
+
+			bubbles.enter().append("g").attr("transform", function (d) {
+				return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+			}).call(bubble).on("mouseover", function (d) {
+				d3.select(this).select("text").style("display", "block");
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("mouseout", function () {
+				d3.select(this).select("text").style("display", "none");
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(bubbles);
+
+			/*
+   bubbles.enter().append("circle")
+     .attr("class", "bubble")
+     .attr("cx", function(d) { return xScale(d.x); })
+     .attr("cy", function(d) { return yScale(d.y); })
+     .attr("r", function(d) { return sizeScale(d.value); })
+     .style("fill", function(d) { return colorScale(d.series); })
+     .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+     .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
+     .merge(bubbles)
+     .transition()
+     .ease(transition.ease)
+     .duration(transition.duration)
+     .attr("r", function(d) { return sizeScale(d.value); });
    */
-  var width = 300;
-  var height = 300;
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
-  var sizeScale = void 0;
-  var classed = "bubbles";
 
-  var minRadius = 10;
-  var maxRadius = 20;
+			bubbles.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // Calculate the extents for each series.
-    // TODO: use dataParse() ?
-    function extents(key) {
-      var serExts = [];
-      d3.map(data).values().forEach(function (d) {
-        var vals = d.values.map(function (e) {
-          return +e[key];
-        });
-        serExts.push(d3.extent(vals));
-      });
-      // Merge all the series extents into one array.
-      // Calculate overall extent.
-      return d3.extent([].concat.apply([], serExts));
-    }
-    var xDomain = extents("x");
-    var yDomain = extents("y");
-    var sizeDomain = extents("value");
-    var categoryNames = data.map(function (d) {
-      return d.key;
-    });
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-    // If the sizeScale has not been passed then attempt to calculate.
-    sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleLinear().domain(xDomain).range([0, width]).nice() : xScale;
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain(yDomain).range([height, 0]).nice() : yScale;
-  }
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+	my.sizeScale = function (_) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _;
+		return my;
+	};
 
-      // Add bubbles to series
-      var bubble = componentLabeledNode().radius(function (d) {
-        return sizeScale(d.value);
-      }).color(function (d) {
-        return colorScale(d.series);
-      }).label(function (d) {
-        return d.key;
-      }).stroke(1, "white").display("none").classed("bubble").dispatch(dispatch);
+	my.minRadius = function (_) {
+		if (!arguments.length) return minRadius;
+		minRadius = _;
+		return this;
+	};
 
-      var bubbles = seriesGroup.selectAll(".bubble").data(function (d) {
-        return d.values;
-      });
+	my.maxRadius = function (_) {
+		if (!arguments.length) return maxRadius;
+		maxRadius = _;
+		return this;
+	};
 
-      bubbles.enter().append("g").attr("transform", function (d) {
-        return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
-      }).call(bubble).on("mouseover", function (d) {
-        d3.select(this).select("text").style("display", "block");
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("mouseout", function () {
-        d3.select(this).select("text").style("display", "none");
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(bubbles);
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-      /*
-      bubbles.enter().append("circle")
-        .attr("class", "bubble")
-        .attr("cx", function(d) { return xScale(d.x); })
-        .attr("cy", function(d) { return yScale(d.y); })
-        .attr("r", function(d) { return sizeScale(d.value); })
-        .style("fill", function(d) { return colorScale(d.series); })
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
-        .merge(bubbles)
-        .transition()
-        .ease(transition.ease)
-        .duration(transition.duration)
-        .attr("r", function(d) { return sizeScale(d.value); });
-      */
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-      bubbles.exit().transition().style("opacity", 0).remove();
-    });
-  }
-
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
-
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
-
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
-
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
-
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
-
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
-
-  my.sizeScale = function (_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
-    return my;
-  };
-
-  my.minRadius = function (_) {
-    if (!arguments.length) return minRadius;
-    minRadius = _;
-    return this;
-  };
-
-  my.maxRadius = function (_) {
-    if (!arguments.length) return maxRadius;
-    maxRadius = _;
-    return this;
-  };
-
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
-
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
-
-  return my;
+	return my;
 }
 
 /**
@@ -1354,183 +1354,183 @@ function componentBubbles () {
  */
 function componentCandleSticks () {
 
-  /**
-   * Default Properties
-   */
-  var width = 400;
-  var height = 400;
-  var colors = ["green", "red"];
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
-  var candleWidth = 3;
-  var classed = "candleSticks";
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 400;
+	var colors = ["green", "red"];
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
+	var candleWidth = 3;
+	var classed = "candleSticks";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // Slice Data, calculate totals, max etc.
-    var maxDate = d3.max(data.values, function (d) {
-      return d.date;
-    });
-    var minDate = d3.min(data.values, function (d) {
-      return d.date;
-    });
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		// Slice Data, calculate totals, max etc.
+		var maxDate = d3.max(data.values, function (d) {
+			return d.date;
+		});
+		var minDate = d3.min(data.values, function (d) {
+			return d.date;
+		});
 
-    var xDomain = [new Date(minDate - 8.64e7), new Date(maxDate + 8.64e7)];
-    var yDomain = [d3.min(data.values, function (d) {
-      return d.low;
-    }), d3.max(data.values, function (d) {
-      return d.high;
-    })];
+		var xDomain = [new Date(minDate - 8.64e7), new Date(maxDate + 8.64e7)];
+		var yDomain = [d3.min(data.values, function (d) {
+			return d.low;
+		}), d3.max(data.values, function (d) {
+			return d.high;
+		})];
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain([true, false]).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain([true, false]).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(xDomain).range([0, width]) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(xDomain).range([0, width]) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain(yDomain).range([height, 0]).nice() : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain(yDomain).range([height, 0]).nice() : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  var my = function my(selection) {
-    init(selection.data()[0]);
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	var my = function my(selection) {
+		init(selection.data()[0]);
+		selection.each(function () {
 
-      // Is Up Day
-      var isUpDay = function isUpDay(d) {
-        return d.close > d.open;
-      };
+			// Is Up Day
+			var isUpDay = function isUpDay(d) {
+				return d.close > d.open;
+			};
 
-      // Line Function
-      var line = d3.line().x(function (d) {
-        return d.x;
-      }).y(function (d) {
-        return d.y;
-      });
+			// Line Function
+			var line = d3.line().x(function (d) {
+				return d.x;
+			}).y(function (d) {
+				return d.y;
+			});
 
-      // High Low Lines
-      var highLowLines = function highLowLines(bars) {
-        var paths = bars.selectAll(".high-low-line").data(function (d) {
-          return [d];
-        });
+			// High Low Lines
+			var highLowLines = function highLowLines(bars) {
+				var paths = bars.selectAll(".high-low-line").data(function (d) {
+					return [d];
+				});
 
-        paths.enter().append("path").classed("high-low-line", true).attr("d", function (d) {
-          return line([{ x: xScale(d.date), y: yScale(d.high) }, { x: xScale(d.date), y: yScale(d.low) }]);
-        });
-      };
+				paths.enter().append("path").classed("high-low-line", true).attr("d", function (d) {
+					return line([{ x: xScale(d.date), y: yScale(d.high) }, { x: xScale(d.date), y: yScale(d.low) }]);
+				});
+			};
 
-      // Open Close Bars
-      var openCloseBars = function openCloseBars(bars) {
-        var rect = bars.selectAll(".open-close-bar").data(function (d) {
-          return [d];
-        });
+			// Open Close Bars
+			var openCloseBars = function openCloseBars(bars) {
+				var rect = bars.selectAll(".open-close-bar").data(function (d) {
+					return [d];
+				});
 
-        rect.enter().append("rect").classed("open-close-bar", true).attr("x", function (d) {
-          return xScale(d.date) - candleWidth;
-        }).attr("y", function (d) {
-          return isUpDay(d) ? yScale(d.close) : yScale(d.open);
-        }).attr("width", candleWidth * 2).attr("height", function (d) {
-          return isUpDay(d) ? yScale(d.open) - yScale(d.close) : yScale(d.close) - yScale(d.open);
-        });
-      };
+				rect.enter().append("rect").classed("open-close-bar", true).attr("x", function (d) {
+					return xScale(d.date) - candleWidth;
+				}).attr("y", function (d) {
+					return isUpDay(d) ? yScale(d.close) : yScale(d.open);
+				}).attr("width", candleWidth * 2).attr("height", function (d) {
+					return isUpDay(d) ? yScale(d.open) - yScale(d.close) : yScale(d.close) - yScale(d.open);
+				});
+			};
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add candles to series
-      var candlesSelect = seriesGroup.selectAll(".candle").data(function (d) {
-        return d.values;
-      });
+			// Add candles to series
+			var candlesSelect = seriesGroup.selectAll(".candle").data(function (d) {
+				return d.values;
+			});
 
-      var candles = candlesSelect.enter().append("g").classed("candle", true).attr("fill", function (d) {
-        return colorScale(isUpDay(d));
-      }).attr("stroke", function (d) {
-        return colorScale(isUpDay(d));
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(candlesSelect);
+			var candles = candlesSelect.enter().append("g").classed("candle", true).attr("fill", function (d) {
+				return colorScale(isUpDay(d));
+			}).attr("stroke", function (d) {
+				return colorScale(isUpDay(d));
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(candlesSelect);
 
-      highLowLines(candles);
-      openCloseBars(candles);
-      // openCloseTicks(candles);
+			highLowLines(candles);
+			openCloseBars(candles);
+			// openCloseTicks(candles);
 
-      candles.exit().remove();
-    });
-  };
+			candles.exit().remove();
+		});
+	};
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.candleWidth = function (_) {
-    if (!arguments.length) return candleWidth;
-    candleWidth = _;
-    return my;
-  };
+	my.candleWidth = function (_) {
+		if (!arguments.length) return candleWidth;
+		candleWidth = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -1539,157 +1539,157 @@ function componentCandleSticks () {
  */
 function componentCircularAxis () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var radius = 150;
-  var radialScale = void 0;
-  var ringScale = void 0;
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var radius = 150;
+	var radialScale = void 0;
+	var ringScale = void 0;
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    // Create axis group
-    var axisSelect = selection.selectAll(".axis").data([0]);
+		// Create axis group
+		var axisSelect = selection.selectAll(".axis").data([0]);
 
-    var axis = axisSelect.enter().append("g").classed("axis", true).on("click", function (d) {
-      dispatch.call("customClick", this, d);
-    }).merge(axisSelect);
+		var axis = axisSelect.enter().append("g").classed("axis", true).on("click", function (d) {
+			dispatch.call("customClick", this, d);
+		}).merge(axisSelect);
 
-    // Outer circle
-    var outerCircle = axis.selectAll(".outerCircle").data([radius]).enter().append("circle").classed("outerCircle", true).attr("r", function (d) {
-      return d;
-    }).style("fill", "none").attr("stroke-width", 2).attr("stroke", "#ddd");
+		// Outer circle
+		var outerCircle = axis.selectAll(".outerCircle").data([radius]).enter().append("circle").classed("outerCircle", true).attr("r", function (d) {
+			return d;
+		}).style("fill", "none").attr("stroke-width", 2).attr("stroke", "#ddd");
 
-    // Tick Data Generator
-    var tickData = function tickData() {
-      var tickArray = void 0,
-          tickPadding = void 0;
-      if (typeof ringScale.ticks === "function") {
-        // scaleLinear
-        tickArray = ringScale.ticks();
-        tickPadding = 0;
-      } else {
-        // scaleBand
-        tickArray = ringScale.domain();
-        tickPadding = ringScale.bandwidth() / 2;
-      }
+		// Tick Data Generator
+		var tickData = function tickData() {
+			var tickArray = void 0,
+			    tickPadding = void 0;
+			if (typeof ringScale.ticks === "function") {
+				// scaleLinear
+				tickArray = ringScale.ticks();
+				tickPadding = 0;
+			} else {
+				// scaleBand
+				tickArray = ringScale.domain();
+				tickPadding = ringScale.bandwidth() / 2;
+			}
 
-      return tickArray.map(function (d) {
-        return {
-          value: d,
-          radius: ringScale(d),
-          padding: tickPadding
-        };
-      });
-    };
+			return tickArray.map(function (d) {
+				return {
+					value: d,
+					radius: ringScale(d),
+					padding: tickPadding
+				};
+			});
+		};
 
-    var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data(function () {
-      return [tickData()];
-    });
+		var tickCirclesGroupSelect = axis.selectAll(".tickCircles").data(function () {
+			return [tickData()];
+		});
 
-    var tickCirclesGroup = tickCirclesGroupSelect.enter().append("g").classed("tickCircles", true).merge(tickCirclesGroupSelect);
+		var tickCirclesGroup = tickCirclesGroupSelect.enter().append("g").classed("tickCircles", true).merge(tickCirclesGroupSelect);
 
-    var tickCircles = tickCirclesGroup.selectAll("circle").data(function (d) {
-      return d;
-    });
+		var tickCircles = tickCirclesGroup.selectAll("circle").data(function (d) {
+			return d;
+		});
 
-    tickCircles.enter().append("circle").style("fill", "none").attr("stroke-width", 1).attr("stroke", "#ddd").merge(tickCircles).transition().attr("r", function (d) {
-      return d.radius + d.padding;
-    });
+		tickCircles.enter().append("circle").style("fill", "none").attr("stroke-width", 1).attr("stroke", "#ddd").merge(tickCircles).transition().attr("r", function (d) {
+			return d.radius + d.padding;
+		});
 
-    tickCircles.exit().remove();
+		tickCircles.exit().remove();
 
-    // Spoke Data Generator
-    var spokeData = function spokeData() {
-      var spokeCount = 0;
-      var spokeArray = [];
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        var min = d3.min(radialScale.domain());
-        var max = d3.max(radialScale.domain());
-        spokeCount = radialScale.ticks().length;
-        var spokeIncrement = (max - min) / spokeCount;
-        for (var i = 0; i <= spokeCount; i++) {
-          spokeArray[i] = (spokeIncrement * i).toFixed(0);
-        }
-      } else {
-        // scaleBand
-        spokeArray = radialScale.domain();
-        spokeCount = spokeArray.length;
-        spokeArray.push("");
-      }
+		// Spoke Data Generator
+		var spokeData = function spokeData() {
+			var spokeCount = 0;
+			var spokeArray = [];
+			if (typeof radialScale.ticks === "function") {
+				// scaleLinear
+				var min = d3.min(radialScale.domain());
+				var max = d3.max(radialScale.domain());
+				spokeCount = radialScale.ticks().length;
+				var spokeIncrement = (max - min) / spokeCount;
+				for (var i = 0; i <= spokeCount; i++) {
+					spokeArray[i] = (spokeIncrement * i).toFixed(0);
+				}
+			} else {
+				// scaleBand
+				spokeArray = radialScale.domain();
+				spokeCount = spokeArray.length;
+				spokeArray.push("");
+			}
 
-      var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
+			var spokeScale = d3.scaleLinear().domain([0, spokeCount]).range(radialScale.range());
 
-      return spokeArray.map(function (d, i) {
-        return {
-          value: d,
-          rotate: spokeScale(i)
-        };
-      });
-    };
+			return spokeArray.map(function (d, i) {
+				return {
+					value: d,
+					rotate: spokeScale(i)
+				};
+			});
+		};
 
-    var spokesGroupSelect = axis.selectAll(".spokes").data(function () {
-      return [spokeData()];
-    });
+		var spokesGroupSelect = axis.selectAll(".spokes").data(function () {
+			return [spokeData()];
+		});
 
-    var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
+		var spokesGroup = spokesGroupSelect.enter().append("g").classed("spokes", true).merge(spokesGroupSelect);
 
-    var spokes = spokesGroup.selectAll("line").data(function (d) {
-      return d;
-    });
+		var spokes = spokesGroup.selectAll("line").data(function (d) {
+			return d;
+		});
 
-    spokes.enter().append("line").attr("id", function (d) {
-      return d.value;
-    }).attr("y2", -radius).merge(spokes).attr("transform", function (d) {
-      return "rotate(" + d.rotate + ")";
-    });
+		spokes.enter().append("line").attr("id", function (d) {
+			return d.value;
+		}).attr("y2", -radius).merge(spokes).attr("transform", function (d) {
+			return "rotate(" + d.rotate + ")";
+		});
 
-    spokes.exit().remove();
-  }
+		spokes.exit().remove();
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.radialScale = function (_) {
-    if (!arguments.length) return radialScale;
-    radialScale = _;
-    return my;
-  };
+	my.radialScale = function (_) {
+		if (!arguments.length) return radialScale;
+		radialScale = _;
+		return my;
+	};
 
-  my.ringScale = function (_) {
-    if (!arguments.length) return ringScale;
-    ringScale = _;
-    return my;
-  };
+	my.ringScale = function (_) {
+		if (!arguments.length) return ringScale;
+		ringScale = _;
+		return my;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -1698,107 +1698,107 @@ function componentCircularAxis () {
  */
 function componentCircularRingLabels () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var radius = void 0;
-  var startAngle = 0;
-  var endAngle = 360;
-  var capitalizeLabels = false;
-  var textAnchor = "centre";
-  var radialScale = void 0;
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var radius = void 0;
+	var startAngle = 0;
+	var endAngle = 360;
+	var capitalizeLabels = false;
+	var textAnchor = "centre";
+	var radialScale = void 0;
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    var labelsSelect = selection.selectAll(".radialLabels").data([0]);
+		var labelsSelect = selection.selectAll(".radialLabels").data([0]);
 
-    var labels = labelsSelect.enter().append("g").classed("radialLabels", true).merge(labelsSelect);
+		var labels = labelsSelect.enter().append("g").classed("radialLabels", true).merge(labelsSelect);
 
-    var radData = radialScale.domain();
+		var radData = radialScale.domain();
 
-    var defSelect = labels.selectAll("def").data(radData);
+		var defSelect = labels.selectAll("def").data(radData);
 
-    defSelect.enter().append("def").append("path").attr("id", function (d, i) {
-      return "radialLabelPath" + "-" + i;
-    }).attr("d", function (d) {
-      var r = radialScale(d);
-      var arc = d3.arc().outerRadius(r).innerRadius(r);
-      var pathConf = {
-        startAngle: startAngle * Math.PI / 180,
-        endAngle: endAngle * Math.PI / 180
-      };
-      var pathStr = arc(pathConf).split(/[A-Z]/);
-      return "M" + pathStr[1] + "A" + pathStr[2];
-    });
+		defSelect.enter().append("def").append("path").attr("id", function (d, i) {
+			return "radialLabelPath" + "-" + i;
+		}).attr("d", function (d) {
+			var r = radialScale(d);
+			var arc = d3.arc().outerRadius(r).innerRadius(r);
+			var pathConf = {
+				startAngle: startAngle * Math.PI / 180,
+				endAngle: endAngle * Math.PI / 180
+			};
+			var pathStr = arc(pathConf).split(/[A-Z]/);
+			return "M" + pathStr[1] + "A" + pathStr[2];
+		});
 
-    var textSelect = labels.selectAll("text").data(radData);
+		var textSelect = labels.selectAll("text").data(radData);
 
-    textSelect.enter().append("text").style("text-anchor", "start").attr("dy", -5).attr("dx", 5).append("textPath").attr("xlink:href", function (d, i) {
-      return "#radialLabelPath" + "-" + i;
-    }).attr("startOffset", "0%").text(function (d) {
-      return d;
-    });
-  }
+		textSelect.enter().append("text").style("text-anchor", "start").attr("dy", -5).attr("dx", 5).append("textPath").attr("xlink:href", function (d, i) {
+			return "#radialLabelPath" + "-" + i;
+		}).attr("startOffset", "0%").text(function (d) {
+			return d;
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.startAngle = function (_) {
-    if (!arguments.length) return startAngle;
-    startAngle = _;
-    return this;
-  };
+	my.startAngle = function (_) {
+		if (!arguments.length) return startAngle;
+		startAngle = _;
+		return this;
+	};
 
-  my.endAngle = function (_) {
-    if (!arguments.length) return endAngle;
-    endAngle = _;
-    return this;
-  };
+	my.endAngle = function (_) {
+		if (!arguments.length) return endAngle;
+		endAngle = _;
+		return this;
+	};
 
-  my.capitalizeLabels = function (_) {
-    if (!arguments.length) return capitalizeLabels;
-    capitalizeLabels = _;
-    return this;
-  };
+	my.capitalizeLabels = function (_) {
+		if (!arguments.length) return capitalizeLabels;
+		capitalizeLabels = _;
+		return this;
+	};
 
-  my.radialScale = function (_) {
-    if (!arguments.length) return radialScale;
-    radialScale = _;
-    return my;
-  };
+	my.radialScale = function (_) {
+		if (!arguments.length) return radialScale;
+		radialScale = _;
+		return my;
+	};
 
-  my.textAnchor = function (_) {
-    if (!arguments.length) return textAnchor;
-    textAnchor = _;
-    return this;
-  };
+	my.textAnchor = function (_) {
+		if (!arguments.length) return textAnchor;
+		textAnchor = _;
+		return this;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -1807,155 +1807,155 @@ function componentCircularRingLabels () {
  */
 function componentCircularSectorLabels () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var radius = void 0;
-  var startAngle = 0;
-  var endAngle = 360;
-  var capitalizeLabels = false;
-  var textAnchor = "centre";
-  var radialScale = void 0;
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var radius = void 0;
+	var startAngle = 0;
+	var endAngle = 360;
+	var capitalizeLabels = false;
+	var textAnchor = "centre";
+	var radialScale = void 0;
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    // Tick Data Generator
-    var tickData = function tickData() {
-      var tickCount = 0;
-      var tickArray = [];
+		// Tick Data Generator
+		var tickData = function tickData() {
+			var tickCount = 0;
+			var tickArray = [];
 
-      if (typeof radialScale.ticks === "function") {
-        // scaleLinear
-        var min = d3.min(radialScale.domain());
-        var max = d3.max(radialScale.domain());
-        tickCount = radialScale.ticks().length;
-        var tickIncrement = (max - min) / tickCount;
-        for (var i = 0; i <= tickCount; i++) {
-          tickArray[i] = (tickIncrement * i).toFixed(0);
-        }
-      } else {
-        // scaleBand
-        tickArray = radialScale.domain();
-        tickCount = tickArray.length;
-      }
+			if (typeof radialScale.ticks === "function") {
+				// scaleLinear
+				var min = d3.min(radialScale.domain());
+				var max = d3.max(radialScale.domain());
+				tickCount = radialScale.ticks().length;
+				var tickIncrement = (max - min) / tickCount;
+				for (var i = 0; i <= tickCount; i++) {
+					tickArray[i] = (tickIncrement * i).toFixed(0);
+				}
+			} else {
+				// scaleBand
+				tickArray = radialScale.domain();
+				tickCount = tickArray.length;
+			}
 
-      var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
+			var tickScale = d3.scaleLinear().domain([0, tickCount]).range(radialScale.range());
 
-      return tickArray.map(function (d, i) {
-        return {
-          value: d,
-          offset: tickScale(i) / 360 * 100
-        };
-      });
-    };
+			return tickArray.map(function (d, i) {
+				return {
+					value: d,
+					offset: tickScale(i) / 360 * 100
+				};
+			});
+		};
 
-    // Unique id so that the text path defs are unique - is there a better way to do this?
-    var uId = selection.attr("id") ? selection.attr("id") : "uid-" + Math.floor(1000 + Math.random() * 9000);
-    selection.attr("id", uId);
+		// Unique id so that the text path defs are unique - is there a better way to do this?
+		var uId = selection.attr("id") ? selection.attr("id") : "uid-" + Math.floor(1000 + Math.random() * 9000);
+		selection.attr("id", uId);
 
-    var labelsSelect = selection.selectAll(".circularLabels").data(function () {
-      return [tickData()];
-    });
+		var labelsSelect = selection.selectAll(".circularLabels").data(function () {
+			return [tickData()];
+		});
 
-    var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
+		var labels = labelsSelect.enter().append("g").classed("circularLabels", true).merge(labelsSelect);
 
-    // Labels
-    var defSelect = labels.selectAll("def").data([radius]);
+		// Labels
+		var defSelect = labels.selectAll("def").data([radius]);
 
-    defSelect.enter().append("def").append("path").attr("id", function () {
-      var pathId = selection.attr("id") + "-path";
-      return pathId;
-    }).attr("d", function (d) {
-      return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-    }).merge(defSelect);
+		defSelect.enter().append("def").append("path").attr("id", function () {
+			var pathId = selection.attr("id") + "-path";
+			return pathId;
+		}).attr("d", function (d) {
+			return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
+		}).merge(defSelect);
 
-    defSelect.exit().remove();
+		defSelect.exit().remove();
 
-    var textSelect = labels.selectAll("text").data(function (d) {
-      return d;
-    });
+		var textSelect = labels.selectAll("text").data(function (d) {
+			return d;
+		});
 
-    textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
-      var pathId = selection.attr("id") + "-path";
-      return "#" + pathId;
-    }).text(function (d) {
-      var text = d.value;
-      return capitalizeLabels ? text.toUpperCase() : text;
-    }).attr("startOffset", function (d) {
-      return d.offset + "%";
-    }).attr("id", function (d) {
-      return d.value;
-    }).merge(textSelect);
+		textSelect.enter().append("text").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
+			var pathId = selection.attr("id") + "-path";
+			return "#" + pathId;
+		}).text(function (d) {
+			var text = d.value;
+			return capitalizeLabels ? text.toUpperCase() : text;
+		}).attr("startOffset", function (d) {
+			return d.offset + "%";
+		}).attr("id", function (d) {
+			return d.value;
+		}).merge(textSelect);
 
-    textSelect.transition().select("textPath").text(function (d) {
-      var text = d.value;
-      return capitalizeLabels ? text.toUpperCase() : text;
-    }).attr("startOffset", function (d) {
-      return d.offset + "%";
-    });
+		textSelect.transition().select("textPath").text(function (d) {
+			var text = d.value;
+			return capitalizeLabels ? text.toUpperCase() : text;
+		}).attr("startOffset", function (d) {
+			return d.offset + "%";
+		});
 
-    textSelect.exit().remove();
-  }
+		textSelect.exit().remove();
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.startAngle = function (_) {
-    if (!arguments.length) return startAngle;
-    startAngle = _;
-    return this;
-  };
+	my.startAngle = function (_) {
+		if (!arguments.length) return startAngle;
+		startAngle = _;
+		return this;
+	};
 
-  my.endAngle = function (_) {
-    if (!arguments.length) return endAngle;
-    endAngle = _;
-    return this;
-  };
+	my.endAngle = function (_) {
+		if (!arguments.length) return endAngle;
+		endAngle = _;
+		return this;
+	};
 
-  my.capitalizeLabels = function (_) {
-    if (!arguments.length) return capitalizeLabels;
-    capitalizeLabels = _;
-    return this;
-  };
+	my.capitalizeLabels = function (_) {
+		if (!arguments.length) return capitalizeLabels;
+		capitalizeLabels = _;
+		return this;
+	};
 
-  my.radialScale = function (_) {
-    if (!arguments.length) return radialScale;
-    radialScale = _;
-    return my;
-  };
+	my.radialScale = function (_) {
+		if (!arguments.length) return radialScale;
+		radialScale = _;
+		return my;
+	};
 
-  my.textAnchor = function (_) {
-    if (!arguments.length) return textAnchor;
-    textAnchor = _;
-    return this;
-  };
+	my.textAnchor = function (_) {
+		if (!arguments.length) return textAnchor;
+		textAnchor = _;
+		return this;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -2250,179 +2250,179 @@ function componentDonutLabels () {
  */
 function componentHeatMapRing () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var radius = 150;
-  var innerRadius = 20;
-  var startAngle = 0;
-  var endAngle = 360;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "heatMapRing";
-  var thresholds = void 0;
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var radius = 150;
+	var innerRadius = 20;
+	var startAngle = 0;
+	var endAngle = 360;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "heatMapRing";
+	var thresholds = void 0;
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var groupNames = slicedData.groupNames;
 
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    // If thresholds values are not set attempt to auto-calculate the thresholds.
-    if (!thresholds) {
-      thresholds = slicedData.thresholds;
-    }
+		// If thresholds values are not set attempt to auto-calculate the thresholds.
+		if (!thresholds) {
+			thresholds = slicedData.thresholds;
+		}
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.1) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.1) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).rangeRound([radius, innerRadius]).padding(0.1) : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).rangeRound([radius, innerRadius]).padding(0.1) : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Pie Generator
-      var segStartAngle = d3.min(xScale.range());
-      var segEndAngle = d3.max(xScale.range());
-      var pie = d3.pie().value(1).sort(null).startAngle(segStartAngle * (Math.PI / 180)).endAngle(segEndAngle * (Math.PI / 180)).padAngle(0.015);
+			// Pie Generator
+			var segStartAngle = d3.min(xScale.range());
+			var segEndAngle = d3.max(xScale.range());
+			var pie = d3.pie().value(1).sort(null).startAngle(segStartAngle * (Math.PI / 180)).endAngle(segEndAngle * (Math.PI / 180)).padAngle(0.015);
 
-      // Arc Generator
-      var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
+			// Arc Generator
+			var arc = d3.arc().outerRadius(radius).innerRadius(innerRadius).cornerRadius(2);
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add segments to series group
-      var segments = seriesGroup.selectAll(".segment").data(function (d) {
-        var key = d.key;
-        var data = pie(d.values);
-        data.forEach(function (d, i) {
-          data[i].key = key;
-        });
+			// Add segments to series group
+			var segments = seriesGroup.selectAll(".segment").data(function (d) {
+				var key = d.key;
+				var data = pie(d.values);
+				data.forEach(function (d, i) {
+					data[i].key = key;
+				});
 
-        return data;
-      });
+				return data;
+			});
 
-      segments.enter().append("path").attr("d", arc).attr("fill", "black").classed("segment", true).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d.data);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d.data);
-      }).merge(segments).transition().duration(transition.duration).attr("fill", function (d) {
-        return colorScale(d.data.value);
-      });
+			segments.enter().append("path").attr("d", arc).attr("fill", "black").classed("segment", true).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d.data);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d.data);
+			}).merge(segments).transition().duration(transition.duration).attr("fill", function (d) {
+				return colorScale(d.data.value);
+			});
 
-      segments.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			segments.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.innerRadius = function (_) {
-    if (!arguments.length) return innerRadius;
-    innerRadius = _;
-    return this;
-  };
+	my.innerRadius = function (_) {
+		if (!arguments.length) return innerRadius;
+		innerRadius = _;
+		return this;
+	};
 
-  my.startAngle = function (_) {
-    if (!arguments.length) return startAngle;
-    startAngle = _;
-    return this;
-  };
+	my.startAngle = function (_) {
+		if (!arguments.length) return startAngle;
+		startAngle = _;
+		return this;
+	};
 
-  my.endAngle = function (_) {
-    if (!arguments.length) return endAngle;
-    endAngle = _;
-    return this;
-  };
+	my.endAngle = function (_) {
+		if (!arguments.length) return endAngle;
+		endAngle = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.thresholds = function (_) {
-    if (!arguments.length) return thresholds;
-    thresholds = _;
-    return my;
-  };
+	my.thresholds = function (_) {
+		if (!arguments.length) return thresholds;
+		thresholds = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 var _extends = Object.assign || function (target) {
@@ -2445,148 +2445,148 @@ var _extends = Object.assign || function (target) {
  */
 function componentHeatMapRow () {
 
-  /**
-   * Default Properties
-   */
-  var width = 400;
-  var height = 100;
-  var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "heatMapRow";
-  var thresholds = void 0;
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 100;
+	var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "heatMapRow";
+	var thresholds = void 0;
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var groupNames = slicedData.groupNames;
 
-    // If thresholds values are not set attempt to auto-calculate the thresholds.
-    if (!thresholds) {
-      thresholds = slicedData.thresholds;
-    }
+		// If thresholds values are not set attempt to auto-calculate the thresholds.
+		if (!thresholds) {
+			thresholds = slicedData.thresholds;
+		}
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.1) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.1) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).range([0, height]).padding(0.1) : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).range([0, height]).padding(0.1) : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      var cellHeight = yScale.bandwidth();
-      var cellWidth = xScale.bandwidth();
+			var cellHeight = yScale.bandwidth();
+			var cellWidth = xScale.bandwidth();
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add cells to series group
-      var cells = seriesGroup.selectAll(".cell").data(function (d) {
-        var seriesName = d.key;
-        var seriesValues = d.values;
+			// Add cells to series group
+			var cells = seriesGroup.selectAll(".cell").data(function (d) {
+				var seriesName = d.key;
+				var seriesValues = d.values;
 
-        return seriesValues.map(function (el) {
-          var o = _extends({}, el);
-          o.series = seriesName;
-          return o;
-        });
-      });
+				return seriesValues.map(function (el) {
+					var o = _extends({}, el);
+					o.series = seriesName;
+					return o;
+				});
+			});
 
-      cells.enter().append("rect").attr("class", "cell").attr("x", function (d) {
-        return xScale(d.key);
-      }).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("width", cellWidth).attr("height", cellHeight).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(cells)
-      //.transition()
-      //.duration(transition.duration)
-      .attr("fill", function (d) {
-        return colorScale(d.value);
-      });
+			cells.enter().append("rect").attr("class", "cell").attr("x", function (d) {
+				return xScale(d.key);
+			}).attr("y", 0).attr("rx", 2).attr("ry", 2).attr("fill", "black").attr("width", cellWidth).attr("height", cellHeight).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(cells)
+			//.transition()
+			//.duration(transition.duration)
+			.attr("fill", function (d) {
+				return colorScale(d.value);
+			});
 
-      cells.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			cells.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.thresholds = function (_) {
-    if (!arguments.length) return thresholds;
-    thresholds = _;
-    return my;
-  };
+	my.thresholds = function (_) {
+		if (!arguments.length) return thresholds;
+		thresholds = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -2594,72 +2594,72 @@ function componentHeatMapRow () {
  *
  */
 function componentHtmlList () {
-  // HTML List Element (Populated by 'my' function)
-  var listEl = void 0;
+	// HTML List Element (Populated by 'my' function)
+	var listEl = void 0;
 
-  // Default Options (Configurable via setters)
-  var classed = "htmlList";
+	// Default Options (Configurable via setters)
+	var classed = "htmlList";
 
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	// Dispatch (Custom events)
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    selection.each(function (data) {
-      // Create HTML List 'ul' element (if it does not exist already)
-      if (!listEl) {
-        listEl = d3.select(this).append("ul").classed("d3ez", true).classed(classed, true);
-      } else {
-        listEl.selectAll("*").remove();
-      }
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		selection.each(function (data) {
+			// Create HTML List 'ul' element (if it does not exist already)
+			if (!listEl) {
+				listEl = d3.select(this).append("ul").classed("d3ez", true).classed(classed, true);
+			} else {
+				listEl.selectAll("*").remove();
+			}
 
-      listEl.selectAll("li").data(data).enter().append("li").text(function (d) {
-        return d.key;
-      }).on("click", expand);
+			listEl.selectAll("li").data(data).enter().append("li").text(function (d) {
+				return d.key;
+			}).on("click", expand);
 
-      function expand(d) {
-        d3.event.stopPropagation();
-        dispatch.call("customValueMouseOver", this, d);
+			function expand(d) {
+				d3.event.stopPropagation();
+				dispatch.call("customValueMouseOver", this, d);
 
-        if (typeof d.values === "undefined") {
-          return 0;
-        }
+				if (typeof d.values === "undefined") {
+					return 0;
+				}
 
-        var ul = d3.select(this).on("click", collapse).append("ul");
+				var ul = d3.select(this).on("click", collapse).append("ul");
 
-        var li = ul.selectAll("li").data(d.values).enter().append("li").text(function (d) {
-          if (typeof d.value !== "undefined") {
-            return d.key + " : " + d.value;
-          } else {
-            return d.key;
-          }
-        }).on("click", expand);
-      }
+				var li = ul.selectAll("li").data(d.values).enter().append("li").text(function (d) {
+					if (typeof d.value !== "undefined") {
+						return d.key + " : " + d.value;
+					} else {
+						return d.key;
+					}
+				}).on("click", expand);
+			}
 
-      function collapse() {
-        d3.event.stopPropagation();
-        d3.select(this).on("click", expand).selectAll("*").remove();
-      }
-    });
-  }
+			function collapse() {
+				d3.event.stopPropagation();
+				d3.select(this).on("click", expand).selectAll("*").remove();
+			}
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.classed = function (_) {
-    if (!arguments.length) return classed;
-    classed = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.classed = function (_) {
+		if (!arguments.length) return classed;
+		classed = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -2667,113 +2667,113 @@ function componentHtmlList () {
  *
  */
 function componentHtmlTable () {
-  // HTML Table Element (Populated by 'my' function)
-  var tableEl = void 0;
+	// HTML Table Element (Populated by 'my' function)
+	var tableEl = void 0;
 
-  // Default Options (Configurable via setters)
-  var classed = "htmlTable";
-  var width = 800;
+	// Default Options (Configurable via setters)
+	var classed = "htmlTable";
+	var width = 800;
 
-  // Data Options (Populated by 'init' function)
-  var rowNames = [];
-  var columnNames = [];
+	// Data Options (Populated by 'init' function)
+	var rowNames = [];
+	var columnNames = [];
 
-  // Dispatch (Custom events)
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	// Dispatch (Custom events)
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Initialise Data
-   */
-  function init(data) {
-    // Cut the data in different ways....
-    rowNames = data.map(function (d) {
-      return d.key;
-    });
+	/**
+  * Initialise Data
+  */
+	function init(data) {
+		// Cut the data in different ways....
+		rowNames = data.map(function (d) {
+			return d.key;
+		});
 
-    columnNames = [];
-    data.map(function (d) {
-      return d.values;
-    })[0].forEach(function (d, i) {
-      columnNames[i] = d.key;
-    });
-  }
+		columnNames = [];
+		data.map(function (d) {
+			return d.values;
+		})[0].forEach(function (d, i) {
+			columnNames[i] = d.key;
+		});
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    selection.each(function (data) {
-      init(data);
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		selection.each(function (data) {
+			init(data);
 
-      // Create HTML Table 'table' element (if it does not exist already)
-      if (!tableEl) {
-        tableEl = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
-      } else {
-        tableEl.selectAll("*").remove();
-      }
-      var head = tableEl.append("thead");
-      var foot = tableEl.append("tfoot");
-      var body = tableEl.append("tbody");
+			// Create HTML Table 'table' element (if it does not exist already)
+			if (!tableEl) {
+				tableEl = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
+			} else {
+				tableEl.selectAll("*").remove();
+			}
+			var head = tableEl.append("thead");
+			var foot = tableEl.append("tfoot");
+			var body = tableEl.append("tbody");
 
-      // Add table headings
-      var hdr = head.append("tr");
+			// Add table headings
+			var hdr = head.append("tr");
 
-      hdr.selectAll("th").data(function () {
-        // Tack on a blank cell at the beginning,
-        // this is for the top of the first column.
-        return [""].concat(columnNames);
-      }).enter().append("th").html(function (d) {
-        return d;
-      });
+			hdr.selectAll("th").data(function () {
+				// Tack on a blank cell at the beginning,
+				// this is for the top of the first column.
+				return [""].concat(columnNames);
+			}).enter().append("th").html(function (d) {
+				return d;
+			});
 
-      // Add table body
-      var rowsSelect = body.selectAll("tr").data(data);
+			// Add table body
+			var rowsSelect = body.selectAll("tr").data(data);
 
-      var rows = rowsSelect.enter().append("tr").attr("class", function (d) {
-        return d.key;
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      }).merge(rowsSelect);
+			var rows = rowsSelect.enter().append("tr").attr("class", function (d) {
+				return d.key;
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			}).merge(rowsSelect);
 
-      // Add the first column of headings (categories)
-      rows.append("th").html(function (d) {
-        return d.key;
-      });
+			// Add the first column of headings (categories)
+			rows.append("th").html(function (d) {
+				return d.key;
+			});
 
-      // Add the main data values
-      rows.selectAll("td").data(function (d) {
-        return d.values;
-      }).enter().append("td").attr("class", function (d) {
-        return d.key;
-      }).html(function (d) {
-        return d.value;
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      });
-    });
-  }
+			// Add the main data values
+			rows.selectAll("td").data(function (d) {
+				return d.values;
+			}).enter().append("td").attr("class", function (d) {
+				return d.key;
+			}).html(function (d) {
+				return d.value;
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			});
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.classed = function (_) {
-    if (!arguments.length) return classed;
-    classed = _;
-    return this;
-  };
+	my.classed = function (_) {
+		if (!arguments.length) return classed;
+		classed = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -2782,138 +2782,138 @@ function componentHtmlTable () {
  */
 function componentLineChart () {
 
-  /**
-   * Default Properties
-   */
-  var width = 400;
-  var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 1500 };
-  var colors = palette.categorical(3);
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "lineChart";
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 1500 };
+	var colors = palette.categorical(3);
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "lineChart";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var groupNames = slicedData.groupNames;
-    var maxValue = slicedData.maxValue;
-    var dateDomain = d3.extent(data[0].values, function (d) {
-      return d.key;
-    });
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var groupNames = slicedData.groupNames;
+		var maxValue = slicedData.maxValue;
+		var dateDomain = d3.extent(data[0].values, function (d) {
+			return d.key;
+		});
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(groupNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(groupNames).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(dateDomain).range([0, width]) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(dateDomain).range([0, width]) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue * 1.05]).range([height, 0]) : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue * 1.05]).range([height, 0]) : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Line generation function
-      var line = d3.line().curve(d3.curveCardinal).x(function (d) {
-        return xScale(d.key);
-      }).y(function (d) {
-        return yScale(d.value);
-      });
+			// Line generation function
+			var line = d3.line().curve(d3.curveCardinal).x(function (d) {
+				return xScale(d.key);
+			}).y(function (d) {
+				return yScale(d.value);
+			});
 
-      // Line animation tween
-      var pathTween = function pathTween(data) {
-        var interpolate = d3.scaleQuantile().domain([0, 1]).range(d3.range(1, data.length + 1));
-        return function (t) {
-          return line(data.slice(0, interpolate(t)));
-        };
-      };
+			// Line animation tween
+			var pathTween = function pathTween(data) {
+				var interpolate = d3.scaleQuantile().domain([0, 1]).range(d3.range(1, data.length + 1));
+				return function (t) {
+					return line(data.slice(0, interpolate(t)));
+				};
+			};
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Create series group
-      var seriesLine = seriesGroup.selectAll(".seriesLine").data(function (d) {
-        return [d];
-      });
+			// Create series group
+			var seriesLine = seriesGroup.selectAll(".seriesLine").data(function (d) {
+				return [d];
+			});
 
-      seriesLine.enter().append("path").attr("class", "seriesLine").attr("stroke-width", 1.5).attr("stroke", function (d) {
-        return colorScale(d.key);
-      }).attr("fill", "none").merge(seriesLine).transition().duration(transition.duration).attrTween("d", function (d) {
-        return pathTween(d.values);
-      });
+			seriesLine.enter().append("path").attr("class", "seriesLine").attr("stroke-width", 1.5).attr("stroke", function (d) {
+				return colorScale(d.key);
+			}).attr("fill", "none").merge(seriesLine).transition().duration(transition.duration).attrTween("d", function (d) {
+				return pathTween(d.values);
+			});
 
-      seriesLine.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			seriesLine.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -2922,135 +2922,135 @@ function componentLineChart () {
  */
 function componentNumberCard () {
 
-  /**
-   * Default Properties
-   */
-  var width = 400;
-  var height = 100;
-  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "numberCard";
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 100;
+	var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "numberCard";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var groupNames = slicedData.groupNames;
+		var maxValue = slicedData.maxValue;
+		var minValue = slicedData.minValue;
 
-    var valDomain = [minValue, maxValue];
+		var valDomain = [minValue, maxValue];
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.05) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.05) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).range([0, height]).padding(0.05) : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).range([0, height]).padding(0.05) : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Calculate cell sizes
-      var cellHeight = yScale.bandwidth();
-      var cellWidth = xScale.bandwidth();
+			// Calculate cell sizes
+			var cellHeight = yScale.bandwidth();
+			var cellWidth = xScale.bandwidth();
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add numbers to series
-      var numbers = seriesGroup.selectAll(".number").data(function (d) {
-        return d.values;
-      });
+			// Add numbers to series
+			var numbers = seriesGroup.selectAll(".number").data(function (d) {
+				return d.values;
+			});
 
-      numbers.enter().append("text").attr("class", "number").attr("x", function (d) {
-        return xScale(d.key) + cellWidth / 2;
-      }).attr("y", function (d) {
-        return cellHeight / 2;
-      }).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function (d) {
-        return d["value"];
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(numbers).transition().duration(1000).attr("fill", function (d) {
-        return colorScale(d.value);
-      });
+			numbers.enter().append("text").attr("class", "number").attr("x", function (d) {
+				return xScale(d.key) + cellWidth / 2;
+			}).attr("y", function (d) {
+				return cellHeight / 2;
+			}).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function (d) {
+				return d["value"];
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(numbers).transition().duration(1000).attr("fill", function (d) {
+				return colorScale(d.value);
+			});
 
-      numbers.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			numbers.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -3059,144 +3059,144 @@ function componentNumberCard () {
  */
 function componentPolarArea () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var radius = 150;
-  var startAngle = 0;
-  var endAngle = 360;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "polarArea";
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var radius = 150;
+	var startAngle = 0;
+	var endAngle = 360;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "polarArea";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = slicedData.maxValue;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = slicedData.maxValue;
 
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice() : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice() : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Pie Generator
-      startAngle = d3.min(xScale.range());
-      endAngle = d3.max(xScale.range());
-      var pie = d3.pie().value(1).sort(null).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).padAngle(0);
+			// Pie Generator
+			startAngle = d3.min(xScale.range());
+			endAngle = d3.max(xScale.range());
+			var pie = d3.pie().value(1).sort(null).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).padAngle(0);
 
-      // Arc Generator
-      var arc = d3.arc().outerRadius(function (d) {
-        return yScale(d.data.value);
-      }).innerRadius(0).cornerRadius(2);
+			// Arc Generator
+			var arc = d3.arc().outerRadius(function (d) {
+				return yScale(d.data.value);
+			}).innerRadius(0).cornerRadius(2);
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add segments to series
-      var segments = seriesGroup.selectAll(".segment").data(function (d) {
-        return pie(d.values);
-      });
+			// Add segments to series
+			var segments = seriesGroup.selectAll(".segment").data(function (d) {
+				return pie(d.values);
+			});
 
-      segments.enter().append("path").classed("segment", true).style("fill", function (d) {
-        return colorScale(d.data.key);
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d.data);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d.data);
-      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
+			segments.enter().append("path").classed("segment", true).style("fill", function (d) {
+				return colorScale(d.data.key);
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d.data);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d.data);
+			}).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
 
-      segments.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			segments.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -3205,173 +3205,173 @@ function componentPolarArea () {
  */
 function componentProportionalAreaCircles () {
 
-  /**
-   * Default Properties
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 100;
+	var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var sizeScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "proportionalAreaCircles";
+
+	var minRadius = 2;
+	var maxRadius = 20;
+	var useGlobalScale = true;
+
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var groupNames = slicedData.groupNames;
+		var maxValue = slicedData.maxValue;
+		var minValue = slicedData.minValue;
+
+		var valDomain = [minValue, maxValue];
+		var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function (d) {
+			return d["value"];
+		})];
+
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
+
+		// If the sizeScale has not been passed then attempt to calculate.
+		sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
+
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.05) : xScale;
+
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).range([0, height]).padding(0.05) : yScale;
+	}
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
+
+			// Calculate cell sizes
+			var cellHeight = yScale.bandwidth();
+			var cellWidth = xScale.bandwidth();
+
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
+
+			var spot = componentLabeledNode().radius(function (d) {
+				return sizeScale(d.value);
+			}).color(function (d) {
+				return colorScale(d.value);
+			}).label(function (d) {
+				return d.value;
+			}).display("none").classed("punchSpot").dispatch(dispatch);
+
+			// Add spots to series
+			var spots = seriesGroup.selectAll(".punchSpot").data(function (d) {
+				return d.values;
+			});
+
+			spots.enter().append("g").call(spot).attr("transform", function (d) {
+				return "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + cellHeight / 2 + ")";
+			}).on("mouseover", function (d) {
+				d3.select(this).select("text").style("display", "block");
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("mouseout", function () {
+				d3.select(this).select("text").style("display", "none");
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(spots);
+
+			/*
+   spots.enter()
+     .append("circle")
+     .attr("class", "punchSpot")
+     .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
+     .attr("cy", function(d) { return (cellHeight / 2); })
+     .attr("r", 0)
+     .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+     .on("click", function(d) { dispatch.call("customValueClick", this, d); })
+     .merge(spots)
+     .transition()
+     .duration(transition.duration)
+     .attr("fill", function(d) { return colorScale(d.value); })
+     .attr("r", function(d) { return sizeScale(d['value']); });
    */
-  var width = 400;
-  var height = 100;
-  var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var sizeScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "proportionalAreaCircles";
 
-  var minRadius = 2;
-  var maxRadius = 20;
-  var useGlobalScale = true;
+			spots.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var groupNames = slicedData.groupNames;
-    var maxValue = slicedData.maxValue;
-    var minValue = slicedData.minValue;
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-    var valDomain = [minValue, maxValue];
-    var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function (d) {
-      return d["value"];
-    })];
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-    // If the sizeScale has not been passed then attempt to calculate.
-    sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, width]).padding(0.05) : xScale;
+	my.sizeScale = function (_) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _;
+		return my;
+	};
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(groupNames).range([0, height]).padding(0.05) : yScale;
-  }
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-      // Calculate cell sizes
-      var cellHeight = yScale.bandwidth();
-      var cellWidth = xScale.bandwidth();
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-      var spot = componentLabeledNode().radius(function (d) {
-        return sizeScale(d.value);
-      }).color(function (d) {
-        return colorScale(d.value);
-      }).label(function (d) {
-        return d.value;
-      }).display("none").classed("punchSpot").dispatch(dispatch);
-
-      // Add spots to series
-      var spots = seriesGroup.selectAll(".punchSpot").data(function (d) {
-        return d.values;
-      });
-
-      spots.enter().append("g").call(spot).attr("transform", function (d) {
-        return "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + cellHeight / 2 + ")";
-      }).on("mouseover", function (d) {
-        d3.select(this).select("text").style("display", "block");
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("mouseout", function () {
-        d3.select(this).select("text").style("display", "none");
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(spots);
-
-      /*
-      spots.enter()
-        .append("circle")
-        .attr("class", "punchSpot")
-        .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
-        .attr("cy", function(d) { return (cellHeight / 2); })
-        .attr("r", 0)
-        .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-        .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-        .merge(spots)
-        .transition()
-        .duration(transition.duration)
-        .attr("fill", function(d) { return colorScale(d.value); })
-        .attr("r", function(d) { return sizeScale(d['value']); });
-      */
-
-      spots.exit().transition().style("opacity", 0).remove();
-    });
-  }
-
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
-
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
-
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
-
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
-
-  my.sizeScale = function (_) {
-    if (!arguments.length) return sizeScale;
-    sizeScale = _;
-    return my;
-  };
-
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
-
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
-
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
-
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
-
-  return my;
+	return my;
 }
 
 /**
@@ -3380,142 +3380,142 @@ function componentProportionalAreaCircles () {
  */
 function componentScatterPlot () {
 
-  /**
-   * Default Properties
-   */
-  var width = 400;
-  var height = 400;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "scatterPlot";
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 400;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "scatterPlot";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var groupNames = slicedData.groupNames;
-    var maxValue = slicedData.maxValue;
-    var dateDomain = d3.extent(data[0].values, function (d) {
-      return d.key;
-    });
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var groupNames = slicedData.groupNames;
+		var maxValue = slicedData.maxValue;
+		var dateDomain = d3.extent(data[0].values, function (d) {
+			return d.key;
+		});
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(groupNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(groupNames).range(colors) : colorScale;
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(dateDomain).range([0, width]) : xScale;
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(dateDomain).range([0, width]) : xScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue * 1.05]).range([height, 0]) : yScale;
-  }
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue * 1.05]).range([height, 0]) : yScale;
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Create series group
-      var seriesDots = seriesGroup.selectAll(".seriesDots").data(function (d) {
-        return [d];
-      });
+			// Create series group
+			var seriesDots = seriesGroup.selectAll(".seriesDots").data(function (d) {
+				return [d];
+			});
 
-      var series = seriesDots.enter().append("g").classed("seriesDots", true).attr("fill", function (d) {
-        return colorScale(d.key);
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      }).merge(seriesDots);
+			var series = seriesDots.enter().append("g").classed("seriesDots", true).attr("fill", function (d) {
+				return colorScale(d.key);
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			}).merge(seriesDots);
 
-      // Add dots to series
-      var dots = series.selectAll(".dot").data(function (d) {
-        return d.values;
-      });
+			// Add dots to series
+			var dots = series.selectAll(".dot").data(function (d) {
+				return d.values;
+			});
 
-      dots.enter().append("circle").attr("class", "dot").attr("r", 3).attr("cx", function (d) {
-        return xScale(d.key);
-      }).attr("cy", height).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
-        return xScale(d.key);
-      }).attr("cy", function (d) {
-        return yScale(d.value);
-      });
+			dots.enter().append("circle").attr("class", "dot").attr("r", 3).attr("cx", function (d) {
+				return xScale(d.key);
+			}).attr("cy", height).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
+				return xScale(d.key);
+			}).attr("cy", function (d) {
+				return yScale(d.value);
+			});
 
-      dots.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			dots.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -3524,182 +3524,182 @@ function componentScatterPlot () {
  */
 function componentRoseChartSector () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var radius = void 0;
-  var startAngle = 0;
-  var endAngle = 45;
-  var colors = palette.categorical(3);
-  var colorScale = void 0;
-  var xScale = void 0;
-  var yScale = void 0;
-  var stacked = false;
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var classed = "roseChartSector";
+	/**
+  * Default Properties
+  */
+	var width = 300;
+	var height = 300;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var radius = void 0;
+	var startAngle = 0;
+	var endAngle = 45;
+	var colors = palette.categorical(3);
+	var colorScale = void 0;
+	var xScale = void 0;
+	var yScale = void 0;
+	var stacked = false;
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var classed = "roseChartSector";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    var slicedData = dataParse(data);
-    var categoryNames = slicedData.categoryNames;
-    var maxValue = stacked ? slicedData.groupTotalsMax : slicedData.maxValue;
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = stacked ? slicedData.groupTotalsMax : slicedData.maxValue;
 
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]) : yScale;
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]) : yScale;
 
-    // If the xScale has been passed then re-calculate the start and end angles.
-    if (typeof xScale !== "undefined") {
-      startAngle = xScale(data.key);
-      endAngle = xScale(data.key) + xScale.bandwidth();
-    }
-  }
+		// If the xScale has been passed then re-calculate the start and end angles.
+		if (typeof xScale !== "undefined") {
+			startAngle = xScale(data.key);
+			endAngle = xScale(data.key) + xScale.bandwidth();
+		}
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
-      // Stack Generator
-      var stacker = function stacker(data) {
-        // Calculate inner and outer radius values
-        var series = [];
-        var innerRadius = 0;
-        var outerRadius = 0;
-        data.forEach(function (d, i) {
-          outerRadius = innerRadius + d.value;
-          series[i] = {
-            key: d.key,
-            value: d.value,
-            innerRadius: yScale(innerRadius),
-            outerRadius: yScale(outerRadius)
-          };
-          innerRadius += stacked ? d.value : 0;
-        });
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
+			// Stack Generator
+			var stacker = function stacker(data) {
+				// Calculate inner and outer radius values
+				var series = [];
+				var innerRadius = 0;
+				var outerRadius = 0;
+				data.forEach(function (d, i) {
+					outerRadius = innerRadius + d.value;
+					series[i] = {
+						key: d.key,
+						value: d.value,
+						innerRadius: yScale(innerRadius),
+						outerRadius: yScale(outerRadius)
+					};
+					innerRadius += stacked ? d.value : 0;
+				});
 
-        return series;
-      };
+				return series;
+			};
 
-      // Arc Generator
-      var arc = d3.arc().innerRadius(function (d) {
-        return d.innerRadius;
-      }).outerRadius(function (d) {
-        return d.outerRadius;
-      }).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180));
+			// Arc Generator
+			var arc = d3.arc().innerRadius(function (d) {
+				return d.innerRadius;
+			}).outerRadius(function (d) {
+				return d.outerRadius;
+			}).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180));
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.classed(classed, true).attr("id", function (d) {
-        return d.key;
-      }).on("mouseover", function (d) {
-        dispatch.call("customSeriesMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customSeriesClick", this, d);
-      });
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
 
-      // Add arcs to series group
-      var arcs = seriesGroup.selectAll(".arc").data(function (d) {
-        return stacker(d.values);
-      });
+			// Add arcs to series group
+			var arcs = seriesGroup.selectAll(".arc").data(function (d) {
+				return stacker(d.values);
+			});
 
-      arcs.enter().append("path").classed("arc", true).attr("fill", function (d) {
-        return colorScale(d.key);
-      }).on("mouseover", function (d) {
-        dispatch.call("customValueMouseOver", this, d);
-      }).on("click", function (d) {
-        dispatch.call("customValueClick", this, d);
-      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
+			arcs.enter().append("path").classed("arc", true).attr("fill", function (d) {
+				return colorScale(d.key);
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc);
 
-      arcs.exit().transition().style("opacity", 0).remove();
-    });
-  }
+			arcs.exit().transition().style("opacity", 0).remove();
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	my.radius = function (_) {
+		if (!arguments.length) return radius;
+		radius = _;
+		return this;
+	};
 
-  my.startAngle = function (_) {
-    if (!arguments.length) return startAngle;
-    startAngle = _;
-    return this;
-  };
+	my.startAngle = function (_) {
+		if (!arguments.length) return startAngle;
+		startAngle = _;
+		return this;
+	};
 
-  my.endAngle = function (_) {
-    if (!arguments.length) return endAngle;
-    endAngle = _;
-    return this;
-  };
+	my.endAngle = function (_) {
+		if (!arguments.length) return endAngle;
+		endAngle = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
 
-  my.stacked = function (_) {
-    if (!arguments.length) return stacked;
-    stacked = _;
-    return my;
-  };
+	my.stacked = function (_) {
+		if (!arguments.length) return stacked;
+		stacked = _;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -3812,114 +3812,114 @@ function componentLegendSize () {
  */
 function componentLegendColor () {
 
-  /**
-   * Default Properties
-   */
-  var width = 100;
-  var height = 200;
-  var colorScale = undefined;
-  var itemCount = void 0;
-  var itemType = "rect";
+	/**
+  * Default Properties
+  */
+	var width = 100;
+	var height = 200;
+	var colorScale = undefined;
+	var itemCount = void 0;
+	var itemType = "rect";
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    height = height ? height : this.attr("height");
-    width = width ? width : this.attr("width");
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		height = height ? height : this.attr("height");
+		width = width ? width : this.attr("width");
 
-    // Legend Box
-    var legendSelect = selection.selectAll("#legendBox").data([0]);
+		// Legend Box
+		var legendSelect = selection.selectAll("#legendBox").data([0]);
 
-    var legend = legendSelect.enter().append("g").attr("id", "legendBox").attr("width", width).attr("height", height).merge(legendSelect);
+		var legend = legendSelect.enter().append("g").attr("id", "legendBox").attr("width", width).attr("height", height).merge(legendSelect);
 
-    var data = function data() {
-      var domain = colorScale.domain();
-      itemCount = domain.length;
-      var itemHeight = height / itemCount / 2;
-      var itemWidth = 20;
+		var data = function data() {
+			var domain = colorScale.domain();
+			itemCount = domain.length;
+			var itemHeight = height / itemCount / 2;
+			var itemWidth = 20;
 
-      return domain.map(function (v, i) {
-        return {
-          y: 10 + itemHeight * 2 * i,
-          width: itemWidth,
-          height: itemHeight,
-          color: colorScale(v),
-          text: v
-        };
-      });
-    };
+			return domain.map(function (v, i) {
+				return {
+					y: 10 + itemHeight * 2 * i,
+					width: itemWidth,
+					height: itemHeight,
+					color: colorScale(v),
+					text: v
+				};
+			});
+		};
 
-    var itemsSelect = legend.selectAll(".legendItem").data(data);
+		var itemsSelect = legend.selectAll(".legendItem").data(data);
 
-    var items = itemsSelect.enter().append("g").classed("legendItem", true).attr("transform", function (d) {
-      return "translate(0," + d.y + ")";
-    }).merge(itemsSelect);
+		var items = itemsSelect.enter().append("g").classed("legendItem", true).attr("transform", function (d) {
+			return "translate(0," + d.y + ")";
+		}).merge(itemsSelect);
 
-    items.exit().remove();
+		items.exit().remove();
 
-    switch (itemType) {
-      case "line":
-        items.append("line").attr("x1", function () {
-          return 0;
-        }).attr("y1", function (d) {
-          return d.height / 2;
-        }).attr("x2", function (d) {
-          return d.width;
-        }).attr("y2", function (d) {
-          return d.height / 2;
-        }).attr("stroke", function (d) {
-          return d.color;
-        }).attr("stroke-width", 2);
-        break;
+		switch (itemType) {
+			case "line":
+				items.append("line").attr("x1", function () {
+					return 0;
+				}).attr("y1", function (d) {
+					return d.height / 2;
+				}).attr("x2", function (d) {
+					return d.width;
+				}).attr("y2", function (d) {
+					return d.height / 2;
+				}).attr("stroke", function (d) {
+					return d.color;
+				}).attr("stroke-width", 2);
+				break;
 
-      case "rect":
-      default:
-        items.append("rect").attr("width", function (d) {
-          return d.width;
-        }).attr("height", function (d) {
-          return d.height;
-        }).style("fill", function (d) {
-          return d.color;
-        }).attr("stroke", "#dddddd").attr("stroke-width", 1);
-        break;
-    }
+			case "rect":
+			default:
+				items.append("rect").attr("width", function (d) {
+					return d.width;
+				}).attr("height", function (d) {
+					return d.height;
+				}).style("fill", function (d) {
+					return d.color;
+				}).attr("stroke", "#dddddd").attr("stroke-width", 1);
+				break;
+		}
 
-    items.append("text").text(function (d) {
-      return d.text;
-    }).attr("dominant-baseline", "middle").attr("x", 40).attr("y", function (d) {
-      return d.height / 2;
-    });
-  }
+		items.append("text").text(function (d) {
+			return d.text;
+		}).attr("dominant-baseline", "middle").attr("x", 40).attr("y", function (d) {
+			return d.height / 2;
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return my;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
 
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return my;
-  };
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
 
-  my.itemType = function (_) {
-    if (!arguments.length) return itemType;
-    itemType = _;
-    return my;
-  };
+	my.itemType = function (_) {
+		if (!arguments.length) return itemType;
+		itemType = _;
+		return my;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -4101,33 +4101,33 @@ function componentLegend () {
 }
 
 var component = {
-  barsCircular: componentBarsCircular,
-  barsStacked: componentBarsStacked,
-  barsVertical: componentBarsVertical,
-  bubbles: componentBubbles,
-  candleSticks: componentCandleSticks,
-  circularAxis: componentCircularAxis,
-  circularRingLabels: componentCircularRingLabels,
-  circularSectorLabels: componentCircularSectorLabels,
-  creditTag: componentCreditTag,
-  donut: componentDonut,
-  donutLabels: componentDonutLabels,
-  heatMapRing: componentHeatMapRing,
-  heatMapRow: componentHeatMapRow,
-  htmlList: componentHtmlList,
-  htmlTable: componentHtmlTable,
-  labeledNode: componentLabeledNode,
-  legend: componentLegend,
-  legendSize: componentLegendSize,
-  legendColor: componentLegendColor,
-  legendThreshold: componentLegendThreshold,
-  lineChart: componentLineChart,
-  numberCard: componentNumberCard,
-  polarArea: componentPolarArea,
-  roseChartSector: componentRoseChartSector,
-  proportionalAreaCircles: componentProportionalAreaCircles,
-  scatterPlot: componentScatterPlot,
-  title: componentTitle
+	barsCircular: componentBarsCircular,
+	barsStacked: componentBarsStacked,
+	barsVertical: componentBarsVertical,
+	bubbles: componentBubbles,
+	candleSticks: componentCandleSticks,
+	circularAxis: componentCircularAxis,
+	circularRingLabels: componentCircularRingLabels,
+	circularSectorLabels: componentCircularSectorLabels,
+	creditTag: componentCreditTag,
+	donut: componentDonut,
+	donutLabels: componentDonutLabels,
+	heatMapRing: componentHeatMapRing,
+	heatMapRow: componentHeatMapRow,
+	htmlList: componentHtmlList,
+	htmlTable: componentHtmlTable,
+	labeledNode: componentLabeledNode,
+	legend: componentLegend,
+	legendSize: componentLegendSize,
+	legendColor: componentLegendColor,
+	legendThreshold: componentLegendThreshold,
+	lineChart: componentLineChart,
+	numberCard: componentNumberCard,
+	polarArea: componentPolarArea,
+	roseChartSector: componentRoseChartSector,
+	proportionalAreaCircles: componentProportionalAreaCircles,
+	scatterPlot: componentScatterPlot,
+	title: componentTitle
 };
 
 /**
@@ -5747,185 +5747,185 @@ function chartHeatMapTable () {
  */
 function chartLineChart () {
 
-  /**
-   * Default Properties
-   */
-  var svg = void 0;
-  var chart = void 0;
-  var classed = "lineChart";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 40, left: 40 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	/**
+  * Default Properties
+  */
+	var svg = void 0;
+	var chart = void 0;
+	var classed = "lineChart";
+	var width = 400;
+	var height = 300;
+	var margin = { top: 20, right: 20, bottom: 40, left: 40 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Chart Dimensions
-   */
-  var chartW = void 0;
-  var chartH = void 0;
+	/**
+  * Chart Dimensions
+  */
+	var chartW = void 0;
+	var chartH = void 0;
 
-  /**
-   * Scales
-   */
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
+	/**
+  * Scales
+  */
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
 
-  /**
-   * Other Customisation Options
-   */
-  var yAxisLabel = null;
+	/**
+  * Other Customisation Options
+  */
+	var yAxisLabel = null;
 
-  /**
-   * Initialise Data, Scales and Series
-   */
-  function init(data) {
-    chartW = width - margin.left - margin.right;
-    chartH = height - margin.top - margin.bottom;
+	/**
+  * Initialise Data, Scales and Series
+  */
+	function init(data) {
+		chartW = width - margin.left - margin.right;
+		chartH = height - margin.top - margin.bottom;
 
-    // Slice Data, calculate totals, max etc.
-    var slicedData = dataParse(data);
-    var maxValue = slicedData.maxValue;
-    var groupNames = slicedData.groupNames;
+		// Slice Data, calculate totals, max etc.
+		var slicedData = dataParse(data);
+		var maxValue = slicedData.maxValue;
+		var groupNames = slicedData.groupNames;
 
-    // Convert dates
-    data.forEach(function (d, i) {
-      d.values.forEach(function (b, j) {
-        data[i].values[j].key = new Date(b.key * 1000);
-      });
-    });
-    var dateDomain = d3.extent(data[0].values, function (d) {
-      return d.key;
-    });
+		// Convert dates
+		data.forEach(function (d, i) {
+			d.values.forEach(function (b, j) {
+				data[i].values[j].key = new Date(b.key * 1000);
+			});
+		});
+		var dateDomain = d3.extent(data[0].values, function (d) {
+			return d.key;
+		});
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(groupNames).range(colors) : colorScale;
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(groupNames).range(colors) : colorScale;
 
-    // X & Y Scales
-    xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
+		// X & Y Scales
+		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
 
-    yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
-  }
+		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
+	}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    // Create SVG element (if it does not exist already)
-    if (!svg) {
-      svg = function (selection) {
-        var el = selection._groups[0][0];
-        if (!!el.ownerSVGElement || el.tagName === "svg") {
-          return selection;
-        } else {
-          return selection.append("svg");
-        }
-      }(selection);
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+			svg = function (selection) {
+				var el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			}(selection);
 
-      svg.classed("d3ez", true).attr("width", width).attr("height", height);
+			svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-      chart = svg.append("g").classed("chart", true);
-    } else {
-      chart = selection.select(".chart");
-    }
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
 
-    // Update the chart dimensions and add layer groups
-    var layers = ["xAxis axis", "yAxis axis"];
-    chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
-      return d;
-    });
+		// Update the chart dimensions and add layer groups
+		var layers = ["xAxis axis", "yAxis axis"];
+		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+			return d;
+		});
 
-    selection.each(function (data) {
-      // Initialise Data
-      init(data);
+		selection.each(function (data) {
+			// Initialise Data
+			init(data);
 
-      // Line Chart
-      var lineChart = component.lineChart().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
+			// Line Chart
+			var lineChart = component.lineChart().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
-      // Scatter Plot
-      var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+			// Scatter Plot
+			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-      var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
-        return d;
-      });
+			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+				return d;
+			});
 
-      seriesGroup.enter().append("g").attr("class", "seriesGroup").style("fill", function (d) {
-        return colorScale(d.key);
-      }).datum(function (d) {
-        return d;
-      }).merge(seriesGroup).call(lineChart).call(scatterPlot);
+			seriesGroup.enter().append("g").attr("class", "seriesGroup").style("fill", function (d) {
+				return colorScale(d.key);
+			}).datum(function (d) {
+				return d;
+			}).merge(seriesGroup).call(lineChart).call(scatterPlot);
 
-      seriesGroup.exit().remove();
+			seriesGroup.exit().remove();
 
-      // X Axis
-      var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
-      chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+			// X Axis
+			var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
+			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-      // Y Axis
-      var yAxis = d3.axisLeft(yScale);
-      chart.select(".yAxis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").text(yAxisLabel);
-    });
-  }
+			// Y Axis
+			var yAxis = d3.axisLeft(yScale);
+			chart.select(".yAxis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").text(yAxisLabel);
+		});
+	}
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
 
-  my.margin = function (_) {
-    if (!arguments.length) return margin;
-    margin = _;
-    return this;
-  };
+	my.margin = function (_) {
+		if (!arguments.length) return margin;
+		margin = _;
+		return this;
+	};
 
-  my.yAxisLabel = function (_) {
-    if (!arguments.length) return yAxisLabel;
-    yAxisLabel = _;
-    return this;
-  };
+	my.yAxisLabel = function (_) {
+		if (!arguments.length) return yAxisLabel;
+		yAxisLabel = _;
+		return this;
+	};
 
-  my.transition = function (_) {
-    if (!arguments.length) return transition;
-    transition = _;
-    return this;
-  };
+	my.transition = function (_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return this;
-  };
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return this;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
 
-  return my;
+	return my;
 }
 
 /**
@@ -6475,19 +6475,19 @@ function chartRoseChart () {
 }
 
 var chart = {
-  barChartCircular: chartBarChartCircular,
-  barChartClustered: chartBarChartClustered,
-  barChartStacked: chartBarChartStacked,
-  barChartVertical: chartBarChartVertical,
-  bubbleChart: chartBubbleChart,
-  candlestickChart: chartCandlestickChart,
-  donutChart: chartDonutChart,
-  heatMapRadial: chartHeatMapRadial,
-  heatMapTable: chartHeatMapTable,
-  lineChart: chartLineChart,
-  polarAreaChart: chartPolarAreaChart,
-  punchCard: chartPunchCard,
-  roseChart: chartRoseChart
+	barChartCircular: chartBarChartCircular,
+	barChartClustered: chartBarChartClustered,
+	barChartStacked: chartBarChartStacked,
+	barChartVertical: chartBarChartVertical,
+	bubbleChart: chartBubbleChart,
+	candlestickChart: chartCandlestickChart,
+	donutChart: chartDonutChart,
+	heatMapRadial: chartHeatMapRadial,
+	heatMapTable: chartHeatMapTable,
+	lineChart: chartLineChart,
+	polarAreaChart: chartPolarAreaChart,
+	punchCard: chartPunchCard,
+	roseChart: chartRoseChart
 };
 
 /**
@@ -6499,15 +6499,15 @@ var chart = {
  */
 
 var index = {
-  version: version,
-  author: "James Saunders",
-  copyright: "Copyright (C) 2018 James Saunders",
-  license: "GPL-3.0",
-  base: base,
-  dataParse: dataParse,
-  palette: palette,
-  component: component,
-  chart: chart
+	version: version,
+	author: "James Saunders",
+	copyright: "Copyright (C) 2018 James Saunders",
+	license: "GPL-3.0",
+	base: base,
+	dataParse: dataParse,
+	palette: palette,
+	component: component,
+	chart: chart
 };
 
 return index;

@@ -94,14 +94,14 @@ export default function() {
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
-      svg = (function(selection) {
-        let el = selection._groups[0][0];
-        if (!!el.ownerSVGElement || el.tagName === "svg") {
-          return selection;
-        } else {
-          return selection.append("svg");
-        }
-      })(selection);
+			svg = (function(selection) {
+				let el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			})(selection);
 
 			svg.classed("d3ez", true)
 				.attr("width", width)
@@ -130,11 +130,11 @@ export default function() {
 
 			// Add Clip Path - Still Proof of Concept
 			chart.append('clipPath')
-        .attr('id', 'plotAreaClip')
-        .append('rect')
-        .attr('width', chartW)
-        .attr('height', chartH)
-        .attr('clip-path', 'url(#plotAreaClip)');
+				.attr('id', 'plotAreaClip')
+				.append('rect')
+				.attr('width', chartW)
+				.attr('height', chartH)
+				.attr('clip-path', 'url(#plotAreaClip)');
 
 			// Candle Sticks
 			let candleSticks = component.candleSticks()

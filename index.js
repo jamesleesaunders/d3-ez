@@ -15,13 +15,13 @@ import { default as component } from "./src/component";
 import { default as chart } from "./src/chart";
 
 export default {
-  version: version,
-  author: "James Saunders",
-  copyright: "Copyright (C) 2018 James Saunders",
-  license: "GPL-3.0",
-  base: base,
-  dataParse: dataParse,
-  palette: palette,
-  component: component,
-  chart: chart
+	version: version,
+	author: "James Saunders",
+	copyright: "Copyright (C) 2018 James Saunders",
+	license: "GPL-3.0",
+	base: base,
+	dataParse: dataParse,
+	palette: palette,
+	component: component,
+	chart: chart
 };
