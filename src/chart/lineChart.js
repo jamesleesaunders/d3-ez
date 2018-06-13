@@ -171,6 +171,22 @@ export default function() {
 				.attr("fill", "#000000")
 				.style("text-anchor", "end")
 				.text(yAxisLabel);
+
+			// Experimental Brush
+			function brushStart() {
+				// console.log(this);
+			}
+			function brushEnd() {
+				// console.log(this);
+			}
+			let brush = d3.brushX()
+				.extent([[0, 0], [chartW, chartH]])
+				.on("brush start", brushStart)
+				.on("brush end", brushEnd);
+
+			chart.append("g")
+				.attr("class", "brush")
+				.call(brush);
 		});
 	}
 
