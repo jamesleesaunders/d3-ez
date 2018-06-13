@@ -2450,6 +2450,7 @@ function componentHeatMapRow () {
   */
 	var width = 400;
 	var height = 100;
+	var transition = { ease: d3.easeBounce, duration: 500 };
 	var colors = [d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65)];
 	var colorScale = void 0;
 	var xScale = void 0;
@@ -2519,10 +2520,7 @@ function componentHeatMapRow () {
 				dispatch.call("customValueMouseOver", this, d);
 			}).on("click", function (d) {
 				dispatch.call("customValueClick", this, d);
-			}).merge(cells)
-			//.transition()
-			//.duration(transition.duration)
-			.attr("fill", function (d) {
+			}).merge(cells).transition().duration(transition.duration).attr("fill", function (d) {
 				return colorScale(d.value);
 			});
 

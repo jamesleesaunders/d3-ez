@@ -95,8 +95,8 @@ export default function() {
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(cells)
-				//.transition()
-				//.duration(transition.duration)
+				.transition()
+				.duration(transition.duration)
 				.attr("fill", function(d) { return colorScale(d.value); });
 
 			cells.exit()
