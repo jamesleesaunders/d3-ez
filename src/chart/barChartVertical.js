@@ -98,7 +98,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis", "barChart"];
+		let layers = ["barsVertical", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -122,18 +122,20 @@ export default function() {
 				//.yScale(yScale)
 				.dispatch(dispatch);
 
-			chart.select(".barChart")
+			chart.select(".barsVertical")
 				.datum(data)
 				.call(barsVertical);
 
 			// X Axis
 			let xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis);
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis);
 

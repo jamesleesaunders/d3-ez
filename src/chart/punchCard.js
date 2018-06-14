@@ -109,7 +109,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis"];
+		let layers = ["punchRowGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -134,7 +134,8 @@ export default function() {
 				.sizeScale(sizeScale)
 				.dispatch(dispatch);
 
-			let seriesGroup = chart.selectAll(".seriesGroup")
+			let seriesGroup = chart.select(".punchRowGroups")
+				.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
 			seriesGroup.enter().append("g")
@@ -148,6 +149,7 @@ export default function() {
 
 			// X Axis
 			let xAxis = d3.axisTop(xScale);
+
 			chart.select(".xAxis")
 				.call(xAxis)
 				.selectAll("text")
@@ -158,6 +160,7 @@ export default function() {
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis);
 		});

@@ -2148,9 +2148,7 @@ function componentDonutLabels () {
 
 			// Update series group
 			var seriesGroup = d3.select(this);
-			seriesGroup.classed(classed, true).attr("id", function (d) {
-				return d.key;
-			});
+			seriesGroup.classed(classed, true);
 
 			// Text Labels
 			var labelsGroupSelect = seriesGroup.selectAll("g.labels").data(function (d) {
@@ -4395,7 +4393,7 @@ function chartBarChartClustered () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis"];
+		var layers = ["barChartGroup", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -4407,8 +4405,8 @@ function chartBarChartClustered () {
 			// Vertical Bars
 			var barsVertical = component.barsVertical().width(xScale.bandwidth()).height(chartH).colorScale(colorScale).dispatch(dispatch);
 
-			// Create Bar Group
-			var seriesGroup = chart.selectAll(".seriesGroup").data(data);
+			// Create Bar Groups
+			var seriesGroup = chart.select(".barChartGroup").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function (d) {
 				return "translate(" + xScale(d.key) + ", 0)";
@@ -4418,10 +4416,12 @@ function chartBarChartClustered () {
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Label
@@ -4569,7 +4569,7 @@ function chartBarChartStacked () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis"];
+		var layers = ["barChartGroup", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -4583,8 +4583,8 @@ function chartBarChartStacked () {
 			//.yScale(yScale)
 			.dispatch(dispatch);
 
-			// Create Bar Group
-			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+			// Create Bar Groups
+			var seriesGroup = chart.select(".barChartGroup").selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -4596,10 +4596,12 @@ function chartBarChartStacked () {
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Label
@@ -4742,7 +4744,7 @@ function chartBarChartVertical () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis", "barChart"];
+		var layers = ["barsVertical", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -4756,14 +4758,16 @@ function chartBarChartVertical () {
 			//.yScale(yScale)
 			.dispatch(dispatch);
 
-			chart.select(".barChart").datum(data).call(barsVertical);
+			chart.select(".barsVertical").datum(data).call(barsVertical);
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Label
@@ -4926,7 +4930,7 @@ function chartBubbleChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis"];
+		var layers = ["bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -4938,7 +4942,7 @@ function chartBubbleChart () {
 			// Bubble Chart
 			var bubbles = component.bubbles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).minRadius(minRadius).maxRadius(maxRadius).dispatch(dispatch);
 
-			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+			var seriesGroup = chart.select(".bubbleGroups").selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -4950,10 +4954,12 @@ function chartBubbleChart () {
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 		});
 	}
@@ -5117,7 +5123,7 @@ function chartCandlestickChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis", "seriesGroup"];
+		var layers = ["candleSticks", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5132,14 +5138,16 @@ function chartCandlestickChart () {
 			// Candle Sticks
 			var candleSticks = component.candleSticks().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
-			chart.select(".seriesGroup").datum(data).call(candleSticks);
+			chart.select(".candleSticks").datum(data).call(candleSticks);
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
+
 			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Labels
@@ -5279,7 +5287,7 @@ function chartDonutChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["slices", "labels"];
+		var layers = ["donut", "donutLabels"];
 		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5291,12 +5299,12 @@ function chartDonutChart () {
 			// Donut Slices
 			var donutChart = component.donut().radius(radius).innerRadius(innerRadius).colorScale(colorScale).dispatch(dispatch);
 
-			chart.select(".slices").datum(data).call(donutChart);
+			chart.select(".donut").datum(data).call(donutChart);
 
 			// Donut Labels
 			var donutLabels = component.donutLabels().radius(radius).innerRadius(innerRadius);
 
-			chart.select(".labels").datum(data).call(donutLabels);
+			chart.select(".donutLabels").datum(data).call(donutLabels);
 		});
 	}
 
@@ -5460,7 +5468,7 @@ function chartHeatMapRadial () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["circleRings", "circularSectorLabels", "circularRingLabels"];
+		var layers = ["heatRingsGroups", "circularSectorLabels", "circularRingLabels"];
 		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5477,7 +5485,7 @@ function chartHeatMapRadial () {
 			}).startAngle(startAngle).endAngle(endAngle).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
 			// Create Series Group
-			var seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup").data(function (d) {
+			var seriesGroup = chart.select(".heatRingsGroups").selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -5653,7 +5661,7 @@ function chartHeatMapTable () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis"];
+		var layers = ["heatRowGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5666,7 +5674,7 @@ function chartHeatMapTable () {
 			var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
 			// Create Series Group
-			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+			var seriesGroup = chart.select(".heatRowGroups").selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -5678,10 +5686,12 @@ function chartHeatMapTable () {
 
 			// X Axis
 			var xAxis = d3.axisTop(xScale);
+
 			chart.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 		});
 	}
@@ -5830,7 +5840,7 @@ function chartLineChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis"];
+		var layers = ["lineGroups", "xAxis axis", "yAxis axis", "brush"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5845,7 +5855,7 @@ function chartLineChart () {
 			// Scatter Plot
 			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+			var seriesGroup = chart.select(".lineGroups").selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -5859,11 +5869,24 @@ function chartLineChart () {
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
+
 			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").text(yAxisLabel);
+
+			// Experimental Brush
+			function brushStart() {
+				// console.log(this);
+			}
+			function brushEnd() {
+				// console.log(this);
+			}
+			var brush = d3.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
+
+			chart.select(".brush").call(brush);
 		});
 	}
 
@@ -6036,7 +6059,9 @@ function chartPolarAreaChart () {
 			// Vertical Axis
 			// We reverse the yScale
 			var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
+
 			var verticalAxis = d3.axisLeft(axisScale);
+
 			chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
 
 			// Circular Labels
@@ -6210,7 +6235,7 @@ function chartPunchCard () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["xAxis axis", "yAxis axis"];
+		var layers = ["punchRowGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -6222,7 +6247,7 @@ function chartPunchCard () {
 			// Proportional Area Circles
 			var proportionalAreaCircles = component.proportionalAreaCircles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).sizeScale(sizeScale).dispatch(dispatch);
 
-			var seriesGroup = chart.selectAll(".seriesGroup").data(function (d) {
+			var seriesGroup = chart.select(".punchRowGroups").selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -6234,10 +6259,12 @@ function chartPunchCard () {
 
 			// X Axis
 			var xAxis = d3.axisTop(xScale);
+
 			chart.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis").call(yAxis);
 		});
 	}
@@ -6388,7 +6415,7 @@ function chartRoseChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["circularSectorLabels"];
+		var layers = ["circularSectorLabels", "rosePetalGroups"];
 		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -6401,7 +6428,7 @@ function chartRoseChart () {
 			var roseChartSector = component.roseChartSector().radius(radius).colorScale(colorScale).yScale(yScale).stacked(false).dispatch(dispatch);
 
 			// Create Series Group
-			var seriesGroup = chart.selectAll(".seriesGroup").data(data);
+			var seriesGroup = chart.select(".rosePetalGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).each(function (d) {
 				var startAngle = xScale(d.key);

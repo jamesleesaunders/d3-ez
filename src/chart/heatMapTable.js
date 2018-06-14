@@ -99,7 +99,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis"];
+		let layers = ["heatRowGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -125,7 +125,8 @@ export default function() {
 				.thresholds(thresholds);
 
 			// Create Series Group
-			let seriesGroup = chart.selectAll(".seriesGroup")
+			let seriesGroup = chart.select(".heatRowGroups")
+				.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
 			seriesGroup.enter().append("g")
@@ -139,6 +140,7 @@ export default function() {
 
 			// X Axis
 			let xAxis = d3.axisTop(xScale);
+
 			chart.select(".xAxis")
 				.call(xAxis)
 				.selectAll("text")
@@ -149,6 +151,7 @@ export default function() {
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis);
 		});

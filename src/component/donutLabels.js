@@ -64,8 +64,7 @@ export default function() {
 			// Update series group
 			let seriesGroup = d3.select(this);
 			seriesGroup
-				.classed(classed, true)
-				.attr("id", function(d) { return d.key; });
+				.classed(classed, true);
 
 			// Text Labels
 			let labelsGroupSelect = seriesGroup.selectAll("g.labels")

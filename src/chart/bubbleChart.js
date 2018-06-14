@@ -119,7 +119,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis"];
+		let layers = ["bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -145,7 +145,8 @@ export default function() {
 				.maxRadius(maxRadius)
 				.dispatch(dispatch);
 
-			let seriesGroup = chart.selectAll(".seriesGroup")
+			let seriesGroup = chart.select(".bubbleGroups")
+				.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
 			seriesGroup.enter()
@@ -160,6 +161,7 @@ export default function() {
 
 			// X Axis
 			let xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis)
@@ -171,6 +173,7 @@ export default function() {
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis);
 		});

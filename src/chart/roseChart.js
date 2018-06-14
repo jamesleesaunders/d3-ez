@@ -94,7 +94,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circularSectorLabels"];
+		let layers = ["circularSectorLabels", "rosePetalGroups"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -118,7 +118,8 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Create Series Group
-			let seriesGroup = chart.selectAll(".seriesGroup")
+			let seriesGroup = chart.select(".rosePetalGroups")
+				.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()

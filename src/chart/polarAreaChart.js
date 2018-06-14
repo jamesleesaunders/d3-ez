@@ -145,7 +145,9 @@ export default function() {
 				.domain(yScale.domain())
 				.range(yScale.range().reverse())
 				.nice();
+
 			let verticalAxis = d3.axisLeft(axisScale);
+
 			chart.select(".verticalAxis")
 				.attr("transform", "translate(0," + -radius + ")")
 				.call(verticalAxis);

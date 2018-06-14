@@ -101,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis"];
+		let layers = ["lineGroups", "xAxis axis", "yAxis axis", "brush"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -134,7 +134,8 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			let seriesGroup = chart.selectAll(".seriesGroup")
+			let seriesGroup = chart.select(".lineGroups")
+				.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
 			seriesGroup.enter().append("g")
@@ -151,6 +152,7 @@ export default function() {
 			// X Axis
 			let xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
+
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis)
@@ -162,6 +164,7 @@ export default function() {
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis)
 				.append("text")
@@ -184,8 +187,7 @@ export default function() {
 				.on("brush start", brushStart)
 				.on("brush end", brushEnd);
 
-			chart.append("g")
-				.attr("class", "brush")
+			chart.select(".brush")
 				.call(brush);
 		});
 	}

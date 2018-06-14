@@ -95,7 +95,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis"];
+		let layers = ["barChartGroup", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -117,8 +117,9 @@ export default function() {
 				.colorScale(colorScale)
 				.dispatch(dispatch);
 
-			// Create Bar Group
-			let seriesGroup = chart.selectAll(".seriesGroup")
+			// Create Bar Groups
+			let seriesGroup = chart.select(".barChartGroup")
+				.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()
@@ -133,12 +134,14 @@ export default function() {
 
 			// X Axis
 			let xAxis = d3.axisBottom(xScale);
+
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis);
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis);
 

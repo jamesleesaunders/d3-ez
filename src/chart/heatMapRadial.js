@@ -112,7 +112,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circleRings", "circularSectorLabels", "circularRingLabels"];
+		let layers = ["heatRingsGroups", "circularSectorLabels", "circularRingLabels"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -140,7 +140,8 @@ export default function() {
 				.thresholds(thresholds);
 
 			// Create Series Group
-			let seriesGroup = chart.select(".circleRings").selectAll(".seriesGroup")
+			let seriesGroup = chart.select(".heatRingsGroups")
+				.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
 			seriesGroup.enter()

@@ -113,7 +113,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["xAxis axis", "yAxis axis", "seriesGroup"];
+		let layers = ["candleSticks", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -145,13 +145,14 @@ export default function() {
 				.yScale(yScale)
 				.dispatch(dispatch);
 
-			chart.select(".seriesGroup")
+			chart.select(".candleSticks")
 				.datum(data)
 				.call(candleSticks);
 
 			// X Axis
 			let xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
+
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis)
@@ -163,6 +164,7 @@ export default function() {
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
+
 			chart.select(".yAxis")
 				.call(yAxis);
 

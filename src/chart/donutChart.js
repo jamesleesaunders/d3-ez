@@ -86,7 +86,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["slices", "labels"];
+		let layers = ["donut", "donutLabels"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -108,7 +108,7 @@ export default function() {
 				.colorScale(colorScale)
 				.dispatch(dispatch);
 
-			chart.select(".slices")
+			chart.select(".donut")
 				.datum(data)
 				.call(donutChart);
 
@@ -117,7 +117,7 @@ export default function() {
 				.radius(radius)
 				.innerRadius(innerRadius);
 
-			chart.select(".labels")
+			chart.select(".donutLabels")
 				.datum(data)
 				.call(donutLabels);
 		});
