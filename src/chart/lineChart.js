@@ -101,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["lineGroups", "xAxis axis", "yAxis axis", "brush"];
+		let layers = ["lineGroups", "xAxis axis", "yAxis axis", "zoomArea"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -115,6 +115,14 @@ export default function() {
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
+
+			// Add Clip Path - Still Proof of Concept
+			chart.append('defs')
+				.append('clipPath')
+				.attr('id', 'plotAreaClip')
+				.append('rect')
+				.attr('width', chartW)
+				.attr('height', chartH);
 
 			// Line Chart
 			let lineChart = component.lineChart()
@@ -134,8 +142,11 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			let seriesGroup = chart.select(".lineGroups")
-				.selectAll(".seriesGroup")
+			let main = chart.select(".lineGroups")
+				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" });
+
+			let lineChartGroup = main.append("g");
+			let seriesGroup = lineChartGroup.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
 			seriesGroup.enter().append("g")
@@ -175,20 +186,48 @@ export default function() {
 				.style("text-anchor", "end")
 				.text(yAxisLabel);
 
-			// Experimental Brush
-			function brushStart() {
-				// console.log(this);
-			}
-			function brushEnd() {
-				// console.log(this);
-			}
-			let brush = d3.brushX()
+			// Experimental Zoom
+			let zoom = d3.zoom()
 				.extent([[0, 0], [chartW, chartH]])
-				.on("brush start", brushStart)
-				.on("brush end", brushEnd);
+				.scaleExtent([1, 8])
+				.translateExtent([[0, 0], [chartW, chartH]])
+				.on("zoom", zoomed);
 
-			chart.select(".brush")
-				.call(brush);
+			chart.select(".zoomArea")
+				.append("rect")
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("fill", "none")
+				.attr("pointer-events", "all")
+				.call(zoom);
+
+			function zoomed() {
+				let xk = d3.event.transform.rescaleX(xScale);
+				chart.select(".xAxis").call(xAxis.scale(xk))
+					.selectAll("text")
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)");
+
+				let yk = d3.event.transform.rescaleY(yScale);
+				chart.select(".yAxis").call(yAxis.scale(yk));
+
+				let currentTransform = d3.event.transform;
+				lineChartGroup.attr("transform", currentTransform);
+
+				lineChartGroup.selectAll(".seriesGroup")
+					.selectAll("circle")
+					.attr("r", function() {
+						return 3 / d3.event.transform.k;
+					});
+
+				lineChartGroup.selectAll(".seriesGroup")
+					.selectAll("path")
+					.attr("stroke-width", function() {
+						return 1 / d3.event.transform.k;
+					});
+			}
 		});
 	}
 

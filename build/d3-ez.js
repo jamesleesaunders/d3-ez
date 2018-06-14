@@ -5095,9 +5095,9 @@ function chartCandlestickChart () {
 
 		yScale = d3.scaleLinear().domain(yDomain).range([chartH, 0]).nice();
 
-		//if (!yAxisLabel) {
-		//  yAxisLabel = slicedData.groupName;
-		//}
+		// if (!yAxisLabel) {
+		//   yAxisLabel = slicedData.groupName;
+		// }
 	}
 
 	/**
@@ -5123,7 +5123,7 @@ function chartCandlestickChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["candleSticks", "xAxis axis", "yAxis axis"];
+		var layers = ["candleSticks", "xAxis axis", "yAxis axis", "brush"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5132,13 +5132,10 @@ function chartCandlestickChart () {
 			// Initialise Data
 			init(data);
 
-			// Add Clip Path - Still Proof of Concept
-			chart.append('clipPath').attr('id', 'plotAreaClip').append('rect').attr('width', chartW).attr('height', chartH).attr('clip-path', 'url(#plotAreaClip)');
-
 			// Candle Sticks
 			var candleSticks = component.candleSticks().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
-			chart.select(".candleSticks").datum(data).call(candleSticks);
+			chart.select(".candleSticks").call(candleSticks);
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
@@ -5156,6 +5153,19 @@ function chartCandlestickChart () {
 			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function (d) {
 				return d;
 			});
+
+			// Experimental Brush
+			// https://softeng.oicr.on.ca/jeffrey_burt/2017/01/16/d3-brush/
+			function brushStart() {
+				// console.log(this);
+			}
+
+			function brushEnd() {
+				// console.log(this);
+			}
+			var brush = d3.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
+
+			chart.select(".brush").call(brush);
 		});
 	}
 
@@ -5840,7 +5850,7 @@ function chartLineChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["lineGroups", "xAxis axis", "yAxis axis", "brush"];
+		var layers = ["lineGroups", "xAxis axis", "yAxis axis", "zoomArea"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5849,13 +5859,21 @@ function chartLineChart () {
 			// Initialise Data
 			init(data);
 
+			// Add Clip Path - Still Proof of Concept
+			chart.append('defs').append('clipPath').attr('id', 'plotAreaClip').append('rect').attr('width', chartW).attr('height', chartH);
+
 			// Line Chart
 			var lineChart = component.lineChart().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
 			// Scatter Plot
 			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-			var seriesGroup = chart.select(".lineGroups").selectAll(".seriesGroup").data(function (d) {
+			var main = chart.select(".lineGroups").attr('clip-path', function () {
+				return "url(" + window.location + "#plotAreaClip)";
+			});
+
+			var lineChartGroup = main.append("g");
+			var seriesGroup = lineChartGroup.selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
 
@@ -5877,16 +5895,29 @@ function chartLineChart () {
 
 			chart.select(".yAxis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").text(yAxisLabel);
 
-			// Experimental Brush
-			function brushStart() {
-				// console.log(this);
-			}
-			function brushEnd() {
-				// console.log(this);
-			}
-			var brush = d3.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
+			// Experimental Zoom
+			var zoom = d3.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 8]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
 
-			chart.select(".brush").call(brush);
+			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
+
+			function zoomed() {
+				var xk = d3.event.transform.rescaleX(xScale);
+				chart.select(".xAxis").call(xAxis.scale(xk)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+
+				var yk = d3.event.transform.rescaleY(yScale);
+				chart.select(".yAxis").call(yAxis.scale(yk));
+
+				var currentTransform = d3.event.transform;
+				lineChartGroup.attr("transform", currentTransform);
+
+				lineChartGroup.selectAll(".seriesGroup").selectAll("circle").attr("r", function () {
+					return 3 / d3.event.transform.k;
+				});
+
+				lineChartGroup.selectAll(".seriesGroup").selectAll("path").attr("stroke-width", function () {
+					return 1 / d3.event.transform.k;
+				});
+			}
 		});
 	}
 

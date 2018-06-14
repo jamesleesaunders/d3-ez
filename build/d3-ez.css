@@ -285,6 +285,12 @@ table.htmlTable {
 		animation-name: circleTransition;
 }
 
+/*
+.lineChart .seriesLine {
+	vector-effect: non-scaling-stroke;
+}
+*/
+
 
 /* === Polar Area Chart Styles === */
 

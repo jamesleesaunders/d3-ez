@@ -83,9 +83,9 @@ export default function() {
 			.range([chartH, 0])
 			.nice();
 
-		//if (!yAxisLabel) {
-		//  yAxisLabel = slicedData.groupName;
-		//}
+		// if (!yAxisLabel) {
+		//   yAxisLabel = slicedData.groupName;
+		// }
 	}
 
 	/**
@@ -113,7 +113,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["candleSticks", "xAxis axis", "yAxis axis"];
+		let layers = ["candleSticks", "xAxis axis", "yAxis axis", "brush"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -128,14 +128,6 @@ export default function() {
 			// Initialise Data
 			init(data);
 
-			// Add Clip Path - Still Proof of Concept
-			chart.append('clipPath')
-				.attr('id', 'plotAreaClip')
-				.append('rect')
-				.attr('width', chartW)
-				.attr('height', chartH)
-				.attr('clip-path', 'url(#plotAreaClip)');
-
 			// Candle Sticks
 			let candleSticks = component.candleSticks()
 				.width(chartW)
@@ -146,7 +138,6 @@ export default function() {
 				.dispatch(dispatch);
 
 			chart.select(".candleSticks")
-				.datum(data)
 				.call(candleSticks);
 
 			// X Axis
@@ -186,6 +177,23 @@ export default function() {
 				.text(function(d) {
 					return (d);
 				});
+
+			// Experimental Brush
+			// https://softeng.oicr.on.ca/jeffrey_burt/2017/01/16/d3-brush/
+			function brushStart() {
+				// console.log(this);
+			}
+
+			function brushEnd() {
+				// console.log(this);
+			}
+			let brush = d3.brushX()
+				.extent([[0, 0], [chartW, chartH]])
+				.on("brush start", brushStart)
+				.on("brush end", brushEnd);
+
+			chart.select(".brush")
+				.call(brush);
 		});
 	}
 
