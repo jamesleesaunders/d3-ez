@@ -3,7 +3,7 @@
  *
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2018 James Saunders
- * @license GPLv3
+ * @license GPLv2
  */
 
 import { version, license } from "./package.json";
