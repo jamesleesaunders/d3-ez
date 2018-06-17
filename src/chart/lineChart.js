@@ -142,10 +142,10 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			let main = chart.select(".lineGroups")
-				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" });
+			let lineChartGroup = chart.select(".lineGroups")
+				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
+				.append("g");
 
-			let lineChartGroup = main.append("g");
 			let seriesGroup = lineChartGroup.selectAll(".seriesGroup")
 				.data(function(d) { return d; });
 
