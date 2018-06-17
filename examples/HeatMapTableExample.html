@@ -46,9 +46,6 @@
           div.transition()
             .duration(500)
             .style("opacity", 0);
-        })
-        .on("customValueClick", function(d) {
-          redraw();
         });
 
       var data = d3.nest().key(function(d) {
