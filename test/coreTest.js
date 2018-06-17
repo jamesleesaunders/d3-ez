@@ -21,7 +21,7 @@ tape("setup", function(t) {
 
 tape("indexTest", function(t) {
 	t.equal(d3Ez.author, "James Saunders", "Returns author");
-	t.equal(d3Ez.license, "GPL-3.0", "Returns license");
+	t.equal(d3Ez.license, "GPL-2.0", "Returns license");
 
 	t.end();
 });

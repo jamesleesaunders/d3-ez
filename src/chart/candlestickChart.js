@@ -113,7 +113,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["candleSticks", "xAxis axis", "yAxis axis", "brush"];
+		let layers = ["candleSticks", "xAxis axis", "yAxis axis", "zoomArea"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -179,7 +179,14 @@ export default function() {
 				});
 
 			// Experimental Brush
-			// https://softeng.oicr.on.ca/jeffrey_burt/2017/01/16/d3-brush/
+			let brush = d3.brushX()
+				.extent([[0, 0], [chartW, chartH]])
+				.on("brush start", brushStart)
+				.on("brush end", brushEnd);
+
+			chart.select(".zoomArea")
+				.call(brush);
+
 			function brushStart() {
 				// console.log(this);
 			}
@@ -187,13 +194,6 @@ export default function() {
 			function brushEnd() {
 				// console.log(this);
 			}
-			let brush = d3.brushX()
-				.extent([[0, 0], [chartW, chartH]])
-				.on("brush start", brushStart)
-				.on("brush end", brushEnd);
-
-			chart.select(".brush")
-				.call(brush);
 		});
 	}
 

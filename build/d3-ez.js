@@ -13,6 +13,7 @@
 }(this, (function (d3) { 'use strict';
 
 var version = "3.3.9";
+var license = "GPL-2.0";
 
 /**
  * Base Functions - Data Parse
@@ -5123,7 +5124,7 @@ function chartCandlestickChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["candleSticks", "xAxis axis", "yAxis axis", "brush"];
+		var layers = ["candleSticks", "xAxis axis", "yAxis axis", "zoomArea"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5155,7 +5156,10 @@ function chartCandlestickChart () {
 			});
 
 			// Experimental Brush
-			// https://softeng.oicr.on.ca/jeffrey_burt/2017/01/16/d3-brush/
+			var brush = d3.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
+
+			chart.select(".zoomArea").call(brush);
+
 			function brushStart() {
 				// console.log(this);
 			}
@@ -5163,9 +5167,6 @@ function chartCandlestickChart () {
 			function brushEnd() {
 				// console.log(this);
 			}
-			var brush = d3.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
-
-			chart.select(".brush").call(brush);
 		});
 	}
 
@@ -5868,11 +5869,10 @@ function chartLineChart () {
 			// Scatter Plot
 			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-			var main = chart.select(".lineGroups").attr('clip-path', function () {
+			var lineChartGroup = chart.select(".lineGroups").attr('clip-path', function () {
 				return "url(" + window.location + "#plotAreaClip)";
-			});
+			}).append("g");
 
-			var lineChartGroup = main.append("g");
 			var seriesGroup = lineChartGroup.selectAll(".seriesGroup").data(function (d) {
 				return d;
 			});
@@ -6551,14 +6551,18 @@ var chart = {
  *
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2018 James Saunders
- * @license GPLv3
+ * @license GPLv2
  */
+
+var author$1 = "James Saunders";
+var date = new Date();
+var copyright = "Copyright (C) " + date.getFullYear() + " " + author$1;
 
 var index = {
 	version: version,
-	author: "James Saunders",
-	copyright: "Copyright (C) 2018 James Saunders",
-	license: "GPL-3.0",
+	author: author$1,
+	copyright: copyright,
+	license: license,
 	base: base,
 	dataParse: dataParse,
 	palette: palette,

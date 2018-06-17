@@ -16,8 +16,6 @@
 		animation-name: circleTransition;
 }
 
-/*
 .lineChart .seriesLine {
-	vector-effect: non-scaling-stroke;
+	/* vector-effect: non-scaling-stroke; */
 }
-*/
