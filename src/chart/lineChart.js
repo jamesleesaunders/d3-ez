@@ -70,11 +70,11 @@ export default function() {
 		xScale = d3.scaleTime()
 			.domain(dateDomain)
 			.range([0, chartW]);
-			
+
 		xScale2 = d3.scaleTime()
 			.domain(dateDomain)
 			.range([0, chartW]);
-			
+
 
 		yScale = d3.scaleLinear()
 			.domain([0, maxValue])
@@ -207,34 +207,34 @@ export default function() {
 				.attr("pointer-events", "all")
 				.call(zoom);
 
-			var line = d3.line().curve(d3.curveCardinal).x(function (d) {
+			let line = d3.line().curve(d3.curveCardinal).x(function(d) {
 				return xScale(d.key);
-			}).y(function (d) {
+			}).y(function(d) {
 				return yScale(d.value);
 			});
-			
-			var pathTween = function pathTween(data) {
-				var interpolate = d3.scaleQuantile().domain([0, 1]).range(d3.range(1, data.length + 1));
-				return function (t) {
+
+			let pathTween = function pathTween(data) {
+				let interpolate = d3.scaleQuantile().domain([0, 1]).range(d3.range(1, data.length + 1));
+				return function(t) {
 					return line(data.slice(0, interpolate(t)));
 				};
 			};
 
 			function zoomed() {
-				var xk = d3.event.transform.rescaleX(xScale2);
+				let xk = d3.event.transform.rescaleX(xScale2);
 				xScale.domain(xk.domain());
-				
+
 				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-				lineChartGroup.selectAll(".seriesGroup").selectAll("circle").attr("cx", function (d) {
+				lineChartGroup.selectAll(".seriesGroup").selectAll("circle").attr("cx", function(d) {
 					return xScale(d.key);
-				}).attr("cy", function (d) {
+				}).attr("cy", function(d) {
 					return yScale(d.value);
 				});
 
-				lineChartGroup.selectAll(".seriesGroup").selectAll("path").attr("stroke-width", function () {
+				lineChartGroup.selectAll(".seriesGroup").selectAll("path").attr("stroke-width", function() {
 					return 1 / d3.event.transform.k;
-				}).transition().duration(0).attrTween("d", function(d){
+				}).transition().duration(0).attrTween("d", function(d) {
 					return pathTween(d.values);
 				});
 			}

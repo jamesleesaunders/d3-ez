@@ -12,7 +12,7 @@
 	(global.d3 = global.d3 || {}, global.d3.ez = factory(global.d3));
 }(this, (function (d3) { 'use strict';
 
-var version = "3.3.9";
+var version = "3.3.10";
 var license = "GPL-2.0";
 
 /**
@@ -5790,6 +5790,7 @@ function chartLineChart () {
   */
 	var xScale = void 0;
 	var yScale = void 0;
+	var xScale2 = void 0;
 	var colorScale = void 0;
 
 	/**
@@ -5824,6 +5825,8 @@ function chartLineChart () {
 
 		// X & Y Scales
 		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
+
+		xScale2 = d3.scaleTime().domain(dateDomain).range([0, chartW]);
 
 		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
 	}
@@ -5900,22 +5903,35 @@ function chartLineChart () {
 
 			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
 
+			var line = d3.line().curve(d3.curveCardinal).x(function (d) {
+				return xScale(d.key);
+			}).y(function (d) {
+				return yScale(d.value);
+			});
+
+			var pathTween = function pathTween(data) {
+				var interpolate = d3.scaleQuantile().domain([0, 1]).range(d3.range(1, data.length + 1));
+				return function (t) {
+					return line(data.slice(0, interpolate(t)));
+				};
+			};
+
 			function zoomed() {
-				var xk = d3.event.transform.rescaleX(xScale);
-				chart.select(".xAxis").call(xAxis.scale(xk)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+				var xk = d3.event.transform.rescaleX(xScale2);
+				xScale.domain(xk.domain());
 
-				var yk = d3.event.transform.rescaleY(yScale);
-				chart.select(".yAxis").call(yAxis.scale(yk));
+				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-				var currentTransform = d3.event.transform;
-				lineChartGroup.attr("transform", currentTransform);
-
-				lineChartGroup.selectAll(".seriesGroup").selectAll("circle").attr("r", function () {
-					return 3 / d3.event.transform.k;
+				lineChartGroup.selectAll(".seriesGroup").selectAll("circle").attr("cx", function (d) {
+					return xScale(d.key);
+				}).attr("cy", function (d) {
+					return yScale(d.value);
 				});
 
 				lineChartGroup.selectAll(".seriesGroup").selectAll("path").attr("stroke-width", function () {
 					return 1 / d3.event.transform.k;
+				}).transition().duration(0).attrTween("d", function (d) {
+					return pathTween(d.values);
 				});
 			}
 		});
