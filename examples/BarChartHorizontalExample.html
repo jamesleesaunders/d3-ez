@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>d3-ez : Bar Chart (Horizontal) Example</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+</head>
+
+<body>
+  <div id="chartholder"></div>
+  <br />
+  <div>Value: <span id="message"></span></div>
+
+  <script type="text/javascript">
+    d3.json("data/uk_elections.json").then(function(data) {
+      // UK Election Results Source: http://www.ukpolitical.info/2015.htm
+
+      var colors = ["#c00", "#36c", "#f90", "#fc0"];
+      var chart = d3.ez.chart.barChartHorizontal().colors(colors);
+      var legend = d3.ez.component.legend().title("Party");
+      var title = d3.ez.component.title().mainText("UK Election Results").subText("Seats 1992 - 2015");
+
+      // Create chart base
+      var myChart = d3.ez.base()
+        .width(750)
+        .height(400)
+        .chart(chart)
+        .legend(legend)
+        .title(title)
+        .on("customValueMouseOver", function(d) {
+          d3.select("#message").text(d.value);
+        })
+        .on("customSeriesClick", function(d) {
+          console.log(d);
+        });
+
+      // Add to page
+      function update() {
+        var i = Math.round(Math.random() * 3) + 1;
+        d3.select("#chartholder")
+          .datum(data[i])
+          .call(myChart);
+      }
+
+      update();
+      setInterval(update, 2000);
+    });
+  </script>
+</body>
+
+</html>

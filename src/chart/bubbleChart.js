@@ -109,7 +109,7 @@ export default function() {
 					return selection.append("svg");
 				}
 			})(selection);
-			
+
 			svgTag = d3.select(svg.node().parentNode.parentNode);
 
 			svg.classed("d3ez", true)
@@ -117,12 +117,12 @@ export default function() {
 				.attr("height", height);
 
 			chart = svg.append("g").classed("chart", true);
-			
+
 			svgTag.append("defs")
-			.append("clipPath")
-			.attr("id", "clip")
-			.style("pointer-events", "none")
-			.append("rect").attr("width",width - margin.left - margin.right).attr("height",height - margin.bottom - margin.top);
+				.append("clipPath")
+				.attr("id", "clip")
+				.style("pointer-events", "none")
+				.append("rect").attr("width", width - margin.left - margin.right).attr("height", height - margin.bottom - margin.top);
 		} else {
 			chart = selection.select(".chart");
 		}
@@ -182,19 +182,19 @@ export default function() {
 
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
-			
+
 			var zoom = d3.zoom()
-			.scaleExtent([0.2, 20])
-			.on("zoom", zoomed);
-			
+				.scaleExtent([0.2, 20])
+				.on("zoom", zoomed);
+
 			svgTag.call(zoom);
-			
+
 			chart.selectAll(".bubbleGroups").attr("clip-path", "url(#clip)");
-			
-			function zoomed(){
+
+			function zoomed() {
 				var new_xScale = d3.event.transform.rescaleX(xScale);
 				var new_yScale = d3.event.transform.rescaleY(yScale);
-				chart.selectAll(".bubbleGroups").selectAll(".seriesGroup").attr("transform",d3.event.transform);
+				chart.selectAll(".bubbleGroups").selectAll(".seriesGroup").attr("transform", d3.event.transform);
 				chart.select(".xAxis").call(xAxis.scale(new_xScale));
 				chart.select(".yAxis").call(yAxis.scale(new_yScale));
 			}

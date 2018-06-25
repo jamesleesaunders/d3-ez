@@ -1,5 +1,6 @@
 import { default as componentBarsCircular } from "./component/barsCircular";
 import { default as componentBarsStacked } from "./component/barsStacked";
+import { default as componentBarsHorizontal } from "./component/barsHorizontal";
 import { default as componentBarsVertical } from "./component/barsVertical";
 import { default as componentBubbles } from "./component/bubbles";
 import { default as componentCandleSticks } from "./component/candleSticks";
@@ -29,6 +30,7 @@ import { default as componentCreditTag } from "./component/creditTag";
 export default {
 	barsCircular: componentBarsCircular,
 	barsStacked: componentBarsStacked,
+	barsHorizontal: componentBarsHorizontal,
 	barsVertical: componentBarsVertical,
 	bubbles: componentBubbles,
 	candleSticks: componentCandleSticks,
