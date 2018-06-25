@@ -1,6 +1,7 @@
 import { default as chartBarChartCircular } from "./chart/barChartCircular";
 import { default as chartBarChartClustered } from "./chart/barChartClustered";
 import { default as chartBarChartStacked } from "./chart/barChartStacked";
+import { default as chartBarChartHorizontal } from "./chart/barChartHorizontal";
 import { default as chartBarChartVertical } from "./chart/barChartVertical";
 import { default as chartBubbleChart } from "./chart/bubbleChart";
 import { default as chartCandlestickChart } from "./chart/candlestickChart";
@@ -16,6 +17,7 @@ export default {
 	barChartCircular: chartBarChartCircular,
 	barChartClustered: chartBarChartClustered,
 	barChartStacked: chartBarChartStacked,
+	barChartHorizontal: chartBarChartHorizontal,
 	barChartVertical: chartBarChartVertical,
 	bubbleChart: chartBubbleChart,
 	candlestickChart: chartCandlestickChart,
