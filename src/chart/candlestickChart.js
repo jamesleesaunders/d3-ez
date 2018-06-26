@@ -160,11 +160,11 @@ export default function() {
 				.call(yAxis);
 
 			// Y Axis Labels
-			let ylabel = chart.select(".yAxis")
+			let yLabel = chart.select(".yAxis")
 				.selectAll(".yAxisLabel")
 				.data([data.key]);
 
-			ylabel.enter()
+			yLabel.enter()
 				.append("text")
 				.classed("yAxisLabel", true)
 				.attr("transform", "rotate(-90)")
@@ -172,7 +172,7 @@ export default function() {
 				.attr("dy", ".71em")
 				.attr("fill", "#000000")
 				.style("text-anchor", "end")
-				.merge(ylabel)
+				.merge(yLabel)
 				.transition()
 				.text(function(d) {
 					return (d);
