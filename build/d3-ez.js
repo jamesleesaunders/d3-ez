@@ -4851,6 +4851,7 @@ function chartBarChartHorizontal () {
 
 		// X & Y Scales
 		yScale = d3.scaleBand().domain(categoryNames).rangeRound([0, chartH]).padding(0.15);
+
 		xScale = d3.scaleLinear().domain([0, maxValue]).range([chartW, 0]).nice();
 	}
 
@@ -4902,9 +4903,9 @@ function chartBarChartHorizontal () {
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Label
-			var ylabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
 
-			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function (d) {
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
 				return d;
 			});
 		});
@@ -5043,9 +5044,7 @@ function chartBarChartVertical () {
 			init(data);
 
 			// Vertical Bars
-			var barsVertical = component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale)
-			//.yScale(yScale)
-			.dispatch(dispatch);
+			var barsVertical = component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).dispatch(dispatch);
 
 			chart.select(".barsVertical").datum(data).call(barsVertical);
 
@@ -5060,9 +5059,9 @@ function chartBarChartVertical () {
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Label
-			var ylabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
 
-			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function (d) {
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
 				return d;
 			});
 		});
@@ -5261,11 +5260,11 @@ function chartBubbleChart () {
 			chart.selectAll(".bubbleGroups").attr("clip-path", "url(#clip)");
 
 			function zoomed() {
-				var new_xScale = d3.event.transform.rescaleX(xScale);
-				var new_yScale = d3.event.transform.rescaleY(yScale);
+				var xk = d3.event.transform.rescaleX(xScale);
+				var yk = d3.event.transform.rescaleY(yScale);
 				chart.selectAll(".bubbleGroups").selectAll(".seriesGroup").attr("transform", d3.event.transform);
-				chart.select(".xAxis").call(xAxis.scale(new_xScale));
-				chart.select(".yAxis").call(yAxis.scale(new_yScale));
+				chart.select(".xAxis").call(xAxis.scale(xk));
+				chart.select(".yAxis").call(yAxis.scale(yk));
 			}
 
 			chart.select(".yAxis").call(yAxis);
@@ -5456,9 +5455,9 @@ function chartCandlestickChart () {
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Labels
-			var ylabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
 
-			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function (d) {
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
 				return d;
 			});
 

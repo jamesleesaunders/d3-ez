@@ -183,7 +183,7 @@ export default function() {
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
 
-			var zoom = d3.zoom()
+			let zoom = d3.zoom()
 				.scaleExtent([0.2, 20])
 				.on("zoom", zoomed);
 
@@ -192,11 +192,11 @@ export default function() {
 			chart.selectAll(".bubbleGroups").attr("clip-path", "url(#clip)");
 
 			function zoomed() {
-				var new_xScale = d3.event.transform.rescaleX(xScale);
-				var new_yScale = d3.event.transform.rescaleY(yScale);
+				let xk = d3.event.transform.rescaleX(xScale);
+				let yk = d3.event.transform.rescaleY(yScale);
 				chart.selectAll(".bubbleGroups").selectAll(".seriesGroup").attr("transform", d3.event.transform);
-				chart.select(".xAxis").call(xAxis.scale(new_xScale));
-				chart.select(".yAxis").call(yAxis.scale(new_yScale));
+				chart.select(".xAxis").call(xAxis.scale(xk));
+				chart.select(".yAxis").call(yAxis.scale(yk));
 			}
 
 			chart.select(".yAxis")

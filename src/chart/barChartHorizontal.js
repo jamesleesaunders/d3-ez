@@ -12,28 +12,28 @@ export default function() {
 	/**
 	 * Default Properties
 	 */
-	var svg = void 0;
-	var chart = void 0;
-	var classed = "barChartHorizontal";
-	var width = 400;
-	var height = 300;
-	var margin = { top: 20, right: 20, bottom: 20, left: 40 };
-	var transition = { ease: d3.easeBounce, duration: 500 };
-	var colors = palette.categorical(3);
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let svg;
+	let chart;
+	let classed = "barChartHorizontal";
+	let width = 400;
+	let height = 300;
+	let margin = { top: 20, right: 20, bottom: 20, left: 40 };
+	let transition = { ease: d3.easeBounce, duration: 500 };
+	let colors = palette.categorical(3);
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
 	 * Chart Dimensions
 	 */
-	var chartW = void 0;
-	var chartH = void 0;
+	let chartW;
+	let chartH;
 
 	/**
 	 * Scales
 	 */
-	var xScale = void 0;
-	var yScale = void 0;
-	var colorScale = void 0;
+	let xScale;
+	let yScale;
+	let colorScale;
 
 	/**
 	 * Initialise Data, Scales and Series
@@ -43,16 +43,23 @@ export default function() {
 		chartH = height - (margin.top + margin.bottom);
 
 		// Slice Data, calculate totals, max etc.
-		var slicedData = dataParse(data);
-		var categoryNames = slicedData.categoryNames;
-		var maxValue = slicedData.maxValue;
+		let slicedData = dataParse(data);
+		let categoryNames = slicedData.categoryNames;
+		let maxValue = slicedData.maxValue;
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
 
 		// X & Y Scales
-		yScale = d3.scaleBand().domain(categoryNames).rangeRound([0, chartH]).padding(0.15);
-		xScale = d3.scaleLinear().domain([0, maxValue]).range([chartW, 0]).nice();
+		yScale = d3.scaleBand()
+			.domain(categoryNames)
+			.rangeRound([0, chartH])
+			.padding(0.15);
+
+		xScale = d3.scaleLinear()
+			.domain([0, maxValue])
+			.range([chartW, 0])
+			.nice();
 	}
 
 	/**
@@ -62,7 +69,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = function(selection) {
-				var el = selection._groups[0][0];
+				let el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -70,7 +77,9 @@ export default function() {
 				}
 			}(selection);
 
-			svg.classed("d3ez", true).attr("width", width).attr("height", height);
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
 
 			chart = svg.append("g").classed("chart", true);
 		} else {
@@ -78,38 +87,57 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["barsHorizontal", "xAxis axis", "yAxis axis"];
-		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function(d) {
-			return d;
-		});
+		let layers = ["barsHorizontal", "xAxis axis", "yAxis axis"];
+		chart.classed(classed, true)
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+			.attr("width", chartW).attr("height", chartH)
+			.selectAll("g")
+			.data(layers).enter()
+			.append("g").attr("class", function(d) { return d; });
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Horizontal Bars
-			var barsHorizontal = component.barsHorizontal().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale)
+			let barsHorizontal = component.barsHorizontal()
+				.width(chartW).height(chartH)
+				.colorScale(colorScale)
+				.xScale(xScale)
+				.yScale(yScale)
 				.dispatch(dispatch);
 
-
-			chart.select(".barsHorizontal").datum(data).call(barsHorizontal);
+			chart.select(".barsHorizontal")
+				.datum(data).call(barsHorizontal);
 
 			// X Axis
-			var xAxis = d3.axisBottom(xScale);
+			let xAxis = d3.axisBottom(xScale);
 
-			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
+			chart.select(".xAxis")
+				.attr("transform", "translate(0," + chartH + ")")
+				.call(xAxis);
 
 			// Y Axis
-			var yAxis = d3.axisLeft(yScale);
+			let yAxis = d3.axisLeft(yScale);
 
-			chart.select(".yAxis").call(yAxis);
+			chart.select(".yAxis")
+				.call(yAxis);
 
 			// Y Axis Label
-			var ylabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+			let yLabel = chart.select(".yAxis")
+				.selectAll(".yAxisLabel")
+				.data([data.key]);
 
-			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function(d) {
-				return d;
-			});
+			yLabel.enter()
+				.append("text")
+				.classed("yAxisLabel", true)
+				.attr("transform", "rotate(-90)")
+				.attr("y", -40).attr("dy", ".71em")
+				.attr("fill", "#000000")
+				.style("text-anchor", "end")
+				.merge(yLabel)
+				.transition()
+				.text(function(d) { return d; });
 		});
 	}
 
@@ -153,7 +181,7 @@ export default function() {
 	};
 
 	my.on = function() {
-		var value = dispatch.on.apply(dispatch, arguments);
+		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
 	};
 
