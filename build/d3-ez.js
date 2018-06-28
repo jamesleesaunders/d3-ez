@@ -4718,9 +4718,7 @@ function chartBarChartStacked () {
 			.dispatch(dispatch);
 
 			// Create Bar Groups
-			var seriesGroup = chart.select(".barChartGroup").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".barChartGroup").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function (d) {
 				return "translate(" + xScale(d.key) + ", 0)";
@@ -4816,7 +4814,7 @@ function chartBarChartHorizontal () {
 	var classed = "barChartHorizontal";
 	var width = 400;
 	var height = 300;
-	var margin = { top: 20, right: 20, bottom: 20, left: 40 };
+	var margin = { top: 20, right: 20, bottom: 20, left: 80 };
 	var transition = { ease: d3.easeBounce, duration: 500 };
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -5125,7 +5123,6 @@ function chartBubbleChart () {
   */
 	var svg = void 0;
 	var chart = void 0;
-	var svgTag;
 	var classed = "bubbleChart";
 	var width = 400;
 	var height = 300;
@@ -5211,19 +5208,15 @@ function chartBubbleChart () {
 				}
 			}(selection);
 
-			svgTag = d3.select(svg.node().parentNode.parentNode);
-
 			svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 			chart = svg.append("g").classed("chart", true);
-
-			svgTag.append("defs").append("clipPath").attr("id", "clip").style("pointer-events", "none").append("rect").attr("width", width - margin.left - margin.right).attr("height", height - margin.bottom - margin.top);
 		} else {
 			chart = selection.select(".chart");
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["bubbleGroups", "xAxis axis", "yAxis axis"];
+		var layers = ["bubbleGroups", "xAxis axis", "yAxis axis", "zoomArea"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5232,16 +5225,19 @@ function chartBubbleChart () {
 			// Initialise Data
 			init(data);
 
+			// Add Clip Path - Still Proof of Concept
+			chart.append('defs').append('clipPath').attr('id', 'plotAreaClip').append('rect').attr('width', chartW).attr('height', chartH);
+
 			// Bubble Chart
 			var bubbles = component.bubbles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).minRadius(minRadius).maxRadius(maxRadius).dispatch(dispatch);
 
-			var seriesGroup = chart.select(".bubbleGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var bubbleGroups = chart.select(".bubbleGroups").attr('clip-path', function () {
+				return "url(" + window.location + "#plotAreaClip)";
+			}).append("g");
 
-			seriesGroup.enter().append("g").data(function (d) {
-				return d;
-			}).attr("class", "seriesGroup").merge(seriesGroup).call(bubbles);
+			var seriesGroup = bubbleGroups.selectAll(".seriesGroup").data(data);
+
+			seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(bubbles);
 
 			seriesGroup.exit().remove();
 
@@ -5255,16 +5251,16 @@ function chartBubbleChart () {
 
 			var zoom = d3.zoom().scaleExtent([0.2, 20]).on("zoom", zoomed);
 
-			svgTag.call(zoom);
-
-			chart.selectAll(".bubbleGroups").attr("clip-path", "url(#clip)");
+			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
 
 			function zoomed() {
 				var xk = d3.event.transform.rescaleX(xScale);
 				var yk = d3.event.transform.rescaleY(yScale);
-				chart.selectAll(".bubbleGroups").selectAll(".seriesGroup").attr("transform", d3.event.transform);
-				chart.select(".xAxis").call(xAxis.scale(xk));
+
+				chart.select(".xAxis").call(xAxis.scale(xk)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 				chart.select(".yAxis").call(yAxis.scale(yk));
+
+				bubbleGroups.selectAll(".seriesGroup").attr("transform", d3.event.transform);
 			}
 
 			chart.select(".yAxis").call(yAxis);
@@ -5442,7 +5438,7 @@ function chartCandlestickChart () {
 			// Candle Sticks
 			var candleSticks = component.candleSticks().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
-			chart.select(".candleSticks").call(candleSticks);
+			chart.select(".candleSticks").datum(data).call(candleSticks);
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
@@ -5802,9 +5798,7 @@ function chartHeatMapRadial () {
 			}).startAngle(startAngle).endAngle(endAngle).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
 			// Create Series Group
-			var seriesGroup = chart.select(".heatRingsGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".heatRingsGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(heatMapRing);
 
@@ -5991,9 +5985,7 @@ function chartHeatMapTable () {
 			var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
 			// Create Series Group
-			var seriesGroup = chart.select(".heatRowGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".heatRowGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").attr("transform", function (d) {
 				return "translate(0, " + yScale(d.key) + ")";
@@ -6178,18 +6170,14 @@ function chartLineChart () {
 			// Scatter Plot
 			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-			var lineChartGroup = chart.select(".lineGroups").attr('clip-path', function () {
+			var lineGroups = chart.select(".lineGroups").attr('clip-path', function () {
 				return "url(" + window.location + "#plotAreaClip)";
 			}).append("g");
 
-			var seriesGroup = lineChartGroup.selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = lineGroups.selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").style("fill", function (d) {
 				return colorScale(d.key);
-			}).datum(function (d) {
-				return d;
 			}).merge(seriesGroup).call(lineChart).call(scatterPlot);
 
 			seriesGroup.exit().remove();
@@ -6215,7 +6203,7 @@ function chartLineChart () {
 
 				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-				lineChartGroup.selectAll(".seriesGroup").call(lineChart).call(scatterPlot);
+				lineGroups.selectAll(".seriesGroup").call(lineChart).call(scatterPlot);
 			}
 		});
 	}
@@ -6577,9 +6565,7 @@ function chartPunchCard () {
 			// Proportional Area Circles
 			var proportionalAreaCircles = component.proportionalAreaCircles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).sizeScale(sizeScale).dispatch(dispatch);
 
-			var seriesGroup = chart.select(".punchRowGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".punchRowGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").attr("transform", function (d) {
 				return "translate(0, " + yScale(d.key) + ")";

@@ -14,7 +14,6 @@ export default function() {
 	 */
 	let svg;
 	let chart;
-	var svgTag;
 	let classed = "bubbleChart";
 	let width = 400;
 	let height = 300;
@@ -110,25 +109,17 @@ export default function() {
 				}
 			})(selection);
 
-			svgTag = d3.select(svg.node().parentNode.parentNode);
-
 			svg.classed("d3ez", true)
 				.attr("width", width)
 				.attr("height", height);
 
 			chart = svg.append("g").classed("chart", true);
-
-			svgTag.append("defs")
-				.append("clipPath")
-				.attr("id", "clip")
-				.style("pointer-events", "none")
-				.append("rect").attr("width", width - margin.left - margin.right).attr("height", height - margin.bottom - margin.top);
 		} else {
 			chart = selection.select(".chart");
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["bubbleGroups", "xAxis axis", "yAxis axis"];
+		let layers = ["bubbleGroups", "xAxis axis", "yAxis axis", "zoomArea"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -143,6 +134,14 @@ export default function() {
 			// Initialise Data
 			init(data);
 
+			// Add Clip Path - Still Proof of Concept
+			chart.append('defs')
+				.append('clipPath')
+				.attr('id', 'plotAreaClip')
+				.append('rect')
+				.attr('width', chartW)
+				.attr('height', chartH);
+
 			// Bubble Chart
 			let bubbles = component.bubbles()
 				.width(chartW)
@@ -154,13 +153,15 @@ export default function() {
 				.maxRadius(maxRadius)
 				.dispatch(dispatch);
 
-			let seriesGroup = chart.select(".bubbleGroups")
-				.selectAll(".seriesGroup")
-				.data(function(d) { return d; });
+			let bubbleGroups = chart.select(".bubbleGroups")
+				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
+				.append("g");
+
+			let seriesGroup = bubbleGroups.selectAll(".seriesGroup")
+				.data(data);
 
 			seriesGroup.enter()
 				.append("g")
-				.data(function(d) { return d; })
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
 				.call(bubbles);
@@ -187,16 +188,29 @@ export default function() {
 				.scaleExtent([0.2, 20])
 				.on("zoom", zoomed);
 
-			svgTag.call(zoom);
-
-			chart.selectAll(".bubbleGroups").attr("clip-path", "url(#clip)");
+			chart.select(".zoomArea")
+				.append("rect")
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("fill", "none")
+				.attr("pointer-events", "all")
+				.call(zoom);
 
 			function zoomed() {
 				let xk = d3.event.transform.rescaleX(xScale);
 				let yk = d3.event.transform.rescaleY(yScale);
-				chart.selectAll(".bubbleGroups").selectAll(".seriesGroup").attr("transform", d3.event.transform);
-				chart.select(".xAxis").call(xAxis.scale(xk));
+
+				chart.select(".xAxis")
+					.call(xAxis.scale(xk))
+					.selectAll("text")
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)");
 				chart.select(".yAxis").call(yAxis.scale(yk));
+
+				bubbleGroups.selectAll(".seriesGroup")
+					.attr("transform", d3.event.transform);
 			}
 
 			chart.select(".yAxis")

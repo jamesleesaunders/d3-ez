@@ -138,6 +138,7 @@ export default function() {
 				.dispatch(dispatch);
 
 			chart.select(".candleSticks")
+				.datum(data)
 				.call(candleSticks);
 
 			// X Axis

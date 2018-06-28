@@ -147,17 +147,17 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			let lineChartGroup = chart.select(".lineGroups")
+			let lineGroups = chart.select(".lineGroups")
 				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
 				.append("g");
 
-			let seriesGroup = lineChartGroup.selectAll(".seriesGroup")
-				.data(function(d) { return d; });
+			let seriesGroup = lineGroups.selectAll(".seriesGroup")
+				.data(data);
 
-			seriesGroup.enter().append("g")
+			seriesGroup.enter()
+				.append("g")
 				.attr("class", "seriesGroup")
 				.style("fill", function(d) { return colorScale(d.key); })
-				.datum(function(d) { return d; })
 				.merge(seriesGroup)
 				.call(lineChart)
 				.call(scatterPlot);
@@ -218,7 +218,7 @@ export default function() {
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)");
 
-				lineChartGroup.selectAll(".seriesGroup")
+				lineGroups.selectAll(".seriesGroup")
 					.call(lineChart)
 					.call(scatterPlot);
 			}

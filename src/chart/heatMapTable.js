@@ -127,7 +127,7 @@ export default function() {
 			// Create Series Group
 			let seriesGroup = chart.select(".heatRowGroups")
 				.selectAll(".seriesGroup")
-				.data(function(d) { return d; });
+				.data(data);
 
 			seriesGroup.enter().append("g")
 				.attr("class", "seriesGroup")

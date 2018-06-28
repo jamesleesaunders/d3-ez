@@ -17,7 +17,7 @@ export default function() {
 	let classed = "barChartHorizontal";
 	let width = 400;
 	let height = 300;
-	let margin = { top: 20, right: 20, bottom: 20, left: 40 };
+	let margin = { top: 20, right: 20, bottom: 20, left: 80 };
 	let transition = { ease: d3.easeBounce, duration: 500 };
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -108,7 +108,8 @@ export default function() {
 				.dispatch(dispatch);
 
 			chart.select(".barsHorizontal")
-				.datum(data).call(barsHorizontal);
+				.datum(data)
+				.call(barsHorizontal);
 
 			// X Axis
 			let xAxis = d3.axisBottom(xScale);

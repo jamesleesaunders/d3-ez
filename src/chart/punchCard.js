@@ -136,7 +136,7 @@ export default function() {
 
 			let seriesGroup = chart.select(".punchRowGroups")
 				.selectAll(".seriesGroup")
-				.data(function(d) { return d; });
+				.data(data);
 
 			seriesGroup.enter().append("g")
 				.attr("class", "seriesGroup")
