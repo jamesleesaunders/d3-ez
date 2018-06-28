@@ -142,7 +142,7 @@ export default function() {
 			// Create Series Group
 			let seriesGroup = chart.select(".heatRingsGroups")
 				.selectAll(".seriesGroup")
-				.data(function(d) { return d; });
+				.data(data);
 
 			seriesGroup.enter()
 				.append("g")

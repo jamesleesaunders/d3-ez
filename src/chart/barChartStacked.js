@@ -120,7 +120,7 @@ export default function() {
 			// Create Bar Groups
 			let seriesGroup = chart.select(".barChartGroup")
 				.selectAll(".seriesGroup")
-				.data(function(d) { return d; });
+				.data(data);
 
 			seriesGroup.enter()
 				.append("g")
