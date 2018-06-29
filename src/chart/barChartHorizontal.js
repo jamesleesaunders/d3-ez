@@ -132,10 +132,9 @@ export default function() {
 			yLabel.enter()
 				.append("text")
 				.classed("yAxisLabel", true)
-				.attr("transform", "rotate(-90)")
-				.attr("y", -40).attr("dy", ".71em")
+				.attr("y", -10).attr("dy", ".71em")
 				.attr("fill", "#000000")
-				.style("text-anchor", "end")
+				.style("text-anchor", "center")
 				.merge(yLabel)
 				.transition()
 				.text(function(d) { return d; });

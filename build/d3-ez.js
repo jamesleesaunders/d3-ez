@@ -1300,6 +1300,7 @@ function componentBubbles () {
   */
 	var width = 300;
 	var height = 300;
+	var transition = { ease: d3.easeLinear, duration: 0 };
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	var xScale = void 0;
@@ -1329,6 +1330,7 @@ function componentBubbles () {
 			// Calculate overall extent.
 			return d3.extent([].concat.apply([], serExts));
 		}
+
 		var xDomain = extents("x");
 		var yDomain = extents("y");
 		var sizeDomain = extents("value");
@@ -1381,29 +1383,34 @@ function componentBubbles () {
 
 			bubbles.enter().append("g").attr("transform", function (d) {
 				return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
-			}).call(bubble).on("mouseover", function (d) {
+			}).on("mouseover", function (d) {
 				d3.select(this).select("text").style("display", "block");
 				dispatch.call("customValueMouseOver", this, d);
 			}).on("mouseout", function () {
 				d3.select(this).select("text").style("display", "none");
 			}).on("click", function (d) {
 				dispatch.call("customValueClick", this, d);
-			}).merge(bubbles);
+			}).call(bubble).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+				return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+			});
 
 			/*
-   bubbles.enter().append("circle")
-     .attr("class", "bubble")
-     .attr("cx", function(d) { return xScale(d.x); })
-     .attr("cy", function(d) { return yScale(d.y); })
-     .attr("r", function(d) { return sizeScale(d.value); })
-     .style("fill", function(d) { return colorScale(d.series); })
-     .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-     .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
-     .merge(bubbles)
-     .transition()
-     .ease(transition.ease)
-     .duration(transition.duration)
-     .attr("r", function(d) { return sizeScale(d.value); });
+   bubbles.enter()
+   	.append("circle")
+   	.attr("class", "bubble")
+   	.attr("cx", function(d) { return xScale(d.x); })
+   	.attr("cy", function(d) { return yScale(d.y); })
+   	.attr("r", function(d) { return sizeScale(d.value); })
+   	.style("fill", function(d) { return colorScale(d.series); })
+   	.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+   	.on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
+   	.merge(bubbles)
+   	.transition()
+   	.ease(transition.ease)
+   	.duration(transition.duration)
+   	.attr("cx", function(d) { return xScale(d.x); })
+   	.attr("cy", function(d) { return yScale(d.y); })
+   	.attr("r", function(d) { return sizeScale(d.value); });
    */
 
 			bubbles.exit().transition().style("opacity", 0).remove();
@@ -2916,7 +2923,7 @@ function componentLineChart () {
   */
 	var width = 400;
 	var height = 400;
-	var transition = { ease: d3.easeBounce, duration: 0 };
+	var transition = { ease: d3.easeLinear, duration: 0 };
 	var colors = palette.categorical(3);
 	var colorScale = void 0;
 	var xScale = void 0;
@@ -3514,7 +3521,7 @@ function componentScatterPlot () {
   */
 	var width = 400;
 	var height = 400;
-	var transition = { ease: d3.easeBounce, duration: 0 };
+	var transition = { ease: d3.easeLinear, duration: 0 };
 	var colors = palette.categorical(3);
 	var colorScale = void 0;
 	var xScale = void 0;
@@ -4903,7 +4910,7 @@ function chartBarChartHorizontal () {
 			// Y Axis Label
 			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
 
-			yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("y", -10).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "center").merge(yLabel).transition().text(function (d) {
 				return d;
 			});
 		});
@@ -5216,7 +5223,7 @@ function chartBubbleChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["bubbleGroups", "xAxis axis", "yAxis axis", "zoomArea"];
+		var layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5249,18 +5256,23 @@ function chartBubbleChart () {
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
 
-			var zoom = d3.zoom().scaleExtent([0.2, 20]).on("zoom", zoomed);
+			// Zoom
+			var zoom = d3.zoom().scaleExtent([1, 20]).on("zoom", zoomed);
 
 			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
 
 			function zoomed() {
-				var xk = d3.event.transform.rescaleX(xScale);
-				var yk = d3.event.transform.rescaleY(yScale);
+				var xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				var yScaleZoomed = d3.event.transform.rescaleY(yScale);
 
-				chart.select(".xAxis").call(xAxis.scale(xk)).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
-				chart.select(".yAxis").call(yAxis.scale(yk));
+				xAxis.scale(xScaleZoomed);
+				yAxis.scale(yScaleZoomed);
+				bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
 
-				bubbleGroups.selectAll(".seriesGroup").attr("transform", d3.event.transform);
+				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+				chart.select(".yAxis").call(yAxis);
+
+				bubbleGroups.selectAll(".seriesGroup").call(bubbles);
 			}
 
 			chart.select(".yAxis").call(yAxis);
@@ -5426,7 +5438,7 @@ function chartCandlestickChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["candleSticks", "xAxis axis", "yAxis axis", "zoomArea"];
+		var layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -6088,7 +6100,6 @@ function chartLineChart () {
   */
 	var xScale = void 0;
 	var yScale = void 0;
-	var xScaleOriginal = void 0;
 	var colorScale = void 0;
 
 	/**
@@ -6124,8 +6135,6 @@ function chartLineChart () {
 		// X & Y Scales
 		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
 
-		xScaleOriginal = d3.scaleTime().domain(dateDomain).range([0, chartW]);
-
 		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
 	}
 
@@ -6152,7 +6161,7 @@ function chartLineChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["lineGroups", "xAxis axis", "yAxis axis", "zoomArea"];
+		var layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -6192,14 +6201,17 @@ function chartLineChart () {
 
 			chart.select(".yAxis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").text(yAxisLabel);
 
-			// Experimental Zoom
+			// Zoom
 			var zoom = d3.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 8]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
 
 			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
 
 			function zoomed() {
-				var xk = d3.event.transform.rescaleX(xScaleOriginal);
-				xScale.domain(xk.domain());
+				var xScaleZoomed = d3.event.transform.rescaleX(xScale);
+
+				xAxis.scale(xScaleZoomed);
+				lineChart.xScale(xScaleZoomed);
+				scatterPlot.xScale(xScaleZoomed);
 
 				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 

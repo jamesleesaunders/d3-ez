@@ -119,7 +119,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["bubbleGroups", "xAxis axis", "yAxis axis", "zoomArea"];
+		let layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -184,8 +184,9 @@ export default function() {
 			// Y Axis
 			let yAxis = d3.axisLeft(yScale);
 
+			// Zoom
 			let zoom = d3.zoom()
-				.scaleExtent([0.2, 20])
+				.scaleExtent([1, 20])
 				.on("zoom", zoomed);
 
 			chart.select(".zoomArea")
@@ -197,20 +198,24 @@ export default function() {
 				.call(zoom);
 
 			function zoomed() {
-				let xk = d3.event.transform.rescaleX(xScale);
-				let yk = d3.event.transform.rescaleY(yScale);
+				let xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				let yScaleZoomed = d3.event.transform.rescaleY(yScale);
+
+				xAxis.scale(xScaleZoomed);
+				yAxis.scale(yScaleZoomed);
+				bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
 
 				chart.select(".xAxis")
-					.call(xAxis.scale(xk))
+					.call(xAxis)
 					.selectAll("text")
 					.style("text-anchor", "end")
 					.attr("dx", "-.8em")
 					.attr("dy", ".15em")
 					.attr("transform", "rotate(-65)");
-				chart.select(".yAxis").call(yAxis.scale(yk));
+				chart.select(".yAxis").call(yAxis);
 
 				bubbleGroups.selectAll(".seriesGroup")
-					.attr("transform", d3.event.transform);
+					.call(bubbles);
 			}
 
 			chart.select(".yAxis")
