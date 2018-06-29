@@ -14,7 +14,7 @@ export default function() {
 	 */
 	let width = 300;
 	let height = 300;
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let xScale;
@@ -44,6 +44,7 @@ export default function() {
 			// Calculate overall extent.
 			return d3.extent([].concat.apply([], serExts));
 		}
+
 		let xDomain = extents("x");
 		let yDomain = extents("y");
 		let sizeDomain = extents("value");
@@ -105,7 +106,6 @@ export default function() {
 				.attr("transform", function(d) {
 					return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 				})
-				.call(bubble)
 				.on("mouseover", function(d) {
 					d3.select(this).select("text").style("display", "block");
 					dispatch.call("customValueMouseOver", this, d);
@@ -116,22 +116,32 @@ export default function() {
 				.on("click", function(d) {
 					dispatch.call("customValueClick", this, d);
 				})
-				.merge(bubbles);
+				.call(bubble)
+				.merge(bubbles)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", function(d) {
+					return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+				});
 
 			/*
-			bubbles.enter().append("circle")
-			  .attr("class", "bubble")
-			  .attr("cx", function(d) { return xScale(d.x); })
-			  .attr("cy", function(d) { return yScale(d.y); })
-			  .attr("r", function(d) { return sizeScale(d.value); })
-			  .style("fill", function(d) { return colorScale(d.series); })
-			  .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-			  .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
-			  .merge(bubbles)
-			  .transition()
-			  .ease(transition.ease)
-			  .duration(transition.duration)
-			  .attr("r", function(d) { return sizeScale(d.value); });
+			bubbles.enter()
+				.append("circle")
+				.attr("class", "bubble")
+				.attr("cx", function(d) { return xScale(d.x); })
+				.attr("cy", function(d) { return yScale(d.y); })
+				.attr("r", function(d) { return sizeScale(d.value); })
+				.style("fill", function(d) { return colorScale(d.series); })
+				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
+				.merge(bubbles)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("cx", function(d) { return xScale(d.x); })
+				.attr("cy", function(d) { return yScale(d.y); })
+				.attr("r", function(d) { return sizeScale(d.value); });
 			*/
 
 			bubbles.exit()

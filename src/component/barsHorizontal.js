@@ -11,23 +11,23 @@ export default function() {
 	/**
 	 * Default Properties
 	 */
-	var width = 400;
-	var height = 500;
-	var transition = { ease: d3.easeBounce, duration: 500 };
-	var colors = palette.categorical(3);
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	var xScale = void 0;
-	var yScale = void 0;
-	var colorScale = void 0;
-	var classed = "barsHorizontal";
+	let width = 400;
+	let height = 500;
+	let transition = { ease: d3.easeBounce, duration: 500 };
+	let colors = palette.categorical(3);
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let xScale;
+	let yScale;
+	let colorScale;
+	let classed = "barsHorizontal";
 
 	/**
 	 * Initialise Data and Scales
 	 */
 	function init(data) {
-		var slicedData = dataParse(data);
-		var categoryNames = slicedData.categoryNames;
-		var maxValue = slicedData.maxValue;
+		let slicedData = dataParse(data);
+		let categoryNames = slicedData.categoryNames;
+		let maxValue = slicedData.maxValue;
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
@@ -47,7 +47,7 @@ export default function() {
 		selection.each(function() {
 
 			// Update series group
-			var seriesGroup = d3.select(this);
+			let seriesGroup = d3.select(this);
 			seriesGroup.classed(classed, true).attr("id", function(d) {
 				return d.key;
 			}).on("mouseover", function(d) {
@@ -57,7 +57,7 @@ export default function() {
 			});
 
 			// Add bars to series
-			var bars = seriesGroup.selectAll(".bar").data(function(d) {
+			let bars = seriesGroup.selectAll(".bar").data(function(d) {
 				return d.values;
 			});
 
@@ -127,7 +127,7 @@ export default function() {
 	};
 
 	my.on = function() {
-		var value = dispatch.on.apply(dispatch, arguments);
+		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
 	};
 

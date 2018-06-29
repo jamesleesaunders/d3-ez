@@ -13,7 +13,7 @@ export default function() {
 	 */
 	let width = 400;
 	let height = 400;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let colors = palette.categorical(3);
 	let colorScale;
 	let xScale;

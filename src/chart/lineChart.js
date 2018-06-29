@@ -33,7 +33,6 @@ export default function() {
 	 */
 	let xScale;
 	let yScale;
-	let xScaleOriginal;
 	let colorScale;
 
 	/**
@@ -71,10 +70,6 @@ export default function() {
 			.domain(dateDomain)
 			.range([0, chartW]);
 
-		xScaleOriginal = d3.scaleTime()
-			.domain(dateDomain)
-			.range([0, chartW]);
-
 		yScale = d3.scaleLinear()
 			.domain([0, maxValue])
 			.range([chartH, 0])
@@ -106,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["lineGroups", "xAxis axis", "yAxis axis", "zoomArea"];
+		let layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -191,7 +186,7 @@ export default function() {
 				.style("text-anchor", "end")
 				.text(yAxisLabel);
 
-			// Experimental Zoom
+			// Zoom
 			let zoom = d3.zoom()
 				.extent([[0, 0], [chartW, chartH]])
 				.scaleExtent([1, 8])
@@ -207,8 +202,11 @@ export default function() {
 				.call(zoom);
 
 			function zoomed() {
-				let xk = d3.event.transform.rescaleX(xScaleOriginal);
-				xScale.domain(xk.domain());
+				let xScaleZoomed = d3.event.transform.rescaleX(xScale);
+
+				xAxis.scale(xScaleZoomed);
+				lineChart.xScale(xScaleZoomed);
+				scatterPlot.xScale(xScaleZoomed);
 
 				chart.select(".xAxis")
 					.call(xAxis)
