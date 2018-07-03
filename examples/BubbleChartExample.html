@@ -25,7 +25,13 @@
       // Convert csv to d3-ez data format
       // Rename keys
       var tmp = csv.map(function(d) {
-        return { "key": d.Text, "value": d.Size, "x": d.X, "y": d.Y, "series": d.Continent };
+        return {
+          "key": d.Text,
+          "value": d.Size,
+          "x": d.X,
+          "y": d.Y,
+          "series": d.Continent
+        };
       });
       // Nest Data
       var data = d3.nest().key(function(d) {
