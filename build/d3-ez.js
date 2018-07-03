@@ -1212,12 +1212,9 @@ function componentLabeledNode () {
 		selection.each(function (data) {
 			var r = sizeAccessor(data);
 
-			var node = d3.select(this).attr("class", classed);
+			var node = d3.select(this).classed(classed, true);
 
-			node.append("circle").attr("r", r).attr("fill-opacity", opacity)
-			//.style("stroke", strokeColor)
-			//.style("stroke-width", strokeWidth)
-			.style("fill", color);
+			node.append("circle").attr("r", r).attr("fill-opacity", opacity).style("stroke", strokeColor).style("stroke-width", strokeWidth).style("fill", color);
 
 			node.append("text").text(label).attr("dx", -r).attr("dy", -r).style("display", display).style("font-size", fontSize + "px").attr("alignment-baseline", "middle").style("text-anchor", "end");
 		});
@@ -3413,7 +3410,7 @@ function componentProportionalAreaCircles () {
 				return colorScale(d.value);
 			}).label(function (d) {
 				return d.value;
-			}).display("none").classed("punchSpot").dispatch(dispatch);
+			}).display("none").stroke(1, "#cccccc").classed("punchSpot").dispatch(dispatch);
 
 			// Add spots to series
 			var spots = seriesGroup.selectAll(".punchSpot").data(function (d) {
