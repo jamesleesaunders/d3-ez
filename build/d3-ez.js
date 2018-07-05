@@ -3846,7 +3846,7 @@ function componentLegendSize () {
   */
 	var width = 100;
 	var height = 200;
-	var sizeScale = undefined;
+	var sizeScale = void 0;
 	var itemCount = 4;
 
 	/**
@@ -3863,8 +3863,8 @@ function componentLegendSize () {
 
 		var data = function data() {
 			// Calculate radiusScale
-			var domainMin = d3.min(sizeScale.domain());
-			var domainMax = d3.max(sizeScale.domain());
+			var domainMin = parseFloat(d3.min(sizeScale.domain()));
+			var domainMax = parseFloat(d3.max(sizeScale.domain()));
 			var increment = (domainMax - domainMin) / itemCount;
 			var ranges = Array(itemCount).fill().map(function (v, i) {
 				var rangeStart = domainMin + increment * i;
@@ -3950,7 +3950,7 @@ function componentLegendColor () {
   */
 	var width = 100;
 	var height = 200;
-	var colorScale = undefined;
+	var colorScale = void 0;
 	var itemCount = void 0;
 	var itemType = "rect";
 
@@ -4066,7 +4066,7 @@ function componentLegendThreshold () {
   */
 	var width = 100;
 	var height = 200;
-	var thresholdScale = undefined;
+	var thresholdScale = void 0;
 
 	/**
   * Constructor
@@ -4138,11 +4138,12 @@ function componentLegend () {
 	/**
   * Default Properties
   */
-	var sizeScale = undefined;
-	var colorScale = undefined;
-	var title = null;
 	var width = 100;
 	var height = 150;
+	var sizeScale = void 0;
+	var colorScale = void 0;
+	var title = void 0;
+
 	var opacity = 0.7;
 
 	/**

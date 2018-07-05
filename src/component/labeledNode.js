@@ -14,7 +14,7 @@ export default function() {
 	let strokeColor = "#000000";
 	let strokeWidth = 1;
 	let radius = 8;
-	let label = null;
+	let label;
 	let display = "block";
 	let fontSize = 10;
 	let classed = "labeledNode";
