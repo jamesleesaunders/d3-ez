@@ -1193,7 +1193,7 @@ function componentLabeledNode () {
 	var strokeColor = "#000000";
 	var strokeWidth = 1;
 	var radius = 8;
-	var label = null;
+	var label = void 0;
 	var display = "block";
 	var fontSize = 10;
 	var classed = "labeledNode";
@@ -5255,7 +5255,7 @@ function chartBubbleChart () {
 			var yAxis = d3.axisLeft(yScale);
 
 			// Zoom
-			var zoom = d3.zoom().scaleExtent([1, 20]).on("zoom", zoomed);
+			var zoom = d3.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 20]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
 
 			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
 
