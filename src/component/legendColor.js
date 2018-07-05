@@ -11,7 +11,7 @@ export default function() {
 	 */
 	let width = 100;
 	let height = 200;
-	let colorScale = undefined;
+	let colorScale;
 	let itemCount;
 	let itemType = "rect";
 
