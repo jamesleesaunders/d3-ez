@@ -3,10 +3,10 @@ let tape = require("tape");
 let d3 = require("d3");
 
 tape("componentLegendTest", function(t) {
-	let domain = [1, 2, 3];
-	let sizes = [10, 20, 30];
+	let domain = [3, 9];
+	let sizes = [5, 25];
 
-	let sizeScale = d3.scaleOrdinal()
+	let sizeScale = d3.scaleLinear()
 		.domain(domain)
 		.range(sizes);
 
