@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>d3-ez : Test</title>
+  <title>d3-ez : Legend Test</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="../../build/d3-ez.js"></script>
   <link rel="stylesheet" type="text/css" href="../../build/d3-ez.css" />
@@ -12,64 +12,51 @@
   <div id="chartholder"></div>
 
   <script type="text/javascript">
-    let data = {
-      key: "Fruit",
-      values: [
-        { key: "Apples", value: 9 },
-        { key: "Oranges", value: 3 },
-        { key: "Grapes", value: 5 },
-        { key: "Bananas", value: 7 }
-      ]
-    };
-
-    let width = 100;
-    let height = 200;
-
-    let minValue = 3;
-    let maxValue = 9;
-    let minRadius = 5;
-    let maxRadius = 25;
-
-    let colors = ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
 
     let sizeScale = d3.scaleLinear()
-      .domain([minValue, maxValue])
-      .range([minRadius, maxRadius]);
+      .domain([3, 9])
+      .range([5, 25]);
 
     let colorScale = d3.scaleOrdinal()
       .domain(['Apples', 'Oranges', 'Grapes', 'Bananas'])
-      .range(colors);
+      .range(["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"]);
 
     let thresholdScale = d3.scaleThreshold()
       .domain([-13, -3, 18, 32])
       .range([d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65), d3.rgb(0, 0, 0)]);
 
-    // Configure chart components
-    /*
-    var myChart = d3.ez.component.legendSize()
-      .sizeScale(sizeScale)
-      .width(width)
-      .height(height)
-      .itemCount(4);
+    // Create chart and svg holder
+    var chartHolder = d3.select("#chartholder");
+    var svg = chartHolder.append("svg")
+      .attr("width", 600)
+      .attr("height", 200);
 
-    var myChart = d3.ez.component.legendThreshold()
-      .thresholdScale(thresholdScale)
-      .width(width)
-      .height(height);
-    */
-
-    var myChart = d3.ez.component.legendColor()
+    // Configure legend components
+    var legendColor = d3.ez.component.legendColor()
       .colorScale(colorScale)
-      .width(width)
-      .height(height)
       .itemType("rect");
 
-    // Attach data and chart to 'chartholder' element
-    var chartHolder = d3.select("#chartholder");
-    chartHolder.append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .call(myChart);
+    var legendSize = d3.ez.component.legendSize()
+      .sizeScale(sizeScale)
+      .itemCount(4);
+
+    var legendThreshold = d3.ez.component.legendThreshold()
+      .thresholdScale(thresholdScale);
+
+    svg.append("g")
+      .attr("id", "legendColor")
+      .attr("transform", "translate(0,0)")
+      .call(legendColor);
+
+    svg.append("g")
+      .attr("id", "legendSize")
+      .attr("transform", "translate(200,0)")
+      .call(legendSize);
+
+    svg.append("g")
+      .attr("id", "legendThreshold")
+      .attr("transform", "translate(400,0)")
+      .call(legendThreshold);
 
   </script>
 </body>
