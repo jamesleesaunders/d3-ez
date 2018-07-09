@@ -12,7 +12,7 @@
 	(global.d3 = global.d3 || {}, global.d3.ez = factory(global.d3));
 }(this, (function (d3) { 'use strict';
 
-var version = "3.3.9";
+var version = "3.3.12";
 var license = "GPL-2.0";
 
 /**
@@ -916,6 +916,138 @@ function componentBarsStacked () {
 }
 
 /**
+ * Reusable Horizontal Bar Chart Component
+ *
+ */
+function componentBarsHorizontal () {
+
+	/**
+  * Default Properties
+  */
+	var width = 400;
+	var height = 500;
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
+	var classed = "barsHorizontal";
+
+	/**
+  * Initialise Data and Scales
+  */
+	function init(data) {
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = slicedData.maxValue;
+
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+
+		// If the yScale has not been passed then attempt to calculate.
+		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) : yScale;
+
+		// If the xScale has not been passed then attempt to calculate.
+		xScale = typeof xScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() : xScale;
+	}
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
+
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.classed(classed, true).attr("id", function (d) {
+				return d.key;
+			}).on("mouseover", function (d) {
+				dispatch.call("customSeriesMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customSeriesClick", this, d);
+			});
+
+			// Add bars to series
+			var bars = seriesGroup.selectAll(".bar").data(function (d) {
+				return d.values;
+			});
+
+			bars.enter().append("rect").classed("bar", true).attr("fill", function (d) {
+				return colorScale(d.key);
+			}).attr("width", yScale.bandwidth()).attr("y", function (d) {
+				return yScale(d.key);
+			}).attr("height", function (d) {
+				return yScale.bandwidth();
+			}).on("mouseover", function (d) {
+				dispatch.call("customValueMouseOver", this, d);
+			}).on("click", function (d) {
+				dispatch.call("customValueClick", this, d);
+			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+				return 0;
+			}).attr("width", function (d) {
+				return xScale(d.value);
+			});
+
+			bars.exit().transition().style("opacity", 0).remove();
+		});
+	}
+
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
+
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return my;
+	};
+
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return my;
+	};
+
+	my.xScale = function (_) {
+		if (!arguments.length) return xScale;
+		xScale = _;
+		return my;
+	};
+
+	my.yScale = function (_) {
+		if (!arguments.length) return yScale;
+		yScale = _;
+		return my;
+	};
+
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
+
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
+	return my;
+}
+
+/**
  * Reusable Vertical Bar Chart Component
  *
  */
@@ -1061,7 +1193,7 @@ function componentLabeledNode () {
 	var strokeColor = "#000000";
 	var strokeWidth = 1;
 	var radius = 8;
-	var label = null;
+	var label = void 0;
 	var display = "block";
 	var fontSize = 10;
 	var classed = "labeledNode";
@@ -1080,12 +1212,9 @@ function componentLabeledNode () {
 		selection.each(function (data) {
 			var r = sizeAccessor(data);
 
-			var node = d3.select(this).attr("class", classed);
+			var node = d3.select(this).classed(classed, true);
 
-			node.append("circle").attr("r", r).attr("fill-opacity", opacity)
-			//.style("stroke", strokeColor)
-			//.style("stroke-width", strokeWidth)
-			.style("fill", color);
+			node.append("circle").attr("r", r).attr("fill-opacity", opacity).style("stroke", strokeColor).style("stroke-width", strokeWidth).style("fill", color);
 
 			node.append("text").text(label).attr("dx", -r).attr("dy", -r).style("display", display).style("font-size", fontSize + "px").attr("alignment-baseline", "middle").style("text-anchor", "end");
 		});
@@ -1168,6 +1297,7 @@ function componentBubbles () {
   */
 	var width = 300;
 	var height = 300;
+	var transition = { ease: d3.easeLinear, duration: 0 };
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	var xScale = void 0;
@@ -1197,6 +1327,7 @@ function componentBubbles () {
 			// Calculate overall extent.
 			return d3.extent([].concat.apply([], serExts));
 		}
+
 		var xDomain = extents("x");
 		var yDomain = extents("y");
 		var sizeDomain = extents("value");
@@ -1249,29 +1380,34 @@ function componentBubbles () {
 
 			bubbles.enter().append("g").attr("transform", function (d) {
 				return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
-			}).call(bubble).on("mouseover", function (d) {
+			}).on("mouseover", function (d) {
 				d3.select(this).select("text").style("display", "block");
 				dispatch.call("customValueMouseOver", this, d);
 			}).on("mouseout", function () {
 				d3.select(this).select("text").style("display", "none");
 			}).on("click", function (d) {
 				dispatch.call("customValueClick", this, d);
-			}).merge(bubbles);
+			}).call(bubble).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+				return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
+			});
 
 			/*
-   bubbles.enter().append("circle")
-     .attr("class", "bubble")
-     .attr("cx", function(d) { return xScale(d.x); })
-     .attr("cy", function(d) { return yScale(d.y); })
-     .attr("r", function(d) { return sizeScale(d.value); })
-     .style("fill", function(d) { return colorScale(d.series); })
-     .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-     .on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
-     .merge(bubbles)
-     .transition()
-     .ease(transition.ease)
-     .duration(transition.duration)
-     .attr("r", function(d) { return sizeScale(d.value); });
+   bubbles.enter()
+   	.append("circle")
+   	.attr("class", "bubble")
+   	.attr("cx", function(d) { return xScale(d.x); })
+   	.attr("cy", function(d) { return yScale(d.y); })
+   	.attr("r", function(d) { return sizeScale(d.value); })
+   	.style("fill", function(d) { return colorScale(d.series); })
+   	.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
+   	.on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
+   	.merge(bubbles)
+   	.transition()
+   	.ease(transition.ease)
+   	.duration(transition.duration)
+   	.attr("cx", function(d) { return xScale(d.x); })
+   	.attr("cy", function(d) { return yScale(d.y); })
+   	.attr("r", function(d) { return sizeScale(d.value); });
    */
 
 			bubbles.exit().transition().style("opacity", 0).remove();
@@ -2784,13 +2920,11 @@ function componentLineChart () {
   */
 	var width = 400;
 	var height = 400;
-	var transition = { ease: d3.easeBounce, duration: 1500 };
+	var transition = { ease: d3.easeLinear, duration: 0 };
 	var colors = palette.categorical(3);
 	var colorScale = void 0;
 	var xScale = void 0;
 	var yScale = void 0;
-	
-	
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	var classed = "lineChart";
 
@@ -3276,7 +3410,7 @@ function componentProportionalAreaCircles () {
 				return colorScale(d.value);
 			}).label(function (d) {
 				return d.value;
-			}).display("none").classed("punchSpot").dispatch(dispatch);
+			}).display("none").stroke(1, "#cccccc").classed("punchSpot").dispatch(dispatch);
 
 			// Add spots to series
 			var spots = seriesGroup.selectAll(".punchSpot").data(function (d) {
@@ -3384,7 +3518,7 @@ function componentScatterPlot () {
   */
 	var width = 400;
 	var height = 400;
-	var transition = { ease: d3.easeBounce, duration: 500 };
+	var transition = { ease: d3.easeLinear, duration: 0 };
 	var colors = palette.categorical(3);
 	var colorScale = void 0;
 	var xScale = void 0;
@@ -3712,7 +3846,7 @@ function componentLegendSize () {
   */
 	var width = 100;
 	var height = 200;
-	var sizeScale = undefined;
+	var sizeScale = void 0;
 	var itemCount = 4;
 
 	/**
@@ -3729,8 +3863,8 @@ function componentLegendSize () {
 
 		var data = function data() {
 			// Calculate radiusScale
-			var domainMin = d3.min(sizeScale.domain());
-			var domainMax = d3.max(sizeScale.domain());
+			var domainMin = parseFloat(d3.min(sizeScale.domain()));
+			var domainMax = parseFloat(d3.max(sizeScale.domain()));
 			var increment = (domainMax - domainMin) / itemCount;
 			var ranges = Array(itemCount).fill().map(function (v, i) {
 				var rangeStart = domainMin + increment * i;
@@ -3816,7 +3950,7 @@ function componentLegendColor () {
   */
 	var width = 100;
 	var height = 200;
-	var colorScale = undefined;
+	var colorScale = void 0;
 	var itemCount = void 0;
 	var itemType = "rect";
 
@@ -3932,7 +4066,7 @@ function componentLegendThreshold () {
   */
 	var width = 100;
 	var height = 200;
-	var thresholdScale = undefined;
+	var thresholdScale = void 0;
 
 	/**
   * Constructor
@@ -4004,11 +4138,12 @@ function componentLegend () {
 	/**
   * Default Properties
   */
-	var sizeScale = undefined;
-	var colorScale = undefined;
-	var title = null;
 	var width = 100;
 	var height = 150;
+	var sizeScale = void 0;
+	var colorScale = void 0;
+	var title = void 0;
+
 	var opacity = 0.7;
 
 	/**
@@ -4102,6 +4237,7 @@ function componentLegend () {
 var component = {
 	barsCircular: componentBarsCircular,
 	barsStacked: componentBarsStacked,
+	barsHorizontal: componentBarsHorizontal,
 	barsVertical: componentBarsVertical,
 	bubbles: componentBubbles,
 	candleSticks: componentCandleSticks,
@@ -4587,9 +4723,7 @@ function chartBarChartStacked () {
 			.dispatch(dispatch);
 
 			// Create Bar Groups
-			var seriesGroup = chart.select(".barChartGroup").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".barChartGroup").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").classed("seriesGroup", true).attr("transform", function (d) {
 				return "translate(" + xScale(d.key) + ", 0)";
@@ -4654,6 +4788,162 @@ function chartBarChartStacked () {
 	my.colorScale = function (_) {
 		if (!arguments.length) return colorScale;
 		colorScale = _;
+		return this;
+	};
+
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
+
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
+	return my;
+}
+
+/**
+ * Bar Chart (horizontal) (also called: Bar Chart; Bar Graph)
+ * @see http://datavizproject.com/data-type/bar-chart/
+ */
+function chartBarChartHorizontal () {
+
+	/**
+  * Default Properties
+  */
+	var svg = void 0;
+	var chart = void 0;
+	var classed = "barChartHorizontal";
+	var width = 400;
+	var height = 300;
+	var margin = { top: 20, right: 20, bottom: 20, left: 80 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+	/**
+  * Chart Dimensions
+  */
+	var chartW = void 0;
+	var chartH = void 0;
+
+	/**
+  * Scales
+  */
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
+
+	/**
+  * Initialise Data, Scales and Series
+  */
+	function init(data) {
+		chartW = width - (margin.left + margin.right);
+		chartH = height - (margin.top + margin.bottom);
+
+		// Slice Data, calculate totals, max etc.
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = slicedData.maxValue;
+
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+
+		// X & Y Scales
+		yScale = d3.scaleBand().domain(categoryNames).rangeRound([0, chartH]).padding(0.15);
+
+		xScale = d3.scaleLinear().domain([0, maxValue]).range([chartW, 0]).nice();
+	}
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+			svg = function (selection) {
+				var el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			}(selection);
+
+			svg.classed("d3ez", true).attr("width", width).attr("height", height);
+
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
+
+		// Update the chart dimensions and add layer groups
+		var layers = ["barsHorizontal", "xAxis axis", "yAxis axis"];
+		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+			return d;
+		});
+
+		selection.each(function (data) {
+			// Initialise Data
+			init(data);
+
+			// Horizontal Bars
+			var barsHorizontal = component.barsHorizontal().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
+
+			chart.select(".barsHorizontal").datum(data).call(barsHorizontal);
+
+			// X Axis
+			var xAxis = d3.axisBottom(xScale);
+
+			chart.select(".xAxis").attr("transform", "translate(0," + chartH + ")").call(xAxis);
+
+			// Y Axis
+			var yAxis = d3.axisLeft(yScale);
+
+			chart.select(".yAxis").call(yAxis);
+
+			// Y Axis Label
+			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("y", -10).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "center").merge(yLabel).transition().text(function (d) {
+				return d;
+			});
+		});
+	}
+
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
+
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
+
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return this;
+	};
+
+	my.transition = function (_) {
+		if (!arguments.length) return transition;
+		transition = _;
 		return this;
 	};
 
@@ -4757,9 +5047,7 @@ function chartBarChartVertical () {
 			init(data);
 
 			// Vertical Bars
-			var barsVertical = component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale)
-			//.yScale(yScale)
-			.dispatch(dispatch);
+			var barsVertical = component.barsVertical().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).dispatch(dispatch);
 
 			chart.select(".barsVertical").datum(data).call(barsVertical);
 
@@ -4774,273 +5062,12 @@ function chartBarChartVertical () {
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Label
-			var ylabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
 
-			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function (d) {
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
 				return d;
 			});
 		});
-	}
-
-	/**
-  * Configuration Getters & Setters
-  */
-	my.width = function (_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
-
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return this;
-	};
-
-	my.colors = function (_) {
-		if (!arguments.length) return colors;
-		colors = _;
-		return this;
-	};
-
-	my.colorScale = function (_) {
-		if (!arguments.length) return colorScale;
-		colorScale = _;
-		return this;
-	};
-
-	my.transition = function (_) {
-		if (!arguments.length) return transition;
-		transition = _;
-		return this;
-	};
-
-	my.dispatch = function (_) {
-		if (!arguments.length) return dispatch();
-		dispatch = _;
-		return this;
-	};
-
-	my.on = function () {
-		var value = dispatch.on.apply(dispatch, arguments);
-		return value === dispatch ? my : value;
-	};
-
-	return my;
-}
-
-
-/**
- * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
- * @see http://datavizproject.com/data-type/bar-chart/
- */
-function chartRadarChart () {
-
-	/**
-  * Default Properties
-  */
-	var svg = void 0;
-	var chart = void 0;
-	var classed = "polarArea";
-	var width = 400;
-	var height = 300;
-	var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	var transition = { ease: d3.easeBounce, duration: 500 };
-	var colors = palette.categorical(3);
-	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	/**
-  * Chart Dimensions
-  */
-	var chartW = void 0;
-	var chartH = void 0;
-	var radius = void 0;
-
-	/**
-  * Scales
-  */
-	var xScale = void 0;
-	var yScale = void 0;
-	var rScale = void 0;
-	var colorScale = void 0;
-
-	
-	/**
-  * Other Customisation Options
-  */
-	var startAngle = 0;
-	var endAngle = 360;
-	var capitalizeLabels = false;
-	var colorLabels = false;
-
-	/**
-	
-	/**
-  * Initialise Data, Scales and Series
-  */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-		
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
-
-		// Slice Data, calculate totals, max etc.
-		var slicedData = dataParse(data);
-		var categoryNames = slicedData.categoryNames;
-		var maxValue = slicedData.maxValue;
-
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
-
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15);
-
-		yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice();
-		
-		rScale = yScale;
-	}
-
-	/**
-  * Constructor
-  */
-	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = function (selection) {
-				var el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			}(selection);
-
-			svg.classed("d3ez", true).attr("width", width).attr("height", height);
-
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
-
-		// Update the chart dimensions and add layer groups
-		var layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis"];
-		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
-			return d;
-		});
-
-		selection.each(function (data) {
-			// Initialise Data
-			init(data);
-			
-			// Slice calculation on circle
-			var angleSlice = (Math.PI * 2 / data.length+1);
-			
-			// Create Circular Axis
-			var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).radius(radius);
-
-			// Rendering
-			chart.select(".circularAxis").call(circularAxis);
-			
-			// Creating radar wrapper for Circle and lines
-			var radarWrapper = chart.selectAll(".radarWrapper").data(data.map(function(e){
-				return e.values;
-			})).enter().append("g").attr("class", "radarWrapper");
-			
-			
-			// Function to genreate radar line points
-			var radarLine = d3.radialLine().radius(function(d) {return yScale(d.value); }).angle(function(d,i) {return i* angleSlice; })
-			.curve(d3.curveBasis)
-			.curve(d3.curveCardinalClosed);
-		
-		radarWrapper.append("path").attr("class", "radarArea").attr("d", function(d,i) { return radarLine(d); })
-		.style("fill", function(d,i) { return colorScale(i); })
-		.style("fill-opacity", 0.1)
-		.on('mouseover', function (d,i){
-			//Dim all Radar Wrapper
-			d3.selectAll(".radarArea")
-				.transition().duration(200)
-				.style("fill-opacity", 0.1);
-				
-			//Bring back Radar Wrapper
-			d3.select(this)
-				.transition().duration(200)
-				.style("fill-opacity", 0.7);	
-		})
-		.on('mouseout', function(){
-			//Bring back all Radar Wrappers
-			d3.selectAll(".radarArea")
-				.transition().duration(200)
-				.style("fill-opacity", 0.1);
-		});		
-	
-		// Creating lines/Path on circle
-		radarWrapper.append("path").attr("class", "radarStroke").attr("d", function(d,i) { return radarLine(d); }).style("stroke-width", 3 + "px")
-		.style("stroke", function(d,i) { return colorScale(i); })
-		.style("fill", "none")
-		
-		// Create Radar Circle points on line
-		radarWrapper.selectAll(".radarCircle")
-		.data(function(d,i) { return d; })
-		.enter().append("circle")
-		.attr("class", "radarCircle")
-		.attr("r", 4)
-		.attr("cx", function(d,i){ return yScale(d.value) * Math.cos(angleSlice*i - Math.PI/2); })
-		.attr("cy", function(d,i){ return yScale(d.value) * Math.sin(angleSlice*i - Math.PI/2); })
-		.style("fill", function(d,i,j) { return colorScale(j); })
-		.style("fill-opacity", 0.8);
-		
-		// Creating vertical scale
-		var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
-
-		// Render vertical scale on circle
-		var verticalAxis = d3.axisLeft(axisScale);
-		chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
-		
-		// Adding Circular Lables on Page
-		var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(xScale).textAnchor("start");
-		chart.select(".circularSectorLabels").call(circularSectorLabels);
-
-		//Wrapper for the invisible circles on top
-		var radarCircleWrapper = chart.selectAll(".radarCircleWrapper")
-		.data(data.map(function(e){
-				return e.values;
-		}))
-		.enter().append("g")
-		.attr("class", "radarCircleWrapper");
-		
-	    //Append a set of invisible circles on top for the mouseover pop-up
-		radarCircleWrapper.selectAll(".radarInvisibleCircle")
-		.data(function(d,i) { return d; })
-		.enter().append("circle")
-		.attr("class", "radarInvisibleCircle")
-		.attr("r", 4 * 1.5)
-		.attr("cx", function(d,i){ return rScale(d.value) * Math.cos(angleSlice*i - Math.PI/2); })
-		.attr("cy", function(d,i){ return rScale(d.value) * Math.sin(angleSlice*i - Math.PI/2); })
-		.style("fill", "none")
-		.style("pointer-events", "all")
-		.on("mouseover", function(d,i) {
-			var newX =  parseFloat(d3.select(this).attr('cx')) - 10;
-			var newY =  parseFloat(d3.select(this).attr('cy')) - 10;
-					
-			tooltip
-				.attr('x', newX)
-				.attr('y', newY)
-				.text(d.value)
-				.transition().duration(200)
-				.style('opacity', 1);
-		})
-		.on("mouseout", function(){
-			tooltip.transition().duration(200)
-				.style("opacity", 0);
-		});
-		
-		//Set up the small tooltip for when you hover over a circle
-		var tooltip = chart.append("text")
-			.attr("class", "tooltip")
-			.style("opacity", 0);
-		});
-
 	}
 
 	/**
@@ -5194,7 +5221,7 @@ function chartBubbleChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["bubbleGroups", "xAxis axis", "yAxis axis"];
+		var layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5203,16 +5230,19 @@ function chartBubbleChart () {
 			// Initialise Data
 			init(data);
 
+			// Add Clip Path - Still Proof of Concept
+			chart.append('defs').append('clipPath').attr('id', 'plotAreaClip').append('rect').attr('width', chartW).attr('height', chartH);
+
 			// Bubble Chart
 			var bubbles = component.bubbles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).minRadius(minRadius).maxRadius(maxRadius).dispatch(dispatch);
 
-			var seriesGroup = chart.select(".bubbleGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var bubbleGroups = chart.select(".bubbleGroups").attr('clip-path', function () {
+				return "url(" + window.location + "#plotAreaClip)";
+			}).append("g");
 
-			seriesGroup.enter().append("g").data(function (d) {
-				return d;
-			}).attr("class", "seriesGroup").merge(seriesGroup).call(bubbles);
+			var seriesGroup = bubbleGroups.selectAll(".seriesGroup").data(data);
+
+			seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(bubbles);
 
 			seriesGroup.exit().remove();
 
@@ -5223,6 +5253,25 @@ function chartBubbleChart () {
 
 			// Y Axis
 			var yAxis = d3.axisLeft(yScale);
+
+			// Zoom
+			var zoom = d3.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 20]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
+
+			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
+
+			function zoomed() {
+				var xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				var yScaleZoomed = d3.event.transform.rescaleY(yScale);
+
+				xAxis.scale(xScaleZoomed);
+				yAxis.scale(yScaleZoomed);
+				bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
+
+				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+				chart.select(".yAxis").call(yAxis);
+
+				bubbleGroups.selectAll(".seriesGroup").call(bubbles);
+			}
 
 			chart.select(".yAxis").call(yAxis);
 		});
@@ -5387,7 +5436,7 @@ function chartCandlestickChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["candleSticks", "xAxis axis", "yAxis axis", "zoomArea"];
+		var layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -5399,7 +5448,7 @@ function chartCandlestickChart () {
 			// Candle Sticks
 			var candleSticks = component.candleSticks().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
 
-			chart.select(".candleSticks").call(candleSticks);
+			chart.select(".candleSticks").datum(data).call(candleSticks);
 
 			// X Axis
 			var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%d-%b-%y"));
@@ -5412,9 +5461,9 @@ function chartCandlestickChart () {
 			chart.select(".yAxis").call(yAxis);
 
 			// Y Axis Labels
-			var ylabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
+			var yLabel = chart.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
 
-			ylabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(ylabel).transition().text(function (d) {
+			yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
 				return d;
 			});
 
@@ -5759,9 +5808,7 @@ function chartHeatMapRadial () {
 			}).startAngle(startAngle).endAngle(endAngle).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
 			// Create Series Group
-			var seriesGroup = chart.select(".heatRingsGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".heatRingsGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(heatMapRing);
 
@@ -5948,9 +5995,7 @@ function chartHeatMapTable () {
 			var heatMapRow = component.heatMapRow().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch).thresholds(thresholds);
 
 			// Create Series Group
-			var seriesGroup = chart.select(".heatRowGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".heatRowGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").attr("transform", function (d) {
 				return "translate(0, " + yScale(d.key) + ")";
@@ -6053,8 +6098,6 @@ function chartLineChart () {
   */
 	var xScale = void 0;
 	var yScale = void 0;
-	var xScale2 = void 0;
-	var yScale2 = void 0;
 	var colorScale = void 0;
 
 	/**
@@ -6089,14 +6132,8 @@ function chartLineChart () {
 
 		// X & Y Scales
 		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
+
 		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
-		
-		
-		xScale2 = d3.scaleTime().domain(dateDomain).range([0, chartW]);
-		yScale2 = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
-		
-		xScale2.domain(xScale.domain());
-		
 	}
 
 	/**
@@ -6122,7 +6159,7 @@ function chartLineChart () {
 		}
 
 		// Update the chart dimensions and add layer groups
-		var layers = ["lineGroups", "xAxis axis", "yAxis axis", "zoomArea"];
+		var layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true).attr("transform", "translate(" + margin.left + "," + margin.top + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 			return d;
 		});
@@ -6140,19 +6177,15 @@ function chartLineChart () {
 			// Scatter Plot
 			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-			var lineChartGroup = chart.select(".lineGroups").attr('clip-path', function () {
+			var lineGroups = chart.select(".lineGroups").attr('clip-path', function () {
 				return "url(" + window.location + "#plotAreaClip)";
 			}).append("g");
 
-			var seriesGroup = lineChartGroup.selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = lineGroups.selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").style("fill", function (d) {
 				return colorScale(d.key);
-			}).datum(function (d) {
-				return d;
-			}).merge(seriesGroup).call(lineChart).call(scatterPlot);;
+			}).merge(seriesGroup).call(lineChart).call(scatterPlot);
 
 			seriesGroup.exit().remove();
 
@@ -6166,52 +6199,21 @@ function chartLineChart () {
 
 			chart.select(".yAxis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").text(yAxisLabel);
 
-			// Experimental Zoom
-			var zoom = d3.zoom().scaleExtent([1, 8]).translateExtent([[0, 0], [chartW, chartH]]).extent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
+			// Zoom
+			var zoom = d3.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 8]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
 
 			chart.select(".zoomArea").append("rect").attr("width", chartW).attr("height", chartH).attr("fill", "none").attr("pointer-events", "all").call(zoom);
 
 			function zoomed() {
-				 if(d3.event.transform.x !== 0 &&  d3.event.transform.y !== 0){
-					redraw();
-				 }
-			}
-			
-			var line = d3.line().curve(d3.curveCardinal).x(function (d) {
-				return xScale(d.key);
-			}).y(function (d) {
-				return yScale(d.value);
-			});
-			
-			var pathTween = function pathTween(data) {
-				var interpolate = d3.scaleQuantile().domain([0, 1]).range(d3.range(1, data.length + 1));
-				return function (t) {
-					return line(data.slice(0, interpolate(t)));
-				};
-			};
-			
-			function redraw(){
-				var xk = d3.event.transform.rescaleX(xScale2);
-				xScale.domain(xk.domain());
-				
+				var xScaleZoomed = d3.event.transform.rescaleX(xScale);
+
+				xAxis.scale(xScaleZoomed);
+				lineChart.xScale(xScaleZoomed);
+				scatterPlot.xScale(xScaleZoomed);
+
 				chart.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-				//lineChartGroup.call(xAxis);
-
-				lineChartGroup.selectAll(".seriesGroup").selectAll("circle")
-				.attr("cx", function (d) {
-					return xScale(d.key);
-				}).attr("cy", function (d) {
-					return yScale(d.value);
-				});
-
-				lineChartGroup.selectAll(".seriesGroup").selectAll("path").attr("stroke-width", function () {
-					return 1 / d3.event.transform.k;
-				}).transition().duration(0).attrTween("d", function(d){
-					return pathTween(d.values);
-				})
-				
-
+				lineGroups.selectAll(".seriesGroup").call(lineChart).call(scatterPlot);
 			}
 		});
 	}
@@ -6376,7 +6378,6 @@ function chartPolarAreaChart () {
 			var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).radius(radius);
 
 			chart.select(".circularAxis").call(circularAxis);
-			
 
 			// Radial Bar Chart
 			var polarArea = component.polarArea().radius(radius).colorScale(colorScale).xScale(xScale).yScale(yScale).dispatch(dispatch);
@@ -6574,9 +6575,7 @@ function chartPunchCard () {
 			// Proportional Area Circles
 			var proportionalAreaCircles = component.proportionalAreaCircles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).sizeScale(sizeScale).dispatch(dispatch);
 
-			var seriesGroup = chart.select(".punchRowGroups").selectAll(".seriesGroup").data(function (d) {
-				return d;
-			});
+			var seriesGroup = chart.select(".punchRowGroups").selectAll(".seriesGroup").data(data);
 
 			seriesGroup.enter().append("g").attr("class", "seriesGroup").attr("transform", function (d) {
 				return "translate(0, " + yScale(d.key) + ")";
@@ -6644,6 +6643,238 @@ function chartPunchCard () {
 	my.useGlobalScale = function (_) {
 		if (!arguments.length) return useGlobalScale;
 		useGlobalScale = _;
+		return this;
+	};
+
+	my.dispatch = function (_) {
+		if (!arguments.length) return dispatch();
+		dispatch = _;
+		return this;
+	};
+
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
+	return my;
+}
+
+function chartRadarChart () {
+
+	/**
+  * Default Properties
+  */
+	var svg = void 0;
+	var chart = void 0;
+	var classed = "polarArea";
+	var width = 400;
+	var height = 300;
+	var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+	/**
+  * Chart Dimensions
+  */
+	var chartW = void 0;
+	var chartH = void 0;
+	var radius = void 0;
+
+	/**
+  * Scales
+  */
+	var xScale = void 0;
+	var yScale = void 0;
+	var rScale = void 0;
+	var colorScale = void 0;
+
+	/**
+  * Other Customisation Options
+  */
+	var startAngle = 0;
+	var endAngle = 360;
+
+	/**
+  * Initialise Data, Scales and Series
+  */
+	function init(data) {
+		chartW = width - (margin.left + margin.right);
+		chartH = height - (margin.top + margin.bottom);
+
+		// If the radius has not been passed then calculate it from width/height.
+		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+
+		// Slice Data, calculate totals, max etc.
+		var slicedData = dataParse(data);
+		var categoryNames = slicedData.categoryNames;
+		var maxValue = slicedData.maxValue;
+
+		// If the colorScale has not been passed then attempt to calculate.
+		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+
+		// X & Y Scales
+		xScale = d3.scaleBand().domain(categoryNames).rangeRound([startAngle, endAngle]).padding(0.15);
+
+		yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice();
+
+		rScale = yScale;
+	}
+
+	/**
+  * Constructor
+  */
+	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+			svg = function (selection) {
+				var el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			}(selection);
+
+			svg.classed("d3ez", true).attr("width", width).attr("height", height);
+
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
+
+		// Update the chart dimensions and add layer groups
+		var layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis"];
+		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+			return d;
+		});
+
+		selection.each(function (data) {
+			// Initialise Data
+			init(data);
+
+			// Slice calculation on circle
+			var angleSlice = Math.PI * 2 / data.length + 1;
+
+			// Create Circular Axis
+			var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).radius(radius);
+
+			// Rendering
+			chart.select(".circularAxis").call(circularAxis);
+
+			// Creating radar wrapper for Circle and lines
+			var radarWrapper = chart.selectAll(".radarWrapper").data(data.map(function (e) {
+				return e.values;
+			})).enter().append("g").attr("class", "radarWrapper");
+
+			// Function to genreate radar line points
+			var radarLine = d3.radialLine().radius(function (d) {
+				return yScale(d.value);
+			}).angle(function (d, i) {
+				return i * angleSlice;
+			}).curve(d3.curveBasis).curve(d3.curveCardinalClosed);
+
+			radarWrapper.append("path").attr("class", "radarArea").attr("d", function (d, i) {
+				return radarLine(d);
+			}).style("fill", function (d, i) {
+				return colorScale(i);
+			}).style("fill-opacity", 0.1).on('mouseover', function (d, i) {
+				//Dim all Radar Wrapper
+				d3.selectAll(".radarArea").transition().duration(200).style("fill-opacity", 0.1);
+
+				//Bring back Radar Wrapper
+				d3.select(this).transition().duration(200).style("fill-opacity", 0.7);
+			}).on('mouseout', function () {
+				//Bring back all Radar Wrappers
+				d3.selectAll(".radarArea").transition().duration(200).style("fill-opacity", 0.1);
+			});
+
+			// Creating lines/Path on circle
+			radarWrapper.append("path").attr("class", "radarStroke").attr("d", function (d, i) {
+				return radarLine(d);
+			}).style("stroke-width", 3 + "px").style("stroke", function (d, i) {
+				return colorScale(i);
+			}).style("fill", "none");
+
+			// Create Radar Circle points on line
+			radarWrapper.selectAll(".radarCircle").data(function (d, i) {
+				return d;
+			}).enter().append("circle").attr("class", "radarCircle").attr("r", 4).attr("cx", function (d, i) {
+				return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
+			}).attr("cy", function (d, i) {
+				return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
+			}).style("fill", function (d, i, j) {
+				return colorScale(j);
+			}).style("fill-opacity", 0.8);
+
+			// Creating vertical scale
+			var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
+
+			// Render vertical scale on circle
+			var verticalAxis = d3.axisLeft(axisScale);
+			chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
+
+			// Adding Circular Lables on Page
+			var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(xScale).textAnchor("start");
+			chart.select(".circularSectorLabels").call(circularSectorLabels);
+
+			//Wrapper for the invisible circles on top
+			var radarCircleWrapper = chart.selectAll(".radarCircleWrapper").data(data.map(function (e) {
+				return e.values;
+			})).enter().append("g").attr("class", "radarCircleWrapper");
+
+			//Append a set of invisible circles on top for the mouseover pop-up
+			radarCircleWrapper.selectAll(".radarInvisibleCircle").data(function (d, i) {
+				return d;
+			}).enter().append("circle").attr("class", "radarInvisibleCircle").attr("r", 4 * 1.5).attr("cx", function (d, i) {
+				return rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
+			}).attr("cy", function (d, i) {
+				return rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
+			}).style("fill", "none").style("pointer-events", "all").on("mouseover", function (d, i) {
+				var newX = parseFloat(d3.select(this).attr('cx')) - 10;
+				var newY = parseFloat(d3.select(this).attr('cy')) - 10;
+
+				tooltip.attr('x', newX).attr('y', newY).text(d.value).transition().duration(200).style('opacity', 1);
+			}).on("mouseout", function () {
+				tooltip.transition().duration(200).style("opacity", 0);
+			});
+
+			// Set up the small tooltip for when you hover over a circle
+			var tooltip = chart.append("text").attr("class", "tooltip").style("opacity", 0);
+		});
+	}
+
+	/**
+  * Configuration Getters & Setters
+  */
+	my.width = function (_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
+	my.height = function (_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
+
+	my.colors = function (_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
+
+	my.colorScale = function (_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return this;
+	};
+
+	my.transition = function (_) {
+		if (!arguments.length) return transition;
+		transition = _;
 		return this;
 	};
 
@@ -6830,8 +7061,8 @@ var chart = {
 	barChartCircular: chartBarChartCircular,
 	barChartClustered: chartBarChartClustered,
 	barChartStacked: chartBarChartStacked,
+	barChartHorizontal: chartBarChartHorizontal,
 	barChartVertical: chartBarChartVertical,
-	radarChart:chartRadarChart,
 	bubbleChart: chartBubbleChart,
 	candlestickChart: chartCandlestickChart,
 	donutChart: chartDonutChart,
@@ -6840,6 +7071,7 @@ var chart = {
 	lineChart: chartLineChart,
 	polarAreaChart: chartPolarAreaChart,
 	punchCard: chartPunchCard,
+	radarChart: chartRadarChart,
 	roseChart: chartRoseChart
 };
 
