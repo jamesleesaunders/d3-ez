@@ -11,6 +11,7 @@ import { default as chartHeatMapTable } from "./chart/heatMapTable";
 import { default as chartLineChart } from "./chart/lineChart";
 import { default as chartPolarAreaChart } from "./chart/polarAreaChart";
 import { default as chartPunchCard } from "./chart/punchCard";
+import { default as chartRadarChart } from "./chart/radarChart";
 import { default as chartRoseChart } from "./chart/roseChart";
 
 export default {
@@ -27,5 +28,6 @@ export default {
 	lineChart: chartLineChart,
 	polarAreaChart: chartPolarAreaChart,
 	punchCard: chartPunchCard,
+	radarChart: chartRadarChart,
 	roseChart: chartRoseChart
 };
