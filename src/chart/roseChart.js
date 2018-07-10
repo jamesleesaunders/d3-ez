@@ -30,7 +30,7 @@ export default function() {
 	let radius;
 
 	/**
-	 * Scales and Axis
+	 * Scales
 	 */
 	let xScale;
 	let yScale;

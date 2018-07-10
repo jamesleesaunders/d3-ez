@@ -3,6 +3,10 @@ import { default as palette } from "../palette";
 import { default as dataParse } from "../dataParse";
 import { default as component } from "../component";
 
+/**
+ * Radar Chart (also called: Spider Chart; Web Chart; Star Plot)
+ * @see http://datavizproject.com/data-type/radar-diagram/
+ */
 export default function() {
 
   /**
