@@ -130,6 +130,7 @@ The following charts are currently supported:
 -   lineChart()
 -   polarAreaChart()
 -   punchCard()
+-   radarChart()
 -   roseChart()
 
 All of the above support the following options:
@@ -204,4 +205,4 @@ For reference here are a few other alternative D3 chart libraries which also fol
 -   Peter Cook <http://animateddata.co.uk/> For giving permission to use his Radial Bar and Radial Heat Map charts.
 -   Virgin Media <http://www.virginmedia.co.uk/> For support in development of the Tabular Heat Map.
 -   Data Viz Project <http://datavizproject.com/> For helping me while deciding on naming of chart types.
--   Dip Parmar <https://github.com/DipParmar> For contributing to zooming and the horizontal bar chart.
+-   Dip Parmar <https://github.com/DipParmar> For contributing to zooming, radar and horizontal bar charts.
