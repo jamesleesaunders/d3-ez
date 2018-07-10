@@ -14,26 +14,38 @@
   <script type="text/javascript">
     var data = [
       {
-        "key": "Series 1", "values": [
-          { "key": "Vitamin A", "value": 8 },
-          { "key": "Vitamin E", "value": 2 },
-          { "key": "Vitamin D", "value": 2 },
-          { "key": "Vitamin B", "value": 4 },
-          { "key": "Vitamin C", "value": 8 }]
-      },
-      {
-        "key": "Series 2", "values": [
-          { "key": "Vitamin A", "value": 2.5 },
-          { "key": "Vitamin E", "value": 3.6 },
-          { "key": "Vitamin D", "value": 4.2 },
-          { "key": "Vitamin B", "value": 5.7 },
-          { "key": "Vitamin C", "value": 9.8 }]
+        "key": "Monster Truck",
+        "values": [
+          { "key": "Speed", "value": 5 },
+          { "key": "Durability", "value": 8 },
+          { "key": "Comfort", "value": 6 },
+          { "key": "Power", "value": 10 },
+          { "key": "Space", "value": 5 }
+        ]
+      }, {
+        "key": "Drag Racer",
+        "values": [
+          { "key": "Speed", "value": 10 },
+          { "key": "Durability", "value": 3 },
+          { "key": "Comfort", "value": 4 },
+          { "key": "Power", "value": 9 },
+          { "key": "Space", "value": 2 }
+        ]
+      }, {
+        "key": "Family Saloon",
+        "values": [
+          { "key": "Speed", "value": 7 },
+          { "key": "Durability", "value": 5 },
+          { "key": "Comfort", "value": 10 },
+          { "key": "Power", "value": 6 },
+          { "key": "Space", "value": 8 }
+        ]
       }];
 
     var colors = d3.ez.palette.categorical(1);
     var chart = d3.ez.chart.radarChart().colors(colors);
-    var legend = d3.ez.component.legend().title("Vitamins");
-    var title = d3.ez.component.title().mainText("Vitamins").subText("Vitamins");
+    var legend = d3.ez.component.legend().title("Car Type");
+    var title = d3.ez.component.title().mainText("Car Comparison").subText("Comparing Car Features");
 
     // Create chart base
     var myChart = d3.ez.base()

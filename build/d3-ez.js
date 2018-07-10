@@ -3395,14 +3395,9 @@ function componentRadarArea () {
       seriesGroup.append("path").classed(classed, true).attr("d", function (d) {
         return radarLine(d.values);
       }).style("fill-opacity", 0.2).on('mouseover', function () {
-        // Dim all Radar Wrapper
-        d3.selectAll(".radarArea").transition().duration(200).style("fill-opacity", 0.2);
-
-        // Bring back Radar Wrapper
         d3.select(this).transition().duration(200).style("fill-opacity", 0.7);
       }).on('mouseout', function () {
-        // Bring back all Radar Wrappers
-        d3.selectAll(".radarArea").transition().duration(200).style("fill-opacity", 0.2);
+        d3.select(this).transition().duration(200).style("fill-opacity", 0.2);
       });
 
       // Creating lines/path on circle
@@ -6453,7 +6448,7 @@ function chartPolarAreaChart () {
 	var radius = void 0;
 
 	/**
-  * Scales and Axis
+  * Scales
   */
 	var xScale = void 0;
 	var yScale = void 0;
@@ -6809,6 +6804,10 @@ function chartPunchCard () {
 	return my;
 }
 
+/**
+ * Radar Chart (also called: Spider Chart; Web Chart; Star Plot)
+ * @see http://datavizproject.com/data-type/radar-diagram/
+ */
 function chartRadarChart () {
 
   /**
@@ -7007,7 +7006,7 @@ function chartRoseChart () {
 	var radius = void 0;
 
 	/**
-  * Scales and Axis
+  * Scales
   */
 	var xScale = void 0;
 	var yScale = void 0;

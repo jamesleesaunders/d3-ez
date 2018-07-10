@@ -76,20 +76,12 @@ export default function() {
         .attr("d", function(d) { return radarLine(d.values); })
         .style("fill-opacity", 0.2)
         .on('mouseover', function() {
-          // Dim all Radar Wrapper
-          d3.selectAll(".radarArea")
-            .transition()
-            .duration(200)
-            .style("fill-opacity", 0.2);
-
-          // Bring back Radar Wrapper
           d3.select(this)
             .transition().duration(200)
             .style("fill-opacity", 0.7);
         })
         .on('mouseout', function() {
-          // Bring back all Radar Wrappers
-          d3.selectAll(".radarArea")
+          d3.select(this)
             .transition().duration(200)
             .style("fill-opacity", 0.2);
         });
