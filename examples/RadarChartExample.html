@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>d3-ez : Radar Chart Example</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+</head>
+
+<body>
+  <div id="chartholder"></div>
+
+  <script type="text/javascript">
+    var data = [
+      {
+        "key": "Monster Truck",
+        "values": [
+          { "key": "Speed", "value": 5 },
+          { "key": "Durability", "value": 8 },
+          { "key": "Comfort", "value": 6 },
+          { "key": "Power", "value": 10 },
+          { "key": "Space", "value": 5 }
+        ]
+      }, {
+        "key": "Drag Racer",
+        "values": [
+          { "key": "Speed", "value": 10 },
+          { "key": "Durability", "value": 3 },
+          { "key": "Comfort", "value": 4 },
+          { "key": "Power", "value": 9 },
+          { "key": "Space", "value": 2 }
+        ]
+      }, {
+        "key": "Family Saloon",
+        "values": [
+          { "key": "Speed", "value": 7 },
+          { "key": "Durability", "value": 5 },
+          { "key": "Comfort", "value": 10 },
+          { "key": "Power", "value": 6 },
+          { "key": "Space", "value": 8 }
+        ]
+      }];
+
+    var colors = d3.ez.palette.categorical(1);
+    var chart = d3.ez.chart.radarChart().colors(colors);
+    var legend = d3.ez.component.legend().title("Car Type");
+    var title = d3.ez.component.title().mainText("Car Comparison").subText("Comparing Car Features");
+
+    // Create chart base
+    var myChart = d3.ez.base()
+      .width(750)
+      .height(400)
+      .chart(chart)
+      .legend(legend)
+      .title(title)
+      .on("customValueMouseOver", function(d) {
+        d3.select("#message").text(d.value);
+      })
+      .on("customSeriesClick", function(d) {
+        console.log(d);
+      });
+
+    // Add to page
+    d3.select("#chartholder")
+      .datum(data)
+      .call(myChart);
+
+  </script>
+</body>
+
+</html>

@@ -12,11 +12,12 @@ export default function() {
 	/**
 	 * Default Properties
 	 */
-	let sizeScale = undefined;
-	let colorScale = undefined;
-	let title = null;
 	let width = 100;
 	let height = 150;
+	let sizeScale;
+	let colorScale;
+	let title;
+
 	let opacity = 0.7;
 
 	/**

@@ -87,6 +87,7 @@ export default function() {
 				.color(function(d) { return colorScale(d.value); })
 				.label(function(d) { return d.value; })
 				.display("none")
+				.stroke(1, "#cccccc")
 				.classed("punchSpot")
 				.dispatch(dispatch);
 

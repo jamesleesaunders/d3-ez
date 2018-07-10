@@ -186,7 +186,9 @@ export default function() {
 
 			// Zoom
 			let zoom = d3.zoom()
+				.extent([[0, 0], [chartW, chartH]])
 				.scaleExtent([1, 20])
+				.translateExtent([[0, 0], [chartW, chartH]])
 				.on("zoom", zoomed);
 
 			chart.select(".zoomArea")

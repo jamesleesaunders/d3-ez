@@ -14,7 +14,7 @@ export default function() {
 	let strokeColor = "#000000";
 	let strokeWidth = 1;
 	let radius = 8;
-	let label = null;
+	let label;
 	let display = "block";
 	let fontSize = 10;
 	let classed = "labeledNode";
@@ -34,13 +34,13 @@ export default function() {
 			let r = sizeAccessor(data);
 
 			let node = d3.select(this)
-				.attr("class", classed);
+				.classed(classed, true);
 
 			node.append("circle")
 				.attr("r", r)
 				.attr("fill-opacity", opacity)
-				//.style("stroke", strokeColor)
-				//.style("stroke-width", strokeWidth)
+				.style("stroke", strokeColor)
+				.style("stroke-width", strokeWidth)
 				.style("fill", color);
 
 			node.append("text")

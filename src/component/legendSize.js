@@ -11,7 +11,7 @@ export default function() {
 	 */
 	let width = 100;
 	let height = 200;
-	let sizeScale = undefined;
+	let sizeScale;
 	let itemCount = 4;
 
 	/**
@@ -34,8 +34,8 @@ export default function() {
 
 		let data = function() {
 			// Calculate radiusScale
-			let domainMin = d3.min(sizeScale.domain());
-			let domainMax = d3.max(sizeScale.domain());
+			let domainMin = parseFloat(d3.min(sizeScale.domain()));
+			let domainMax = parseFloat(d3.max(sizeScale.domain()));
 			let increment = (domainMax - domainMin) / itemCount;
 			let ranges = Array(itemCount).fill().map(function(v, i) {
 				let rangeStart = domainMin + (increment * i);
