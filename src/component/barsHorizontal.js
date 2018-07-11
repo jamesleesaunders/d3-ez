@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Horizontal Bar Chart Component
@@ -25,18 +25,24 @@ export default function() {
 	 * Initialise Data and Scales
 	 */
 	function init(data) {
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
-		let maxValue = slicedData.maxValue;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
+		let maxValue = dataSummary.maxValue;
 
 		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		colorScale = typeof colorScale === "undefined" ?
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
+			colorScale;
 
 		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) : yScale;
+		yScale = typeof yScale === "undefined" ?
+			d3.scaleBand().domain(seriesNames).rangeRound([0, width]).padding(0.15) :
+			yScale;
 
 		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() : xScale;
+		xScale = typeof xScale === "undefined" ?
+			d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() :
+			xScale;
 	}
 
 	/**

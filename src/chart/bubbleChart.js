@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -51,7 +51,7 @@ export default function() {
 		chartH = height - (margin.top + margin.bottom);
 
 		// Calculate the extents for each series.
-		// TODO: Use dataParse() ?
+		// TODO: Use dataTransform() ?
 		function extents(key) {
 			let serExts = [];
 			d3.map(data).values().forEach(function(d) {
@@ -68,13 +68,13 @@ export default function() {
 		let xDomain = extents("x");
 		let yDomain = extents("y");
 		let sizeDomain = extents("value");
-		let categoryNames = data.map(function(d) {
+		let seriesNames = data.map(function(d) {
 			return d.key;
 		});
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 
 		// If the sizeScale has not been passed then attempt to calculate.

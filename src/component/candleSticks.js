@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Candle Stick Component

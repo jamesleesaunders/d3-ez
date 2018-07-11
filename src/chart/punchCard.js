@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -51,11 +51,11 @@ export default function() {
 		chartH = height - margin.top - margin.bottom;
 
 		// Slice Data, calculate totals, max etc.
-		let slicedData = dataParse(data);
-		let maxValue = slicedData.maxValue;
-		let minValue = slicedData.minValue;
-		let categoryNames = slicedData.categoryNames;
-		let groupNames = slicedData.groupNames;
+		let dataSummary = dataTransform(data).summary();
+		let categoryNames = dataSummary.rowKeys;
+		let seriesNames = dataSummary.columnKeys;
+		let maxValue = dataSummary.maxValue;
+		let minValue = dataSummary.minValue;
 
 		let valDomain = [minValue, maxValue];
 		let sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function(d) {
@@ -69,12 +69,12 @@ export default function() {
 
 		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(seriesNames)
 			.range([0, chartW])
 			.padding(0.05);
 
 		yScale = d3.scaleBand()
-			.domain(groupNames)
+			.domain(categoryNames)
 			.range([0, chartH])
 			.padding(0.05);
 

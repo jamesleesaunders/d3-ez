@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -48,22 +48,22 @@ export default function() {
 		chartH = height - (margin.top + margin.bottom);
 
 		// Slice Data, calculate totals, max etc.
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
-		let maxValue = slicedData.maxValue;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
+		let maxValue = dataSummary.maxValue;
 
 		if (!yAxisLabel) {
-			yAxisLabel = slicedData.groupName;
+			yAxisLabel = dataSummary.seriesName;
 		}
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 
 		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(seriesNames)
 			.rangeRound([0, chartW])
 			.padding(0.15);
 
@@ -98,7 +98,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["barsVertical", "xAxis axis", "yAxis axis"];
+		let layers = ["barChart", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -121,7 +121,7 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			chart.select(".barsVertical")
+			chart.select(".barChart")
 				.datum(data)
 				.call(barsVertical);
 

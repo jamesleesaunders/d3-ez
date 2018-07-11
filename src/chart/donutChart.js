@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -52,12 +52,12 @@ export default function() {
 			innerRadius;
 
 		// Slice Data, calculate totals, max etc.
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 	}
 
