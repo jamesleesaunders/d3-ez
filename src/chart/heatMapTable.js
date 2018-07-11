@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -48,13 +48,14 @@ export default function() {
 		chartH = height - margin.top - margin.bottom;
 
 		// Slice Data, calculate totals, max etc.
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
-		let groupNames = slicedData.groupNames;
+		let dataSummary = dataTransform(data).summary();
+		let categoryNames = dataSummary.rowKeys;
+		let seriesNames = dataSummary.columnKeys;
+
 
 		// If thresholds values are not set attempt to auto-calculate the thresholds.
 		if (!thresholds) {
-			thresholds = slicedData.thresholds;
+			thresholds = dataSummary.thresholds;
 		}
 
 		// If the colorScale has not been passed then attempt to calculate.
@@ -64,12 +65,12 @@ export default function() {
 
 		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(seriesNames)
 			.range([0, chartW])
 			.padding(0.1);
 
 		yScale = d3.scaleBand()
-			.domain(groupNames)
+			.domain(categoryNames)
 			.range([0, chartH])
 			.padding(0.1);
 	}

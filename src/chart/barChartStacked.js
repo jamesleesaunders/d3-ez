@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -47,24 +47,24 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		let slicedData = dataParse(data);
-		let groupNames = slicedData.groupNames;
-		let groupTotalsMax = slicedData.groupTotalsMax;
-		let categoryNames = slicedData.categoryNames;
+		let dataSummary = dataTransform(data).summary();
+		let categoryNames = dataSummary.rowKeys;
+		let seriesTotalsMax = dataSummary.rowTotalsMax;
+		let seriesNames = dataSummary.columnKeys;
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 
 		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(groupNames)
+			.domain(categoryNames)
 			.rangeRound([0, chartW])
 			.padding(0.15);
 
 		yScale = d3.scaleLinear()
-			.domain([0, groupTotalsMax])
+			.domain([0, seriesTotalsMax])
 			.range([chartH, 0])
 			.nice();
 	}
@@ -94,7 +94,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["barChartGroup", "xAxis axis", "yAxis axis"];
+		let layers = ["barChart", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -107,29 +107,29 @@ export default function() {
 
 		selection.each(function(data) {
 			// Initialise Data
+      data = dataTransform(data).rotate();
 			init(data);
 
-			// Stacked Bars
+			// Stacked Bars Component
 			let barsStacked = component.barsStacked()
 				.width(xScale.bandwidth())
 				.height(chartH)
 				.colorScale(colorScale)
-				//.yScale(yScale)
 				.dispatch(dispatch);
 
 			// Create Bar Groups
-			let seriesGroup = chart.select(".barChartGroup")
-				.selectAll(".seriesGroup")
+			let categoryGroup = chart.select(".barChart")
+				.selectAll(".categoryGroup")
 				.data(data);
 
-			seriesGroup.enter()
+			categoryGroup.enter()
 				.append("g")
-				.classed("seriesGroup", true)
+				.classed("categoryGroup", true)
 				.attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
-				.merge(seriesGroup)
+				.merge(categoryGroup)
 				.call(barsStacked);
 
-			seriesGroup.exit()
+			categoryGroup.exit()
 				.remove();
 
 			// X Axis

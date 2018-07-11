@@ -1,6 +1,6 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300" class="barsVertical" id="Fruit">
-	<rect class="bar" fill="#3f51b5" width="61" x="11" y="0" rx="0" ry="0" height="300"></rect>
-	<rect class="bar" fill="#ff9800" width="61" x="83" y="200" rx="0" ry="0" height="100"></rect>
-	<rect class="bar" fill="#8bc34a" width="61" x="155" y="133.33333333333331" rx="0" ry="0" height="166.66666666666669"></rect>
-	<rect class="bar" fill="#9c27b0" width="61" x="227" y="66.66666666666666" rx="0" ry="0" height="233.33333333333334"></rect>
+	<rect class="bar" width="61" x="11" y="0" rx="0" ry="0" height="300" fill="#3f51b5"></rect>
+	<rect class="bar" width="61" x="83" y="200" rx="0" ry="0" height="100" fill="#ff9800"></rect>
+	<rect class="bar" width="61" x="155" y="133.33333333333331" rx="0" ry="0" height="166.66666666666669" fill="#8bc34a"></rect>
+	<rect class="bar" width="61" x="227" y="66.66666666666666" rx="0" ry="0" height="233.33333333333334" fill="#9c27b0"></rect>
 </svg>

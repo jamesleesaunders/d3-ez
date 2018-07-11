@@ -17,7 +17,7 @@
     d3.json("data/uk_elections.json").then(function(data) {
       // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
-      var colors = ['#c00', '#36c', '#f90', '#fc0'];
+      var colors = ["#cc0000", "#3366cc", "#ff9900", "#ffcc00", "#03cc14", "#ff18c0"];
       var chart = d3.ez.chart.donutChart().colors(colors);
       var legend = d3.ez.component.legend().title("Party");
       var title = d3.ez.component.title().mainText("UK Election Results").subText("Seats 1992 - 2015");
@@ -38,7 +38,7 @@
 
       // Add to page
       function update() {
-        var i = Math.round(Math.random() * 3) + 1;
+        var i = Math.round(Math.random() * 2) + 1;
         d3.select("#chartholder")
           .datum(data[i])
           .call(myChart);

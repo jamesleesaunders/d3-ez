@@ -1,17 +1,6 @@
 let d3Ez = require("../");
 let tape = require("tape");
 let jsdom = require("jsdom");
-let d3 = require("d3");
-
-let data = {
-	key: "Fruit",
-	values: [
-		{ key: "Apples", value: 9 },
-		{ key: "Oranges", value: 3 },
-		{ key: "Grapes", value: 5 },
-		{ key: "Bananas", value: 7 }
-  ]
-};
 
 tape("setup", function(t) {
 	let JSDOM = jsdom.JSDOM;
@@ -22,28 +11,6 @@ tape("setup", function(t) {
 tape("indexTest", function(t) {
 	t.equal(d3Ez.author, "James Saunders", "Returns author");
 	t.equal(d3Ez.license, "GPL-2.0", "Returns license");
-
-	t.end();
-});
-
-tape("dataParseTest", function(t) {
-	let expected = {
-		levels: 1,
-		groupName: "Fruit",
-		groupNames: undefined,
-		groupTotals: undefined,
-		groupTotalsMax: undefined,
-		categoryNames: ["Apples", "Oranges", "Grapes", "Bananas"],
-		categoryTotal: 24,
-		categoryTotals: undefined,
-		categoryTotalsMax: undefined,
-		minValue: 3,
-		maxValue: 9,
-		maxDecimalPlace: 0,
-		thresholds: [4, 5, 6, 8]
-	};
-	let actual = d3Ez.dataParse(data);
-	t.deepEqual(actual, expected, "Produces data analysis");
 
 	t.end();
 });
