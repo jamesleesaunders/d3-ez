@@ -60,7 +60,7 @@ export default function() {
 
 		xScale = d3.scaleLinear()
 			.domain([0, maxValue])
-			.range([chartW, 0])
+			.range([0, chartW])
 			.nice();
 	}
 
