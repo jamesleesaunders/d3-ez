@@ -5074,7 +5074,7 @@ function chartBarChartHorizontal () {
 		// X & Y Scales
 		yScale = d3.scaleBand().domain(seriesNames).rangeRound([0, chartH]).padding(0.15);
 
-		xScale = d3.scaleLinear().domain([0, maxValue]).range([chartW, 0]).nice();
+		xScale = d3.scaleLinear().domain([0, maxValue]).range([0, chartW]).nice();
 	}
 
 	/**
