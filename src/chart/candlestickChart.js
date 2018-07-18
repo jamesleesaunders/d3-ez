@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -82,10 +82,6 @@ export default function() {
 			.domain(yDomain)
 			.range([chartH, 0])
 			.nice();
-
-		// if (!yAxisLabel) {
-		//   yAxisLabel = slicedData.groupName;
-		// }
 	}
 
 	/**

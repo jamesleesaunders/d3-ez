@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Rose Chart Sector
@@ -29,9 +29,9 @@ export default function() {
 	 * Initialise Data and Scales
 	 */
 	function init(data) {
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
-		let maxValue = stacked ? slicedData.groupTotalsMax : slicedData.maxValue;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
+		let maxValue = stacked ? dataSummary.rowTotalsMax : dataSummary.maxValue;
 
 		// If the radius has not been passed then calculate it from width/height.
 		radius = (typeof radius === "undefined") ?
@@ -40,7 +40,7 @@ export default function() {
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 
 		// If the yScale has not been passed then attempt to calculate.

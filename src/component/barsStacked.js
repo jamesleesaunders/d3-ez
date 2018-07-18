@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Stacked Bar Chart Component
@@ -24,18 +24,18 @@ export default function() {
 	 * Initialise Data and Scales
 	 */
 	function init(data) {
-		let slicedData = dataParse(data);
-		let groupTotalsMax = slicedData.groupTotalsMax;
-		let categoryNames = slicedData.categoryNames;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
+		let seriesTotalsMax = dataSummary.rowTotalsMax;
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 
 		// If the yScale has not been passed then attempt to calculate.
 		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain([0, groupTotalsMax]).range([0, height]).nice() :
+			d3.scaleLinear().domain([0, seriesTotalsMax]).range([0, height]).nice() :
 			yScale;
 	}
 
@@ -65,16 +65,16 @@ export default function() {
 				return series;
 			};
 
-			// Update series group
-			let seriesGroup = d3.select(this);
-			seriesGroup
+			// Update bar group
+			let barGroup = d3.select(this);
+			barGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
-			// Add bars to series
-			let bars = seriesGroup.selectAll(".bar")
+			// Add bars to group
+			let bars = barGroup.selectAll(".bar")
 				.data(function(d) { return stacker(d.values); });
 
 			bars.enter()

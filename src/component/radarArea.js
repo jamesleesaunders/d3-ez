@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Line Chart Component
@@ -32,21 +32,21 @@ export default function() {
       (Math.min(width, height) / 2) :
       radius;
 
-    let slicedData = dataParse(data);
-    let categoryNames = slicedData.categoryNames;
-    let maxValue = slicedData.maxValue;
+    let dataSummary = dataTransform(data).summary();
+    let seriesNames = dataSummary.columnKeys;
+    let maxValue = dataSummary.maxValue;
 
     // Slice calculation on circle
-    angleSlice = (Math.PI * 2 / categoryNames.length);
+    angleSlice = (Math.PI * 2 / seriesNames.length);
 
     // If the colorScale has not been passed then attempt to calculate.
     colorScale = (typeof colorScale === "undefined") ?
-      d3.scaleOrdinal().domain(categoryNames).range(colors) :
+      d3.scaleOrdinal().domain(seriesNames).range(colors) :
       colorScale;
 
     // If the xScale has not been passed then attempt to calculate.
     xScale = (typeof xScale === "undefined") ?
-      d3.scaleBand().domain(categoryNames).range([0, 360]) :
+      d3.scaleBand().domain(seriesNames).range([0, 360]) :
       xScale;
 
     // If the yScale has not been passed then attempt to calculate.

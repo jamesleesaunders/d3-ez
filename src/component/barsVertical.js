@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Vertical Bar Chart Component
@@ -25,18 +25,18 @@ export default function() {
 	 * Initialise Data and Scales
 	 */
 	function init(data) {
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
-		let maxValue = slicedData.maxValue;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
+		let maxValue = dataSummary.maxValue;
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 
 		// If the xScale has not been passed then attempt to calculate.
 		xScale = (typeof xScale === "undefined") ?
-			d3.scaleBand().domain(categoryNames).rangeRound([0, width]).padding(0.15) :
+			d3.scaleBand().domain(seriesNames).rangeRound([0, width]).padding(0.15) :
 			xScale;
 
 		// If the yScale has not been passed then attempt to calculate.
@@ -52,28 +52,28 @@ export default function() {
 		init(selection.data());
 		selection.each(function() {
 
-			// Update series group
-			let seriesGroup = d3.select(this);
-			seriesGroup
+			// Update bar group
+			let barGroup = d3.select(this);
+			barGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
-			// Add bars to series
-			let bars = seriesGroup.selectAll(".bar")
+			// Add bars to group
+			let bars = barGroup.selectAll(".bar")
 				.data(function(d) { return d.values; });
 
 			bars.enter()
 				.append("rect")
 				.classed("bar", true)
-				.attr("fill", function(d) { return colorScale(d.key); })
 				.attr("width", xScale.bandwidth())
 				.attr("x", function(d) { return xScale(d.key); })
 				.attr("y", height)
 				.attr("rx", 0)
 				.attr("ry", 0)
 				.attr("height", 0)
+				.attr("fill", function(d) { return colorScale(d.key); })
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(bars)

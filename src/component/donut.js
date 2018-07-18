@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 
 /**
  * Reusable Donut Chart Component
@@ -25,8 +25,8 @@ export default function() {
 	 * Initialise Data and Scales
 	 */
 	function init(data) {
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
 
 		// If the radius has not been passed then calculate it from width/height.
 		radius = (typeof radius === "undefined") ?
@@ -39,7 +39,7 @@ export default function() {
 
 		// If the colorScale has not been passed then attempt to calculate.
 		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(categoryNames).range(colors) :
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
 			colorScale;
 	}
 

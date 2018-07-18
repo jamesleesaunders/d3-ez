@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import { default as palette } from "../palette";
-import { default as dataParse } from "../dataParse";
+import { default as dataTransform } from "../dataTransform";
 import { default as component } from "../component";
 
 /**
@@ -43,22 +43,24 @@ export default function() {
 		chartH = height - (margin.top + margin.bottom);
 
 		// Slice Data, calculate totals, max etc.
-		let slicedData = dataParse(data);
-		let categoryNames = slicedData.categoryNames;
-		let maxValue = slicedData.maxValue;
+		let dataSummary = dataTransform(data).summary();
+		let seriesNames = dataSummary.columnKeys;
+		let maxValue = dataSummary.maxValue;
 
 		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(categoryNames).range(colors) : colorScale;
+		colorScale = typeof colorScale === "undefined" ?
+			d3.scaleOrdinal().domain(seriesNames).range(colors) :
+			colorScale;
 
 		// X & Y Scales
 		yScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(seriesNames)
 			.rangeRound([0, chartH])
 			.padding(0.15);
 
 		xScale = d3.scaleLinear()
 			.domain([0, maxValue])
-			.range([chartW, 0])
+			.range([0, chartW])
 			.nice();
 	}
 
@@ -87,13 +89,15 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["barsHorizontal", "xAxis axis", "yAxis axis"];
+		let layers = ["barChart", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-			.attr("width", chartW).attr("height", chartH)
+			.attr("width", chartW)
+			.attr("height", chartH)
 			.selectAll("g")
 			.data(layers).enter()
-			.append("g").attr("class", function(d) { return d; });
+			.append("g")
+			.attr("class", function(d) { return d; });
 
 		selection.each(function(data) {
 			// Initialise Data
@@ -101,13 +105,14 @@ export default function() {
 
 			// Horizontal Bars
 			let barsHorizontal = component.barsHorizontal()
-				.width(chartW).height(chartH)
+				.width(chartW)
+				.height(chartH)
 				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
 				.dispatch(dispatch);
 
-			chart.select(".barsHorizontal")
+			chart.select(".barChart")
 				.datum(data)
 				.call(barsHorizontal);
 
