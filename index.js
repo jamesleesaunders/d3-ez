@@ -26,5 +26,5 @@ export default {
 	chart: chart,
 	component: component,
 	palette: palette,
-  dataTransform: dataTransform
+	dataTransform: dataTransform
 };
