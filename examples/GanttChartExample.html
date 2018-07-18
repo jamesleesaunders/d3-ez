@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>d3-ez : Gantt Chart Example</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="../build/d3-ez.js"></script>
+  <link rel="stylesheet" type="text/css" href="../build/d3-ez.css" />
+</head>
+
+<body>
+  <div id="chartholder"></div>
+  <br />
+  <div>Value: <span id="message"></span></div>
+
+  <script type="text/javascript">
+    var data = [
+      {"startDate": new Date(2016, 5, 1), "endDate": new Date(2018, 6, 13), "name": "Jim", "status": "Development"},
+      {"startDate": new Date(2018, 9, 1), "endDate": new Date(2019, 6, 13), "name": "Jim", "status": "Testing"},
+      {"startDate": new Date(2016, 7, 1), "endDate": new Date(2018, 6, 13), "name": "Bob", "status": "Deployment"},
+      {"startDate": new Date(2017, 2, 1), "endDate": new Date(2018, 12, 5), "name": "Claire", "status": "Development"},
+      {"startDate": new Date(2017, 2, 1), "endDate": new Date(2018, 12, 5), "name": "Adam", "status": "Testing"},
+      {"startDate": new Date(2016, 7, 1), "endDate": new Date(2017, 2, 1), "name": "Nicole", "status": "Testing"},
+      {"startDate": new Date(2017, 5, 1), "endDate": new Date(2018, 12, 5), "name": "Tom", "status": "Testing"},
+      {"startDate": new Date(2017, 12, 1), "endDate": new Date(2018, 12, 5), "name": "Beth", "status": "Testing"},
+      {"startDate": new Date(2018, 7, 1), "endDate": new Date(2019, 12, 24), "name": "Nicole", "status": "Deployment"}
+    ];
+
+    // Convert json to d3-ez data format
+    var dataNested = d3.nest()
+      .key(function(d) {
+        return d.name;
+      })
+      .entries(data)
+      .map(function(obj) {
+        return {
+          key: obj.key,
+          values: obj.values.map(function(d) {
+            return {
+              key: d.status,
+              startDate: d.startDate,
+              endDate: d.endDate
+            };
+          })
+        };
+      });
+
+    var colors = ["#cc0000", "#3366cc", "#03cc14"];
+    var chart = d3.ez.chart.ganttChart()
+      .tickFormat("%b-%y")
+      .colors(colors);
+
+    var title = d3.ez.component.title()
+      .mainText("Gantt Chart Example")
+      .subText("Development Cycle");
+
+    var legend = d3.ez.component.legend()
+      .title("Support Level");
+
+    // Create chart base
+    var myChart = d3.ez.base()
+      .width(1000)
+      .height(500)
+      .chart(chart)
+      .legend(legend)
+      .title(title)
+      .on("customValueMouseOver", function(d) {
+        console.log(d);
+      });
+
+    d3.select("#chartholder")
+      .datum(dataNested)
+      .call(myChart);
+  </script>
+</body>
+
+</html>

@@ -6,6 +6,7 @@ import { default as chartBarChartVertical } from "./chart/barChartVertical";
 import { default as chartBubbleChart } from "./chart/bubbleChart";
 import { default as chartCandlestickChart } from "./chart/candlestickChart";
 import { default as chartDonutChart } from "./chart/donutChart";
+import { default as chartGanttChart } from "./chart/ganttChart";
 import { default as chartHeatMapRadial } from "./chart/heatMapRadial";
 import { default as chartHeatMapTable } from "./chart/heatMapTable";
 import { default as chartLineChart } from "./chart/lineChart";
@@ -23,6 +24,7 @@ export default {
 	bubbleChart: chartBubbleChart,
 	candlestickChart: chartCandlestickChart,
 	donutChart: chartDonutChart,
+	ganttChart: chartGanttChart,
 	heatMapRadial: chartHeatMapRadial,
 	heatMapTable: chartHeatMapTable,
 	lineChart: chartLineChart,
