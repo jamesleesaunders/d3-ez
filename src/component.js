@@ -53,7 +53,7 @@ export default {
 	lineChart: componentLineChart,
 	numberCard: componentNumberCard,
 	polarArea: componentPolarArea,
-  radarArea: componentRadarArea,
+	radarArea: componentRadarArea,
 	roseChartSector: componentRoseChartSector,
 	proportionalAreaCircles: componentProportionalAreaCircles,
 	scatterPlot: componentScatterPlot,

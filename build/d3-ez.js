@@ -12,7 +12,7 @@
 	(global.d3 = global.d3 || {}, global.d3.ez = factory(global.d3));
 }(this, (function (d3) { 'use strict';
 
-var version = "3.3.13";
+var version = "3.3.14";
 var license = "GPL-2.0";
 
 /**
