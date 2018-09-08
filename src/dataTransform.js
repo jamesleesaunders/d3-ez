@@ -3,310 +3,344 @@ import * as d3 from "d3";
 /**
  * Data Analysis
  *
+ * @module
+ * @returns {Array}
  */
-export default function(data) {
+export default function dataTransform(data) {
 
-  const STRUCTURE_ROW = 1;
-  const STRUCTURE_ROWS = 2;
+	const SINGLE_SERIES = 1;
+	const MULTI_SERIES = 2;
 
-  /**
-   * Row or Rows?
-   */
-  let dataStructure = (function() {
-    if (data["key"] !== undefined) {
-      return STRUCTURE_ROW;
-    } else {
-      return STRUCTURE_ROWS;
-    }
-  })();
+	/**
+	 * Row or Rows?
+	 *
+	 * @type {Number}
+	 */
+	const dataStructure = data.key !== undefined ? SINGLE_SERIES : MULTI_SERIES;
 
-  /**
-   * Row Key
-   */
-  let rowKey = (function() {
-    let ret;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.values(data)[0];
-    }
+	/**
+	 * Row Key
+	 *
+	 * @returns {Array}
+	 */
+	const rowKey = function() {
+		if (dataStructure === SINGLE_SERIES) {
+			return d3.values(data)[0];
+		}
+	}();
 
-    return ret;
-  })();
+	/**
+	 * Row Keys
+	 *
+	 * @returns {Array}
+	 */
+	const rowKeys = function() {
+		if (dataStructure === MULTI_SERIES) {
+			return data.map((d) => d.key);
+		}
+	}();
 
-  /**
-   * Row Keys
-   */
-  let rowKeys = (function() {
-    let ret;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = data.map(function(d) {
-        return d.key;
-      });
-    }
+	/**
+	 * Row Totals
+	 *
+	 * @returns {Array}
+	 */
+	const rowTotals = function() {
+		if (MULTI_SERIES === dataStructure) {
+			const ret = {};
+			d3.map(data).values().forEach((d) => {
+				const rowKey = d.key;
+				d.values.forEach((d) => {
+					ret[rowKey] = (typeof ret[rowKey] === "undefined") ? 0 : ret[rowKey];
+					ret[rowKey] += d.value;
+				});
+			});
+			return ret;
+		}
+	}();
 
-    return ret;
-  })();
+	/**
+	 * Row Totals Max
+	 *
+	 * @returns {number}
+	 */
+	const rowTotalsMax = function() {
+		if (dataStructure === MULTI_SERIES) {
+			return d3.max(d3.values(rowTotals));
+		}
+	}();
 
-  /**
-   * Row Totals
-   */
-  let rowTotals = (function() {
-    let ret;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = {};
-      d3.map(data).values().forEach(function(d) {
-        let rowKey = d.key;
-        d.values.forEach(function(d) {
-          ret[rowKey] = (typeof(ret[rowKey]) === "undefined" ? 0 : ret[rowKey]);
-          ret[rowKey] += d.value;
-        });
-      });
-    }
+	/**
+	 * Join two arrays
+	 *
+	 * @private
+	 * @param {Array} array1 - First Array.
+	 * @param {Array} array2 - First Array.
+	 * @returns {Array}
+	 */
+	const union = function(array1, array2) {
+		const ret = [];
+		const arr = array1.concat(array2);
+		let len = arr.length;
+		const assoc = {};
 
-    return ret;
-  })();
+		while (len--) {
+			const item = arr[len];
 
-  /**
-   * Row Torals Max
-   */
-  let rowTotalsMax = (function() {
-    let ret;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = d3.max(d3.values(rowTotals));
-    }
+			if (!assoc[item]) {
+				ret.unshift(item);
+				assoc[item] = true;
+			}
+		}
 
-    return ret;
-  })();
+		return ret;
+	};
 
-  /**
-   * Join two arrays
-   */
-  let union = function(array1, array2) {
-    let ret = [];
-    let arr = array1.concat(array2);
-    let len = arr.length;
-    let assoc = {};
+	/**
+	 * Column Keys
+	 *
+	 * @returns {Array}
+	 */
+	const columnKeys = function() {
+		if (dataStructure === SINGLE_SERIES) {
+			return d3.values(data.values).map((d) => d.key);
+		}
 
-    while (len--) {
-      let item = arr[len];
+		let ret = [];
+		d3.map(data).values().forEach((d) => {
+			const tmp = [];
+			d.values.forEach((d, i) => {
+				tmp[i] = d.key;
+			});
+			ret = union(tmp, ret);
+		});
 
-      if (!assoc[item]) {
-        ret.unshift(item);
-        assoc[item] = true;
-      }
-    }
+		return ret;
+	}();
 
-    return ret;
-  };
+	/**
+	 * Row Totals
+	 *
+	 * @returns {Array}
+	 */
+	const rowTotal = function() {
+		if (dataStructure === SINGLE_SERIES) {
+			return d3.sum(data.values, (d) => d.value);
+		}
+	}();
 
-  /**
-   * Column Keys
-   */
-  let columnKeys = (function() {
-    let ret = [];
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.values(data.values).map(function(d) {
-        return d.key;
-      });
+	/**
+	 * Column Totals
+	 *
+	 * @returns {Array}
+	 */
+	const columnTotals = function() {
+		if (dataStructure !== MULTI_SERIES) {
+			return;
+		}
 
-    } else {
-      d3.map(data).values().forEach(function(d) {
-        let tmp = [];
-        d.values.forEach(function(d, i) {
-          tmp[i] = d.key;
-        });
+		let ret = {};
+		d3.map(data).values().forEach((d) => {
+			d.values.forEach((d) => {
+				const columnName = d.key;
+				ret[columnName] = (typeof(ret[columnName]) === "undefined" ? 0 : ret[columnName]);
+				ret[columnName] += d.value;
+			});
+		});
 
-        ret = union(tmp, ret);
-      });
-    }
+		return ret;
+	}();
 
-    return ret;
-  })();
+	/**
+	 * Column Totals Max
+	 *
+	 * @returns {Array}
+	 */
+	const columnTotalsMax = function() {
+		if (dataStructure === MULTI_SERIES) {
+			return d3.max(d3.values(columnTotals));
+		}
+	}();
 
-  /**
-   * Row Totals
-   */
-  let rowTotal = (function() {
-    let ret;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.sum(data.values, function(d) {
-        return d.value;
-      });
-    }
+	/**
+	 * Min Value
+	 *
+	 * @returns {number}
+	 */
+	const minValue = function() {
+		if (dataStructure === SINGLE_SERIES) {
+			return d3.min(data.values, (d) => +d.value);
+		}
 
-    return ret;
-  })();
+		let ret;
+		d3.map(data).values().forEach((d) => {
+			d.values.forEach((d) => {
+				ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, +d.value]));
+			});
+		});
 
-  /**
-   * Column Totals
-   */
-  let columnTotals = (function() {
-    let ret;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = {};
-      d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          let columnName = d.key;
-          ret[columnName] = (typeof(ret[columnName]) === "undefined" ? 0 : ret[columnName]);
-          ret[columnName] += d.value;
-        });
-      });
-    }
+		return +ret;
+	}();
 
-    return ret;
-  })();
+	/**
+	 * Max Value
+	 *
+	 * @returns {number}
+	 */
+	const maxValue = function() {
+		if (dataStructure === SINGLE_SERIES) {
+			return d3.max(data.values, (d) => +d.value);
+		}
 
-  /**
-   * Column Totals Max
-   */
-  let columnTotalsMax = (function() {
-    let ret;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = d3.max(d3.values(columnTotals));
-    }
+		let ret;
+		d3.map(data).values().forEach((d) => {
+			d.values.forEach((d) => {
+				ret = (typeof(ret) === "undefined" ? d.value : d3.max([ret, +d.value]));
+			});
+		});
 
-    return ret;
-  })();
+		return +ret;
+	}();
 
-  /**
-   * Min Value
-   */
-  let minValue = (function() {
-    let ret;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.min(data.values, function(d) {
-        return +d.value;
-      });
-    } else {
-      d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, +d.value]));
-        });
-      });
-    }
+	/**
+	 * Max Coordinates
+	 *
+	 * @returns {Array}
+	 */
+	const maxCoordinates = function() {
+		let maxX, maxY, maxZ;
 
-    return +ret;
-  })();
+		if (dataStructure === SINGLE_SERIES) {
+			maxX = d3.max(data.values, (d) => +d.x);
+			maxY = d3.max(data.values, (d) => +d.y);
+			maxZ = d3.max(data.values, (d) => +d.z);
+		} else {
+			d3.map(data).values().forEach((d) => {
+				d.values.forEach((d) => {
+					maxX = (typeof(maxX) === "undefined" ? d.x : d3.max([maxX, +d.x]));
+					maxY = (typeof(maxY) === "undefined" ? d.y : d3.max([maxY, +d.y]));
+					maxZ = (typeof(maxZ) === "undefined" ? d.z : d3.max([maxZ, +d.z]));
+				});
+			});
+		}
 
-  /**
-   * Max Value
-   */
-  let maxValue = (function() {
-    let ret;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.max(data.values, function(d) {
-        return +d.value;
-      });
+		return { x: maxX, y: maxY, z: maxZ };
+	}();
 
-    } else {
-      d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = (typeof(ret) === "undefined" ? d.value : d3.max([ret, +d.value]));
-        });
-      });
-    }
+	/**
+	 * How many decimal places?
+	 *
+	 * @private
+	 * @param {number} num - Float.
+	 * @returns {number}
+	 */
+	const decimalPlaces = function(num) {
+		const match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		if (!match) {
+			return 0;
+		}
 
-    return +ret;
-  })();
+		return Math.max(
+			0,
+			// Number of digits right of decimal point.
+			(match[1] ? match[1].length : 0)
+			// Adjust for scientific notation.
+			-
+			(match[2] ? +match[2] : 0)
+		);
+	};
 
-  /**
-   * How many decimal places?
-   */
-  let decimalPlaces = function(num) {
-    let match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match) {
-      return 0;
-    }
+	/**
+	 * Max decimal place
+	 *
+	 * @returns {number}
+	 */
+	const maxDecimalPlace = function() {
+		let ret = 0;
+		if (dataStructure === MULTI_SERIES) {
+			d3.map(data).values().forEach((d) => {
+				d.values.forEach((d) => {
+					ret = d3.max([ret, decimalPlaces(d.value)])
+				});
+			});
+		}
 
-    return Math.max(
-      0,
-      // Number of digits right of decimal point.
-      (match[1] ? match[1].length : 0)
-      // Adjust for scientific notation.
-      -
-      (match[2] ? +match[2] : 0));
-  };
+		// toFixed must be between 0 and 20
+		return ret > 20 ? 20 : ret;
+	}();
 
-  /**
-   * Max decimal place
-   */
-  let maxDecimalPlace = (function() {
-    let ret = 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      d3.map(data).values().forEach(function(d) {
-        d.values.forEach(function(d) {
-          ret = d3.max([ret, decimalPlaces(d.value)])
-        });
-      });
-    }
 
-    return ret;
-  })();
+	/**
+	 * Attempt to auto-calculate some thresholds
+	 *
+	 * @returns {Array}
+	 */
+	const thresholds = function() {
+		const distance = maxValue - minValue;
 
-  // If thresholds values are not already set attempt to auto-calculate some thresholds
-  let thresholds = (function() {
-    let distance = maxValue - minValue;
+		return [
+			+(minValue + (0.15 * distance)).toFixed(maxDecimalPlace),
+			+(minValue + (0.40 * distance)).toFixed(maxDecimalPlace),
+			+(minValue + (0.55 * distance)).toFixed(maxDecimalPlace),
+			+(minValue + (0.90 * distance)).toFixed(maxDecimalPlace)
+		];
+	}();
 
-    return [
-      +(minValue + (0.15 * distance)).toFixed(maxDecimalPlace),
-      +(minValue + (0.40 * distance)).toFixed(maxDecimalPlace),
-      +(minValue + (0.55 * distance)).toFixed(maxDecimalPlace),
-      +(minValue + (0.90 * distance)).toFixed(maxDecimalPlace)
-    ];
-  })();
+	/**
+	 * Rotate Data
+	 *
+	 * @returns {Array}
+	 */
+	const rotate = function() {
+		const columnKeys = data.map((d) => d.key);
+		const rowKeys = data[0].values.map((d) => d.key);
 
-  /**
-   * Rotate Data
-   */
-  let rotate = function() {
-    let columnKeys = data.map(function(d) {
-      return d.key;
-    });
+		const rotated = rowKeys.map((rowKey, rowIndex) => {
+			const values = columnKeys.map((columnKey, columnIndex) => {
+				// Copy the values from the original object
+				const values = Object.assign({}, data[columnIndex].values[rowIndex]);
+				// Swap the key over
+				values.key = columnKey;
 
-    let rowKeys = data[0].values.map(function(d) {
-      return d.key
-    });
+				return values;
+			});
 
-    let rotated = rowKeys.map(function(k, i) {
-      let values = [];
-      for (let j = 0; j <= data.length - 1; j++) {
-        values[j] = {
-          key: columnKeys[j],
-          value: data[j].values[i].value
-        };
-      }
+			return {
+				key: rowKey,
+				values: values
+			};
+		});
 
-      return {
-        key: k,
-        values: values
-      }
-    });
+		return rotated;
+	};
 
-    return rotated;
-  };
+	/**
+	 * Summary
+	 *
+	 * @returns {Array}
+	 */
+	const summary = function() {
+		return {
+			dataStructure: dataStructure,
+			rowKey: rowKey,
+			rowTotal: rowTotal,
+			rowKeys: rowKeys,
+			rowTotals: rowTotals,
+			rowTotalsMax: rowTotalsMax,
+			columnKeys: columnKeys,
+			columnTotals: columnTotals,
+			columnTotalsMax: columnTotalsMax,
+			minValue: minValue,
+			maxValue: maxValue,
+			maxCoordinates: maxCoordinates,
+			maxDecimalPlace: maxDecimalPlace,
+			thresholds: thresholds
+		}
+	};
 
-  /**
-   * Summary
-   */
-  let summary = function() {
-    return {
-      levels: dataStructure,
-      rowKey: rowKey,
-      rowTotal: rowTotal,
-      rowKeys: rowKeys,
-      rowTotals: rowTotals,
-      rowTotalsMax: rowTotalsMax,
-      columnKeys: columnKeys,
-      columnTotals: columnTotals,
-      columnTotalsMax: columnTotalsMax,
-      minValue: minValue,
-      maxValue: maxValue,
-      maxDecimalPlace: maxDecimalPlace,
-      thresholds: thresholds
-    }
-  };
+	return {
+		summary: summary,
+		rotate: rotate
+	};
 
-  return {
-    summary: summary,
-    rotate: rotate
-  };
 }
