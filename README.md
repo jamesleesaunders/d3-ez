@@ -27,7 +27,7 @@ Add a 'chartholder' DIV to your page body:
 ```
 
 Generate some data:
-See [Data Structure](#data-structure) section for more details.
+See the [Data Structure](#data-structure) section for more details.
 
 ```javascript
 var data = {
@@ -41,8 +41,8 @@ var data = {
 };
 ```
 
-Configure chart components, 'chart', 'legend' & 'title'.
-See the [Chart Components](#chart-components) for more details:
+Configure chart components, 'chart', 'legend' & 'title':
+See the [Chart Components](#chart-components) section for more details.
 
 ```javascript
 var title = d3.ez.component.title()
