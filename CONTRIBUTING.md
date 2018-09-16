@@ -8,7 +8,7 @@ Do NOT edit the `build` files directly, but rather edit the `src` files and then
 
 ## Code Styles
 
-To ensure **d3-ez** code formatting is kept standard, IDE configuration files for PHPStorm and Atom can be found in the `config` directory. If contributing to **d3-ez** please code formatting is maintained as per these standards.
+To ensure **d3-ez** code formatting is kept standard, IDE configuration files for PHPStorm and Atom can be found in the `config` directory. If contributing to **d3-ez** please ensure code formatting is maintained as per these standards.
 
 * Atom Beautify Config
   * Copy `config/Atom_Beautify_Confg.json` to a file called `.jsbeautifyrc` in the project root.
