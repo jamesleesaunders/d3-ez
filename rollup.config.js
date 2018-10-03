@@ -6,7 +6,7 @@ let banner = "/**\n\
  *\n\
  * @author James Saunders [james@saunders-family.net]\n\
  * @copyright Copyright (C) 2018 James Saunders\n\
- * @license GPLv3\n\
+ * @license GPLv2\n\
  */\n";
 
 export default {
