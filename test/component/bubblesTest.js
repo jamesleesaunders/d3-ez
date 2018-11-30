@@ -1,5 +1,5 @@
-let d3Ez = require("../");
-let tape = require("tape");
+let test = require("tape");
+let d3Ez = require("../../build/d3-ez");
 let jsdom = require("jsdom");
 let d3 = require("d3");
 let fs = require("fs");
@@ -38,19 +38,19 @@ function readSvgFile(file, element) {
 	return element.insertAdjacentHTML("beforeend", str);
 }
 
-tape("setup", function(t) {
+test("setup", function(t) {
 	let JSDOM = jsdom.JSDOM;
 	global.document = new JSDOM().window.document;
 	t.end();
 });
 
-tape("componentBubblesTest", function(t) {
+test("componentBubblesTest", function(t) {
 	let width = 300;
 	let height = 300;
 
 	// Load 'exected' svg file into first div.
 	let actualDiv = document.createElement("div");
-	readSvgFile("./test/svg/componentBubbles.svg", actualDiv);
+	readSvgFile("./test/component/svg/bubbles.svg", actualDiv);
 
 	// Construct 'actual' svg using d3-ez component.
 	let expectedDiv = document.createElement("div");

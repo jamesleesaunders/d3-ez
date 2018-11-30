@@ -1,5 +1,5 @@
 let test = require('tape');
-let d3X3dom = require("../");
+let d3Ez = require("../");
 
 let dataset1 = {
 	key: "Fruit",
@@ -104,7 +104,7 @@ let dataset3 = [{
 }];
 
 test("Test Summary 1", function(t) {
-	let actual = d3X3dom.dataTransform(dataset1).summary();
+	let actual = d3Ez.dataTransform(dataset1).summary();
 	let expected = {
 		dataStructure: 1,
 		rowKey: "Fruit",
@@ -127,7 +127,7 @@ test("Test Summary 1", function(t) {
 });
 
 test("Test Summary 2", function(t) {
-	let actual = d3X3dom.dataTransform(dataset2).summary();
+	let actual = d3Ez.dataTransform(dataset2).summary();
 	let expected = {
 		dataStructure: 2,
 		rowKey: undefined,
@@ -150,8 +150,8 @@ test("Test Summary 2", function(t) {
 });
 
 test("Test Rotate", function(t) {
-	t.deepEqual(d3X3dom.dataTransform(dataset2).rotate(), dataset3);
-	t.deepEqual(d3X3dom.dataTransform(dataset3).rotate(), dataset2);
+	t.deepEqual(d3Ez.dataTransform(dataset2).rotate(), dataset3);
+	t.deepEqual(d3Ez.dataTransform(dataset3).rotate(), dataset2);
 
 	t.end();
 });
