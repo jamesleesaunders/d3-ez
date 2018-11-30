@@ -6,12 +6,11 @@ import componentLegendThreshold from "./legendThreshold";
 /**
  * Reusable Legend Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 100;
 	let height = 150;
 	let sizeScale;
@@ -22,6 +21,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias legend
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		height = (height ? height : this.attr("height"));

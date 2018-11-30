@@ -5,12 +5,11 @@ import dataTransform from "../dataTransform";
 /**
  * Reusable Circular Axis Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 300;
 	let height = 300;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -21,6 +20,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias circularAxis
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// If the radius has not been passed then calculate it from width/height.

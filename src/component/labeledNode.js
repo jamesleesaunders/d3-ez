@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Labeled Node Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let color = "steelblue";
 	let opacity = 1;
 	let strokeColor = "#000000";
@@ -22,6 +21,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias labeledNode
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 

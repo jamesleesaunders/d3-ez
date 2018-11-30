@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Donut Chart Label Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 300;
 	let height = 300;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -18,6 +17,9 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		// If the radius has not been passed then calculate it from width/height.
@@ -32,6 +34,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias donutLabels
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.each(function(data) {

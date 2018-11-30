@@ -5,13 +5,13 @@ import component from "../component";
 
 /**
  * Radar Chart (also called: Spider Chart; Web Chart; Star Plot)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/radar-diagram/
  */
 export default function() {
 
-  /**
-   * Default Properties
-   */
+	/* Default Properties */
   let svg;
   let chart;
   let classed = "radarChart";
@@ -22,29 +22,26 @@ export default function() {
   let colors = palette.categorical(3);
   let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Chart Dimensions
-   */
+	/* Chart Dimensions */
   let chartW;
   let chartH;
   let radius;
 
-  /**
-   * Scales
-   */
+	/* Scales */
   let xScale;
   let yScale;
   let colorScale;
 
-  /**
-   * Other Customisation Options
-   */
+  /* Other Customisation Options */
   let startAngle = 0;
   let endAngle = 360;
 
-  /**
-   * Initialise Data, Scales and Series
-   */
+	/**
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
+	 */
   function init(data) {
     chartW = width - (margin.left + margin.right);
     chartH = height - (margin.top + margin.bottom);
@@ -72,9 +69,13 @@ export default function() {
       .nice();
   }
 
-  /**
-   * Constructor
-   */
+	/**
+	 * Constructor
+	 *
+	 * @constructor
+	 * @alias radarChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
+	 */
   function my(selection) {
     // Create SVG element (if it does not exist already)
     if (!svg) {

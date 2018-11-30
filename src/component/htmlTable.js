@@ -3,16 +3,18 @@ import * as d3 from "d3";
 /**
  * Simple HTML Table
  *
+ * @module
  */
 export default function() {
-	// HTML Table Element (Populated by 'my' function)
+
+	/* HTML List Element */
 	let tableEl;
 
-	// Default Options (Configurable via setters)
+	/* Default Properties */
 	let classed = "htmlTable";
 	let width = 800;
 
-	// Data Options (Populated by 'init' function)
+	/* Data Options */
 	let rowNames = [];
 	let columnNames = [];
 
@@ -20,7 +22,11 @@ export default function() {
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
-	 * Initialise Data
+	 * Constructor
+	 *
+	 * @constructor
+	 * @alias htmlTable
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function init(data) {
 		// Cut the data in different ways....

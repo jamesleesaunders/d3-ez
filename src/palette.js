@@ -3,6 +3,7 @@ import * as d3 from "d3";
 /**
  * Colour Palettes
  *
+ * @module
  * @example
  * d3.ez.palette.categorical(1);
  * d3.ez.palette.diverging(1);

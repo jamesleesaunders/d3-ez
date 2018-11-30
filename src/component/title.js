@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Title Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let mainText = "Title";
 	let subText = "Sub Title";
 	let height = 40;
@@ -16,6 +15,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias title
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.selectAll("#titleGroup")

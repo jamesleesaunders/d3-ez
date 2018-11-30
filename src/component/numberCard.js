@@ -5,12 +5,11 @@ import dataTransform from "../dataTransform";
 /**
  * Reusable Number Row Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 400;
 	let height = 100;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -23,6 +22,9 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		let dataSummary = dataTransform(data).summary();
@@ -51,6 +53,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias numberCard
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		init(selection.data());
