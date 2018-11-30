@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import { default as componentLegendSize } from "./legendSize";
-import { default as componentLegendColor } from "./legendColor";
-import { default as componentLegendThreshold } from "./legendThreshold";
+import componentLegendSize from "./legendSize";
+import componentLegendColor from "./legendColor";
+import componentLegendThreshold from "./legendThreshold";
 
 /**
  * Reusable Legend Component

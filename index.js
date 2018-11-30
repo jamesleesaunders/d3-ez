@@ -11,11 +11,11 @@ let date = new Date();
 let copyright = "Copyright (C) " + date.getFullYear() + " " + author;
 import { version, license } from "./package.json";
 
-import { default as base } from "./src/base";
-import { default as chart } from "./src/chart";
-import { default as component } from "./src/component";
-import { default as palette } from "./src/palette";
-import { default as dataTransform } from "./src/dataTransform";
+import base from "./src/base";
+import chart from "./src/chart";
+import component from "./src/component";
+import palette from "./src/palette";
+import dataTransform from "./src/dataTransform";
 
 export default {
 	version: version,

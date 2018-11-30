@@ -1,6 +1,6 @@
 import * as d3 from "d3";
-import { default as componentCreditTag } from "./component/creditTag";
-import { default as componentTitle } from "./component/title";
+import componentCreditTag from "./component/creditTag";
+import componentTitle from "./component/title";
 
 /**
  * Chart Base

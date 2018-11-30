@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
-import { default as componentLabeledNode } from "./labeledNode";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
+import componentLabeledNode from "./labeledNode";
 
 /**
  * Reusable Proportional Area Circles Component
