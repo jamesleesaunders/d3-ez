@@ -27,7 +27,9 @@
 	"module": "index",
 	"scripts": {
 		"pretest": "make",
-		"test": "tape 'test/**/*Test.js'"
+		"test": "tape 'test/**/*Test.js'",
+		"build:docs": "jsdoc -c config/jsdoc.conf.json",
+		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	},
 	"peerDependencies": {
 		"d3": "^5.0.0"
@@ -39,10 +41,14 @@
 		"babel-preset-env": "^1.7.0",
 		"eslint": "^4.19.1",
 		"jsdom": "^11.11.0",
+		"gh-pages": "^2.0.1",
+		"jsdoc": "^3.5.5",
 		"rollup": "^0.56.2",
+		"minami": "^1.2.3",
 		"rollup-plugin-babel": "^3.0.7",
 		"rollup-plugin-json": "^2.3.1",
 		"tape": "^4.9.1",
+		"toast-jsdoc": "^1.0.2",
 		"uglify-es": "^3.3.9",
 		"vows": "^0.8.2"
 	},

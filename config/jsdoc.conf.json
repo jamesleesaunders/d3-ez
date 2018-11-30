@@ -1,0 +1,27 @@
+{
+	"source": {
+		"include": ["src"],
+		"includePattern": ".+\\.js(doc|x)?$",
+		"excludePattern": "(^|\\/|\\\\)_"
+	},
+	"opts": {
+		"destination": "docs",
+		"recurse": true,
+		"readme": "README.md",
+		"template": "node_modules/minami"
+	},
+	"plugins": [
+		"plugins/markdown"
+	],
+	"templates": {
+		"cleverLinks": true,
+		"monospaceLinks": true
+	},
+	"tags": {
+		"allowUnknownTags": true,
+		"dictionaries": [
+			"jsdoc",
+			"closure"
+		]
+	}
+}
