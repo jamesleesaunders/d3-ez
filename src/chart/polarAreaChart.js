@@ -166,7 +166,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -174,60 +177,119 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
 		return this;
 	};
 
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _ - Margin in px.
+	 * @returns {*}
+	 */
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
 		return this;
 	};
 
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _ - Radius in px.
+	 * @returns {*}
+	 */
 	my.radius = function(_) {
 		if (!arguments.length) return radius;
 		radius = _;
 		return this;
 	};
 
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _ - Array of colours used by color scale.
+	 * @returns {*}
+	 */
 	my.colors = function(_) {
 		if (!arguments.length) return colors;
 		colors = _;
 		return this;
 	};
 
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
+	 */
 	my.colorScale = function(_) {
 		if (!arguments.length) return colorScale;
 		colorScale = _;
 		return this;
 	};
 
-	my.transition = function(_) {
-		if (!arguments.length) return transition;
-		transition = _;
-		return this;
-	};
-
+	/**
+	 * Capital Labels Getter / Setter
+	 *
+	 * @param {boolean} _ - Display capital labels or not?
+	 * @returns {*}
+	 */
 	my.capitalizeLabels = function(_) {
 		if (!arguments.length) return capitalizeLabels;
 		capitalizeLabels = _;
 		return this;
 	};
 
+	/**
+	 * Color Labels Getter / Setter
+	 *
+	 * @param {Array} _ - Array of color labels.
+	 * @returns {*}
+	 */
 	my.colorLabels = function(_) {
 		if (!arguments.length) return colorLabels;
 		colorLabels = _;
 		return this;
 	};
 
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _ - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};
+
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @returns {*}
+	 */
 	my.dispatch = function(_) {
 		if (!arguments.length) return dispatch();
 		dispatch = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

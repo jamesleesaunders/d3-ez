@@ -97,7 +97,34 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
+	 */
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
+
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
+
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
 	 */
 	my.colorScale = function(_) {
 		if (!arguments.length) return colorScale;
@@ -105,18 +132,12 @@ export default function() {
 		return my;
 	};
 
-	my.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return my;
-	};
-
+	/**
+	 * Item Type Getter / Setter
+	 *
+	 * @param {string} _ - Item type (‘rect’, ‘circle’).
+	 * @returns {*}
+	 */
 	my.itemType = function(_) {
 		if (!arguments.length) return itemType;
 		itemType = _;

@@ -158,7 +158,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -166,60 +169,119 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
 		return this;
 	};
 
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
+	 */
 	my.colorScale = function(_) {
 		if (!arguments.length) return colorScale;
 		colorScale = _;
 		return my;
 	};
 
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _ - Array of colours used by color scale.
+	 * @returns {*}
+	 */
 	my.colors = function(_) {
 		if (!arguments.length) return colors;
 		colors = _;
 		return my;
 	};
 
+	/**
+	 * X Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
 	my.xScale = function(_) {
 		if (!arguments.length) return xScale;
 		xScale = _;
 		return my;
 	};
 
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
 	my.yScale = function(_) {
 		if (!arguments.length) return yScale;
 		yScale = _;
 		return my;
 	};
 
+	/**
+	 * Size Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
 	my.sizeScale = function(_) {
 		if (!arguments.length) return sizeScale;
 		sizeScale = _;
 		return my;
 	};
 
+	/**
+	 * Min Radius Getter / Setter
+	 *
+	 * @param {number} _ - Radius in px.
+	 * @returns {*}
+	 */
 	my.minRadius = function(_) {
 		if (!arguments.length) return minRadius;
 		minRadius = _;
 		return this;
 	};
 
+	/**
+	 * Max Radius Getter / Setter
+	 *
+	 * @param {number} _ - Radius in px.
+	 * @returns {*}
+	 */
 	my.maxRadius = function(_) {
 		if (!arguments.length) return maxRadius;
 		maxRadius = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @returns {*}
+	 */
 	my.dispatch = function(_) {
 		if (!arguments.length) return dispatch();
 		dispatch = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

@@ -67,23 +67,38 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
-	my.thresholdScale = function(_) {
-		if (!arguments.length) return thresholdScale;
-		thresholdScale = _;
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
 		return my;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
 		return my;
 	};
 
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
+	/**
+	 * Threshold Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
+	my.thresholdScale = function(_) {
+		if (!arguments.length) return thresholdScale;
+		thresholdScale = _;
 		return my;
 	};
 

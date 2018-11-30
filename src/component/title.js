@@ -52,7 +52,34 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
+	 */
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return this;
+	};
+
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return this;
+	};
+
+	/**
+	 * Main Text Getter / Setter
+	 *
+	 * @param {string} _ - Main text title.
+	 * @returns {*}
 	 */
 	my.mainText = function(_) {
 		if (!arguments.length) return mainText;
@@ -60,21 +87,15 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Sub Text Getter / Setter
+	 *
+	 * @param {string} _ - Sub text description.
+	 * @returns {*}
+	 */
 	my.subText = function(_) {
 		if (!arguments.length) return subText;
 		subText = _;
-		return this;
-	};
-
-	my.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return this;
-	};
-
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
 		return this;
 	};
 

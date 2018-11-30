@@ -126,7 +126,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -134,24 +137,48 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
+	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
 		return this;
 	};
 
+	/**
+	 * Chart Getter / Setter
+	 *
+	 * @param {d3.ez.chart} _ - Chart component.
+	 * @returns {*}
+	 */
 	my.chart = function(_) {
 		if (!arguments.length) return chart;
 		chart = _;
 		return this;
 	};
 
+	/**
+	 * Legend Getter / Setter
+	 *
+	 * @param {d3.ez.component.legend} _ - Legend component.
+	 * @returns {*}
+	 */
 	my.legend = function(_) {
 		if (!arguments.length) return legend;
 		legend = _;
 		return this;
 	};
 
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {d3.ez.component.title} _ - Title component.
+	 * @returns {*}
+	 */
 	my.title = function(_) {
 		if (!arguments.length) return title;
 		if (typeof _ === "string") {
@@ -163,12 +190,23 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Y Axix Label Getter / Setter
+	 *
+	 * @param {string} _ - Label text.
+	 * @returns {*}
+	 */
 	my.yAxisLabel = function(_) {
 		if (!arguments.length) return yAxisLabel;
 		yAxisLabel = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
