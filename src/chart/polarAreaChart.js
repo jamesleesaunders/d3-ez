@@ -5,16 +5,16 @@ import component from "../component";
 
 /**
  * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let chart;
-	let classed = "polarArea";
+	let classed = "polarAreaChart";
 	let width = 400;
 	let height = 300;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -22,30 +22,27 @@ export default function() {
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	let chartW;
 	let chartH;
 	let radius;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	let xScale;
 	let yScale;
 	let colorScale;
 
-	/**
-	 * Other Customisation Options
-	 */
+	/* Other Customisation Options */
 	let startAngle = 0;
 	let endAngle = 360;
 	let capitalizeLabels = false;
 	let colorLabels = false;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
@@ -80,6 +77,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias polarAreaChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)

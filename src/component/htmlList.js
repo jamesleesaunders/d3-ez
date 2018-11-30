@@ -3,19 +3,25 @@ import * as d3 from "d3";
 /**
  * Simple HTML List
  *
+ * @module
  */
 export default function() {
-	// HTML List Element (Populated by 'my' function)
+
+	/* HTML List Element */
 	let listEl;
 
-	// Default Options (Configurable via setters)
+	/* Default Properties */
 	let classed = "htmlList";
 
-	// Dispatch (Custom events)
+	/* Dispatch */
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias htmlList
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.each(function(data) {

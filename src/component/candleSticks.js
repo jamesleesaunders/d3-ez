@@ -5,12 +5,11 @@ import dataTransform from "../dataTransform";
 /**
  * Reusable Candle Stick Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 400;
 	let height = 400;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -24,6 +23,9 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		// Slice Data, calculate totals, max etc.
@@ -61,6 +63,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias candleSticks
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	let my = function(selection) {
 		init(selection.data()[0]);

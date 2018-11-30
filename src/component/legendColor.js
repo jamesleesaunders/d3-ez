@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Categorical Legend Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 100;
 	let height = 200;
 	let colorScale;
@@ -17,6 +16,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias legendColor
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		height = (height ? height : this.attr("height"));

@@ -2,19 +2,23 @@ import * as d3 from "d3";
 
 /**
  * Reusable Threshold Legend Component
- * https://bl.ocks.org/mbostock/4573883
+ *
+ * @module
+ * @see https://bl.ocks.org/mbostock/4573883
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 100;
 	let height = 200;
 	let thresholdScale;
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias legendThreshold
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		height = (height ? height : this.attr("height"));

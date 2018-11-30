@@ -5,13 +5,13 @@ import component from "../component";
 
 /**
  * Gantt Chart
+ *
+ * @module
  * @see http://datavizproject.com/data-type/gannt-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	var svg;
 	var chart;
 	var classed = "ganttChart";
@@ -22,28 +22,25 @@ export default function() {
 	var colors = d3.ez.palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	var chartW;
 	var chartH;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	var xScale;
 	var yScale;
 	var colorScale;
 
-	/**
-	 * Other Customisation Options
-	 */
+	/* Other Customisation Options */
 	var tickFormat = "%d-%b-%y";
 	var dateDomainMin;
 	var dateDomainMax;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	var init = function(data) {
 		chartW = width - (margin.left + margin.right);
@@ -81,6 +78,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias ganttChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	var my = function(selection) {
 		// Create SVG element (if it does not exist already)
