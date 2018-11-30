@@ -22,11 +22,10 @@ export default function() {
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
-	 * Constructor
+	 * Initialise Data and Scales
 	 *
-	 * @constructor
-	 * @alias htmlTable
-	 * @param {d3.selection} selection - The chart holder D3 selection.
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		// Cut the data in different ways....
@@ -44,6 +43,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias htmlTable
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.each(function(data) {
@@ -115,7 +118,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -123,12 +129,23 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Class Getter / Setter
+	 *
+	 * @param {string} _ - HTML class.
+	 * @returns {*}
+	 */
 	my.classed = function(_) {
 		if (!arguments.length) return classed;
 		classed = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

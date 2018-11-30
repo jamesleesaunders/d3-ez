@@ -36,7 +36,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Text Getter / Setter
+	 *
+	 * @param {string} _ - Credit tag text.
+	 * @returns {*}
 	 */
 	my.text = function(_) {
 		if (!arguments.length) return text;
@@ -44,6 +47,12 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Link Getter / Setter
+	 *
+	 * @param {string} _ - Credit tag link.
+	 * @returns {*}
+	 */
 	my.href = function(_) {
 		if (!arguments.length) return href;
 		href = _;

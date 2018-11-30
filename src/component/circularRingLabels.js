@@ -81,7 +81,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
@@ -89,42 +92,84 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
 		return this;
 	};
 
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _ - Radius in px.
+	 * @returns {*}
+	 */
 	my.radius = function(_) {
 		if (!arguments.length) return radius;
 		radius = _;
 		return this;
 	};
 
+	/**
+	 * Start Angle Getter / Setter
+	 *
+	 * @param {number} _ - Angle in degrees.
+	 * @returns {*}
+	 */
 	my.startAngle = function(_) {
 		if (!arguments.length) return startAngle;
 		startAngle = _;
 		return this;
 	};
 
+	/**
+	 * End Angle Getter / Setter
+	 *
+	 * @param {number} _ - Angle in degrees.
+	 * @returns {*}
+	 */
 	my.endAngle = function(_) {
 		if (!arguments.length) return endAngle;
 		endAngle = _;
 		return this;
 	};
 
+	/**
+	 * Capital Label Getter / Setter
+	 *
+	 * @param {boolean} _ - Capitalize labels.
+	 * @returns {*}
+	 */
 	my.capitalizeLabels = function(_) {
 		if (!arguments.length) return capitalizeLabels;
 		capitalizeLabels = _;
 		return this;
 	};
 
+	/**
+	 * Radial Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
 	my.radialScale = function(_) {
 		if (!arguments.length) return radialScale;
 		radialScale = _;
 		return my;
 	};
 
+	/**
+	 * Text Anchor Getter / Setter
+	 *
+	 * @param {string} _ - Anchor name.
+	 * @returns {*}
+	 */
 	my.textAnchor = function(_) {
 		if (!arguments.length) return textAnchor;
 		textAnchor = _;

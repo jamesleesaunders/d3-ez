@@ -168,7 +168,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -176,54 +179,119 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
 		return this;
 	};
 
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _ - Margin in px.
+	 * @returns {*}
+	 */
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
 		return this;
 	};
 
+	/**
+	 * Min Radius Getter / Setter
+	 *
+	 * @param {number} _ - Min radius in px.
+	 * @returns {*}
+	 */
 	my.minRadius = function(_) {
 		if (!arguments.length) return minRadius;
 		minRadius = _;
 		return this;
 	};
 
+	/**
+	 * Max Radius Getter / Setter
+	 *
+	 * @param {number} _ - Max radius in px.
+	 * @returns {*}
+	 */
 	my.maxRadius = function(_) {
 		if (!arguments.length) return maxRadius;
 		maxRadius = _;
 		return this;
 	};
 
+	/**
+	 * Size Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
+	 */
 	my.sizeScale = function(_) {
 		if (!arguments.length) return sizeScale;
 		sizeScale = _;
 		return this;
 	};
 
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _ - Array of colours used by color scale.
+	 * @returns {*}
+	 */
 	my.colors = function(_) {
 		if (!arguments.length) return colors;
 		colors = _;
 		return this;
 	};
 
+	/**
+	 * Global Scale Use Getter / Setter
+	 *
+	 * @param {boolean} _ - Use global scale or not?
+	 * @returns {*}
+	 */
 	my.useGlobalScale = function(_) {
 		if (!arguments.length) return useGlobalScale;
 		useGlobalScale = _;
 		return this;
 	};
 
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _ - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};
+
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @returns {*}
+	 */
 	my.dispatch = function(_) {
 		if (!arguments.length) return dispatch();
 		dispatch = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

@@ -98,7 +98,22 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
+	 */
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
+
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
 	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
@@ -106,24 +121,36 @@ export default function() {
 		return my;
 	};
 
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return my;
-	};
-
+	/**
+	 * Size Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
+	 */
 	my.sizeScale = function(_) {
 		if (!arguments.length) return sizeScale;
 		sizeScale = _;
 		return my;
 	};
 
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
+	 */
 	my.colorScale = function(_) {
 		if (!arguments.length) return colorScale;
 		colorScale = _;
 		return my;
 	};
 
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _ - Title text.
+	 * @returns {*}
+	 */
 	my.title = function(_) {
 		if (!arguments.length) return title;
 		title = _;

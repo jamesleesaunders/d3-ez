@@ -83,7 +83,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Class Getter / Setter
+	 *
+	 * @param {string} _ - HTML class.
+	 * @returns {*}
 	 */
 	my.classed = function(_) {
 		if (!arguments.length) return classed;
@@ -91,6 +94,11 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

@@ -92,7 +92,34 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
+	 */
+	my.width = function(_) {
+		if (!arguments.length) return width;
+		width = _;
+		return my;
+	};
+
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_) {
+		if (!arguments.length) return height;
+		height = _;
+		return my;
+	};
+
+	/**
+	 * Size Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 size scale.
+	 * @returns {*}
 	 */
 	my.sizeScale = function(_) {
 		if (!arguments.length) return sizeScale;
@@ -100,18 +127,12 @@ export default function() {
 		return my;
 	};
 
-	my.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return my;
-	};
-
+	/**
+	 * Item Count Getter / Setter
+	 *
+	 * @param {number} _ - Number of items.
+	 * @returns {*}
+	 */
 	my.itemCount = function(_) {
 		if (!arguments.length) return itemCount;
 		itemCount = _;

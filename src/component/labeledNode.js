@@ -58,7 +58,10 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Color Getter / Setter
+	 *
+	 * @param {string} _ - Color.
+	 * @returns {*}
 	 */
 	my.color = function(_) {
 		if (!arguments.length) return color;
@@ -66,36 +69,73 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _ - Level of opacity.
+	 * @returns {*}
+	 */
 	my.opacity = function(_) {
 		if (!arguments.length) return opacity;
 		opacity = _;
 		return this;
 	};
 
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _ - Radius in px.
+	 * @returns {*}
+	 */
 	my.radius = function(_) {
 		if (!arguments.length) return radius;
 		radius = _;
 		return this;
 	};
 
+	/**
+	 * Label Getter / Setter
+	 *
+	 * @param {string} _ - Label text.
+	 * @returns {*}
+	 */
 	my.label = function(_) {
 		if (!arguments.length) return label;
 		label = _;
 		return this;
 	};
 
+	/**
+	 * Display Getter / Setter
+	 *
+	 * @param {string} _ - HTML display type (e.g. 'block')
+	 * @returns {*}
+	 */
 	my.display = function(_) {
 		if (!arguments.length) return display;
 		display = _;
 		return this;
 	};
 
+	/**
+	 * Font Size Getter / Setter
+	 *
+	 * @param {number} _ - Fint size.
+	 * @returns {*}
+	 */
 	my.fontSize = function(_) {
 		if (!arguments.length) return fontSize;
 		fontSize = _;
 		return this;
 	};
 
+	/**
+	 * Stroke Getter / Setter
+	 *
+	 * @param {number} _width - Width in px.
+	 * @param {string} _color - Colour.
+	 * @returns {*}
+	 */
 	my.stroke = function(_width, _color) {
 		if (!arguments.length) return [strokeWidth, strokeColor];
 		strokeWidth = _width;
@@ -103,18 +143,35 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Class Getter / Setter
+	 *
+	 * @param {string} _ - HTML class name.
+	 * @returns {*}
+	 */
 	my.classed = function(_) {
 		if (!arguments.length) return classed;
 		classed = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @returns {*}
+	 */
 	my.dispatch = function(_) {
 		if (!arguments.length) return dispatch();
 		dispatch = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

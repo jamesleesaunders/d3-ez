@@ -167,7 +167,10 @@ export default function() {
 	};
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
@@ -175,30 +178,60 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
 		height = _;
 		return this;
 	};
 
-	my.colors = function(_) {
-		if (!arguments.length) return colors;
-		colors = _;
-		return this;
-	};
-
-	my.colorScale = function(_) {
-		if (!arguments.length) return colorScale;
-		colorScale = _;
-		return this;
-	};
-
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _ - Margin in px.
+	 * @returns {*}
+	 */
 	my.margin = function(_) {
 		if (!arguments.length) return margin;
 		margin = _;
 		return this;
 	};
 
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _ - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_) {
+		if (!arguments.length) return colors;
+		colors = _;
+		return this;
+	};
+
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_) {
+		if (!arguments.length) return colorScale;
+		colorScale = _;
+		return this;
+	};
+
+	/**
+	 * Time Domain Getter / Setter
+	 *
+	 * @param {array} _ - Time domain array.
+	 * @returns {*}
+	 */
 	my.timeDomain = function(_) {
 		if (!arguments.length) return [dateDomainMin, dateDomainMax];
 		dateDomainMin = _[0];
@@ -206,18 +239,47 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Tick Format Getter / Setter
+	 *
+	 * @param {string} _ - String format.
+	 * @returns {*}
+	 */
 	my.tickFormat = function(_) {
 		if (!arguments.length) return tickFormat;
 		tickFormat = _;
 		return this;
 	};
 
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _ - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_) {
+		if (!arguments.length) return transition;
+		transition = _;
+		return this;
+	};
+
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @returns {*}
+	 */
 	my.dispatch = function(_) {
 		if (!arguments.length) return dispatch();
 		dispatch = _;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

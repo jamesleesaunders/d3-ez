@@ -151,12 +151,13 @@ export default function() {
 
 		spokes.exit()
 			.remove();
-
-
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _ - Width in px.
+	 * @returns {*}
 	 */
 	my.height = function(_) {
 		if (!arguments.length) return height;
@@ -164,24 +165,48 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _ - Height in px.
+	 * @returns {*}
+	 */
 	my.width = function(_) {
 		if (!arguments.length) return width;
 		width = _;
 		return this;
 	};
 
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _ - Radius in px.
+	 * @returns {*}
+	 */
 	my.radius = function(_) {
 		if (!arguments.length) return radius;
 		radius = _;
 		return this;
 	};
 
+	/**
+	 * Radial Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
 	my.radialScale = function(_) {
 		if (!arguments.length) return radialScale;
 		radialScale = _;
 		return my;
 	};
 
+	/**
+	 * Ring Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _ - D3 scale.
+	 * @returns {*}
+	 */
 	my.ringScale = function(_) {
 		if (!arguments.length) return ringScale;
 		ringScale = _;
