@@ -38,24 +38,24 @@ export default function() {
 	/**
 	 * Text Getter / Setter
 	 *
-	 * @param {string} _ - Credit tag text.
+	 * @param {string} _v - Credit tag text.
 	 * @returns {*}
 	 */
-	my.text = function(_) {
+	my.text = function(_v) {
 		if (!arguments.length) return text;
-		text = _;
+		text = _v;
 		return this;
 	};
 
 	/**
 	 * Link Getter / Setter
 	 *
-	 * @param {string} _ - Credit tag link.
+	 * @param {string} _v - Credit tag link.
 	 * @returns {*}
 	 */
-	my.href = function(_) {
+	my.href = function(_v) {
 		if (!arguments.length) return href;
-		href = _;
+		href = _v;
 		return this;
 	};
 

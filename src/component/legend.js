@@ -81,6 +81,10 @@ export default function() {
 
 	/**
 	 * Detect Scale Type
+	 *
+	 * @param {d3.scale} scale - Scale type.
+	 *
+	 * @returns {string}
 	 */
 	function scaleType(scale) {
 		let s = scale.copy();
@@ -100,60 +104,60 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return my;
 	};
 
 	/**
 	 * Size Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 color scale.
+	 * @param {d3.scale} _v - D3 color scale.
 	 * @returns {*}
 	 */
-	my.sizeScale = function(_) {
+	my.sizeScale = function(_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return my;
 	};
 
 	/**
 	 * Color Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 color scale.
+	 * @param {d3.scale} _v - D3 color scale.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_) {
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
 	/**
 	 * Title Getter / Setter
 	 *
-	 * @param {string} _ - Title text.
+	 * @param {string} _v - Title text.
 	 * @returns {*}
 	 */
-	my.title = function(_) {
+	my.title = function(_v) {
 		if (!arguments.length) return title;
-		title = _;
+		title = _v;
 		return my;
 	};
 

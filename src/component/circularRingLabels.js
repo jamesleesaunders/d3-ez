@@ -83,96 +83,96 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Radius Getter / Setter
 	 *
-	 * @param {number} _ - Radius in px.
+	 * @param {number} _v - Radius in px.
 	 * @returns {*}
 	 */
-	my.radius = function(_) {
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
 	/**
 	 * Start Angle Getter / Setter
 	 *
-	 * @param {number} _ - Angle in degrees.
+	 * @param {number} _v - Angle in degrees.
 	 * @returns {*}
 	 */
-	my.startAngle = function(_) {
+	my.startAngle = function(_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
 	/**
 	 * End Angle Getter / Setter
 	 *
-	 * @param {number} _ - Angle in degrees.
+	 * @param {number} _v - Angle in degrees.
 	 * @returns {*}
 	 */
-	my.endAngle = function(_) {
+	my.endAngle = function(_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
 	/**
 	 * Capital Label Getter / Setter
 	 *
-	 * @param {boolean} _ - Capitalize labels.
+	 * @param {boolean} _v - Capitalize labels.
 	 * @returns {*}
 	 */
-	my.capitalizeLabels = function(_) {
+	my.capitalizeLabels = function(_v) {
 		if (!arguments.length) return capitalizeLabels;
-		capitalizeLabels = _;
+		capitalizeLabels = _v;
 		return this;
 	};
 
 	/**
 	 * Radial Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 scale.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.radialScale = function(_) {
+	my.radialScale = function(_v) {
 		if (!arguments.length) return radialScale;
-		radialScale = _;
+		radialScale = _v;
 		return my;
 	};
 
 	/**
 	 * Text Anchor Getter / Setter
 	 *
-	 * @param {string} _ - Anchor name.
+	 * @param {string} _v - Anchor name.
 	 * @returns {*}
 	 */
-	my.textAnchor = function(_) {
+	my.textAnchor = function(_v) {
 		if (!arguments.length) return textAnchor;
-		textAnchor = _;
+		textAnchor = _v;
 		return this;
 	};
 

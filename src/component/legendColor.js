@@ -99,48 +99,48 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return my;
 	};
 
 	/**
 	 * Color Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 color scale.
+	 * @param {d3.scale} _v - D3 color scale.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_) {
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
 	/**
 	 * Item Type Getter / Setter
 	 *
-	 * @param {string} _ - Item type (‘rect’, ‘circle’).
+	 * @param {string} _v - Item type (‘rect’, ‘circle’).
 	 * @returns {*}
 	 */
-	my.itemType = function(_) {
+	my.itemType = function(_v) {
 		if (!arguments.length) return itemType;
-		itemType = _;
+		itemType = _v;
 		return my;
 	};
 

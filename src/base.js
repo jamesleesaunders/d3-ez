@@ -128,64 +128,64 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Chart Getter / Setter
 	 *
-	 * @param {d3.ez.chart} _ - Chart component.
+	 * @param {d3.ez.chart} _v - Chart component.
 	 * @returns {*}
 	 */
-	my.chart = function(_) {
+	my.chart = function(_v) {
 		if (!arguments.length) return chart;
-		chart = _;
+		chart = _v;
 		return this;
 	};
 
 	/**
 	 * Legend Getter / Setter
 	 *
-	 * @param {d3.ez.component.legend} _ - Legend component.
+	 * @param {d3.ez.component.legend} _v - Legend component.
 	 * @returns {*}
 	 */
-	my.legend = function(_) {
+	my.legend = function(_v) {
 		if (!arguments.length) return legend;
-		legend = _;
+		legend = _v;
 		return this;
 	};
 
 	/**
 	 * Title Getter / Setter
 	 *
-	 * @param {d3.ez.component.title} _ - Title component.
+	 * @param {d3.ez.component.title} _v - Title component.
 	 * @returns {*}
 	 */
-	my.title = function(_) {
+	my.title = function(_v) {
 		if (!arguments.length) return title;
 		if (typeof _ === "string") {
 			// If the caller has passed a plain string convert it to a title object.
 			title = componentTitle().mainText(_).subText("");
 		} else {
-			title = _;
+			title = _v;
 		}
 		return this;
 	};
@@ -193,12 +193,12 @@ export default function() {
 	/**
 	 * Y Axix Label Getter / Setter
 	 *
-	 * @param {string} _ - Label text.
+	 * @param {string} _v - Label text.
 	 * @returns {*}
 	 */
-	my.yAxisLabel = function(_) {
+	my.yAxisLabel = function(_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 

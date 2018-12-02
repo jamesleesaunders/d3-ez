@@ -94,48 +94,48 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return my;
 	};
 
 	/**
 	 * Size Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 size scale.
+	 * @param {d3.scale} _v - D3 size scale.
 	 * @returns {*}
 	 */
-	my.sizeScale = function(_) {
+	my.sizeScale = function(_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return my;
 	};
 
 	/**
 	 * Item Count Getter / Setter
 	 *
-	 * @param {number} _ - Number of items.
+	 * @param {number} _v - Number of items.
 	 * @returns {*}
 	 */
-	my.itemCount = function(_) {
+	my.itemCount = function(_v) {
 		if (!arguments.length) return itemCount;
-		itemCount = _;
+		itemCount = _v;
 		return my;
 	};
 

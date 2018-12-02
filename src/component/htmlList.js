@@ -85,12 +85,12 @@ export default function() {
 	/**
 	 * Class Getter / Setter
 	 *
-	 * @param {string} _ - HTML class.
+	 * @param {string} _v - HTML class.
 	 * @returns {*}
 	 */
-	my.classed = function(_) {
+	my.classed = function(_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 

@@ -162,48 +162,48 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Radius Getter / Setter
 	 *
-	 * @param {number} _ - Radius in px.
+	 * @param {number} _v - Radius in px.
 	 * @returns {*}
 	 */
-	my.radius = function(_) {
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
 	/**
 	 * Inner Radius Getter / Setter
 	 *
-	 * @param {number} _ - Inner radius in px.
+	 * @param {number} _v - Inner radius in px.
 	 * @returns {*}
 	 */
-	my.innerRadius = function(_) {
+	my.innerRadius = function(_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 

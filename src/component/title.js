@@ -54,48 +54,48 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Main Text Getter / Setter
 	 *
-	 * @param {string} _ - Main text title.
+	 * @param {string} _v - Main text title.
 	 * @returns {*}
 	 */
-	my.mainText = function(_) {
+	my.mainText = function(_v) {
 		if (!arguments.length) return mainText;
-		mainText = _;
+		mainText = _v;
 		return this;
 	};
 
 	/**
 	 * Sub Text Getter / Setter
 	 *
-	 * @param {string} _ - Sub text description.
+	 * @param {string} _v - Sub text description.
 	 * @returns {*}
 	 */
-	my.subText = function(_) {
+	my.subText = function(_v) {
 		if (!arguments.length) return subText;
-		subText = _;
+		subText = _v;
 		return this;
 	};
 

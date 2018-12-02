@@ -120,24 +120,24 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Class Getter / Setter
 	 *
-	 * @param {string} _ - HTML class.
+	 * @param {string} _v - HTML class.
 	 * @returns {*}
 	 */
-	my.classed = function(_) {
+	my.classed = function(_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 

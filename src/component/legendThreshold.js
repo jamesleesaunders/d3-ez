@@ -69,36 +69,36 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return my;
 	};
 
 	/**
 	 * Threshold Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 scale.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.thresholdScale = function(_) {
+	my.thresholdScale = function(_v) {
 		if (!arguments.length) return thresholdScale;
-		thresholdScale = _;
+		thresholdScale = _v;
 		return my;
 	};
 

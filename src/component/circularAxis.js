@@ -156,60 +156,60 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Radius Getter / Setter
 	 *
-	 * @param {number} _ - Radius in px.
+	 * @param {number} _v - Radius in px.
 	 * @returns {*}
 	 */
-	my.radius = function(_) {
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
 	/**
 	 * Radial Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 scale.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.radialScale = function(_) {
+	my.radialScale = function(_v) {
 		if (!arguments.length) return radialScale;
-		radialScale = _;
+		radialScale = _v;
 		return my;
 	};
 
 	/**
 	 * Ring Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 scale.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.ringScale = function(_) {
+	my.ringScale = function(_v) {
 		if (!arguments.length) return ringScale;
-		ringScale = _;
+		ringScale = _v;
 		return my;
 	};
 

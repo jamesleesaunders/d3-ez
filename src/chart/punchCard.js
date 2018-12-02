@@ -170,120 +170,120 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Margin Getter / Setter
 	 *
-	 * @param {number} _ - Margin in px.
+	 * @param {number} _v - Margin in px.
 	 * @returns {*}
 	 */
-	my.margin = function(_) {
+	my.margin = function(_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
 	/**
 	 * Min Radius Getter / Setter
 	 *
-	 * @param {number} _ - Min radius in px.
+	 * @param {number} _v - Min radius in px.
 	 * @returns {*}
 	 */
-	my.minRadius = function(_) {
+	my.minRadius = function(_v) {
 		if (!arguments.length) return minRadius;
-		minRadius = _;
+		minRadius = _v;
 		return this;
 	};
 
 	/**
 	 * Max Radius Getter / Setter
 	 *
-	 * @param {number} _ - Max radius in px.
+	 * @param {number} _v - Max radius in px.
 	 * @returns {*}
 	 */
-	my.maxRadius = function(_) {
+	my.maxRadius = function(_v) {
 		if (!arguments.length) return maxRadius;
-		maxRadius = _;
+		maxRadius = _v;
 		return this;
 	};
 
 	/**
 	 * Size Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 color scale.
+	 * @param {d3.scale} _v - D3 color scale.
 	 * @returns {*}
 	 */
-	my.sizeScale = function(_) {
+	my.sizeScale = function(_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return this;
 	};
 
 	/**
 	 * Colors Getter / Setter
 	 *
-	 * @param {Array} _ - Array of colours used by color scale.
+	 * @param {Array} _v - Array of colours used by color scale.
 	 * @returns {*}
 	 */
-	my.colors = function(_) {
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
 	/**
 	 * Global Scale Use Getter / Setter
 	 *
-	 * @param {boolean} _ - Use global scale or not?
+	 * @param {boolean} _v - Use global scale or not?
 	 * @returns {*}
 	 */
-	my.useGlobalScale = function(_) {
+	my.useGlobalScale = function(_v) {
 		if (!arguments.length) return useGlobalScale;
-		useGlobalScale = _;
+		useGlobalScale = _v;
 		return this;
 	};
 
 	/**
 	 * Transition Getter / Setter
 	 *
-	 * @param {d3.transition} _ - D3 transition style.
+	 * @param {d3.transition} _v - D3 transition style.
 	 * @returns {*}
 	 */
-	my.transition = function(_) {
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
 	/**
 	 * Dispatch Getter / Setter
 	 *
-	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @param {d3.dispatch} _v - Dispatch event handler.
 	 * @returns {*}
 	 */
-	my.dispatch = function(_) {
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 

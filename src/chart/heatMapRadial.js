@@ -177,120 +177,120 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Margin Getter / Setter
 	 *
-	 * @param {number} _ - Margin in px.
+	 * @param {number} _v - Margin in px.
 	 * @returns {*}
 	 */
-	my.margin = function(_) {
+	my.margin = function(_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
 	/**
 	 * Radius Getter / Setter
 	 *
-	 * @param {number} _ - Radius in px.
+	 * @param {number} _v - Radius in px.
 	 * @returns {*}
 	 */
-	my.radius = function(_) {
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
 	/**
 	 * Inner Radius Getter / Setter
 	 *
-	 * @param {number} _ - Inner radius in px.
+	 * @param {number} _v - Inner radius in px.
 	 * @returns {*}
 	 */
-	my.innerRadius = function(_) {
+	my.innerRadius = function(_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
 	/**
 	 * Colors Getter / Setter
 	 *
-	 * @param {Array} _ - Array of colours used by color scale.
+	 * @param {Array} _v - Array of colours used by color scale.
 	 * @returns {*}
 	 */
-	my.colors = function(_) {
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
 	/**
 	 * Color Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 color scale.
+	 * @param {d3.scale} _v - D3 color scale.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_) {
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
 	/**
 	 * Thresholds Getter / Setter
 	 *
-	 * @param {Array} _ - Array of thresholds.
+	 * @param {Array} _v - Array of thresholds.
 	 * @returns {*}
 	 */
-	my.thresholds = function(_) {
+	my.thresholds = function(_v) {
 		if (!arguments.length) return thresholds;
-		thresholds = _;
+		thresholds = _v;
 		return my;
 	};
 
 	/**
 	 * Transition Getter / Setter
 	 *
-	 * @param {d3.transition} _ - D3 transition style.
+	 * @param {d3.transition} _v - D3 transition style.
 	 * @returns {*}
 	 */
-	my.transition = function(_) {
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
 	/**
 	 * Dispatch Getter / Setter
 	 *
-	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @param {d3.dispatch} _v - Dispatch event handler.
 	 * @returns {*}
 	 */
-	my.dispatch = function(_) {
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
