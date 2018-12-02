@@ -60,72 +60,72 @@ export default function() {
 	/**
 	 * Color Getter / Setter
 	 *
-	 * @param {string} _ - Color.
+	 * @param {string} _v - Color.
 	 * @returns {*}
 	 */
-	my.color = function(_) {
+	my.color = function(_v) {
 		if (!arguments.length) return color;
-		color = _;
+		color = _v;
 		return this;
 	};
 
 	/**
 	 * Opacity Getter / Setter
 	 *
-	 * @param {number} _ - Level of opacity.
+	 * @param {number} _v - Level of opacity.
 	 * @returns {*}
 	 */
-	my.opacity = function(_) {
+	my.opacity = function(_v) {
 		if (!arguments.length) return opacity;
-		opacity = _;
+		opacity = _v;
 		return this;
 	};
 
 	/**
 	 * Radius Getter / Setter
 	 *
-	 * @param {number} _ - Radius in px.
+	 * @param {number} _v - Radius in px.
 	 * @returns {*}
 	 */
-	my.radius = function(_) {
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
 	/**
 	 * Label Getter / Setter
 	 *
-	 * @param {string} _ - Label text.
+	 * @param {string} _v - Label text.
 	 * @returns {*}
 	 */
-	my.label = function(_) {
+	my.label = function(_v) {
 		if (!arguments.length) return label;
-		label = _;
+		label = _v;
 		return this;
 	};
 
 	/**
 	 * Display Getter / Setter
 	 *
-	 * @param {string} _ - HTML display type (e.g. 'block')
+	 * @param {string} _v - HTML display type (e.g. 'block')
 	 * @returns {*}
 	 */
-	my.display = function(_) {
+	my.display = function(_v) {
 		if (!arguments.length) return display;
-		display = _;
+		display = _v;
 		return this;
 	};
 
 	/**
 	 * Font Size Getter / Setter
 	 *
-	 * @param {number} _ - Fint size.
+	 * @param {number} _v - Fint size.
 	 * @returns {*}
 	 */
-	my.fontSize = function(_) {
+	my.fontSize = function(_v) {
 		if (!arguments.length) return fontSize;
-		fontSize = _;
+		fontSize = _v;
 		return this;
 	};
 
@@ -146,24 +146,24 @@ export default function() {
 	/**
 	 * Class Getter / Setter
 	 *
-	 * @param {string} _ - HTML class name.
+	 * @param {string} _v - HTML class name.
 	 * @returns {*}
 	 */
-	my.classed = function(_) {
+	my.classed = function(_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 
 	/**
 	 * Dispatch Getter / Setter
 	 *
-	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @param {d3.dispatch} _v - Dispatch event handler.
 	 * @returns {*}
 	 */
-	my.dispatch = function(_) {
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 

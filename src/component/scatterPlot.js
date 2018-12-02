@@ -108,84 +108,84 @@ export default function() {
 	/**
 	 * Width Getter / Setter
 	 *
-	 * @param {number} _ - Width in px.
+	 * @param {number} _v - Width in px.
 	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
 	/**
 	 * Height Getter / Setter
 	 *
-	 * @param {number} _ - Height in px.
+	 * @param {number} _v - Height in px.
 	 * @returns {*}
 	 */
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
 	/**
 	 * Color Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 color scale.
+	 * @param {d3.scale} _v - D3 color scale.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_) {
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
 	/**
 	 * Colors Getter / Setter
 	 *
-	 * @param {Array} _ - Array of colours used by color scale.
+	 * @param {Array} _v - Array of colours used by color scale.
 	 * @returns {*}
 	 */
-	my.colors = function(_) {
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
 	/**
 	 * X Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 scale.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.xScale = function(_) {
+	my.xScale = function(_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
 	/**
 	 * Y Scale Getter / Setter
 	 *
-	 * @param {d3.scale} _ - D3 scale.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.yScale = function(_) {
+	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
 	/**
 	 * Dispatch Getter / Setter
 	 *
-	 * @param {d3.dispatch} _ - Dispatch event handler.
+	 * @param {d3.dispatch} _v - Dispatch event handler.
 	 * @returns {*}
 	 */
-	my.dispatch = function(_) {
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
