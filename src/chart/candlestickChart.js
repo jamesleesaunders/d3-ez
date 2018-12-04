@@ -50,12 +50,8 @@ export default function() {
 			// Convert to date
 			data.values[i].date = Date.parse(d.date);
 		});
-		const maxDate = d3.max(data.values, function(d) {
-			return d.date;
-		});
-		const minDate = d3.min(data.values, function(d) {
-			return d.date;
-		});
+		const maxDate = d3.max(data.values, (d) => d.date);
+		const minDate = d3.min(data.values, (d) => d.date);
 
 		const ONE_DAY_IN_MILLISECONDS = 86400000;
 		const dateDomain = [
@@ -66,8 +62,8 @@ export default function() {
 
 		// TODO: Use dataTransform() to calculate candle min/max?
 		const yDomain = [
-			d3.min(data.values, function(d) { return d.low; }),
-			d3.max(data.values, function(d) { return d.high; })
+			d3.min(data.values, (d) => d.low),
+			d3.max(data.values, (d) => d.high)
 		];
 
 
@@ -98,7 +94,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -116,7 +112,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
+		const layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -125,14 +121,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Candle Sticks
-			let candleSticks = component.candleSticks()
+			const candleSticks = component.candleSticks()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -145,7 +141,7 @@ export default function() {
 				.call(candleSticks);
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale)
+			const xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
 			chart.select(".xAxis")
@@ -158,13 +154,13 @@ export default function() {
 				.attr("transform", "rotate(-65)");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);
 
 			// Y Axis Labels
-			let yLabel = chart.select(".yAxis")
+			const yLabel = chart.select(".yAxis")
 				.selectAll(".yAxisLabel")
 				.data([data.key]);
 
@@ -178,12 +174,10 @@ export default function() {
 				.style("text-anchor", "end")
 				.merge(yLabel)
 				.transition()
-				.text(function(d) {
-					return (d);
-				});
+				.text((d) => d);
 
 			// Experimental Brush
-			let brush = d3.brushX()
+			const brush = d3.brushX()
 				.extent([[0, 0], [chartW, chartH]])
 				.on("brush start", brushStart)
 				.on("brush end", brushEnd);

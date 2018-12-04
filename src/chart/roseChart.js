@@ -75,7 +75,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -93,7 +93,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circularSectorLabels", "rosePetalGroups"];
+		const layers = ["circularSectorLabels", "rosePetalGroups"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -102,14 +102,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Rose Sectors
-			let roseChartSector = component.roseChartSector()
+			const roseChartSector = component.roseChartSector()
 				.radius(radius)
 				.colorScale(colorScale)
 				.yScale(yScale)
@@ -117,7 +117,7 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Create Series Group
-			let seriesGroup = chart.select(".rosePetalGroups")
+			const seriesGroup = chart.select(".rosePetalGroups")
 				.selectAll(".seriesGroup")
 				.data(data);
 
@@ -126,8 +126,8 @@ export default function() {
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
 				.each(function(d) {
-					let startAngle = xScale(d.key);
-					let endAngle = xScale(d.key) + xScale.bandwidth();
+					const startAngle = xScale(d.key);
+					const endAngle = xScale(d.key) + xScale.bandwidth();
 					roseChartSector.startAngle(startAngle).endAngle(endAngle);
 					d3.select(this).call(roseChartSector);
 				});
@@ -136,7 +136,7 @@ export default function() {
 				.remove();
 
 			// Circular Labels
-			let circularSectorLabels = component.circularSectorLabels()
+			const circularSectorLabels = component.circularSectorLabels()
 				.radius(radius * 1.04)
 				.radialScale(xScale)
 				.textAnchor("start")

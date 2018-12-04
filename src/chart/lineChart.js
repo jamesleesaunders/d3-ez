@@ -54,7 +54,7 @@ export default function() {
 				data[i].values[j].key = new Date(b.key * 1000);
 			});
 		});
-		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const dateDomain = d3.extent(data[0].values, (d) => d.key);
 
 
 		if (typeof colorScale === "undefined") {
@@ -84,7 +84,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -102,7 +102,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
+		const layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -111,13 +111,13 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
-			// Add Clip Path - Still Proof of Concept
+			// Add Clip Path (Proof of Concept)
 			chart.append('defs')
 				.append('clipPath')
 				.attr('id', 'plotAreaClip')
@@ -126,7 +126,7 @@ export default function() {
 				.attr('height', chartH);
 
 			// Line Chart
-			let lineChart = component.lineChart()
+			const lineChart = component.lineChart()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -135,7 +135,7 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Scatter Plot
-			let scatterPlot = component.scatterPlot()
+			const scatterPlot = component.scatterPlot()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -143,17 +143,17 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			let lineGroups = chart.select(".lineGroups")
-				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
+			const lineGroups = chart.select(".lineGroups")
+				.attr('clip-path', "url(" + window.location + "#plotAreaClip)")
 				.append("g");
 
-			let seriesGroup = lineGroups.selectAll(".seriesGroup")
+			const seriesGroup = lineGroups.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
-				.style("fill", function(d) { return colorScale(d.key); })
+				.style("fill", (d) => colorScale(d.key))
 				.merge(seriesGroup)
 				.call(lineChart)
 				.call(scatterPlot);
@@ -162,7 +162,7 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale)
+			const xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
 			chart.select(".xAxis")
@@ -175,7 +175,7 @@ export default function() {
 				.attr("transform", "rotate(-65)");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis)
@@ -188,7 +188,7 @@ export default function() {
 				.text(yAxisLabel);
 
 			// Zoom
-			let zoom = d3.zoom()
+			const zoom = d3.zoom()
 				.extent([[0, 0], [chartW, chartH]])
 				.scaleExtent([1, 8])
 				.translateExtent([[0, 0], [chartW, chartH]])
@@ -203,7 +203,7 @@ export default function() {
 				.call(zoom);
 
 			function zoomed() {
-				let xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				const xScaleZoomed = d3.event.transform.rescaleX(xScale);
 
 				xAxis.scale(xScaleZoomed);
 				lineChart.xScale(xScaleZoomed);

@@ -85,7 +85,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -103,7 +103,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circularAxis", "barsCircular", "circularSectorLabels", "circularRingLabels"];
+		const layers = ["circularAxis", "barsCircular", "circularSectorLabels", "circularRingLabels"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -112,14 +112,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Circular Axis
-			let circularAxis = component.circularAxis()
+			const circularAxis = component.circularAxis()
 				.radius(radius)
 				.radialScale(yScale)
 				.ringScale(xScale);
@@ -128,7 +128,7 @@ export default function() {
 				.call(circularAxis);
 
 			// Radial Bars
-			let barsCircular = component.barsCircular()
+			const barsCircular = component.barsCircular()
 				.radius(radius)
 				.innerRadius(innerRadius)
 				.colorScale(colorScale)
@@ -140,7 +140,7 @@ export default function() {
 				.call(barsCircular);
 
 			// Outer Labels
-			let circularSectorLabels = component.circularSectorLabels()
+			const circularSectorLabels = component.circularSectorLabels()
 				.radius(radius * 1.04)
 				.radialScale(yScale)
 				.textAnchor("middle");
@@ -149,7 +149,7 @@ export default function() {
 				.call(circularSectorLabels);
 
 			// Ring Labels
-			let circularRingLabels = component.circularRingLabels()
+			const circularRingLabels = component.circularRingLabels()
 				.radialScale(xScale)
 				.textAnchor("middle");
 

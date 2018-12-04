@@ -80,7 +80,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -96,17 +96,23 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis", "radarGroup"];
-		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function(d) {
-			return d;
-		});
+		const layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis", "radarGroup"];
+		chart.classed(classed, true)
+			.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+			.attr("width", chartW)
+			.attr("height", chartH)
+			.selectAll("g")
+			.data(layers)
+			.enter()
+			.append("g")
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Create Circular Axis
-			let circularAxis = component.circularAxis()
+			const circularAxis = component.circularAxis()
 				.radialScale(xScale)
 				.ringScale(yScale)
 				.radius(radius);
@@ -114,7 +120,7 @@ export default function() {
 			chart.select(".circularAxis")
 				.call(circularAxis);
 
-			let radarArea = component.radarArea()
+			const radarArea = component.radarArea()
 				.radius(radius)
 				.colorScale(colorScale)
 				.yScale(yScale)
@@ -122,32 +128,32 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Create Radars
-			let seriesGroup = chart.select(".radarGroup")
+			const seriesGroup = chart.select(".radarGroup")
 				.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()
 				.append("g")
 				.classed("seriesGroup", true)
-				.attr("fill", function(d) { return colorScale(d.key); })
-				.style("stroke", function(d) { return colorScale(d.key); })
+				.attr("fill", (d) => colorScale(d.key))
+				.style("stroke", (d) => colorScale(d.key))
 				.merge(seriesGroup)
 				.call(radarArea);
 
 			// Creating vertical scale
-			let axisScale = d3.scaleLinear()
+			const axisScale = d3.scaleLinear()
 				.domain(yScale.domain())
 				.range(yScale.range().reverse())
 				.nice();
 
 			// Render vertical scale on circle
-			let verticalAxis = d3.axisLeft(axisScale);
+			const verticalAxis = d3.axisLeft(axisScale);
 			chart.select(".verticalAxis")
 				.attr("transform", "translate(0," + -radius + ")")
 				.call(verticalAxis);
 
 			// Adding Circular Labels on Page
-			let circularSectorLabels = component.circularSectorLabels()
+			const circularSectorLabels = component.circularSectorLabels()
 				.radius(radius * 1.04)
 				.radialScale(xScale)
 				.textAnchor("start");
