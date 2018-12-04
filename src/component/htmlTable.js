@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import dataTransform from "../dataTransform";
 
 /**
  * Simple HTML Table
@@ -14,32 +15,8 @@ export default function() {
 	let classed = "htmlTable";
 	let width = 800;
 
-	/* Data Options */
-	let rowNames = [];
-	let columnNames = [];
-
 	// Dispatch (Custom events)
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		// Cut the data in different ways....
-		rowNames = data.map(function(d) {
-			return d.key;
-		});
-
-		columnNames = [];
-		data.map(function(d) {
-			return d.values;
-		})[0].forEach(function(d, i) {
-			columnNames[i] = d.key;
-		});
-	}
 
 	/**
 	 * Constructor
@@ -50,7 +27,7 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function(data) {
-			init(data);
+			const { rowKeys, columnKeys } = dataTransform(data).summary();
 
 			// Create HTML Table 'table' element (if it does not exist already)
 			if (!tableEl) {
@@ -74,7 +51,7 @@ export default function() {
 				.data(function() {
 					// Tack on a blank cell at the beginning,
 					// this is for the top of the first column.
-					return [""].concat(columnNames);
+					return [""].concat(columnKeys);
 				})
 				.enter()
 				.append("th")

@@ -29,32 +29,34 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
-
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = dataSummary.maxValue;
+		const { columnKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
 		// Slice calculation on circle
-		angleSlice = (Math.PI * 2 / seriesNames.length);
+		angleSlice = (Math.PI * 2 / columnKeys.length);
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleBand().domain(seriesNames).range([0, 360]) :
-			xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice() :
-			yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, 360]);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([0, radius])
+				.nice();
+		}
 	}
 
 	/**

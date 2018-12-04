@@ -22,14 +22,13 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		innerRadius = (typeof innerRadius === "undefined") ?
-			(radius / 4) :
-			innerRadius;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 	}
 
 	/**

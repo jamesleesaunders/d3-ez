@@ -44,30 +44,25 @@ export default function() {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
+		const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
-
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleThreshold().domain(thresholds).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(seriesNames)
+			.domain(columnKeys)
 			.range([0, chartW])
 			.padding(0.1);
 
 		yScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(rowKeys)
 			.range([0, chartH])
 			.padding(0.1);
 	}

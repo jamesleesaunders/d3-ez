@@ -27,28 +27,27 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
-		let minValue = dataSummary.minValue;
-		let maxValue = dataSummary.maxValue;
+		const { rowKeys, columnKeys, valueExtent } = dataTransform(data).summary();
 
-		let valDomain = [minValue, maxValue];
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range(colors);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleLinear().domain(valDomain).range(colors) :
-			colorScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, width])
+				.padding(0.05);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleBand().domain(seriesNames).range([0, width]).padding(0.05) :
-			xScale;
-
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleBand().domain(categoryNames).range([0, height]).padding(0.05) :
-			yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, height])
+				.padding(0.05);
+		}
 	}
 
 	/**

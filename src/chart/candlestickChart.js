@@ -44,12 +44,12 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
+		// Slice Data, calculate totals, max etc.
+		// TODO: Use dataTransform()
 		// Convert dates
 		data.values.forEach(function(d, i) {
 			data.values[i].date = Date.parse(d.date);
 		});
-
-		// Slice Data, calculate totals, max etc.
 		let maxDate = d3.max(data.values, function(d) {
 			return d.date;
 		});
@@ -65,12 +65,12 @@ export default function() {
 			d3.max(data.values, function(d) { return d.high; })
 		];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain([true, false]).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleTime()
 			.domain(xDomain)
 			.range([0, chartW]);

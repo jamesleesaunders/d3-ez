@@ -28,29 +28,31 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
+		const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleThreshold().domain(thresholds).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleBand().domain(seriesNames).range([0, width]).padding(0.1) :
-			xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, width])
+				.padding(0.1);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleBand().domain(categoryNames).range([0, height]).padding(0.1) :
-			yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, height])
+				.padding(0.1);
+		}
 	}
 
 	/**

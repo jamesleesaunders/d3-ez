@@ -31,29 +31,27 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = stacked ? dataSummary.rowTotalsMax : dataSummary.maxValue;
+		const { columnKeys, valueMax, rowTotalsMax } = dataTransform(data).summary();
+		const max = (stacked ? rowTotalsMax : valueMax);
+		const valueExtent = [0, max];
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain([0, maxValue]).range([0, radius]) :
-			yScale;
-
-		// If the xScale has been passed then re-calculate the start and end angles.
 		if (typeof xScale !== "undefined") {
 			startAngle = xScale(data.key);
 			endAngle = xScale(data.key) + xScale.bandwidth();
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]);
 		}
 	}
 

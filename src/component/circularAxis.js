@@ -14,7 +14,7 @@ export default function() {
 	let height = 300;
 	let transition = { ease: d3.easeBounce, duration: 500 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let radius = 150;
+	let radius;
 	let radialScale;
 	let ringScale;
 
@@ -26,10 +26,9 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
 		// Create axis group
 		let axisSelect = selection.selectAll(".axis")
