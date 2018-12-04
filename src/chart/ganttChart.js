@@ -48,15 +48,16 @@ export default function() {
 
 		let { rowKeys, columnKeys } = dataTransform(data).summary();
 
-		// Calculate Start and End Dates
-		// TODO: Use dataTransform()
+
+		// TODO: Use dataTransform() to calculate date domains?
 		data.forEach(function(d) {
 			d.values.forEach(function(b) {
 				dateDomainMin = d3.min([b.startDate, dateDomainMin]);
 				dateDomainMax = d3.max([b.endDate, dateDomainMax]);
 			});
 		});
-		let dateDomain = [dateDomainMin, dateDomainMax];
+		const dateDomain = [dateDomainMin, dateDomainMax];
+
 
 		if (typeof colorScale === "undefined") {
 			colorScale = d3.scaleOrdinal()

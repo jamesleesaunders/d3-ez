@@ -44,26 +44,32 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Slice Data, calculate totals, max etc.
-		// TODO: Use dataTransform()
-		// Convert dates
+
+		// TODO: Use dataTransform() to calculate date domains?
 		data.values.forEach(function(d, i) {
+			// Convert to date
 			data.values[i].date = Date.parse(d.date);
 		});
-		let maxDate = d3.max(data.values, function(d) {
+		const maxDate = d3.max(data.values, function(d) {
 			return d.date;
 		});
-		let minDate = d3.min(data.values, function(d) {
+		const minDate = d3.min(data.values, function(d) {
 			return d.date;
 		});
-		let xDomain = [
-			new Date(minDate - 8.64e7),
-			new Date(maxDate + 8.64e7)
+
+		const ONE_DAY_IN_MILLISECONDS = 86400000;
+		const dateDomain = [
+			new Date(minDate - ONE_DAY_IN_MILLISECONDS),
+			new Date(maxDate + ONE_DAY_IN_MILLISECONDS)
 		];
-		let yDomain = [
+
+
+		// TODO: Use dataTransform() to calculate candle min/max?
+		const yDomain = [
 			d3.min(data.values, function(d) { return d.low; }),
 			d3.max(data.values, function(d) { return d.high; })
 		];
+
 
 		if (typeof colorScale === "undefined") {
 			colorScale = d3.scaleOrdinal()
@@ -72,7 +78,7 @@ export default function() {
 		}
 
 		xScale = d3.scaleTime()
-			.domain(xDomain)
+			.domain(dateDomain)
 			.range([0, chartW]);
 
 		yScale = d3.scaleLinear()
