@@ -47,14 +47,15 @@ export default function() {
 		const { rowKeys, valueMax } = dataTransform(data).summary();
 		const valueExtent = [0, valueMax];
 
-		// Convert dates
-		// TODO: Use dataTransform()
+
+		// TODO: Use dataTransform() to calculate date domains?
 		data.forEach(function(d, i) {
 			d.values.forEach(function(b, j) {
 				data[i].values[j].key = new Date(b.key * 1000);
 			});
 		});
-		let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+
 
 		if (typeof colorScale === "undefined") {
 			colorScale = d3.scaleOrdinal()

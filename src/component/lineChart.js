@@ -28,8 +28,12 @@ export default function() {
 	 */
 	function init(data) {
 		const { rowKeys, valueMax } = dataTransform(data).summary();
-		const valueExtent = [0, (valueMax * 1.05)];
+		const valueExtent = [0, valueMax];
+
+
+		// TODO: Use dataTransform() to calculate date domains?
 		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+
 
 		if (typeof colorScale === "undefined") {
 			colorScale = d3.scaleOrdinal()
@@ -46,7 +50,8 @@ export default function() {
 		if (typeof yScale === "undefined") {
 			yScale = d3.scaleLinear()
 				.domain(valueExtent)
-				.range([height, 0]);
+				.range([height, 0])
+				.nice();
 		}
 	}
 
