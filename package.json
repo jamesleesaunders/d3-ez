@@ -27,7 +27,7 @@
 	"module": "index",
 	"scripts": {
 		"pretest": "make",
-		"test": "tape 'test/**/*Test.js'",
+		"test": "tape 'test/**/*Test.js' | tap-spec",
 		"build:docs": "jsdoc -c config/jsdoc.conf.json",
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	},
@@ -47,6 +47,7 @@
 		"minami": "^1.2.3",
 		"rollup-plugin-babel": "^3.0.7",
 		"rollup-plugin-json": "^2.3.1",
+		"tap-spec": "^5.0.0",
 		"tape": "^4.9.1",
 		"toast-jsdoc": "^1.0.2",
 		"uglify-es": "^3.3.9",
