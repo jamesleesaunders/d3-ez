@@ -44,24 +44,22 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesTotalsMax = dataSummary.rowTotalsMax;
-		let seriesNames = dataSummary.columnKeys;
+		const { rowKeys, columnKeys, rowTotalsMax } = dataTransform(data).summary();
+		const valueExtent = [0, rowTotalsMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(rowKeys)
 			.rangeRound([0, chartW])
 			.padding(0.15);
 
 		yScale = d3.scaleLinear()
-			.domain([0, seriesTotalsMax])
+			.domain(valueExtent)
 			.range([chartH, 0])
 			.nice();
 	}
@@ -108,7 +106,7 @@ export default function() {
 
 		selection.each(function(data) {
 			// Initialise Data
-      data = dataTransform(data).rotate();
+			data = dataTransform(data).rotate();
 			init(data);
 
 			// Stacked Bars Component

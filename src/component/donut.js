@@ -27,22 +27,21 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
+		const { columnKeys } = dataTransform(data).summary();
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		innerRadius = (typeof innerRadius === "undefined") ?
-			(radius / 4) :
-			innerRadius;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 	}
 
 	/**

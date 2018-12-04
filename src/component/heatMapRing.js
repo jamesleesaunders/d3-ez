@@ -32,34 +32,35 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
+		const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
-
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleThreshold().domain(thresholds).range(colors) :
-			colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleBand().domain(seriesNames).rangeRound([startAngle, endAngle]).padding(0.1) :
-			xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleBand().domain(categoryNames).rangeRound([radius, innerRadius]).padding(0.1) :
-			yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.rangeRound([startAngle, endAngle])
+				.padding(0.1);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.rangeRound([radius, innerRadius])
+				.padding(0.1);
+		}
 	}
 
 	/**

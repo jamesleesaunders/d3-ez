@@ -47,37 +47,30 @@ export default function() {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = dataSummary.maxValue;
-		let minValue = dataSummary.minValue;
+		const { rowKeys, columnKeys, valueExtent } = dataTransform(data).summary();
 
-		let valDomain = [minValue, maxValue];
-		let sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function(d) {
-			return d["value"];
-		})];
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range(colors);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleLinear().domain(valDomain).range(colors) :
-			colorScale;
-
-		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(seriesNames)
+			.domain(columnKeys)
 			.range([0, chartW])
 			.padding(0.05);
 
 		yScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(rowKeys)
 			.range([0, chartH])
 			.padding(0.05);
 
-		// Size Scale
+		const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1]["values"], function(d) {
+			return d["value"];
+		})];
+
 		sizeScale = d3.scaleLinear()
-			.domain(sizeDomain)
+			.domain(sizeExtent)
 			.range([minRadius, maxRadius]);
 	}
 

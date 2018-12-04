@@ -41,23 +41,21 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(chartW, chartH) / 2) :
-			radius;
+		const { columnKeys } = dataTransform(data).summary();
 
-		innerRadius = (typeof innerRadius === "undefined") ?
-			(radius / 2) :
-			innerRadius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 	}
 
 	/**

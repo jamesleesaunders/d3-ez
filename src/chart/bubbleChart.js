@@ -47,46 +47,27 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Calculate the extents for each series.
-		// TODO: Use dataTransform() ?
-		function extents(key) {
-			let serExts = [];
-			d3.map(data).values().forEach(function(d) {
-				let vals = d.values.map(function(e) {
-					return +e[key];
-				});
-				serExts.push(d3.extent(vals));
-			});
-			// Merge all the series extents into one array.
-			// Calculate overall extent.
-			return d3.extent([].concat.apply([], serExts));
+		const { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = dataTransform(data).summary();
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
 		}
 
-		let xDomain = extents("x");
-		let yDomain = extents("y");
-		let sizeDomain = extents("value");
-		let seriesNames = data.map(function(d) {
-			return d.key;
-		});
+		if (typeof sizeScale === "undefined") {
+			sizeScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([minRadius, maxRadius]);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
-
-		// If the sizeScale has not been passed then attempt to calculate.
-		sizeScale = (typeof sizeScale === "undefined") ?
-			d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) :
-			sizeScale;
-
-		// X & Y Scales
 		xScale = d3.scaleLinear()
-			.domain(xDomain)
+			.domain(xExtent)
 			.range([0, chartW])
 			.nice();
 
 		yScale = d3.scaleLinear()
-			.domain(yDomain)
+			.domain(yExtent)
 			.range([chartH, 0])
 			.nice();
 	}

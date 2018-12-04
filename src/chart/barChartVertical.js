@@ -44,28 +44,26 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = dataSummary.maxValue;
+		const { seriesNames, columnKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
-		if (!yAxisLabel) {
-			yAxisLabel = dataSummary.seriesName;
+		if (typeof yAxisLabel === "undefined") {
+			yAxisLabel = seriesNames;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(seriesNames)
+			.domain(columnKeys)
 			.rangeRound([0, chartW])
 			.padding(0.15);
 
 		yScale = d3.scaleLinear()
-			.domain([0, maxValue])
+			.domain(valueExtent)
 			.range([chartH, 0])
 			.nice();
 	}

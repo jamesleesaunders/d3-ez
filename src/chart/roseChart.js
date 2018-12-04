@@ -42,29 +42,25 @@ export default function() {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(chartW, chartH) / 2) :
-			radius;
+		const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = dataSummary.maxValue;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(rowKeys)
 			.rangeRound([0, 360]);
 
 		yScale = d3.scaleLinear()
-			.domain([0, maxValue])
+			.domain(valueExtent)
 			.range([0, radius]);
 	}
 

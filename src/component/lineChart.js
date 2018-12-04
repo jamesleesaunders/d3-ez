@@ -27,25 +27,27 @@ export default function() {
 	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.rowKeys;
-		let maxValue = dataSummary.maxValue;
-		let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const { rowKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, (valueMax * 1.05)];
+		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleTime().domain(dateDomain).range([0, width]) :
-			xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime()
+				.domain(dateDomain)
+				.range([0, width]);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain([0, (maxValue * 1.05)]).range([height, 0]) :
-			yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([height, 0]);
+		}
 	}
 
 	/**

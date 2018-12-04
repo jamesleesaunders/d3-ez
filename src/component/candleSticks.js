@@ -29,6 +29,7 @@ export default function() {
 	 */
 	function init(data) {
 		// Slice Data, calculate totals, max etc.
+		// TODO: Use dataTransform()
 		let maxDate = d3.max(data.values, function(d) {
 			return d.date;
 		});
@@ -37,28 +38,32 @@ export default function() {
 		});
 
 		let xDomain = [
-      new Date(minDate - 8.64e7),
-      new Date(maxDate + 8.64e7)
-    ];
+			new Date(minDate - 8.64e7),
+			new Date(maxDate + 8.64e7)
+		];
 		let yDomain = [
-      d3.min(data.values, function(d) { return d.low; }),
-      d3.max(data.values, function(d) { return d.high; })
-    ];
+			d3.min(data.values, function(d) { return d.low; }),
+			d3.max(data.values, function(d) { return d.high; })
+		];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain([true, false]).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleTime().domain(xDomain).range([0, width]) :
-			xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime()
+				.domain(xDomain)
+				.range([0, width]);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain(yDomain).range([height, 0]).nice() :
-			yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear()
+				.domain(yDomain)
+				.range([height, 0])
+				.nice();
+		}
 	}
 
 	/**
@@ -94,7 +99,7 @@ export default function() {
 						return line([
 							{ x: xScale(d.date), y: yScale(d.high) },
 							{ x: xScale(d.date), y: yScale(d.low) }
-            ]);
+						]);
 					});
 			};
 
@@ -135,7 +140,7 @@ export default function() {
 						return line([
 							{ x: xScale(d.date) - candleWidth, y: yScale(d.open) },
 							{ x: xScale(d.date), y: yScale(d.open) }
-            ]);
+						]);
 					});
 
 				close.enter()
@@ -145,7 +150,7 @@ export default function() {
 						return line([
 							{ x: xScale(d.date), y: yScale(d.close) },
 							{ x: xScale(d.date) + candleWidth, y: yScale(d.close) }
-            ]);
+						]);
 					});
 			};
 
