@@ -85,15 +85,27 @@ export default function() {
 	 */
 	let my = function(selection) {
 		// Create SVG element (if it does not exist already)
-		svg = selection.append("svg");
-		svg.classed("d3ez", true)
-			.attr("width", width)
-			.attr("height", height);
+		if (!svg) {
+			svg = (function(selection) {
+				const el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			})(selection);
 
-		chart = svg.append("g").classed("chart", true);
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
+
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["ganttBarGroup", "xAxis axis", "yAxis axis"];
+		const layers = ["ganttBarGroup", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -102,28 +114,25 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Create bar groups
-			let seriesGroup = chart.select(".ganttBarGroup")
+			const seriesGroup = chart.select(".ganttBarGroup")
 				.selectAll(".seriesGroup")
 				.data(data)
 				.enter()
 				.append("g")
 				.classed("seriesGroup", true)
-				.attr("id", function(d) { return d.key; })
-				.attr("transform", function(d) {
-					return "translate(0," + yScale(d.key) + ")";
-				});
+				.attr("id", (d) => d.key)
+				.attr("transform", (d) => "translate(0," + yScale(d.key) + ")");
 
 			// Add bars
-			let bars = seriesGroup.selectAll(".bar").data(function(d) {
-				return d.values;
-			});
+			const bars = seriesGroup.selectAll(".bar")
+				.data((d) => d.values);
 
 			bars.enter()
 				.append("rect")
@@ -131,33 +140,30 @@ export default function() {
 				.attr("ry", 3)
 				.attr("class", "bar")
 				.attr("y", 0)
-				.attr("x", function(d) { return xScale(d.startDate); })
-				.attr("height", function(d) { return yScale.bandwidth(); })
-				.attr("fill", function(d) { return colorScale(d.key); })
-				.attr("width", function(d) { return Math.max(1, (xScale(d.endDate) - xScale(d.startDate))); })
-				.on("mouseover", function(d) {
-					dispatch.call("customValueMouseOver", this, d);
-				})
-				.on("click", function(d) {
-					dispatch.call("customValueClick", this, d);
-				})
+				.attr("x", (d) => xScale(d.startDate))
+				.attr("height", yScale.bandwidth())
+				.attr("fill", (d) => colorScale(d.key))
+				.attr("width", (d) => Math.max(1, (xScale(d.endDate) - xScale(d.startDate))))
+				.on("mouseover", (d) => dispatch.call("customValueMouseOver", this, d))
+				.on("click", (d) => dispatch.call("customValueClick", this, d))
 				.merge(bars)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("x", function(d) { return xScale(d.startDate); })
-				.attr("width", function(d) { return Math.max(1, (xScale(d.endDate) - xScale(d.startDate))); });
+				.attr("x", (d) => xScale(d.startDate))
+				.attr("width", (d) => Math.max(1, (xScale(d.endDate) - xScale(d.startDate))));
 
-			let xAxis = d3.axisBottom()
+			const xAxis = d3.axisBottom()
 				.scale(xScale)
 				.tickFormat(d3.timeFormat(tickFormat))
-				.tickSize(8).tickPadding(8);
+				.tickSize(8)
+				.tickPadding(8);
 
 			chart.select(".xAxis")
 				.attr("transform", "translate(0, " + chartH + ")")
 				.call(xAxis);
 
-			let yAxis = d3.axisLeft()
+			const yAxis = d3.axisLeft()
 				.scale(yScale)
 				.tickSize(0);
 

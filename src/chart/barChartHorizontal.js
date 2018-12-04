@@ -72,7 +72,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -90,7 +90,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["barChart", "xAxis axis", "yAxis axis"];
+		const layers = ["barChart", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -98,14 +98,14 @@ export default function() {
 			.selectAll("g")
 			.data(layers).enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Horizontal Bars
-			let barsHorizontal = component.barsHorizontal()
+			const barsHorizontal = component.barsHorizontal()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -118,20 +118,20 @@ export default function() {
 				.call(barsHorizontal);
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale);
+			const xAxis = d3.axisBottom(xScale);
 
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis);
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);
 
 			// Y Axis Label
-			let yLabel = chart.select(".yAxis")
+			const yLabel = chart.select(".yAxis")
 				.selectAll(".yAxisLabel")
 				.data([data.key]);
 
@@ -143,7 +143,7 @@ export default function() {
 				.style("text-anchor", "center")
 				.merge(yLabel)
 				.transition()
-				.text(function(d) { return d; });
+				.text((d) => d);
 		});
 	}
 

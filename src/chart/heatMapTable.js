@@ -78,7 +78,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -96,7 +96,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["heatRowGroups", "xAxis axis", "yAxis axis"];
+		const layers = ["heatRowGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -105,14 +105,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Heat Map Rows
-			let heatMapRow = component.heatMapRow()
+			const heatMapRow = component.heatMapRow()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -122,13 +122,13 @@ export default function() {
 				.thresholds(thresholds);
 
 			// Create Series Group
-			let seriesGroup = chart.select(".heatRowGroups")
+			const seriesGroup = chart.select(".heatRowGroups")
 				.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter().append("g")
 				.attr("class", "seriesGroup")
-				.attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
+				.attr("transform", (d) => "translate(0, " + yScale(d.key) + ")")
 				.merge(seriesGroup)
 				.call(heatMapRow);
 
@@ -136,7 +136,7 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisTop(xScale);
+			const xAxis = d3.axisTop(xScale);
 
 			chart.select(".xAxis")
 				.call(xAxis)
@@ -147,7 +147,7 @@ export default function() {
 				.style("text-anchor", "end");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);

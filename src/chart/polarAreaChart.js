@@ -83,7 +83,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -101,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circularAxis", "polarArea", "circularSectorLabels", "verticalAxis axis"];
+		const layers = ["circularAxis", "polarArea", "circularSectorLabels", "verticalAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -110,14 +110,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Circular Axis
-			let circularAxis = component.circularAxis()
+			const circularAxis = component.circularAxis()
 				.radialScale(xScale)
 				.ringScale(yScale)
 				.radius(radius);
@@ -126,7 +126,7 @@ export default function() {
 				.call(circularAxis);
 
 			// Radial Bar Chart
-			let polarArea = component.polarArea()
+			const polarArea = component.polarArea()
 				.radius(radius)
 				.colorScale(colorScale)
 				.xScale(xScale)
@@ -139,19 +139,19 @@ export default function() {
 
 			// Vertical Axis
 			// We reverse the yScale
-			let axisScale = d3.scaleLinear()
+			const axisScale = d3.scaleLinear()
 				.domain(yScale.domain())
 				.range(yScale.range().reverse())
 				.nice();
 
-			let verticalAxis = d3.axisLeft(axisScale);
+			const verticalAxis = d3.axisLeft(axisScale);
 
 			chart.select(".verticalAxis")
 				.attr("transform", "translate(0," + -radius + ")")
 				.call(verticalAxis);
 
 			// Circular Labels
-			let circularSectorLabels = component.circularSectorLabels()
+			const circularSectorLabels = component.circularSectorLabels()
 				.radius(radius * 1.04)
 				.radialScale(xScale)
 				.textAnchor("start");

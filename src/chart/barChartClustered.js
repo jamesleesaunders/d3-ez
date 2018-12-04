@@ -75,7 +75,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -93,7 +93,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["barChart", "xAxis axis", "yAxis axis"];
+		const layers = ["barChart", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -102,7 +102,7 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
@@ -110,21 +110,21 @@ export default function() {
 			init(data);
 
 			// Vertical Bars Component
-			let barsVertical = component.barsVertical()
+			const barsVertical = component.barsVertical()
 				.width(xScale.bandwidth())
 				.height(chartH)
 				.colorScale(colorScale)
 				.dispatch(dispatch);
 
 			// Create Bar Groups
-			let categoryGroup = chart.select(".barChart")
+			const categoryGroup = chart.select(".barChart")
 				.selectAll(".categoryGroup")
 				.data(data);
 
 			categoryGroup.enter()
 				.append("g")
 				.classed("categoryGroup", true)
-				.attr("transform", function(d) { return "translate(" + xScale(d.key) + ", 0)"; })
+				.attr("transform", (d) => "translate(" + xScale(d.key) + ", 0)")
 				.merge(categoryGroup)
 				.call(barsVertical);
 
@@ -132,14 +132,14 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale);
+			const xAxis = d3.axisBottom(xScale);
 
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis);
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);

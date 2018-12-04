@@ -69,7 +69,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -87,7 +87,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["donut", "donutLabels"];
+		const layers = ["donut", "donutLabels"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -96,14 +96,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Donut Slices
-			let donutChart = component.donut()
+			const donutChart = component.donut()
 				.radius(radius)
 				.innerRadius(innerRadius)
 				.colorScale(colorScale)
@@ -114,7 +114,7 @@ export default function() {
 				.call(donutChart);
 
 			// Donut Labels
-			let donutLabels = component.donutLabels()
+			const donutLabels = component.donutLabels()
 				.radius(radius)
 				.innerRadius(innerRadius);
 

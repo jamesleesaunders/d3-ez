@@ -83,7 +83,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -101,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
+		const layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -110,7 +110,7 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
@@ -125,7 +125,7 @@ export default function() {
 				.attr('height', chartH);
 
 			// Bubble Chart
-			let bubbles = component.bubbles()
+			const bubbles = component.bubbles()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -135,11 +135,11 @@ export default function() {
 				.maxRadius(maxRadius)
 				.dispatch(dispatch);
 
-			let bubbleGroups = chart.select(".bubbleGroups")
-				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
+			const bubbleGroups = chart.select(".bubbleGroups")
+				.attr('clip-path', "url(" + window.location + "#plotAreaClip)")
 				.append("g");
 
-			let seriesGroup = bubbleGroups.selectAll(".seriesGroup")
+			const seriesGroup = bubbleGroups.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()
@@ -152,7 +152,7 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale);
+			const xAxis = d3.axisBottom(xScale);
 
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
@@ -164,10 +164,10 @@ export default function() {
 				.attr("transform", "rotate(-65)");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			// Zoom
-			let zoom = d3.zoom()
+			const zoom = d3.zoom()
 				.extent([[0, 0], [chartW, chartH]])
 				.scaleExtent([1, 20])
 				.translateExtent([[0, 0], [chartW, chartH]])
@@ -182,8 +182,8 @@ export default function() {
 				.call(zoom);
 
 			function zoomed() {
-				let xScaleZoomed = d3.event.transform.rescaleX(xScale);
-				let yScaleZoomed = d3.event.transform.rescaleY(yScale);
+				const xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				const yScaleZoomed = d3.event.transform.rescaleY(yScale);
 
 				xAxis.scale(xScaleZoomed);
 				yAxis.scale(yScaleZoomed);

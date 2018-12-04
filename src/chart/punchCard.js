@@ -65,9 +65,7 @@ export default function() {
 			.range([0, chartH])
 			.padding(0.05);
 
-		const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1]["values"], function(d) {
-			return d["value"];
-		})];
+		const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1].values, (d) => d.value)];
 
 		sizeScale = d3.scaleLinear()
 			.domain(sizeExtent)
@@ -85,7 +83,7 @@ export default function() {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -103,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["punchRowGroups", "xAxis axis", "yAxis axis"];
+		const layers = ["punchRowGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -112,14 +110,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Proportional Area Circles
-			let proportionalAreaCircles = component.proportionalAreaCircles()
+			const proportionalAreaCircles = component.proportionalAreaCircles()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -128,13 +126,13 @@ export default function() {
 				.sizeScale(sizeScale)
 				.dispatch(dispatch);
 
-			let seriesGroup = chart.select(".punchRowGroups")
+			const seriesGroup = chart.select(".punchRowGroups")
 				.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter().append("g")
 				.attr("class", "seriesGroup")
-				.attr("transform", function(d) { return "translate(0, " + yScale(d.key) + ")"; })
+				.attr("transform", (d) => "translate(0, " + yScale(d.key) + ")")
 				.merge(seriesGroup)
 				.call(proportionalAreaCircles);
 
@@ -142,7 +140,7 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisTop(xScale);
+			const xAxis = d3.axisTop(xScale);
 
 			chart.select(".xAxis")
 				.call(xAxis)
@@ -153,7 +151,7 @@ export default function() {
 				.style("text-anchor", "end");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);
