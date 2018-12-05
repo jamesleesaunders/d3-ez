@@ -75,9 +75,9 @@ export default function() {
 		selection.each(function() {
 
 			// Pie Generator
-			let segStartAngle = d3.min(xScale.range());
-			let segEndAngle = d3.max(xScale.range());
-			let pie = d3.pie()
+			const segStartAngle = d3.min(xScale.range());
+			const segEndAngle = d3.max(xScale.range());
+			const pie = d3.pie()
 				.value(1)
 				.sort(null)
 				.startAngle(segStartAngle * (Math.PI / 180))
@@ -85,13 +85,13 @@ export default function() {
 				.padAngle(0.015);
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.outerRadius(radius)
 				.innerRadius(innerRadius)
 				.cornerRadius(2);
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -99,10 +99,10 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add segments to series group
-			let segments = seriesGroup.selectAll(".segment")
+			const segments = seriesGroup.selectAll(".segment")
 				.data(function(d) {
-					let key = d.key;
-					let data = pie(d.values);
+					const key = d.key;
+					const data = pie(d.values);
 					data.forEach(function(d, i) {
 						data[i].key = key;
 					});

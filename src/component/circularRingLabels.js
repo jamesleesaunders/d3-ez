@@ -31,17 +31,17 @@ export default function() {
 			radius = Math.min(width, height) / 2;
 		}
 
-		let labelsSelect = selection.selectAll(".radialLabels")
+		const labelsSelect = selection.selectAll(".radialLabels")
 			.data([0]);
 
-		let labels = labelsSelect.enter()
+		const labels = labelsSelect.enter()
 			.append("g")
 			.classed("radialLabels", true)
 			.merge(labelsSelect);
 
-		let radData = radialScale.domain();
+		const radData = radialScale.domain();
 
-		let defSelect = labels.selectAll("def")
+		const defSelect = labels.selectAll("def")
 			.data(radData);
 
 		defSelect.enter()
@@ -61,7 +61,7 @@ export default function() {
 				return "M" + pathStr[1] + "A" + pathStr[2];
 			});
 
-		let textSelect = labels.selectAll("text")
+		const textSelect = labels.selectAll("text")
 			.data(radData);
 
 		textSelect.enter()

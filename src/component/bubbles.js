@@ -73,7 +73,7 @@ export default function() {
 		selection.each(function() {
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -81,7 +81,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bubbles to series
-			let bubble = componentLabeledNode()
+			const bubble = componentLabeledNode()
 				.radius(function(d) { return sizeScale(d.value); })
 				.color(function(d) { return colorScale(d.series); })
 				.label(function(d) { return d.key; })
@@ -90,7 +90,7 @@ export default function() {
 				.classed("bubble")
 				.dispatch(dispatch);
 
-			let bubbles = seriesGroup.selectAll(".bubble")
+			const bubbles = seriesGroup.selectAll(".bubble")
 				.data(function(d) { return d.values; });
 
 			bubbles.enter()
@@ -116,25 +116,6 @@ export default function() {
 				.attr("transform", function(d) {
 					return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 				});
-
-			/*
-			bubbles.enter()
-				.append("circle")
-				.attr("class", "bubble")
-				.attr("cx", function(d) { return xScale(d.x); })
-				.attr("cy", function(d) { return yScale(d.y); })
-				.attr("r", function(d) { return sizeScale(d.value); })
-				.style("fill", function(d) { return colorScale(d.series); })
-				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-				.on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
-				.merge(bubbles)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
-				.attr("cx", function(d) { return xScale(d.x); })
-				.attr("cy", function(d) { return yScale(d.y); })
-				.attr("r", function(d) { return sizeScale(d.value); });
-			*/
 
 			bubbles.exit()
 				.transition()

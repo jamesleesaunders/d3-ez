@@ -34,9 +34,9 @@ export default function() {
 		}
 
 		selection.each(function(data) {
-			let r = sizeAccessor(data);
+			const r = sizeAccessor(data);
 
-			let node = d3.select(this)
+			const node = d3.select(this)
 				.classed(classed, true);
 
 			node.append("circle")

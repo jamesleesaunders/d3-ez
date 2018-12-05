@@ -56,19 +56,19 @@ export default function() {
 			init(data);
 
 			// Pie Generator
-			let pie = d3.pie()
+			const pie = d3.pie()
 				.value(function(d) { return d.value; })
 				.sort(null)
 				.padAngle(0.015);
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.innerRadius(innerRadius)
 				.outerRadius(radius)
 				.cornerRadius(2);
 
 			// Arc Tween
-			let arcTween = function(d) {
+			const arcTween = function(d) {
 				let i = d3.interpolate(this._current, d);
 				this._current = i(0);
 				return function(t) {
@@ -77,7 +77,7 @@ export default function() {
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -85,7 +85,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Slices
-			let slices = seriesGroup.selectAll("path.slice")
+			const slices = seriesGroup.selectAll("path.slice")
 				.data(function(d) { return pie(d.values); });
 
 			slices.enter()

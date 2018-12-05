@@ -66,11 +66,11 @@ export default function() {
 		init(selection.data());
 		selection.each(function() {
 
-			let cellHeight = yScale.bandwidth();
-			let cellWidth = xScale.bandwidth();
+			const cellHeight = yScale.bandwidth();
+			const cellWidth = xScale.bandwidth();
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -78,10 +78,10 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add cells to series group
-			let cells = seriesGroup.selectAll(".cell")
+			const cells = seriesGroup.selectAll(".cell")
 				.data(function(d) {
-					let seriesName = d.key;
-					let seriesValues = d.values;
+					const seriesName = d.key;
+					const seriesValues = d.values;
 
 					return seriesValues.map(function(el) {
 						let o = Object.assign({}, el);

@@ -19,13 +19,13 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		let creditTag = selection.selectAll("#creditTag")
+		const creditTag = selection.selectAll("#creditTag")
 			.data([0])
 			.enter()
 			.append("g")
 			.attr("id", "creditTag");
 
-		let creditText = creditTag.append("text")
+		const creditText = creditTag.append("text")
 			.text(text)
 			.style("text-anchor", "end")
 			.attr("baseline", "middle")

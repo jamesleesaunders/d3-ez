@@ -40,12 +40,12 @@ export default function() {
 				tableEl.selectAll("*")
 					.remove();
 			}
-			let head = tableEl.append("thead");
-			let foot = tableEl.append("tfoot");
-			let body = tableEl.append("tbody");
+			const head = tableEl.append("thead");
+			const foot = tableEl.append("tfoot");
+			const body = tableEl.append("tbody");
 
 			// Add table headings
-			let hdr = head.append("tr");
+			const hdr = head.append("tr");
 
 			hdr.selectAll("th")
 				.data(function() {
@@ -60,10 +60,10 @@ export default function() {
 				});
 
 			// Add table body
-			let rowsSelect = body.selectAll("tr")
+			const rowsSelect = body.selectAll("tr")
 				.data(data);
 
-			let rows = rowsSelect.enter()
+			const rows = rowsSelect.enter()
 				.append("tr")
 				.attr("class", function(d) {
 					return d.key;

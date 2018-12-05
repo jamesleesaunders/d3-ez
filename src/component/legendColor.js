@@ -26,21 +26,21 @@ export default function() {
 		width = (width ? width : this.attr("width"));
 
 		// Legend Box
-		let legendSelect = selection.selectAll("#legendBox")
+		const legendSelect = selection.selectAll("#legendBox")
 			.data([0]);
 
-		let legend = legendSelect.enter()
+		const legend = legendSelect.enter()
 			.append("g")
 			.attr("id", "legendBox")
 			.attr("width", width)
 			.attr("height", height)
 			.merge(legendSelect);
 
-		let data = function() {
-			let domain = colorScale.domain();
+		const data = function() {
+			const domain = colorScale.domain();
 			itemCount = domain.length;
-			let itemHeight = (height / itemCount) / 2;
-			let itemWidth = 20;
+			const itemHeight = (height / itemCount) / 2;
+			const itemWidth = 20;
 
 			return domain.map(function(v, i) {
 				return {
@@ -53,10 +53,10 @@ export default function() {
 			});
 		};
 
-		let itemsSelect = legend.selectAll(".legendItem")
+		const itemsSelect = legend.selectAll(".legendItem")
 			.data(data);
 
-		let items = itemsSelect.enter()
+		const items = itemsSelect.enter()
 			.append("g")
 			.classed("legendItem", true)
 			.attr("transform", function(d) {

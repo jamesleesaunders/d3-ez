@@ -43,44 +43,44 @@ export default function() {
 			init(data);
 
 			// Pie Generator
-			let pie = d3.pie()
+			const pie = d3.pie()
 				.value(function(d) { return d.value; })
 				.sort(null)
 				.padAngle(0.015);
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.innerRadius(innerRadius)
 				.outerRadius(radius)
 				.cornerRadius(2);
 
 			// Outer Arc Generator
-			let outerArc = d3.arc()
+			const outerArc = d3.arc()
 				.innerRadius(radius * 0.9)
 				.outerRadius(radius * 0.9);
 
 			// Mid Angle
-			let midAngle = function(d) {
+			const midAngle = function(d) {
 				return d.startAngle + (d.endAngle - d.startAngle) / 2;
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true);
 
 			// Text Labels
-			let labelsGroupSelect = seriesGroup.selectAll("g.labels")
+			const labelsGroupSelect = seriesGroup.selectAll("g.labels")
 				.data(function(d) {
 					return [d];
 				});
 
-			let labelsGroup = labelsGroupSelect.enter()
+			const labelsGroup = labelsGroupSelect.enter()
 				.append("g")
 				.attr("class", "labels")
 				.merge(labelsGroupSelect);
 
-			let labels = labelsGroup.selectAll("text.label")
+			const labels = labelsGroup.selectAll("text.label")
 				.data(function(d) {
 					return pie(d.values);
 				});
@@ -97,7 +97,7 @@ export default function() {
 				})
 				.attrTween("transform", function(d) {
 					this._current = this._current || d;
-					let interpolate = d3.interpolate(this._current, d);
+					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return function(t) {
 						let d2 = interpolate(t);
@@ -111,7 +111,7 @@ export default function() {
 					let interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return function(t) {
-						let d2 = interpolate(t);
+						const d2 = interpolate(t);
 						return midAngle(d2) < Math.PI ? "start" : "end";
 					};
 				});
@@ -120,17 +120,17 @@ export default function() {
 				.remove();
 
 			// Text Label to Slice Connectors
-			let connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
+			const connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
 				.data(function(d) {
 					return [d];
 				});
 
-			let connectorsGroup = connectorsGroupSelect.enter()
+			const connectorsGroup = connectorsGroupSelect.enter()
 				.append("g")
 				.attr("class", "connectors")
 				.merge(connectorsGroupSelect);
 
-			let connectors = connectorsGroup.selectAll("polyline.connector")
+			const connectors = connectorsGroup.selectAll("polyline.connector")
 				.data(function(d) {
 					return pie(d.values);
 				});
@@ -143,11 +143,11 @@ export default function() {
 				.duration(transition.duration)
 				.attrTween("points", function(d) {
 					this._current = this._current || d;
-					let interpolate = d3.interpolate(this._current, d);
+					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return function(t) {
-						let d2 = interpolate(t);
-						let pos = outerArc.centroid(d2);
+						const d2 = interpolate(t);
+						const pos = outerArc.centroid(d2);
 						pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
 						return [arc.centroid(d2), outerArc.centroid(d2), pos];
 					};

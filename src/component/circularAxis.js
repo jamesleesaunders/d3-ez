@@ -31,17 +31,17 @@ export default function() {
 		}
 
 		// Create axis group
-		let axisSelect = selection.selectAll(".axis")
+		const axisSelect = selection.selectAll(".axis")
 			.data([0]);
 
-		let axis = axisSelect.enter()
+		const axis = axisSelect.enter()
 			.append("g")
 			.classed("axis", true)
 			.on("click", function(d) { dispatch.call("customClick", this, d); })
 			.merge(axisSelect);
 
 		// Outer circle
-		let outerCircle = axis.selectAll(".outerCircle")
+		const outerCircle = axis.selectAll(".outerCircle")
 			.data([radius])
 			.enter()
 			.append("circle")
@@ -52,7 +52,7 @@ export default function() {
 			.attr("stroke", "#ddd");
 
 		// Tick Data Generator
-		let tickData = function() {
+		const tickData = function() {
 			let tickArray, tickPadding;
 			if (typeof ringScale.ticks === "function") {
 				// scaleLinear
@@ -73,15 +73,15 @@ export default function() {
 			});
 		};
 
-		let tickCirclesGroupSelect = axis.selectAll(".tickCircles")
+		const tickCirclesGroupSelect = axis.selectAll(".tickCircles")
 			.data(function() { return [tickData()]; });
 
-		let tickCirclesGroup = tickCirclesGroupSelect.enter()
+		const tickCirclesGroup = tickCirclesGroupSelect.enter()
 			.append("g")
 			.classed("tickCircles", true)
 			.merge(tickCirclesGroupSelect);
 
-		let tickCircles = tickCirclesGroup.selectAll("circle")
+		const tickCircles = tickCirclesGroup.selectAll("circle")
 			.data(function(d) { return d; });
 
 		tickCircles.enter()
@@ -97,7 +97,7 @@ export default function() {
 			.remove();
 
 		// Spoke Data Generator
-		let spokeData = function() {
+		const spokeData = function() {
 			let spokeCount = 0;
 			let spokeArray = [];
 			if (typeof radialScale.ticks === "function") {
@@ -128,15 +128,15 @@ export default function() {
 			});
 		};
 
-		let spokesGroupSelect = axis.selectAll(".spokes")
+		const spokesGroupSelect = axis.selectAll(".spokes")
 			.data(function() { return [spokeData()]; });
 
-		let spokesGroup = spokesGroupSelect.enter()
+		const spokesGroup = spokesGroupSelect.enter()
 			.append("g")
 			.classed("spokes", true)
 			.merge(spokesGroupSelect);
 
-		let spokes = spokesGroup.selectAll("line")
+		const spokes = spokesGroup.selectAll("line")
 			.data(function(d) { return d; });
 
 		spokes.enter()

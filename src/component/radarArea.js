@@ -71,14 +71,14 @@ export default function() {
 		selection.each(function() {
 
 			// Function to generate radar line points
-			let radarLine = d3.radialLine()
+			const radarLine = d3.radialLine()
 				.radius(function(d) { return yScale(d.value); })
 				.angle(function(d, i) { return i * angleSlice; })
 				.curve(d3.curveBasis)
 				.curve(d3.curveCardinalClosed);
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup.append("path")
 				.classed(classed, true)
 				.attr("d", function(d) { return radarLine(d.values); })

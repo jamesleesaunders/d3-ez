@@ -62,11 +62,11 @@ export default function() {
 		selection.each(function() {
 
 			// Calculate cell sizes
-			let cellHeight = yScale.bandwidth();
-			let cellWidth = xScale.bandwidth();
+			const cellHeight = yScale.bandwidth();
+			const cellWidth = xScale.bandwidth();
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -74,7 +74,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add numbers to series
-			let numbers = seriesGroup.selectAll(".number")
+			const numbers = seriesGroup.selectAll(".number")
 				.data(function(d) { return d.values; });
 
 			numbers.enter().append("text")

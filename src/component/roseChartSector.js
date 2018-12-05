@@ -66,9 +66,9 @@ export default function() {
 		init(selection.data());
 		selection.each(function() {
 			// Stack Generator
-			let stacker = function(data) {
+			const stacker = function(data) {
 				// Calculate inner and outer radius values
-				let series = [];
+				const series = [];
 				let innerRadius = 0;
 				let outerRadius = 0;
 				data.forEach(function(d, i) {
@@ -86,14 +86,14 @@ export default function() {
 			};
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.innerRadius(function(d) { return d.innerRadius; })
 				.outerRadius(function(d) { return d.outerRadius; })
 				.startAngle(startAngle * (Math.PI / 180))
 				.endAngle(endAngle * (Math.PI / 180));
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -101,7 +101,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add arcs to series group
-			let arcs = seriesGroup.selectAll(".arc")
+			const arcs = seriesGroup.selectAll(".arc")
 				.data(function(d) { return stacker(d.values); });
 
 			arcs.enter()
