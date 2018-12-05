@@ -63,7 +63,7 @@ export default function() {
 		selection.each(function() {
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup.classed(classed, true).attr("id", function(d) {
 				return d.key;
 			}).on("mouseover", function(d) {
@@ -73,7 +73,7 @@ export default function() {
 			});
 
 			// Add bars to series
-			let bars = seriesGroup.selectAll(".bar").data(function(d) {
+			const bars = seriesGroup.selectAll(".bar").data(function(d) {
 				return d.values;
 			});
 

@@ -75,7 +75,7 @@ export default function() {
 		selection.each(function() {
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.startAngle(0)
 				.endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
 				.outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
@@ -83,7 +83,7 @@ export default function() {
 				.cornerRadius(cornerRadius);
 
 			// Arc Tween
-			let arcTween = function(d) {
+			const arcTween = function(d) {
 				let i = d3.interpolate(this._current, d);
 				this._current = i(0);
 				return function(t) {
@@ -92,7 +92,7 @@ export default function() {
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -100,7 +100,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to series
-			let bars = seriesGroup.selectAll(".bar")
+			const bars = seriesGroup.selectAll(".bar")
 				.data(function(d) { return d.values; });
 
 			bars.enter()

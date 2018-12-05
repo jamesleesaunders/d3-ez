@@ -63,7 +63,7 @@ export default function() {
 		selection.each(function() {
 
 			// Update bar group
-			let barGroup = d3.select(this);
+			const barGroup = d3.select(this);
 			barGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -71,7 +71,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to group
-			let bars = barGroup.selectAll(".bar")
+			const bars = barGroup.selectAll(".bar")
 				.data(function(d) { return d.values; });
 
 			bars.enter()

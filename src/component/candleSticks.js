@@ -29,12 +29,8 @@ export default function() {
 	 */
 	function init(data) {
 		// TODO: Use dataTransform() to calculate date domains?
-		const maxDate = d3.max(data.values, function(d) {
-			return d.date;
-		});
-		const minDate = d3.min(data.values, function(d) {
-			return d.date;
-		});
+		const maxDate = d3.max(data.values, (d) => d.date);
+		const minDate = d3.min(data.values, (d) => d.date);
 
 		const ONE_DAY_IN_MILLISECONDS = 86400000;
 		const dateDomain = [
@@ -77,23 +73,23 @@ export default function() {
 	 * @alias candleSticks
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
-	let my = function(selection) {
+	function my(selection) {
 		init(selection.data()[0]);
 		selection.each(function() {
 
 			// Is Up Day
-			let isUpDay = function(d) {
+			const isUpDay = function(d) {
 				return d.close > d.open;
 			};
 
 			// Line Function
-			let line = d3.line()
+			const line = d3.line()
 				.x(function(d) { return d.x; })
 				.y(function(d) { return d.y; });
 
 			// High Low Lines
-			let highLowLines = function(bars) {
-				let paths = bars.selectAll(".high-low-line")
+			const highLowLines = function(bars) {
+				const paths = bars.selectAll(".high-low-line")
 					.data(function(d) { return [d]; });
 
 				paths.enter()
@@ -108,7 +104,7 @@ export default function() {
 			};
 
 			// Open Close Bars
-			let openCloseBars = function(bars) {
+			const openCloseBars = function(bars) {
 				let rect = bars.selectAll(".open-close-bar")
 					.data(function(d) { return [d]; });
 
@@ -130,7 +126,7 @@ export default function() {
 			};
 
 			// Open Close Ticks
-			let openCloseTicks = function(bars) {
+			const openCloseTicks = function(bars) {
 				let open = bars.selectAll(".open-tick")
 					.data(function(d) { return [d]; });
 
@@ -159,7 +155,7 @@ export default function() {
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -167,10 +163,10 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add candles to series
-			let candlesSelect = seriesGroup.selectAll(".candle")
+			const candlesSelect = seriesGroup.selectAll(".candle")
 				.data(function(d) { return d.values; });
 
-			let candles = candlesSelect.enter()
+			const candles = candlesSelect.enter()
 				.append("g")
 				.classed("candle", true)
 				.attr("fill", function(d) { return colorScale(isUpDay(d)); })
@@ -186,7 +182,7 @@ export default function() {
 			candles.exit()
 				.remove();
 		});
-	};
+	}
 
 	/**
 	 * Width Getter / Setter

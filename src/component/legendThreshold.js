@@ -25,35 +25,35 @@ export default function() {
 		width = (width ? width : this.attr("width"));
 
 		// Legend Box
-		let legendSelect = selection.selectAll("#legendBox")
+		const legendSelect = selection.selectAll("#legendBox")
 			.data([0]);
 
-		let legend = legendSelect.enter()
+		const legend = legendSelect.enter()
 			.append("g")
 			.attr("id", "legendBox")
 			.attr("width", width)
 			.attr("height", height)
 			.merge(legendSelect);
 
-		let domainMin = d3.min(thresholdScale.domain());
-		let domainMax = d3.max(thresholdScale.domain());
-		let domainMargin = (domainMax - domainMin) * 0.1;
+		const domainMin = d3.min(thresholdScale.domain());
+		const domainMax = d3.max(thresholdScale.domain());
+		const domainMargin = (domainMax - domainMin) * 0.1;
 
-		let x = d3.scaleLinear()
+		const x = d3.scaleLinear()
 			.domain([domainMin - domainMargin, domainMax + domainMargin])
 			.range([0, height]);
 
-		let xAxis = d3.axisRight(x)
+		const xAxis = d3.axisRight(x)
 			.tickSize(30)
 			.tickValues(thresholdScale.domain());
 
-		let axis = legend.call(xAxis);
+		const axis = legend.call(xAxis);
 		axis.select(".domain")
 			.remove();
 
 		axis.selectAll("rect")
 			.data(thresholdScale.range().map(function(color) {
-				let d = thresholdScale.invertExtent(color);
+				const d = thresholdScale.invertExtent(color);
 				if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
 				if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
 				return d;

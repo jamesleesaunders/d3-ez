@@ -25,32 +25,32 @@ export default function() {
 		width = (width ? width : this.attr("width"));
 
 		// Legend Box
-		let legendSelect = selection.selectAll("#legendBox")
+		const legendSelect = selection.selectAll("#legendBox")
 			.data([0]);
 
-		let legend = legendSelect.enter()
+		const legend = legendSelect.enter()
 			.append("g")
 			.attr("id", "legendBox")
 			.attr("width", width)
 			.attr("height", height)
 			.merge(legendSelect);
 
-		let data = function() {
+		const data = function() {
 			// Calculate radiusScale
-			let domainMin = parseFloat(d3.min(sizeScale.domain()));
-			let domainMax = parseFloat(d3.max(sizeScale.domain()));
-			let increment = (domainMax - domainMin) / itemCount;
-			let ranges = Array(itemCount).fill().map(function(v, i) {
-				let rangeStart = domainMin + (increment * i);
-				let rangeEnd = domainMin + (increment * (i + 1));
+			const domainMin = parseFloat(d3.min(sizeScale.domain()));
+			const domainMax = parseFloat(d3.max(sizeScale.domain()));
+			const increment = (domainMax - domainMin) / itemCount;
+			const ranges = Array(itemCount).fill().map(function(v, i) {
+				const rangeStart = domainMin + (increment * i);
+				const rangeEnd = domainMin + (increment * (i + 1));
 				return [rangeStart, rangeEnd];
 			});
 
 			// Calculate yScale
-			let yStep = height / (itemCount * 2);
-			let yDomain = [0, (itemCount - 1)];
-			let yRange = [yStep, (height - yStep)];
-			let yScale = d3.scaleLinear()
+			const yStep = height / (itemCount * 2);
+			const yDomain = [0, (itemCount - 1)];
+			const yRange = [yStep, (height - yStep)];
+			const yScale = d3.scaleLinear()
 				.domain(yDomain)
 				.range(yRange);
 
@@ -64,10 +64,10 @@ export default function() {
 			});
 		};
 
-		let itemsSelect = legend.selectAll(".legendItem")
+		const itemsSelect = legend.selectAll(".legendItem")
 			.data(data);
 
-		let items = itemsSelect.enter()
+		const items = itemsSelect.enter()
 			.append("g")
 			.classed("legendItem", true)
 			.attr("transform", function(d) {

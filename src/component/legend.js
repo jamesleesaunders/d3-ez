@@ -16,6 +16,7 @@ export default function() {
 	let sizeScale;
 	let colorScale;
 	let title;
+	let legend;
 
 	let opacity = 0.7;
 
@@ -31,7 +32,7 @@ export default function() {
 		width = (width ? width : this.attr("width"));
 
 		// Legend Box
-		let legendBox = selection.selectAll("#legendBox")
+		const legendBox = selection.selectAll("#legendBox")
 			.data([0])
 			.enter()
 			.append("g")
@@ -44,8 +45,6 @@ export default function() {
 			.attr("fill", "#ffffff")
 			.attr("stroke-width", 1)
 			.attr("stroke", "#000000");
-
-		let legend;
 
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {

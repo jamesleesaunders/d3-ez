@@ -67,13 +67,13 @@ export default function() {
 		selection.each(function() {
 
 			// Line generation function
-			let line = d3.line()
+			const line = d3.line()
 				.curve(d3.curveCardinal)
 				.x(function(d) { return xScale(d.key); })
 				.y(function(d) { return yScale(d.value); });
 
 			// Line animation tween
-			let pathTween = function(data) {
+			const pathTween = function(data) {
 				let interpolate = d3.scaleQuantile()
 					.domain([0, 1])
 					.range(d3.range(1, data.length + 1));
@@ -83,7 +83,7 @@ export default function() {
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -91,7 +91,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Create series group
-			let seriesLine = seriesGroup.selectAll(".seriesLine")
+			const seriesLine = seriesGroup.selectAll(".seriesLine")
 				.data(function(d) { return [d]; });
 
 			seriesLine.enter()

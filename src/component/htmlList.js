@@ -53,11 +53,11 @@ export default function() {
 					return 0;
 				}
 
-				let ul = d3.select(this)
+				const ul = d3.select(this)
 					.on("click", collapse)
 					.append("ul");
 
-				let li = ul.selectAll("li")
+				const li = ul.selectAll("li")
 					.data(d.values)
 					.enter()
 					.append("li")

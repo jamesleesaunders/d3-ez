@@ -32,7 +32,7 @@ export default function() {
 		}
 
 		// Tick Data Generator
-		let tickData = function() {
+		const tickData = function() {
 			let tickCount = 0;
 			let tickArray = [];
 
@@ -51,7 +51,7 @@ export default function() {
 				tickCount = tickArray.length;
 			}
 
-			let tickScale = d3.scaleLinear()
+			const tickScale = d3.scaleLinear()
 				.domain([0, tickCount])
 				.range(radialScale.range());
 
@@ -64,28 +64,28 @@ export default function() {
 		};
 
 		// Unique id so that the text path defs are unique - is there a better way to do this?
-		let uId = selection.attr("id") ?
+		const uId = selection.attr("id") ?
 			selection.attr("id") :
 			"uid-" + Math.floor(1000 + Math.random() * 9000);
 		selection.attr("id", uId);
 
-		let labelsSelect = selection.selectAll(".circularLabels")
+		const labelsSelect = selection.selectAll(".circularLabels")
 			.data(function() { return [tickData()]; });
 
-		let labels = labelsSelect.enter()
+		const labels = labelsSelect.enter()
 			.append("g")
 			.classed("circularLabels", true)
 			.merge(labelsSelect);
 
 		// Labels
-		let defSelect = labels.selectAll("def")
+		const defSelect = labels.selectAll("def")
 			.data([radius]);
 
 		defSelect.enter()
 			.append("def")
 			.append("path")
 			.attr("id", function() {
-				let pathId = selection.attr("id") + "-path";
+				const pathId = selection.attr("id") + "-path";
 				return pathId;
 			})
 			.attr("d", function(d) {
@@ -96,7 +96,7 @@ export default function() {
 		defSelect.exit()
 			.remove();
 
-		let textSelect = labels.selectAll("text")
+		const textSelect = labels.selectAll("text")
 			.data(function(d) { return d; });
 
 		textSelect.enter()
@@ -104,7 +104,7 @@ export default function() {
 			.style("text-anchor", textAnchor)
 			.append("textPath")
 			.attr("xlink:href", function() {
-				let pathId = selection.attr("id") + "-path";
+				const pathId = selection.attr("id") + "-path";
 				return "#" + pathId;
 			})
 			.text(function(d) {

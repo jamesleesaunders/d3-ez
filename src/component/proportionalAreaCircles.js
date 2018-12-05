@@ -78,18 +78,18 @@ export default function() {
 		selection.each(function() {
 
 			// Calculate cell sizes
-			let cellHeight = yScale.bandwidth();
-			let cellWidth = xScale.bandwidth();
+			const cellHeight = yScale.bandwidth();
+			const cellWidth = xScale.bandwidth();
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
-			let spot = componentLabeledNode()
+			const spot = componentLabeledNode()
 				.radius(function(d) { return sizeScale(d.value); })
 				.color(function(d) { return colorScale(d.value); })
 				.label(function(d) { return d.value; })
@@ -99,7 +99,7 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Add spots to series
-			let spots = seriesGroup.selectAll(".punchSpot")
+			const spots = seriesGroup.selectAll(".punchSpot")
 				.data(function(d) { return d.values; });
 
 			spots.enter()
@@ -119,22 +119,6 @@ export default function() {
 					dispatch.call("customValueClick", this, d);
 				})
 				.merge(spots);
-
-			/*
-			spots.enter()
-			  .append("circle")
-			  .attr("class", "punchSpot")
-			  .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
-			  .attr("cy", function(d) { return (cellHeight / 2); })
-			  .attr("r", 0)
-			  .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-			  .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-			  .merge(spots)
-			  .transition()
-			  .duration(transition.duration)
-			  .attr("fill", function(d) { return colorScale(d.value); })
-			  .attr("r", function(d) { return sizeScale(d['value']); });
-			*/
 
 			spots.exit()
 				.transition()

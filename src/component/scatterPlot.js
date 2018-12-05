@@ -62,7 +62,7 @@ export default function() {
 		selection.each(function() {
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -70,10 +70,10 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Create series group
-			let seriesDots = seriesGroup.selectAll(".seriesDots")
+			const seriesDots = seriesGroup.selectAll(".seriesDots")
 				.data(function(d) { return [d]; });
 
-			let series = seriesDots.enter()
+			const series = seriesDots.enter()
 				.append("g")
 				.classed("seriesDots", true)
 				.attr("fill", function(d) { return colorScale(d.key); })
@@ -82,7 +82,7 @@ export default function() {
 				.merge(seriesDots);
 
 			// Add dots to series
-			let dots = series.selectAll(".dot")
+			const dots = series.selectAll(".dot")
 				.data(function(d) { return d.values; });
 
 			dots.enter()
