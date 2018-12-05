@@ -59,7 +59,7 @@ export default function() {
 				let series = [];
 				let y0 = 0;
 				let y1 = 0;
-				data.forEach(function(d, i) {
+				data.forEach((d, i) => {
 					y1 = y0 + d.value;
 					series[i] = {
 						key: d.key,
@@ -77,13 +77,13 @@ export default function() {
 			const barGroup = d3.select(this);
 			barGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to group
 			const bars = barGroup.selectAll(".bar")
-				.data(function(d) { return stacker(d.values); });
+				.data((d) => stacker(d.values));
 
 			bars.enter()
 				.append("rect")
@@ -94,7 +94,7 @@ export default function() {
 				.attr("rx", 0)
 				.attr("ry", 0)
 				.attr("height", 0)
-				.attr("fill", function(d) { return colorScale(d.key); })
+				.attr("fill", (d) => colorScale(d.key))
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(bars)
@@ -103,8 +103,8 @@ export default function() {
 				.duration(transition.duration)
 				.attr("width", width)
 				.attr("x", 0)
-				.attr("y", function(d) { return height - yScale(d.y1); })
-				.attr("height", function(d) { return yScale(d.value); });
+				.attr("y", (d) => height - yScale(d.y1))
+				.attr("height", (d) => yScale(d.value));
 
 			bars.exit()
 				.transition()

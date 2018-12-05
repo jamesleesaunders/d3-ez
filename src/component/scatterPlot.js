@@ -29,7 +29,7 @@ export default function() {
 	function init(data) {
 		const { rowKeys, valueMax } = dataTransform(data).summary();
 		const valueExtent = [0, (valueMax * 1.05)];
-		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const dateDomain = d3.extent(data[0].values, (d) => d.key);
 
 		if (typeof colorScale === "undefined") {
 			colorScale = d3.scaleOrdinal()
@@ -65,31 +65,31 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Create series group
 			const seriesDots = seriesGroup.selectAll(".seriesDots")
-				.data(function(d) { return [d]; });
+				.data((d) => [d]);
 
 			const series = seriesDots.enter()
 				.append("g")
 				.classed("seriesDots", true)
-				.attr("fill", function(d) { return colorScale(d.key); })
+				.attr("fill", (d) => colorScale(d.key))
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
 				.merge(seriesDots);
 
 			// Add dots to series
 			const dots = series.selectAll(".dot")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			dots.enter()
 				.append("circle")
 				.attr("class", "dot")
 				.attr("r", 3)
-				.attr("cx", function(d) { return xScale(d.key); })
+				.attr("cx", (d) => xScale(d.key))
 				.attr("cy", height)
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
@@ -97,8 +97,8 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("cx", function(d) { return xScale(d.key); })
-				.attr("cy", function(d) { return yScale(d.value); });
+				.attr("cx", (d) => xScale(d.key))
+				.attr("cy", (d) => yScale(d.value));
 
 			dots.exit()
 				.transition()

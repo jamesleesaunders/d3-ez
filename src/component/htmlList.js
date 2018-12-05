@@ -40,9 +40,7 @@ export default function() {
 				.data(data)
 				.enter()
 				.append("li")
-				.text(function(d) {
-					return d.key;
-				})
+				.text((d) => d.key)
 				.on("click", expand);
 
 			function expand(d) {
@@ -61,7 +59,7 @@ export default function() {
 					.data(d.values)
 					.enter()
 					.append("li")
-					.text(function(d) {
+					.text((d) => {
 						if (typeof d.value !== "undefined") {
 							return d.key + " : " + d.value;
 						} else {

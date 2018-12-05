@@ -46,7 +46,7 @@ export default function() {
 			.enter()
 			.append("circle")
 			.classed("outerCircle", true)
-			.attr("r", function(d) { return d; })
+			.attr("r", (d) => d)
 			.style("fill", "none")
 			.attr("stroke-width", 2)
 			.attr("stroke", "#ddd");
@@ -64,17 +64,16 @@ export default function() {
 				tickPadding = ringScale.bandwidth() / 2;
 			}
 
-			return tickArray.map(function(d) {
-				return {
+			return tickArray.map((d) => ({
 					value: d,
 					radius: ringScale(d),
 					padding: tickPadding
 				}
-			});
+			));
 		};
 
 		const tickCirclesGroupSelect = axis.selectAll(".tickCircles")
-			.data(function() { return [tickData()]; });
+			.data(() => [tickData()]);
 
 		const tickCirclesGroup = tickCirclesGroupSelect.enter()
 			.append("g")
@@ -82,7 +81,7 @@ export default function() {
 			.merge(tickCirclesGroupSelect);
 
 		const tickCircles = tickCirclesGroup.selectAll("circle")
-			.data(function(d) { return d; });
+			.data((d) => d);
 
 		tickCircles.enter()
 			.append("circle")
@@ -91,7 +90,7 @@ export default function() {
 			.attr("stroke", "#ddd")
 			.merge(tickCircles)
 			.transition()
-			.attr("r", function(d) { return (d.radius + d.padding); });
+			.attr("r", (d) => (d.radius + d.padding));
 
 		tickCircles.exit()
 			.remove();
@@ -120,16 +119,15 @@ export default function() {
 				.domain([0, spokeCount])
 				.range(radialScale.range());
 
-			return spokeArray.map(function(d, i) {
-				return {
+			return spokeArray.map((d, i) => ({
 					value: d,
 					rotate: spokeScale(i)
 				}
-			});
+			));
 		};
 
 		const spokesGroupSelect = axis.selectAll(".spokes")
-			.data(function() { return [spokeData()]; });
+			.data(() => [spokeData()]);
 
 		const spokesGroup = spokesGroupSelect.enter()
 			.append("g")
@@ -137,16 +135,14 @@ export default function() {
 			.merge(spokesGroupSelect);
 
 		const spokes = spokesGroup.selectAll("line")
-			.data(function(d) { return d; });
+			.data((d) => d);
 
 		spokes.enter()
 			.append("line")
-			.attr("id", function(d) { return d.value; })
+			.attr("id", (d) => d.value)
 			.attr("y2", -radius)
 			.merge(spokes)
-			.attr("transform", function(d) {
-				return "rotate(" + d.rotate + ")";
-			});
+			.attr("transform", (d) => "rotate(" + d.rotate + ")");
 
 		spokes.exit()
 			.remove();

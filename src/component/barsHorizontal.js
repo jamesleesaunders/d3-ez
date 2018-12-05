@@ -64,36 +64,36 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this);
-			seriesGroup.classed(classed, true).attr("id", function(d) {
-				return d.key;
-			}).on("mouseover", function(d) {
-				dispatch.call("customSeriesMouseOver", this, d);
-			}).on("click", function(d) {
-				dispatch.call("customSeriesClick", this, d);
-			});
+			seriesGroup.classed(classed, true)
+				.attr("id", (d) => d.key)
+				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to series
-			const bars = seriesGroup.selectAll(".bar").data(function(d) {
-				return d.values;
-			});
+			const bars = seriesGroup
+				.selectAll(".bar")
+				.data((d) => d.values);
 
-			bars.enter().append("rect").classed("bar", true).attr("fill", function(d) {
-				return colorScale(d.key);
-			}).attr("width", yScale.bandwidth()).attr("y", function(d) {
-				return yScale(d.key);
-			}).attr("height", function(d) {
-				return yScale.bandwidth();
-			}).on("mouseover", function(d) {
-				dispatch.call("customValueMouseOver", this, d);
-			}).on("click", function(d) {
-				dispatch.call("customValueClick", this, d);
-			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function(d) {
-				return 0;
-			}).attr("width", function(d) {
-				return xScale(d.value);
-			});
+			bars.enter()
+				.append("rect")
+				.classed("bar", true)
+				.attr("fill", (d) => colorScale(d.key))
+				.attr("width", yScale.bandwidth())
+				.attr("y", (d) => yScale(d.key))
+				.attr("height", yScale.bandwidth())
+				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
+				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
+				.merge(bars)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("x", 0)
+				.attr("width", (d) => xScale(d.value));
 
-			bars.exit().transition().style("opacity", 0).remove();
+			bars.exit()
+				.transition()
+				.style("opacity", 0)
+				.remove();
 		});
 	}
 

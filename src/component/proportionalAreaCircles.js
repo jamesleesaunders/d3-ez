@@ -55,9 +55,7 @@ export default function() {
 				.padding(0.05);
 		}
 
-		const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1]["values"], function(d) {
-			return d["value"];
-		})];
+		const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1]["values"], (d) => d["value"])];
 
 		if (typeof sizeScale === "undefined") {
 			sizeScale = d3.scaleLinear()
@@ -85,14 +83,14 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			const spot = componentLabeledNode()
-				.radius(function(d) { return sizeScale(d.value); })
-				.color(function(d) { return colorScale(d.value); })
-				.label(function(d) { return d.value; })
+				.radius((d) => sizeScale(d.value))
+				.color((d) => colorScale(d.value))
+				.label((d) => d.value)
 				.display("none")
 				.stroke(1, "#cccccc")
 				.classed("punchSpot")
@@ -100,14 +98,12 @@ export default function() {
 
 			// Add spots to series
 			const spots = seriesGroup.selectAll(".punchSpot")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			spots.enter()
 				.append("g")
 				.call(spot)
-				.attr("transform", function(d) {
-					return "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + (cellHeight / 2) + ")";
-				})
+				.attr("transform", (d) => "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + (cellHeight / 2) + ")")
 				.on("mouseover", function(d) {
 					d3.select(this).select("text").style("display", "block");
 					dispatch.call("customValueMouseOver", this, d);

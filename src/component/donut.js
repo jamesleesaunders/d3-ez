@@ -57,7 +57,7 @@ export default function() {
 
 			// Pie Generator
 			const pie = d3.pie()
-				.value(function(d) { return d.value; })
+				.value((d) => d.value)
 				.sort(null)
 				.padAngle(0.015);
 
@@ -80,18 +80,18 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Slices
 			const slices = seriesGroup.selectAll("path.slice")
-				.data(function(d) { return pie(d.values); });
+				.data((d) => pie(d.values));
 
 			slices.enter()
 				.append("path")
 				.attr("class", "slice")
-				.attr("fill", function(d) { return colorScale(d.data.key); })
+				.attr("fill", (d) => colorScale(d.data.key))
 				.attr("d", arc)
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })

@@ -42,15 +42,14 @@ export default function() {
 			const itemHeight = (height / itemCount) / 2;
 			const itemWidth = 20;
 
-			return domain.map(function(v, i) {
-				return {
+			return domain.map((v, i) => ({
 					y: 10 + ((itemHeight * 2) * i),
 					width: itemWidth,
 					height: itemHeight,
 					color: colorScale(v),
 					text: v
 				}
-			});
+			));
 		};
 
 		const itemsSelect = legend.selectAll(".legendItem")
@@ -59,9 +58,7 @@ export default function() {
 		const items = itemsSelect.enter()
 			.append("g")
 			.classed("legendItem", true)
-			.attr("transform", function(d) {
-				return "translate(0," + d.y + ")";
-			})
+			.attr("transform", (d) => "translate(0," + d.y + ")")
 			.merge(itemsSelect);
 
 		items.exit()
@@ -70,30 +67,30 @@ export default function() {
 		switch (itemType) {
 			case "line":
 				items.append("line")
-					.attr("x1", function() { return 0; })
-					.attr("y1", function(d) { return d.height / 2; })
-					.attr("x2", function(d) { return d.width; })
-					.attr("y2", function(d) { return d.height / 2; })
-					.attr("stroke", function(d) { return d.color; })
+					.attr("x1", 0)
+					.attr("y1", (d) => d.height / 2)
+					.attr("x2", (d) => d.width)
+					.attr("y2", (d) => d.height / 2)
+					.attr("stroke", (d) => d.color)
 					.attr("stroke-width", 2);
 				break;
 
 			case "rect":
 			default:
 				items.append("rect")
-					.attr("width", function(d) { return d.width; })
-					.attr("height", function(d) { return d.height; })
-					.style("fill", function(d) { return d.color; })
+					.attr("width", (d) => d.width)
+					.attr("height", (d) => d.height)
+					.style("fill", (d) => d.color)
 					.attr("stroke", "#dddddd")
 					.attr("stroke-width", 1);
 				break;
 		}
 
 		items.append("text")
-			.text(function(d) { return d.text; })
+			.text((d) => d.text)
 			.attr("dominant-baseline", "middle")
 			.attr("x", 40)
-			.attr("y", function(d) { return d.height / 2; });
+			.attr("y", (d) => d.height / 2);
 	}
 
 	/**

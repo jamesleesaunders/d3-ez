@@ -55,12 +55,11 @@ export default function() {
 				.domain([0, tickCount])
 				.range(radialScale.range());
 
-			return tickArray.map(function(d, i) {
-				return {
+			return tickArray.map((d, i) => ({
 					value: d,
 					offset: ((tickScale(i) / 360) * 100)
 				}
-			});
+			));
 		};
 
 		// Unique id so that the text path defs are unique - is there a better way to do this?
@@ -70,7 +69,7 @@ export default function() {
 		selection.attr("id", uId);
 
 		const labelsSelect = selection.selectAll(".circularLabels")
-			.data(function() { return [tickData()]; });
+			.data(() => [tickData()]);
 
 		const labels = labelsSelect.enter()
 			.append("g")
@@ -84,48 +83,42 @@ export default function() {
 		defSelect.enter()
 			.append("def")
 			.append("path")
-			.attr("id", function() {
+			.attr("id", () => {
 				const pathId = selection.attr("id") + "-path";
 				return pathId;
 			})
-			.attr("d", function(d) {
-				return "m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0";
-			})
+			.attr("d", (d) => ("m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0"))
 			.merge(defSelect);
 
 		defSelect.exit()
 			.remove();
 
 		const textSelect = labels.selectAll("text")
-			.data(function(d) { return d; });
+			.data((d) => d);
 
 		textSelect.enter()
 			.append("text")
 			.style("text-anchor", textAnchor)
 			.append("textPath")
-			.attr("xlink:href", function() {
+			.attr("xlink:href", () => {
 				const pathId = selection.attr("id") + "-path";
 				return "#" + pathId;
 			})
-			.text(function(d) {
+			.text((d) => {
 				let text = d.value;
 				return capitalizeLabels ? text.toUpperCase() : text;
 			})
-			.attr("startOffset", function(d) {
-				return d.offset + "%";
-			})
-			.attr("id", function(d) { return d.value; })
+			.attr("startOffset", (d) => d.offset + "%")
+			.attr("id", (d) => d.value)
 			.merge(textSelect);
 
 		textSelect.transition()
 			.select("textPath")
-			.text(function(d) {
+			.text((d) => {
 				let text = d.value;
 				return capitalizeLabels ? text.toUpperCase() : text;
 			})
-			.attr("startOffset", function(d) {
-				return d.offset + "%";
-			});
+			.attr("startOffset", (d) => d.offset + "%");
 
 		textSelect.exit()
 			.remove();

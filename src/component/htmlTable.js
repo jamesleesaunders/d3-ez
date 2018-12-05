@@ -48,16 +48,10 @@ export default function() {
 			const hdr = head.append("tr");
 
 			hdr.selectAll("th")
-				.data(function() {
-					// Tack on a blank cell at the beginning,
-					// this is for the top of the first column.
-					return [""].concat(columnKeys);
-				})
+				.data(() => [""].concat(columnKeys)) 	// Tack a blank cell at the beginning this is the empty 'A1' cell.
 				.enter()
 				.append("th")
-				.html(function(d) {
-					return d;
-				});
+				.html((d) => d);
 
 			// Add table body
 			const rowsSelect = body.selectAll("tr")
@@ -65,31 +59,21 @@ export default function() {
 
 			const rows = rowsSelect.enter()
 				.append("tr")
-				.attr("class", function(d) {
-					return d.key;
-				})
+				.attr("class", (d) => d.key)
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
 				.merge(rowsSelect);
 
 			// Add the first column of headings (categories)
 			rows.append("th")
-				.html(function(d) {
-					return d.key;
-				});
+				.html((d) => d.key);
 
 			// Add the main data values
 			rows.selectAll("td")
-				.data(function(d) {
-					return d.values;
-				})
+				.data((d) => d.values)
 				.enter()
 				.append("td")
-				.attr("class", function(d) {
-					return d.key;
-				})
-				.html(function(d) {
-					return d.value;
-				})
+				.attr("class", (d) => d.key)
+				.html((d) => d.value)
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); });
 		});
 	}

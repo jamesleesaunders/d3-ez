@@ -73,17 +73,17 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add cells to series group
 			const cells = seriesGroup.selectAll(".cell")
-				.data(function(d) {
+				.data((d) => {
 					const seriesName = d.key;
 					const seriesValues = d.values;
 
-					return seriesValues.map(function(el) {
+					return seriesValues.map((el) => {
 						let o = Object.assign({}, el);
 						o.series = seriesName;
 						return o;
@@ -93,7 +93,7 @@ export default function() {
 			cells.enter()
 				.append("rect")
 				.attr("class", "cell")
-				.attr("x", function(d) { return xScale(d.key); })
+				.attr("x", (d) => xScale(d.key))
 				.attr("y", 0)
 				.attr("rx", 2)
 				.attr("ry", 2)
@@ -105,7 +105,7 @@ export default function() {
 				.merge(cells)
 				.transition()
 				.duration(transition.duration)
-				.attr("fill", function(d) { return colorScale(d.value); });
+				.attr("fill", (d) => colorScale(d.value));
 
 			cells.exit()
 				.transition()

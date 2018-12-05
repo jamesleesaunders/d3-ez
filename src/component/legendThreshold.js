@@ -52,7 +52,7 @@ export default function() {
 			.remove();
 
 		axis.selectAll("rect")
-			.data(thresholdScale.range().map(function(color) {
+			.data(thresholdScale.range().map((color) => {
 				const d = thresholdScale.invertExtent(color);
 				if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
 				if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
@@ -61,9 +61,9 @@ export default function() {
 			.enter()
 			.insert("rect", ".tick")
 			.attr("width", 20)
-			.attr("y", function(d) { return x(d[0]); })
-			.attr("height", function(d) { return x(d[1]) - x(d[0]); })
-			.attr("fill", function(d) { return thresholdScale(d[0]); });
+			.attr("y", (d) => x(d[0]))
+			.attr("height", (d) => x(d[1]) - x(d[0]))
+			.attr("fill", (d) => thresholdScale(d[0]));
 	}
 
 	/**

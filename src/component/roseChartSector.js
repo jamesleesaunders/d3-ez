@@ -71,7 +71,7 @@ export default function() {
 				const series = [];
 				let innerRadius = 0;
 				let outerRadius = 0;
-				data.forEach(function(d, i) {
+				data.forEach((d, i) => {
 					outerRadius = innerRadius + d.value;
 					series[i] = {
 						key: d.key,
@@ -87,8 +87,8 @@ export default function() {
 
 			// Arc Generator
 			const arc = d3.arc()
-				.innerRadius(function(d) { return d.innerRadius; })
-				.outerRadius(function(d) { return d.outerRadius; })
+				.innerRadius((d) => d.innerRadius)
+				.outerRadius((d) => d.outerRadius)
 				.startAngle(startAngle * (Math.PI / 180))
 				.endAngle(endAngle * (Math.PI / 180));
 
@@ -96,18 +96,18 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add arcs to series group
 			const arcs = seriesGroup.selectAll(".arc")
-				.data(function(d) { return stacker(d.values); });
+				.data((d) => stacker(d.values));
 
 			arcs.enter()
 				.append("path")
 				.classed("arc", true)
-				.attr("fill", function(d) { return colorScale(d.key); })
+				.attr("fill", (d) => colorScale(d.key))
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(arcs)

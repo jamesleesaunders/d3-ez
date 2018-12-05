@@ -1,5 +1,5 @@
 /**
- * d3-x3dom
+ * d3-ez
  *
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2018 James Saunders
@@ -976,6 +976,7 @@ function componentBarsCircular () {
 			var arcTween = function arcTween(d) {
 				var i = d3.interpolate(this._current, d);
 				this._current = i(0);
+
 				return function (t) {
 					return arc(i(t));
 				};
@@ -1412,15 +1413,11 @@ function componentBarsHorizontal () {
 				return colorScale(d.key);
 			}).attr("width", yScale.bandwidth()).attr("y", function (d) {
 				return yScale(d.key);
-			}).attr("height", function (d) {
-				return yScale.bandwidth();
-			}).on("mouseover", function (d) {
+			}).attr("height", yScale.bandwidth()).on("mouseover", function (d) {
 				dispatch.call("customValueMouseOver", this, d);
 			}).on("click", function (d) {
 				dispatch.call("customValueClick", this, d);
-			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
-				return 0;
-			}).attr("width", function (d) {
+			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("width", function (d) {
 				return xScale(d.value);
 			});
 
@@ -3883,10 +3880,9 @@ function componentHtmlTable () {
 			var hdr = head.append("tr");
 
 			hdr.selectAll("th").data(function () {
-				// Tack on a blank cell at the beginning,
-				// this is for the top of the first column.
 				return [""].concat(columnKeys);
-			}).enter().append("th").html(function (d) {
+			}) // Tack a blank cell at the beginning this is the empty 'A1' cell.
+			.enter().append("th").html(function (d) {
 				return d;
 			});
 
@@ -4225,9 +4221,7 @@ function componentNumberCard () {
 
 			numbers.enter().append("text").attr("class", "number").attr("x", function (d) {
 				return xScale(d.key) + cellWidth / 2;
-			}).attr("y", function (d) {
-				return cellHeight / 2;
-			}).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function (d) {
+			}).attr("y", cellHeight / 2).attr("text-anchor", "middle").attr("dominant-baseline", "central").text(function (d) {
 				return d["value"];
 			}).on("mouseover", function (d) {
 				dispatch.call("customValueMouseOver", this, d);
@@ -5616,9 +5610,7 @@ function componentLegendColor () {
 
 		switch (itemType) {
 			case "line":
-				items.append("line").attr("x1", function () {
-					return 0;
-				}).attr("y1", function (d) {
+				items.append("line").attr("x1", 0).attr("y1", function (d) {
 					return d.height / 2;
 				}).attr("x2", function (d) {
 					return d.width;
@@ -9808,20 +9800,20 @@ var date = new Date();
 var copyright = "Copyright (C) " + date.getFullYear() + " " + author$1;
 
 var ez = function () {
-	var my = base;
-	my.version = version;
-	my.author = author$1;
-	my.copyright = copyright;
-	my.license = license;
-	my.chart = chart;
-	my.component = component;
-	my.palette = palette;
-	my.dataTransform = dataTransform;
+	var ez = base;
+	ez.version = version;
+	ez.author = author$1;
+	ez.copyright = copyright;
+	ez.license = license;
+	ez.chart = chart;
+	ez.component = component;
+	ez.palette = palette;
+	ez.dataTransform = dataTransform;
 
-	// TODO: Remove when new 'ez' base fully tested.
-	my.base = base;
+	// TODO: Remove base when new 'ez' constructor fully tested.
+	ez.base = base;
 
-	return my;
+	return ez;
 }();
 
 return ez;

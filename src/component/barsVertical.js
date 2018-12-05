@@ -66,33 +66,33 @@ export default function() {
 			const barGroup = d3.select(this);
 			barGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to group
 			const bars = barGroup.selectAll(".bar")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			bars.enter()
 				.append("rect")
 				.classed("bar", true)
 				.attr("width", xScale.bandwidth())
-				.attr("x", function(d) { return xScale(d.key); })
+				.attr("x", (d) => xScale(d.key))
 				.attr("y", height)
 				.attr("rx", 0)
 				.attr("ry", 0)
 				.attr("height", 0)
-				.attr("fill", function(d) { return colorScale(d.key); })
+				.attr("fill", (d) => colorScale(d.key))
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(bars)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("x", function(d) { return xScale(d.key); })
-				.attr("y", function(d) { return height - yScale(d.value); })
-				.attr("height", function(d) { return yScale(d.value); });
+				.attr("x", (d) => xScale(d.key))
+				.attr("y", (d) => height - yScale(d.value))
+				.attr("height", (d) => yScale(d.value));
 
 			bars.exit()
 				.transition()

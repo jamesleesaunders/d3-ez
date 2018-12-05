@@ -76,28 +76,26 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bubbles to series
 			const bubble = componentLabeledNode()
-				.radius(function(d) { return sizeScale(d.value); })
-				.color(function(d) { return colorScale(d.series); })
-				.label(function(d) { return d.key; })
+				.radius((d) => sizeScale(d.value))
+				.color((d) => colorScale(d.series))
+				.label((d) => d.key)
 				.stroke(1, "white")
 				.display("none")
 				.classed("bubble")
 				.dispatch(dispatch);
 
 			const bubbles = seriesGroup.selectAll(".bubble")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			bubbles.enter()
 				.append("g")
-				.attr("transform", function(d) {
-					return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
-				})
+				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")")
 				.on("mouseover", function(d) {
 					d3.select(this).select("text").style("display", "block");
 					dispatch.call("customValueMouseOver", this, d);
@@ -113,9 +111,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", function(d) {
-					return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
-				});
+				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")");
 
 			bubbles.exit()
 				.transition()

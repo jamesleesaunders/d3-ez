@@ -94,13 +94,13 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add segments to series group
 			const segments = seriesGroup.selectAll(".segment")
-				.data(function(d) {
+				.data((d) => {
 					const key = d.key;
 					const data = pie(d.values);
 					data.forEach(function(d, i) {
@@ -120,7 +120,7 @@ export default function() {
 				.merge(segments)
 				.transition()
 				.duration(transition.duration)
-				.attr("fill", function(d) { return colorScale(d.data.value); });
+				.attr("fill", (d) => colorScale(d.data.value));
 
 			segments.exit()
 				.transition()

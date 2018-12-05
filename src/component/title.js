@@ -32,14 +32,14 @@ export default function() {
 			.enter()
 			.append("text")
 			.classed("title", true)
-			.text(function(d) { return d; });
+			.text((d) => d);
 		const title = titleGroup.select(".title").text(mainText);
 
 		titleGroup.selectAll(".subTitle").data([subText])
 			.enter()
 			.append("text")
 			.classed("subTitle", true)
-			.text(function(d) { return d; });
+			.text((d) => d);
 		const subTitle = titleGroup.select(".subTitle").text(subText);
 
 		// Centre Text

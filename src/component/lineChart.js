@@ -32,7 +32,7 @@ export default function() {
 
 
 		// TODO: Use dataTransform() to calculate date domains?
-		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const dateDomain = d3.extent(data[0].values, (d) => d.key);
 
 
 		if (typeof colorScale === "undefined") {
@@ -69,41 +69,39 @@ export default function() {
 			// Line generation function
 			const line = d3.line()
 				.curve(d3.curveCardinal)
-				.x(function(d) { return xScale(d.key); })
-				.y(function(d) { return yScale(d.value); });
+				.x((d) => xScale(d.key))
+				.y((d) => yScale(d.value));
 
 			// Line animation tween
 			const pathTween = function(data) {
 				let interpolate = d3.scaleQuantile()
 					.domain([0, 1])
 					.range(d3.range(1, data.length + 1));
-				return function(t) {
-					return line(data.slice(0, interpolate(t)));
-				};
+				return (t) => line(data.slice(0, interpolate(t)));
 			};
 
 			// Update series group
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Create series group
 			const seriesLine = seriesGroup.selectAll(".seriesLine")
-				.data(function(d) { return [d]; });
+				.data((d) => [d]);
 
 			seriesLine.enter()
 				.append("path")
 				.attr("class", "seriesLine")
 				.attr("stroke-width", 1.5)
-				.attr("stroke", function(d) { return colorScale(d.key); })
+				.attr("stroke", (d) => colorScale(d.key))
 				.attr("fill", "none")
 				.merge(seriesLine)
 				.transition()
 				.duration(transition.duration)
-				.attrTween("d", function(d) { return pathTween(d.values); });
+				.attrTween("d", (d) => pathTween(d.values));
 
 			seriesLine.exit()
 				.transition()

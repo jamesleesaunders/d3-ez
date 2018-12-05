@@ -77,37 +77,36 @@ export default function() {
 			// Arc Generator
 			const arc = d3.arc()
 				.startAngle(0)
-				.endAngle(function(d) { return (yScale(d.value) * Math.PI) / 180; })
-				.outerRadius(function(d) { return xScale(d.key) + xScale.bandwidth(); })
-				.innerRadius(function(d) { return (xScale(d.key)); })
+				.endAngle((d) => (yScale(d.value) * Math.PI) / 180)
+				.outerRadius((d) => xScale(d.key) + xScale.bandwidth())
+				.innerRadius((d) => xScale(d.key))
 				.cornerRadius(cornerRadius);
 
 			// Arc Tween
 			const arcTween = function(d) {
 				let i = d3.interpolate(this._current, d);
 				this._current = i(0);
-				return function(t) {
-					return arc(i(t));
-				};
+
+				return (t) => arc(i(t));
 			};
 
 			// Update series group
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to series
 			const bars = seriesGroup.selectAll(".bar")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			bars.enter()
 				.append("path")
 				.attr("d", arc)
 				.classed("bar", true)
-				.style("fill", function(d) { return colorScale(d.key); })
+				.style("fill", (d) => colorScale(d.key))
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(bars)

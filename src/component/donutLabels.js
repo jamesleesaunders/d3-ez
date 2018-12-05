@@ -44,7 +44,7 @@ export default function() {
 
 			// Pie Generator
 			const pie = d3.pie()
-				.value(function(d) { return d.value; })
+				.value((d) => d.value)
 				.sort(null)
 				.padAngle(0.015);
 
@@ -71,9 +71,7 @@ export default function() {
 
 			// Text Labels
 			const labelsGroupSelect = seriesGroup.selectAll("g.labels")
-				.data(function(d) {
-					return [d];
-				});
+				.data((d) => [d]);
 
 			const labelsGroup = labelsGroupSelect.enter()
 				.append("g")
@@ -81,9 +79,7 @@ export default function() {
 				.merge(labelsGroupSelect);
 
 			const labels = labelsGroup.selectAll("text.label")
-				.data(function(d) {
-					return pie(d.values);
-				});
+				.data((d) => pie(d.values));
 
 			labels.enter()
 				.append("text")
@@ -92,14 +88,12 @@ export default function() {
 				.merge(labels)
 				.transition()
 				.duration(transition.duration)
-				.text(function(d) {
-					return d.data.key;
-				})
+				.text((d) => d.data.key)
 				.attrTween("transform", function(d) {
 					this._current = this._current || d;
 					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
-					return function(t) {
+					return (t) => {
 						let d2 = interpolate(t);
 						let pos = outerArc.centroid(d2);
 						pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
@@ -110,7 +104,7 @@ export default function() {
 					this._current = this._current || d;
 					let interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
-					return function(t) {
+					return (t) => {
 						const d2 = interpolate(t);
 						return midAngle(d2) < Math.PI ? "start" : "end";
 					};
@@ -121,9 +115,7 @@ export default function() {
 
 			// Text Label to Slice Connectors
 			const connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
-				.data(function(d) {
-					return [d];
-				});
+				.data((d) => [d]);
 
 			const connectorsGroup = connectorsGroupSelect.enter()
 				.append("g")
@@ -131,9 +123,7 @@ export default function() {
 				.merge(connectorsGroupSelect);
 
 			const connectors = connectorsGroup.selectAll("polyline.connector")
-				.data(function(d) {
-					return pie(d.values);
-				});
+				.data((d) => pie(d.values));
 
 			connectors.enter()
 				.append("polyline")

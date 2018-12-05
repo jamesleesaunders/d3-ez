@@ -47,12 +47,12 @@ export default function() {
 		defSelect.enter()
 			.append("def")
 			.append("path")
-			.attr("id", function(d, i) {
-				return "radialLabelPath" + "-" + i;
-			})
-			.attr("d", function(d) {
+			.attr("id", (d, i) => ("radialLabelPath" + "-" + i))
+			.attr("d", (d) => {
 				let r = radialScale(d);
-				let arc = d3.arc().outerRadius(r).innerRadius(r);
+				let arc = d3.arc()
+					.outerRadius(r)
+					.innerRadius(r);
 				let pathConf = {
 					startAngle: (startAngle * Math.PI) / 180,
 					endAngle: (endAngle * Math.PI) / 180
@@ -70,13 +70,9 @@ export default function() {
 			.attr("dy", -5)
 			.attr("dx", 5)
 			.append("textPath")
-			.attr("xlink:href", function(d, i) {
-				return "#radialLabelPath" + "-" + i;
-			})
+			.attr("xlink:href", (d, i) => ("#radialLabelPath" + "-" + i))
 			.attr("startOffset", "0%")
-			.text(function(d) {
-				return d;
-			});
+			.text((d) => d);
 	}
 
 	/**

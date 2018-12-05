@@ -40,7 +40,7 @@ export default function() {
 			const domainMin = parseFloat(d3.min(sizeScale.domain()));
 			const domainMax = parseFloat(d3.max(sizeScale.domain()));
 			const increment = (domainMax - domainMin) / itemCount;
-			const ranges = Array(itemCount).fill().map(function(v, i) {
+			const ranges = Array(itemCount).fill().map((v, i) => {
 				const rangeStart = domainMin + (increment * i);
 				const rangeEnd = domainMin + (increment * (i + 1));
 				return [rangeStart, rangeEnd];
@@ -54,14 +54,13 @@ export default function() {
 				.domain(yDomain)
 				.range(yRange);
 
-			return ranges.map(function(v, i) {
-				return {
+			return ranges.map((v, i) => ({
 					x: sizeScale(domainMax),
 					y: yScale(i),
 					r: sizeScale(ranges[i][0]),
 					text: v[0].toFixed(0) + " - " + v[1].toFixed(0)
 				}
-			});
+			));
 		};
 
 		const itemsSelect = legend.selectAll(".legendItem")
@@ -70,25 +69,23 @@ export default function() {
 		const items = itemsSelect.enter()
 			.append("g")
 			.classed("legendItem", true)
-			.attr("transform", function(d) {
-				return "translate(0," + d.y + ")";
-			})
+			.attr("transform", (d) => "translate(0," + d.y + ")")
 			.merge(itemsSelect);
 
 		items.exit()
 			.remove();
 
 		items.append("circle")
-			.attr("r", function(d) { return d.r; })
-			.attr("cx", function(d) { return d.x; })
+			.attr("r", (d) => d.r)
+			.attr("cx", (d) => d.x)
 			.attr("fill", "lightgrey")
 			.attr("stroke", "grey")
 			.attr("stroke-width", 1);
 
 		items.append("text")
-			.text(function(d) { return d.text; })
+			.text((d) => d.text)
 			.attr("dominant-baseline", "middle")
-			.attr("x", function(d) { return (d.x * 2) + 5; });
+			.attr("x", (d) => (d.x * 2) + 5);
 	}
 
 	/**

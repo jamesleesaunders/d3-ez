@@ -41,8 +41,8 @@ export default function() {
 
 		// TODO: Use dataTransform() to calculate candle min/max?
 		const yDomain = [
-			d3.min(data.values, function(d) { return d.low; }),
-			d3.max(data.values, function(d) { return d.high; })
+			d3.min(data.values, (d) => d.low),
+			d3.max(data.values, (d) => d.high)
 		];
 
 
@@ -84,38 +84,37 @@ export default function() {
 
 			// Line Function
 			const line = d3.line()
-				.x(function(d) { return d.x; })
-				.y(function(d) { return d.y; });
+				.x((d) => d.x)
+				.y((d) => d.y);
 
 			// High Low Lines
 			const highLowLines = function(bars) {
 				const paths = bars.selectAll(".high-low-line")
-					.data(function(d) { return [d]; });
+					.data((d) => [d]);
 
 				paths.enter()
 					.append("path")
 					.classed("high-low-line", true)
-					.attr("d", function(d) {
-						return line([
+					.attr("d", (d) => line([
 							{ x: xScale(d.date), y: yScale(d.high) },
 							{ x: xScale(d.date), y: yScale(d.low) }
-						]);
-					});
+						])
+					);
 			};
 
 			// Open Close Bars
 			const openCloseBars = function(bars) {
 				let rect = bars.selectAll(".open-close-bar")
-					.data(function(d) { return [d]; });
+					.data((d) => [d]);
 
 				rect.enter()
 					.append("rect")
 					.classed("open-close-bar", true)
-					.attr("x", function(d) {
-						return xScale(d.date) - candleWidth;
-					})
+					.attr("x", (d) => xScale(d.date) - candleWidth)
 					.attr("y", function(d) {
-						return isUpDay(d) ? yScale(d.close) : yScale(d.open);
+						return isUpDay(d) ?
+							yScale(d.close) :
+							yScale(d.open);
 					})
 					.attr("width", candleWidth * 2)
 					.attr("height", function(d) {
@@ -128,49 +127,47 @@ export default function() {
 			// Open Close Ticks
 			const openCloseTicks = function(bars) {
 				let open = bars.selectAll(".open-tick")
-					.data(function(d) { return [d]; });
+					.data((d) => [d]);
 
 				let close = bars.selectAll(".close-tick")
-					.data(function(d) { return [d]; });
+					.data((d) => [d]);
 
 				open.enter()
 					.append("path")
 					.classed("open-tick", true)
-					.attr("d", function(d) {
-						return line([
+					.attr("d", (d) => line([
 							{ x: xScale(d.date) - candleWidth, y: yScale(d.open) },
 							{ x: xScale(d.date), y: yScale(d.open) }
-						]);
-					});
+						])
+					);
 
 				close.enter()
 					.append("path")
 					.classed("close-tick", true)
-					.attr("d", function(d) {
-						return line([
+					.attr("d", (d) => line([
 							{ x: xScale(d.date), y: yScale(d.close) },
 							{ x: xScale(d.date) + candleWidth, y: yScale(d.close) }
-						]);
-					});
+						])
+					);
 			};
 
 			// Update series group
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add candles to series
 			const candlesSelect = seriesGroup.selectAll(".candle")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			const candles = candlesSelect.enter()
 				.append("g")
 				.classed("candle", true)
-				.attr("fill", function(d) { return colorScale(isUpDay(d)); })
-				.attr("stroke", function(d) { return colorScale(isUpDay(d)); })
+				.attr("fill", (d) => colorScale(isUpDay(d)))
+				.attr("stroke", (d) => colorScale(isUpDay(d)))
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(candlesSelect);

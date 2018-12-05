@@ -18,20 +18,20 @@ import palette from "./src/palette";
 import dataTransform from "./src/dataTransform";
 
 const ez = function() {
-	const my = base;
-	my.version = version;
-	my.author = author;
-	my.copyright = copyright;
-	my.license = license;
-	my.chart = chart;
-	my.component = component;
-	my.palette = palette;
-	my.dataTransform = dataTransform;
+	const ez = base;
+	ez.version = version;
+	ez.author = author;
+	ez.copyright = copyright;
+	ez.license = license;
+	ez.chart = chart;
+	ez.component = component;
+	ez.palette = palette;
+	ez.dataTransform = dataTransform;
 
-	// TODO: Remove when new 'ez' base fully tested.
-	my.base = base;
+	// TODO: Remove base when new 'ez' constructor fully tested.
+	ez.base = base;
 
-	return my;
+	return ez;
 }();
 
 export default ez;

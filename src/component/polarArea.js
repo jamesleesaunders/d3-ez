@@ -81,9 +81,7 @@ export default function() {
 
 			// Arc Generator
 			const arc = d3.arc()
-				.outerRadius(function(d) {
-					return yScale(d.data.value);
-				})
+				.outerRadius((d) => yScale(d.data.value))
 				.innerRadius(0)
 				.cornerRadius(2);
 
@@ -91,18 +89,18 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add segments to series
 			const segments = seriesGroup.selectAll(".segment")
-				.data(function(d) { return pie(d.values); });
+				.data((d) => pie(d.values));
 
 			segments.enter()
 				.append("path")
 				.classed("segment", true)
-				.style("fill", function(d) { return colorScale(d.data.key); })
+				.style("fill", (d) => colorScale(d.data.key))
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.data); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d.data); })
 				.merge(segments)

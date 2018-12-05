@@ -69,29 +69,27 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
-				.attr("id", function(d) { return d.key; })
+				.attr("id", (d) => d.key)
 				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add numbers to series
 			const numbers = seriesGroup.selectAll(".number")
-				.data(function(d) { return d.values; });
+				.data((d) => d.values);
 
 			numbers.enter().append("text")
 				.attr("class", "number")
-				.attr("x", function(d) { return (xScale(d.key) + cellWidth / 2); })
-				.attr("y", function(d) { return (cellHeight / 2); })
+				.attr("x", (d) => (xScale(d.key) + cellWidth / 2))
+				.attr("y", cellHeight / 2)
 				.attr("text-anchor", "middle")
 				.attr("dominant-baseline", "central")
-				.text(function(d) {
-					return d["value"];
-				})
+				.text((d) => d["value"])
 				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
 				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(numbers)
 				.transition()
 				.duration(1000)
-				.attr("fill", function(d) { return colorScale(d.value); });
+				.attr("fill", (d) => colorScale(d.value));
 
 			numbers.exit()
 				.transition()

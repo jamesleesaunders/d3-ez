@@ -72,8 +72,8 @@ export default function() {
 
 			// Function to generate radar line points
 			const radarLine = d3.radialLine()
-				.radius(function(d) { return yScale(d.value); })
-				.angle(function(d, i) { return i * angleSlice; })
+				.radius((d) => yScale(d.value))
+				.angle((d, i) => i * angleSlice)
 				.curve(d3.curveBasis)
 				.curve(d3.curveCardinalClosed);
 
@@ -81,7 +81,7 @@ export default function() {
 			const seriesGroup = d3.select(this);
 			seriesGroup.append("path")
 				.classed(classed, true)
-				.attr("d", function(d) { return radarLine(d.values); })
+				.attr("d", (d) => radarLine(d.values))
 				.style("fill-opacity", 0.2)
 				.on('mouseover', function() {
 					d3.select(this)
@@ -97,19 +97,19 @@ export default function() {
 			// Creating lines/path on circle
 			seriesGroup.append("path")
 				.attr("class", "radarStroke")
-				.attr("d", function(d) { return radarLine(d.values); })
+				.attr("d", (d) => radarLine(d.values))
 				.style("stroke-width", 3 + "px")
 				.style("fill", "none");
 
 			// Create Radar Circle points on line
 			seriesGroup.selectAll(".radarCircle")
-				.data(function(d) { return d.values; })
+				.data((d) => d.values)
 				.enter()
 				.append("circle")
 				.attr("class", "radarCircle")
 				.attr("r", 4)
-				.attr("cx", function(d, i) { return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2); })
-				.attr("cy", function(d, i) { return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2); })
+				.attr("cx", (d, i) => yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
+				.attr("cy", (d, i) => yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2))
 				.style("fill-opacity", 0.8);
 		});
 	}
