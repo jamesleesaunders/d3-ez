@@ -1,9 +1,9 @@
 /**
- * d3-ez
+ * d3-x3dom
  *
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2018 James Saunders
- * @license GPLv3
+ * @license GPLv2
  */
 
 (function (global, factory) {
@@ -18,17 +18,20 @@ var license = "GPL-2.0";
 /**
  * Reusable Credit Tag Component
  *
+ * @module
  */
 function componentCreditTag () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var text = "d3-ez.net";
 	var href = "http://d3-ez.net";
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias creditTag
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		var creditTag = selection.selectAll("#creditTag").data([0]).enter().append("g").attr("id", "creditTag");
@@ -39,17 +42,26 @@ function componentCreditTag () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Text Getter / Setter
+  *
+  * @param {string} _v - Credit tag text.
+  * @returns {*}
   */
-	my.text = function (_) {
+	my.text = function (_v) {
 		if (!arguments.length) return text;
-		text = _;
+		text = _v;
 		return this;
 	};
 
-	my.href = function (_) {
+	/**
+  * Link Getter / Setter
+  *
+  * @param {string} _v - Credit tag link.
+  * @returns {*}
+  */
+	my.href = function (_v) {
 		if (!arguments.length) return href;
-		href = _;
+		href = _v;
 		return this;
 	};
 
@@ -59,12 +71,11 @@ function componentCreditTag () {
 /**
  * Reusable Title Component
  *
+ * @module
  */
 function componentTitle () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var mainText = "Title";
 	var subText = "Sub Title";
 	var height = 40;
@@ -72,6 +83,10 @@ function componentTitle () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias title
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		selection.selectAll("#titleGroup").data([0]).enter().append("g").attr("id", "titleGroup");
@@ -95,29 +110,50 @@ function componentTitle () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.mainText = function (_) {
-		if (!arguments.length) return mainText;
-		mainText = _;
-		return this;
-	};
-
-	my.subText = function (_) {
-		if (!arguments.length) return subText;
-		subText = _;
-		return this;
-	};
-
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return this;
-	};
-
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
+		return this;
+	};
+
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return this;
+	};
+
+	/**
+  * Main Text Getter / Setter
+  *
+  * @param {string} _v - Main text title.
+  * @returns {*}
+  */
+	my.mainText = function (_v) {
+		if (!arguments.length) return mainText;
+		mainText = _v;
+		return this;
+	};
+
+	/**
+  * Sub Text Getter / Setter
+  *
+  * @param {string} _v - Sub text description.
+  * @returns {*}
+  */
+	my.subText = function (_v) {
+		if (!arguments.length) return subText;
+		subText = _v;
 		return this;
 	};
 
@@ -127,12 +163,11 @@ function componentTitle () {
 /**
  * Chart Base
  *
+ * @module
  */
 function base () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var canvas = void 0;
 	var width = 600;
@@ -153,6 +188,9 @@ function base () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		canvasW = width - (margin.left + margin.right);
@@ -179,6 +217,10 @@ function base () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias base
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -225,49 +267,87 @@ function base () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.chart = function (_) {
+	/**
+  * Chart Getter / Setter
+  *
+  * @param {d3.ez.chart} _v - Chart component.
+  * @returns {*}
+  */
+	my.chart = function (_v) {
 		if (!arguments.length) return chart;
-		chart = _;
+		chart = _v;
 		return this;
 	};
 
-	my.legend = function (_) {
+	/**
+  * Legend Getter / Setter
+  *
+  * @param {d3.ez.component.legend} _v - Legend component.
+  * @returns {*}
+  */
+	my.legend = function (_v) {
 		if (!arguments.length) return legend;
-		legend = _;
+		legend = _v;
 		return this;
 	};
 
-	my.title = function (_) {
+	/**
+  * Title Getter / Setter
+  *
+  * @param {d3.ez.component.title} _v - Title component.
+  * @returns {*}
+  */
+	my.title = function (_v) {
 		if (!arguments.length) return title;
 		if (typeof _ === "string") {
 			// If the caller has passed a plain string convert it to a title object.
 			title = componentTitle().mainText(_).subText("");
 		} else {
-			title = _;
+			title = _v;
 		}
 		return this;
 	};
 
-	my.yAxisLabel = function (_) {
+	/**
+  * Y Axix Label Getter / Setter
+  *
+  * @param {string} _v - Label text.
+  * @returns {*}
+  */
+	my.yAxisLabel = function (_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -279,6 +359,7 @@ function base () {
 /**
  * Colour Palettes
  *
+ * @module
  * @example
  * d3.ez.palette.categorical(1);
  * d3.ez.palette.diverging(1);
@@ -375,317 +456,453 @@ var palette = {
 	}
 };
 
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
 /**
- * Data Analysis
+ * Data Transform
  *
+ * @module
+ * @returns {Array}
  */
-function dataTransform (data) {
+function dataTransform(data) {
 
-  var STRUCTURE_ROW = 1;
-  var STRUCTURE_ROWS = 2;
+	var SINGLE_SERIES = 1;
+	var MULTI_SERIES = 2;
+	var coordinateKeys = ['x', 'y', 'z'];
 
-  /**
-   * Row or Rows?
-   */
-  var dataStructure = function () {
-    if (data["key"] !== undefined) {
-      return STRUCTURE_ROW;
-    } else {
-      return STRUCTURE_ROWS;
-    }
-  }();
+	/**
+  * Data Type
+  *
+  * @type {Number}
+  */
+	var dataType = data.key !== undefined ? SINGLE_SERIES : MULTI_SERIES;
 
-  /**
-   * Row Key
-   */
-  var rowKey = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.values(data)[0];
-    }
+	/**
+  * Row Key
+  *
+  * @returns {Array}
+  */
+	var rowKey = function () {
+		if (dataType === SINGLE_SERIES) {
+			return d3.values(data)[0];
+		}
+	}();
 
-    return ret;
-  }();
+	/**
+  * Row Total
+  *
+  * @returns {Array}
+  */
+	var rowTotal = function () {
+		if (dataType === SINGLE_SERIES) {
+			return d3.sum(data.values, function (d) {
+				return d.value;
+			});
+		}
+	}();
 
-  /**
-   * Row Keys
-   */
-  var rowKeys = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = data.map(function (d) {
-        return d.key;
-      });
-    }
+	/**
+  * Row Keys
+  *
+  * @returns {Array}
+  */
+	var rowKeys = function () {
+		if (dataType === MULTI_SERIES) {
+			return data.map(function (d) {
+				return d.key;
+			});
+		}
+	}();
 
-    return ret;
-  }();
+	/**
+  * Row Totals
+  *
+  * @returns {Array}
+  */
+	var rowTotals = function () {
+		if (dataType === MULTI_SERIES) {
+			var ret = {};
+			d3.map(data).values().forEach(function (d) {
+				var rowKey = d.key;
+				d.values.forEach(function (d) {
+					ret[rowKey] = typeof ret[rowKey] === "undefined" ? 0 : ret[rowKey];
+					ret[rowKey] += d.value;
+				});
+			});
+			return ret;
+		}
+	}();
 
-  /**
-   * Row Totals
-   */
-  var rowTotals = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = {};
-      d3.map(data).values().forEach(function (d) {
-        var rowKey = d.key;
-        d.values.forEach(function (d) {
-          ret[rowKey] = typeof ret[rowKey] === "undefined" ? 0 : ret[rowKey];
-          ret[rowKey] += d.value;
-        });
-      });
-    }
+	/**
+  * Row Totals Max
+  *
+  * @returns {number}
+  */
+	var rowTotalsMax = function () {
+		if (dataType === MULTI_SERIES) {
+			return d3.max(d3.values(rowTotals));
+		}
+	}();
 
-    return ret;
-  }();
+	/**
+  * Row Value Keys
+  *
+  * @returns {Array}
+  */
+	var rowValuesKeys = function () {
+		if (dataType === SINGLE_SERIES) {
+			return Object.keys(data.values[0]);
+		} else {
+			return Object.keys(data[0].values[0]);
+		}
+	}();
 
-  /**
-   * Row Torals Max
-   */
-  var rowTotalsMax = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = d3.max(d3.values(rowTotals));
-    }
+	/**
+  * Union Two Arrays
+  *
+  * @private
+  * @param {Array} array1 - First Array.
+  * @param {Array} array2 - First Array.
+  * @returns {Array}
+  */
+	var union = function union(array1, array2) {
+		var ret = [];
+		var arr = array1.concat(array2);
+		var len = arr.length;
+		var assoc = {};
 
-    return ret;
-  }();
+		while (len--) {
+			var item = arr[len];
 
-  /**
-   * Join two arrays
-   */
-  var union = function union(array1, array2) {
-    var ret = [];
-    var arr = array1.concat(array2);
-    var len = arr.length;
-    var assoc = {};
+			if (!assoc[item]) {
+				ret.unshift(item);
+				assoc[item] = true;
+			}
+		}
 
-    while (len--) {
-      var item = arr[len];
+		return ret;
+	};
 
-      if (!assoc[item]) {
-        ret.unshift(item);
-        assoc[item] = true;
-      }
-    }
+	/**
+  * Column Keys
+  *
+  * @returns {Array}
+  */
+	var columnKeys = function () {
+		if (dataType === SINGLE_SERIES) {
+			return d3.values(data.values).map(function (d) {
+				return d.key;
+			});
+		}
 
-    return ret;
-  };
+		var ret = [];
+		d3.map(data).values().forEach(function (d) {
+			var tmp = [];
+			d.values.forEach(function (d, i) {
+				tmp[i] = d.key;
+			});
+			ret = union(tmp, ret);
+		});
 
-  /**
-   * Column Keys
-   */
-  var columnKeys = function () {
-    var ret = [];
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.values(data.values).map(function (d) {
-        return d.key;
-      });
-    } else {
-      d3.map(data).values().forEach(function (d) {
-        var tmp = [];
-        d.values.forEach(function (d, i) {
-          tmp[i] = d.key;
-        });
+		return ret;
+	}();
 
-        ret = union(tmp, ret);
-      });
-    }
+	/**
+  * Column Totals
+  *
+  * @returns {Array}
+  */
+	var columnTotals = function () {
+		if (dataType !== MULTI_SERIES) {
+			return;
+		}
 
-    return ret;
-  }();
+		var ret = {};
+		d3.map(data).values().forEach(function (d) {
+			d.values.forEach(function (d) {
+				var columnName = d.key;
+				ret[columnName] = typeof ret[columnName] === "undefined" ? 0 : ret[columnName];
+				ret[columnName] += d.value;
+			});
+		});
 
-  /**
-   * Row Totals
-   */
-  var rowTotal = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.sum(data.values, function (d) {
-        return d.value;
-      });
-    }
+		return ret;
+	}();
 
-    return ret;
-  }();
+	/**
+  * Column Totals Max
+  *
+  * @returns {Array}
+  */
+	var columnTotalsMax = function () {
+		if (dataType === MULTI_SERIES) {
+			return d3.max(d3.values(columnTotals));
+		}
+	}();
 
-  /**
-   * Column Totals
-   */
-  var columnTotals = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = {};
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          var columnName = d.key;
-          ret[columnName] = typeof ret[columnName] === "undefined" ? 0 : ret[columnName];
-          ret[columnName] += d.value;
-        });
-      });
-    }
+	/**
+  * Value Min
+  *
+  * @returns {number}
+  */
+	var valueMin = function () {
+		if (dataType === SINGLE_SERIES) {
+			return d3.min(data.values, function (d) {
+				return +d.value;
+			});
+		}
 
-    return ret;
-  }();
+		var ret = void 0;
+		d3.map(data).values().forEach(function (d) {
+			d.values.forEach(function (d) {
+				ret = typeof ret === "undefined" ? d.value : d3.min([ret, +d.value]);
+			});
+		});
 
-  /**
-   * Column Totals Max
-   */
-  var columnTotalsMax = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      ret = d3.max(d3.values(columnTotals));
-    }
+		return +ret;
+	}();
 
-    return ret;
-  }();
+	/**
+  * Value Max
+  *
+  * @returns {number}
+  */
+	var valueMax = function () {
+		var ret = void 0;
 
-  /**
-   * Min Value
-   */
-  var minValue = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.min(data.values, function (d) {
-        return +d.value;
-      });
-    } else {
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          ret = typeof ret === "undefined" ? d.value : d3.min([ret, +d.value]);
-        });
-      });
-    }
+		if (dataType === SINGLE_SERIES) {
+			ret = d3.max(data.values, function (d) {
+				return +d.value;
+			});
+		} else {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					ret = typeof ret !== "undefined" ? d3.max([ret, +d.value]) : +d.value;
+				});
+			});
+		}
 
-    return +ret;
-  }();
+		return ret;
+	}();
 
-  /**
-   * Max Value
-   */
-  var maxValue = function () {
-    var ret = void 0;
-    if (STRUCTURE_ROW === dataStructure) {
-      ret = d3.max(data.values, function (d) {
-        return +d.value;
-      });
-    } else {
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          ret = typeof ret === "undefined" ? d.value : d3.max([ret, +d.value]);
-        });
-      });
-    }
+	/**
+  * Value Extent
+  *
+  * @returns {Array}
+  */
+	var valueExtent = function () {
+		return [valueMin, valueMax];
+	}();
 
-    return +ret;
-  }();
+	/**
+  * Coordinates Min
+  *
+  * @returns {Array}
+  */
+	var coordinatesMin = function () {
+		var ret = {};
 
-  /**
-   * How many decimal places?
-   */
-  var decimalPlaces = function decimalPlaces(num) {
-    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    if (!match) {
-      return 0;
-    }
+		if (dataType === SINGLE_SERIES) {
+			coordinateKeys.forEach(function (key) {
+				ret[key] = d3.min(data.values, function (d) {
+					return +d[key];
+				});
+			});
+			return ret;
+		} else {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					coordinateKeys.forEach(function (key) {
+						ret[key] = key in ret ? d3.min([ret[key], +d[key]]) : d[key];
+					});
+				});
+			});
+		}
 
-    return Math.max(0,
-    // Number of digits right of decimal point.
-    (match[1] ? match[1].length : 0) - (
-    // Adjust for scientific notation.
-    match[2] ? +match[2] : 0));
-  };
+		return ret;
+	}();
 
-  /**
-   * Max decimal place
-   */
-  var maxDecimalPlace = function () {
-    var ret = 0;
-    if (STRUCTURE_ROWS === dataStructure) {
-      d3.map(data).values().forEach(function (d) {
-        d.values.forEach(function (d) {
-          ret = d3.max([ret, decimalPlaces(d.value)]);
-        });
-      });
-    }
+	/**
+  * Coordinates Max
+  *
+  * @returns {Array}
+  */
+	var coordinatesMax = function () {
+		var ret = {};
 
-    return ret;
-  }();
+		if (dataType === SINGLE_SERIES) {
+			coordinateKeys.forEach(function (key) {
+				ret[key] = d3.max(data.values, function (d) {
+					return +d[key];
+				});
+			});
+			return ret;
+		} else {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					coordinateKeys.forEach(function (key) {
+						ret[key] = key in ret ? d3.max([ret[key], +d[key]]) : d[key];
+					});
+				});
+			});
+		}
 
-  // If thresholds values are not already set attempt to auto-calculate some thresholds
-  var thresholds = function () {
-    var distance = maxValue - minValue;
+		return ret;
+	}();
 
-    return [+(minValue + 0.15 * distance).toFixed(maxDecimalPlace), +(minValue + 0.40 * distance).toFixed(maxDecimalPlace), +(minValue + 0.55 * distance).toFixed(maxDecimalPlace), +(minValue + 0.90 * distance).toFixed(maxDecimalPlace)];
-  }();
+	/**
+  * Coordinates Extent
+  *
+  * @returns {Array}
+  */
+	var coordinatesExtent = function () {
+		var ret = {};
+		coordinateKeys.forEach(function (key) {
+			ret[key] = [coordinatesMin[key], coordinatesMax[key]];
+		});
 
-  /**
-   * Rotate Data
-   */
-  var rotate = function rotate() {
-    var columnKeys = data.map(function (d) {
-      return d.key;
-    });
+		return ret;
+	}();
 
-    var rowKeys = data[0].values.map(function (d) {
-      return d.key;
-    });
+	/**
+  * How Many Decimal Places?
+  *
+  * @private
+  * @param {number} num - Float.
+  * @returns {number}
+  */
+	var decimalPlaces = function decimalPlaces(num) {
+		var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		if (!match) {
+			return 0;
+		}
 
-    var rotated = rowKeys.map(function (k, i) {
-      var values = [];
-      for (var j = 0; j <= data.length - 1; j++) {
-        values[j] = {
-          key: columnKeys[j],
-          value: data[j].values[i].value
-        };
-      }
+		return Math.max(0,
+		// Number of digits right of decimal point.
+		(match[1] ? match[1].length : 0) - (
+		// Adjust for scientific notation.
+		match[2] ? +match[2] : 0));
+	};
 
-      return {
-        key: k,
-        values: values
-      };
-    });
+	/**
+  * Max Decimal Place
+  *
+  * @returns {number}
+  */
+	var maxDecimalPlace = function () {
+		var ret = 0;
+		if (dataType === MULTI_SERIES) {
+			d3.map(data).values().forEach(function (d) {
+				d.values.forEach(function (d) {
+					ret = d3.max([ret, decimalPlaces(d.value)]);
+				});
+			});
+		}
 
-    return rotated;
-  };
+		// toFixed must be between 0 and 20
+		return ret > 20 ? 20 : ret;
+	}();
 
-  /**
-   * Summary
-   */
-  var summary = function summary() {
-    return {
-      levels: dataStructure,
-      rowKey: rowKey,
-      rowTotal: rowTotal,
-      rowKeys: rowKeys,
-      rowTotals: rowTotals,
-      rowTotalsMax: rowTotalsMax,
-      columnKeys: columnKeys,
-      columnTotals: columnTotals,
-      columnTotalsMax: columnTotalsMax,
-      minValue: minValue,
-      maxValue: maxValue,
-      maxDecimalPlace: maxDecimalPlace,
-      thresholds: thresholds
-    };
-  };
+	/**
+  * Thresholds
+  *
+  * @returns {Array}
+  */
+	var thresholds = function () {
+		var distance = valueMax - valueMin;
+		var bands = [0.15, 0.40, 0.55, 0.90];
 
-  return {
-    summary: summary,
-    rotate: rotate
-  };
+		return bands.map(function (v) {
+			return Number((valueMin + v * distance).toFixed(maxDecimalPlace));
+		});
+	}();
+
+	/**
+  * Summary
+  *
+  * @returns {Array}
+  */
+	var summary = function summary() {
+		return {
+			dataType: dataType,
+			rowKey: rowKey,
+			rowTotal: rowTotal,
+			rowKeys: rowKeys,
+			rowTotals: rowTotals,
+			rowTotalsMax: rowTotalsMax,
+			rowValuesKeys: rowValuesKeys,
+			columnKeys: columnKeys,
+			columnTotals: columnTotals,
+			columnTotalsMax: columnTotalsMax,
+			valueMin: valueMin,
+			valueMax: valueMax,
+			valueExtent: valueExtent,
+			coordinatesMin: coordinatesMin,
+			coordinatesMax: coordinatesMax,
+			coordinatesExtent: coordinatesExtent,
+			maxDecimalPlace: maxDecimalPlace,
+			thresholds: thresholds
+		};
+	};
+
+	/**
+  * Rotate Data
+  *
+  * @returns {Array}
+  */
+	var rotate = function rotate() {
+		var columnKeys = data.map(function (d) {
+			return d.key;
+		});
+		var rowKeys = data[0].values.map(function (d) {
+			return d.key;
+		});
+
+		var rotated = rowKeys.map(function (rowKey, rowIndex) {
+			var values = columnKeys.map(function (columnKey, columnIndex) {
+				// Copy the values from the original object
+				var values = _extends({}, data[columnIndex].values[rowIndex]);
+				// Swap the key over
+				values.key = columnKey;
+
+				return values;
+			});
+
+			return {
+				key: rowKey,
+				values: values
+			};
+		});
+
+		return rotated;
+	};
+
+	return {
+		summary: summary,
+		rotate: rotate
+	};
 }
 
 /**
  * Reusable Circular Bar Chart Component
  *
+ * @module
  */
 function componentBarsCircular () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -703,29 +920,44 @@ function componentBarsCircular () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
+		var valueExtent = [valueMax, 0];
 
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).rangeRound([innerRadius, radius]).padding(0.15) : xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([startAngle, endAngle]) : yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).rangeRound([innerRadius, radius]).padding(0.15);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([startAngle, endAngle]);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barsCircular
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -777,74 +1009,142 @@ function componentBarsCircular () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.startAngle = function (_) {
+	/**
+  * Start Angle Getter / Setter
+  *
+  * @param {number} _v - Start angle in degrees.
+  * @returns {*}
+  */
+	my.startAngle = function (_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
-	my.endAngle = function (_) {
+	/**
+  * End Angle Getter / Setter
+  *
+  * @param {number} _v - End angle in degrees.
+  * @returns {*}
+  */
+	my.endAngle = function (_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -856,12 +1156,11 @@ function componentBarsCircular () {
 /**
  * Reusable Stacked Bar Chart Component
  *
+ * @module
  */
 function componentBarsStacked () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 100;
 	var height = 300;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -873,21 +1172,32 @@ function componentBarsStacked () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var seriesTotalsMax = dataSummary.rowTotalsMax;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    rowTotalsMax = _dataTransform$summar.rowTotalsMax;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, rowTotalsMax];
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, seriesTotalsMax]).range([0, height]).nice() : yScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([0, height]).nice();
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barsStacked
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -944,44 +1254,82 @@ function componentBarsStacked () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -993,12 +1341,11 @@ function componentBarsStacked () {
 /**
  * Reusable Horizontal Bar Chart Component
  *
+ * @module
  */
 function componentBarsHorizontal () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 500;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -1011,24 +1358,36 @@ function componentBarsHorizontal () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, valueMax];
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(seriesNames).rangeRound([0, width]).padding(0.15) : yScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() : xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleLinear().domain(valueExtent).range([0, height]).nice();
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand().domain(columnKeys).rangeRound([0, width]).padding(0.15);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barsHorizontal
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -1070,50 +1429,94 @@ function componentBarsHorizontal () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -1125,12 +1528,11 @@ function componentBarsHorizontal () {
 /**
  * Reusable Vertical Bar Chart Component
  *
+ * @module
  */
 function componentBarsVertical () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 400;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -1143,24 +1545,36 @@ function componentBarsVertical () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, valueMax];
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).rangeRound([0, width]).padding(0.15) : xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, height]).nice() : yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).rangeRound([0, width]).padding(0.15);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([0, height]).nice();
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barsVertical
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -1202,50 +1616,94 @@ function componentBarsVertical () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -1257,12 +1715,11 @@ function componentBarsVertical () {
 /**
  * Reusable Labeled Node Component
  *
+ * @module
  */
 function componentLabeledNode () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var color = "steelblue";
 	var opacity = 1;
 	var strokeColor = "#000000";
@@ -1276,6 +1733,10 @@ function componentLabeledNode () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias labeledNode
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 
@@ -1296,44 +1757,84 @@ function componentLabeledNode () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Color Getter / Setter
+  *
+  * @param {string} _v - Color.
+  * @returns {*}
   */
-	my.color = function (_) {
+	my.color = function (_v) {
 		if (!arguments.length) return color;
-		color = _;
+		color = _v;
 		return this;
 	};
 
-	my.opacity = function (_) {
+	/**
+  * Opacity Getter / Setter
+  *
+  * @param {number} _v - Level of opacity.
+  * @returns {*}
+  */
+	my.opacity = function (_v) {
 		if (!arguments.length) return opacity;
-		opacity = _;
+		opacity = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.label = function (_) {
+	/**
+  * Label Getter / Setter
+  *
+  * @param {string} _v - Label text.
+  * @returns {*}
+  */
+	my.label = function (_v) {
 		if (!arguments.length) return label;
-		label = _;
+		label = _v;
 		return this;
 	};
 
-	my.display = function (_) {
+	/**
+  * Display Getter / Setter
+  *
+  * @param {string} _v - HTML display type (e.g. 'block')
+  * @returns {*}
+  */
+	my.display = function (_v) {
 		if (!arguments.length) return display;
-		display = _;
+		display = _v;
 		return this;
 	};
 
-	my.fontSize = function (_) {
+	/**
+  * Font Size Getter / Setter
+  *
+  * @param {number} _v - Fint size.
+  * @returns {*}
+  */
+	my.fontSize = function (_v) {
 		if (!arguments.length) return fontSize;
-		fontSize = _;
+		fontSize = _v;
 		return this;
 	};
 
+	/**
+  * Stroke Getter / Setter
+  *
+  * @param {number} _width - Width in px.
+  * @param {string} _color - Colour.
+  * @returns {*}
+  */
 	my.stroke = function (_width, _color) {
 		if (!arguments.length) return [strokeWidth, strokeColor];
 		strokeWidth = _width;
@@ -1341,18 +1842,35 @@ function componentLabeledNode () {
 		return this;
 	};
 
-	my.classed = function (_) {
+	/**
+  * Class Getter / Setter
+  *
+  * @param {string} _v - HTML class name.
+  * @returns {*}
+  */
+	my.classed = function (_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -1364,12 +1882,11 @@ function componentLabeledNode () {
 /**
  * Reusable Scatter Plot Component
  *
+ * @module
  */
 function componentBubbles () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var transition = { ease: d3.easeLinear, duration: 0 };
@@ -1386,45 +1903,41 @@ function componentBubbles () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		// Calculate the extents for each series.
-		// TODO: use dataTransform() ?
-		function extents(key) {
-			var serExts = [];
-			d3.map(data).values().forEach(function (d) {
-				var vals = d.values.map(function (e) {
-					return +e[key];
-				});
-				serExts.push(d3.extent(vals));
-			});
-			// Merge all the series extents into one array.
-			// Calculate overall extent.
-			return d3.extent([].concat.apply([], serExts));
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    _dataTransform$summar2 = _dataTransform$summar.coordinatesExtent,
+		    xExtent = _dataTransform$summar2.x,
+		    yExtent = _dataTransform$summar2.y,
+		    valueExtent = _dataTransform$summar.valueExtent;
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(rowKeys).range(colors);
 		}
 
-		var xDomain = extents("x");
-		var yDomain = extents("y");
-		var sizeDomain = extents("value");
-		var seriesNames = data.map(function (d) {
-			return d.key;
-		});
+		if (typeof sizeScale === "undefined") {
+			sizeScale = d3.scaleLinear().domain(valueExtent).range([minRadius, maxRadius]);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleLinear().domain(xExtent).range([0, width]).nice();
+		}
 
-		// If the sizeScale has not been passed then attempt to calculate.
-		sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
-
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleLinear().domain(xDomain).range([0, width]).nice() : xScale;
-
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain(yDomain).range([height, 0]).nice() : yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(yExtent).range([height, 0]).nice();
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias bubbles
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -1466,92 +1979,135 @@ function componentBubbles () {
 				return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 			});
 
-			/*
-   bubbles.enter()
-   	.append("circle")
-   	.attr("class", "bubble")
-   	.attr("cx", function(d) { return xScale(d.x); })
-   	.attr("cy", function(d) { return yScale(d.y); })
-   	.attr("r", function(d) { return sizeScale(d.value); })
-   	.style("fill", function(d) { return colorScale(d.series); })
-   	.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d.value); })
-   	.on("click", function(d) { dispatch.call("customValueClick", this, d.value); })
-   	.merge(bubbles)
-   	.transition()
-   	.ease(transition.ease)
-   	.duration(transition.duration)
-   	.attr("cx", function(d) { return xScale(d.x); })
-   	.attr("cy", function(d) { return yScale(d.y); })
-   	.attr("r", function(d) { return sizeScale(d.value); });
-   */
-
 			bubbles.exit().transition().style("opacity", 0).remove();
 		});
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.sizeScale = function (_) {
+	/**
+  * Size Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.sizeScale = function (_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return my;
 	};
 
-	my.minRadius = function (_) {
+	/**
+  * Min Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.minRadius = function (_v) {
 		if (!arguments.length) return minRadius;
-		minRadius = _;
+		minRadius = _v;
 		return this;
 	};
 
-	my.maxRadius = function (_) {
+	/**
+  * Max Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.maxRadius = function (_v) {
 		if (!arguments.length) return maxRadius;
-		maxRadius = _;
+		maxRadius = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -1563,12 +2119,11 @@ function componentBubbles () {
 /**
  * Reusable Candle Stick Component
  *
+ * @module
  */
 function componentCandleSticks () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 400;
 	var colors = ["green", "red"];
@@ -1581,9 +2136,12 @@ function componentCandleSticks () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		// Slice Data, calculate totals, max etc.
+		// TODO: Use dataTransform() to calculate date domains?
 		var maxDate = d3.max(data.values, function (d) {
 			return d.date;
 		});
@@ -1591,27 +2149,37 @@ function componentCandleSticks () {
 			return d.date;
 		});
 
-		var xDomain = [new Date(minDate - 8.64e7), new Date(maxDate + 8.64e7)];
+		var ONE_DAY_IN_MILLISECONDS = 86400000;
+		var dateDomain = [new Date(minDate - ONE_DAY_IN_MILLISECONDS), new Date(maxDate + ONE_DAY_IN_MILLISECONDS)];
+
+		// TODO: Use dataTransform() to calculate candle min/max?
 		var yDomain = [d3.min(data.values, function (d) {
 			return d.low;
 		}), d3.max(data.values, function (d) {
 			return d.high;
 		})];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain([true, false]).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain([true, false]).range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(xDomain).range([0, width]) : xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime().domain(dateDomain).range([0, width]);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain(yDomain).range([height, 0]).nice() : yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(yDomain).range([height, 0]).nice();
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias candleSticks
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
-	var my = function my(selection) {
+	function my(selection) {
 		init(selection.data()[0]);
 		selection.each(function () {
 
@@ -1684,59 +2252,109 @@ function componentCandleSticks () {
 
 			candles.exit().remove();
 		});
+	}
+
+	/**
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
+  */
+	my.width = function (_v) {
+		if (!arguments.length) return width;
+		width = _v;
+		return this;
 	};
 
 	/**
-  * Configuration Getters & Setters
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
   */
-	my.width = function (_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
-
-	my.height = function (_) {
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.candleWidth = function (_) {
+	/**
+  * Candle Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
+  */
+	my.candleWidth = function (_v) {
 		if (!arguments.length) return candleWidth;
-		candleWidth = _;
+		candleWidth = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -1748,25 +2366,29 @@ function componentCandleSticks () {
 /**
  * Reusable Circular Axis Component
  *
+ * @module
  */
 function componentCircularAxis () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	var radius = 150;
+	var radius = void 0;
 	var radialScale = void 0;
 	var ringScale = void 0;
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias circularAxis
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
 		// Create axis group
 		var axisSelect = selection.selectAll(".axis").data([0]);
@@ -1869,35 +2491,62 @@ function componentCircularAxis () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.height = function (_) {
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.width = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.radialScale = function (_) {
+	/**
+  * Radial Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.radialScale = function (_v) {
 		if (!arguments.length) return radialScale;
-		radialScale = _;
+		radialScale = _v;
 		return my;
 	};
 
-	my.ringScale = function (_) {
+	/**
+  * Ring Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.ringScale = function (_v) {
 		if (!arguments.length) return ringScale;
-		ringScale = _;
+		ringScale = _v;
 		return my;
 	};
 
@@ -1907,12 +2556,11 @@ function componentCircularAxis () {
 /**
  * Reusable Radial Labels Component
  *
+ * @module
  */
 function componentCircularRingLabels () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var radius = void 0;
@@ -1924,10 +2572,15 @@ function componentCircularRingLabels () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias circularRingLabels
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
 		var labelsSelect = selection.selectAll(".radialLabels").data([0]);
 
@@ -1960,53 +2613,98 @@ function componentCircularRingLabels () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.height = function (_) {
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.width = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.startAngle = function (_) {
+	/**
+  * Start Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.startAngle = function (_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
-	my.endAngle = function (_) {
+	/**
+  * End Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.endAngle = function (_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
-	my.capitalizeLabels = function (_) {
+	/**
+  * Capital Label Getter / Setter
+  *
+  * @param {boolean} _v - Capitalize labels.
+  * @returns {*}
+  */
+	my.capitalizeLabels = function (_v) {
 		if (!arguments.length) return capitalizeLabels;
-		capitalizeLabels = _;
+		capitalizeLabels = _v;
 		return this;
 	};
 
-	my.radialScale = function (_) {
+	/**
+  * Radial Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.radialScale = function (_v) {
 		if (!arguments.length) return radialScale;
-		radialScale = _;
+		radialScale = _v;
 		return my;
 	};
 
-	my.textAnchor = function (_) {
+	/**
+  * Text Anchor Getter / Setter
+  *
+  * @param {string} _v - Anchor name.
+  * @returns {*}
+  */
+	my.textAnchor = function (_v) {
 		if (!arguments.length) return textAnchor;
-		textAnchor = _;
+		textAnchor = _v;
 		return this;
 	};
 
@@ -2016,12 +2714,11 @@ function componentCircularRingLabels () {
 /**
  * Reusable Circular Labels Component
  *
+ * @module
  */
 function componentCircularSectorLabels () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var radius = void 0;
@@ -2033,10 +2730,15 @@ function componentCircularSectorLabels () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias circularSectorLabels
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
 		// Tick Data Generator
 		var tickData = function tickData() {
@@ -2117,53 +2819,98 @@ function componentCircularSectorLabels () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.height = function (_) {
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.width = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.startAngle = function (_) {
+	/**
+  * Start Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.startAngle = function (_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
-	my.endAngle = function (_) {
+	/**
+  * End Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.endAngle = function (_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
-	my.capitalizeLabels = function (_) {
+	/**
+  * Capital Label Getter / Setter
+  *
+  * @param {boolean} _v - Capitalize labels.
+  * @returns {*}
+  */
+	my.capitalizeLabels = function (_v) {
 		if (!arguments.length) return capitalizeLabels;
-		capitalizeLabels = _;
+		capitalizeLabels = _v;
 		return this;
 	};
 
-	my.radialScale = function (_) {
+	/**
+  * Radial Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.radialScale = function (_v) {
 		if (!arguments.length) return radialScale;
-		radialScale = _;
+		radialScale = _v;
 		return my;
 	};
 
-	my.textAnchor = function (_) {
+	/**
+  * Text Anchor Getter / Setter
+  *
+  * @param {string} _v - Anchor name.
+  * @returns {*}
+  */
+	my.textAnchor = function (_v) {
 		if (!arguments.length) return textAnchor;
-		textAnchor = _;
+		textAnchor = _v;
 		return this;
 	};
 
@@ -2173,12 +2920,11 @@ function componentCircularSectorLabels () {
 /**
  * Reusable Donut Chart Component
  *
+ * @module
  */
 function componentDonut () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var radius = 150;
@@ -2191,22 +2937,33 @@ function componentDonut () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias donut
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		selection.each(function (data) {
@@ -2257,50 +3014,94 @@ function componentDonut () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner Radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -2312,12 +3113,11 @@ function componentDonut () {
 /**
  * Reusable Donut Chart Label Component
  *
+ * @module
  */
 function componentDonutLabels () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -2327,16 +3127,26 @@ function componentDonutLabels () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias donutLabels
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		selection.each(function (data) {
@@ -2425,29 +3235,50 @@ function componentDonutLabels () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
@@ -2457,12 +3288,11 @@ function componentDonutLabels () {
 /**
  * Reusable Heat Map Ring Component
  *
+ * @module
  */
 function componentHeatMapRing () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var radius = 150;
@@ -2480,32 +3310,43 @@ function componentHeatMapRing () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    tmpThresholds = _dataTransform$summar.thresholds;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
-
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).rangeRound([startAngle, endAngle]).padding(0.1) : xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(categoryNames).rangeRound([radius, innerRadius]).padding(0.1) : yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.1);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand().domain(rowKeys).rangeRound([radius, innerRadius]).padding(0.1);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias heatMapRing
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -2553,80 +3394,154 @@ function componentHeatMapRing () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.startAngle = function (_) {
+	/**
+  * Start Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.startAngle = function (_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
-	my.endAngle = function (_) {
+	/**
+  * End Angle Getter / Setter
+  *
+  * @param {number} _v - Angke in degrees.
+  * @returns {*}
+  */
+	my.endAngle = function (_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.thresholds = function (_) {
+	/**
+  * Thresholds Getter / Setter
+  *
+  * @param {Array} _v - Array of thresholds.
+  * @returns {*}
+  */
+	my.thresholds = function (_v) {
 		if (!arguments.length) return thresholds;
-		thresholds = _;
+		thresholds = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -2635,29 +3550,14 @@ function componentHeatMapRing () {
 	return my;
 }
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
 /**
  * Reusable Heat Map Table Row Component
  *
+ * @module
  */
 function componentHeatMapRow () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 100;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -2671,29 +3571,39 @@ function componentHeatMapRow () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    tmpThresholds = _dataTransform$summar.thresholds;
 
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).range([0, width]).padding(0.1) : xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).range([0, width]).padding(0.1);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, height]).padding(0.1) : yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand().domain(rowKeys).range([0, height]).padding(0.1);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias heatMapRow
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -2739,56 +3649,100 @@ function componentHeatMapRow () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.thresholds = function (_) {
+	my.thresholds = function (_v) {
 		if (!arguments.length) return thresholds;
-		thresholds = _;
+		thresholds = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch Event Handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -2800,19 +3754,25 @@ function componentHeatMapRow () {
 /**
  * Simple HTML List
  *
+ * @module
  */
 function componentHtmlList () {
-	// HTML List Element (Populated by 'my' function)
+
+	/* HTML List Element */
 	var listEl = void 0;
 
-	// Default Options (Configurable via setters)
+	/* Default Properties */
 	var classed = "htmlList";
 
-	// Dispatch (Custom events)
+	/* Dispatch */
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias htmlList
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		selection.each(function (data) {
@@ -2854,14 +3814,22 @@ function componentHtmlList () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Class Getter / Setter
+  *
+  * @param {string} _v - HTML class.
+  * @returns {*}
   */
-	my.classed = function (_) {
+	my.classed = function (_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -2873,47 +3841,35 @@ function componentHtmlList () {
 /**
  * Simple HTML Table
  *
+ * @module
  */
 function componentHtmlTable () {
-	// HTML Table Element (Populated by 'my' function)
+
+	/* HTML List Element */
 	var tableEl = void 0;
 
-	// Default Options (Configurable via setters)
+	/* Default Properties */
 	var classed = "htmlTable";
 	var width = 800;
-
-	// Data Options (Populated by 'init' function)
-	var rowNames = [];
-	var columnNames = [];
 
 	// Dispatch (Custom events)
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
-  * Initialise Data
-  */
-	function init(data) {
-		// Cut the data in different ways....
-		rowNames = data.map(function (d) {
-			return d.key;
-		});
-
-		columnNames = [];
-		data.map(function (d) {
-			return d.values;
-		})[0].forEach(function (d, i) {
-			columnNames[i] = d.key;
-		});
-	}
-
-	/**
   * Constructor
+  *
+  * @constructor
+  * @alias htmlTable
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		selection.each(function (data) {
-			init(data);
+			var _dataTransform$summar = dataTransform(data).summary(),
+			    columnKeys = _dataTransform$summar.columnKeys;
 
 			// Create HTML Table 'table' element (if it does not exist already)
+
+
 			if (!tableEl) {
 				tableEl = d3.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
 			} else {
@@ -2929,7 +3885,7 @@ function componentHtmlTable () {
 			hdr.selectAll("th").data(function () {
 				// Tack on a blank cell at the beginning,
 				// this is for the top of the first column.
-				return [""].concat(columnNames);
+				return [""].concat(columnKeys);
 			}).enter().append("th").html(function (d) {
 				return d;
 			});
@@ -2962,20 +3918,34 @@ function componentHtmlTable () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.classed = function (_) {
+	/**
+  * Class Getter / Setter
+  *
+  * @param {string} _v - HTML class.
+  * @returns {*}
+  */
+	my.classed = function (_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -2987,12 +3957,11 @@ function componentHtmlTable () {
 /**
  * Reusable Line Chart Component
  *
+ * @module
  */
 function componentLineChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 400;
 	var transition = { ease: d3.easeLinear, duration: 0 };
@@ -3005,27 +3974,41 @@ function componentLineChart () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.rowKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    valueMax = _dataTransform$summar.valueMax;
+
+		var valueExtent = [0, valueMax];
+
+		// TODO: Use dataTransform() to calculate date domains?
 		var dateDomain = d3.extent(data[0].values, function (d) {
 			return d.key;
 		});
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(rowKeys).range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(dateDomain).range([0, width]) : xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime().domain(dateDomain).range([0, width]);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue * 1.05]).range([height, 0]) : yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([height, 0]).nice();
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias lineChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -3072,50 +4055,94 @@ function componentLineChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -3127,12 +4154,11 @@ function componentLineChart () {
 /**
  * Reusable Number Row Component
  *
+ * @module
  */
 function componentNumberCard () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 100;
 	var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
@@ -3144,28 +4170,35 @@ function componentNumberCard () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
-		var minValue = dataSummary.minValue;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueExtent = _dataTransform$summar.valueExtent;
 
-		var valDomain = [minValue, maxValue];
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleLinear().domain(valueExtent).range(colors);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).range([0, width]).padding(0.05);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).range([0, width]).padding(0.05) : xScale;
-
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, height]).padding(0.05) : yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand().domain(rowKeys).range([0, height]).padding(0.05);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias numberCard
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -3209,50 +4242,94 @@ function componentNumberCard () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -3264,12 +4341,11 @@ function componentNumberCard () {
 /**
  * Reusable Polar Area Chart Component
  *
+ * @module
  */
 function componentPolarArea () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var radius = 150;
@@ -3285,27 +4361,40 @@ function componentPolarArea () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		var valueExtent = [0, valueMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).rangeRound([startAngle, endAngle]).padding(0.15) : xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice() : yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.15);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]).nice();
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias polarArea
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -3349,56 +4438,106 @@ function componentPolarArea () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -3410,155 +4549,216 @@ function componentPolarArea () {
 /**
  * Reusable Line Chart Component
  *
+ * @module
  */
 function componentRadarArea () {
 
-  /**
-   * Default Properties
-   */
-  var width = 300;
-  var height = 300;
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
-  var radius = 150;
-  var angleSlice = void 0;
-  var classed = "radarArea";
+	/* Default Properties */
+	var width = 300;
+	var height = 300;
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
+	var radius = 150;
+	var angleSlice = void 0;
+	var classed = "radarArea";
 
-  /**
-   * Initialise Data and Scales
-   */
-  function init(data) {
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+	/**
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
+  */
+	function init(data) {
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-    var dataSummary = dataTransform(data).summary();
-    var seriesNames = dataSummary.columnKeys;
-    var maxValue = dataSummary.maxValue;
+		var valueExtent = [0, valueMax];
 
-    // Slice calculation on circle
-    angleSlice = Math.PI * 2 / seriesNames.length;
+		// Slice calculation on circle
+		angleSlice = Math.PI * 2 / columnKeys.length;
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-    // If the xScale has not been passed then attempt to calculate.
-    xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).range([0, 360]) : xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-    // If the yScale has not been passed then attempt to calculate.
-    yScale = typeof yScale === "undefined" ? yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice() : yScale;
-  }
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).range([0, 360]);
+		}
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    init(selection.data());
-    selection.each(function () {
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]).nice();
+		}
+	}
 
-      // Function to generate radar line points
-      var radarLine = d3.radialLine().radius(function (d) {
-        return yScale(d.value);
-      }).angle(function (d, i) {
-        return i * angleSlice;
-      }).curve(d3.curveBasis).curve(d3.curveCardinalClosed);
+	/**
+  * Constructor
+  *
+  * @constructor
+  * @alias radarArea
+  * @param {d3.selection} selection - The chart holder D3 selection.
+  */
+	function my(selection) {
+		init(selection.data());
+		selection.each(function () {
 
-      // Update series group
-      var seriesGroup = d3.select(this);
-      seriesGroup.append("path").classed(classed, true).attr("d", function (d) {
-        return radarLine(d.values);
-      }).style("fill-opacity", 0.2).on('mouseover', function () {
-        d3.select(this).transition().duration(200).style("fill-opacity", 0.7);
-      }).on('mouseout', function () {
-        d3.select(this).transition().duration(200).style("fill-opacity", 0.2);
-      });
+			// Function to generate radar line points
+			var radarLine = d3.radialLine().radius(function (d) {
+				return yScale(d.value);
+			}).angle(function (d, i) {
+				return i * angleSlice;
+			}).curve(d3.curveBasis).curve(d3.curveCardinalClosed);
 
-      // Creating lines/path on circle
-      seriesGroup.append("path").attr("class", "radarStroke").attr("d", function (d) {
-        return radarLine(d.values);
-      }).style("stroke-width", 3 + "px").style("fill", "none");
+			// Update series group
+			var seriesGroup = d3.select(this);
+			seriesGroup.append("path").classed(classed, true).attr("d", function (d) {
+				return radarLine(d.values);
+			}).style("fill-opacity", 0.2).on('mouseover', function () {
+				d3.select(this).transition().duration(200).style("fill-opacity", 0.7);
+			}).on('mouseout', function () {
+				d3.select(this).transition().duration(200).style("fill-opacity", 0.2);
+			});
 
-      // Create Radar Circle points on line
-      seriesGroup.selectAll(".radarCircle").data(function (d) {
-        return d.values;
-      }).enter().append("circle").attr("class", "radarCircle").attr("r", 4).attr("cx", function (d, i) {
-        return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
-      }).attr("cy", function (d, i) {
-        return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
-      }).style("fill-opacity", 0.8);
-    });
-  }
+			// Creating lines/path on circle
+			seriesGroup.append("path").attr("class", "radarStroke").attr("d", function (d) {
+				return radarLine(d.values);
+			}).style("stroke-width", 3 + "px").style("fill", "none");
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+			// Create Radar Circle points on line
+			seriesGroup.selectAll(".radarCircle").data(function (d) {
+				return d.values;
+			}).enter().append("circle").attr("class", "radarCircle").attr("r", 4).attr("cx", function (d, i) {
+				return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
+			}).attr("cy", function (d, i) {
+				return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
+			}).style("fill-opacity", 0.8);
+		});
+	}
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	/**
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
+  */
+	my.width = function (_v) {
+		if (!arguments.length) return width;
+		width = _v;
+		return this;
+	};
 
-  my.radius = function (_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return this;
-  };
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return my;
-  };
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
+		if (!arguments.length) return radius;
+		radius = _v;
+		return this;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return my;
-  };
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return my;
+	};
 
-  my.xScale = function (_) {
-    if (!arguments.length) return xScale;
-    xScale = _;
-    return my;
-  };
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
+		if (!arguments.length) return colors;
+		colors = _v;
+		return my;
+	};
 
-  my.yScale = function (_) {
-    if (!arguments.length) return yScale;
-    yScale = _;
-    return my;
-  };
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
+		if (!arguments.length) return xScale;
+		xScale = _v;
+		return my;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
+		if (!arguments.length) return yScale;
+		yScale = _v;
+		return my;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
+		if (!arguments.length) return dispatch();
+		dispatch = _v;
+		return this;
+	};
 
-  return my;
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
+	return my;
 }
 
 /**
  * Reusable Proportional Area Circles Component
  *
+ * @module
  */
 function componentProportionalAreaCircles () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 100;
 	var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
@@ -3575,34 +4775,43 @@ function componentProportionalAreaCircles () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
-		var minValue = dataSummary.minValue;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueExtent = _dataTransform$summar.valueExtent;
 
-		var valDomain = [minValue, maxValue];
-		var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function (d) {
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleLinear().domain(valueExtent).range(colors);
+		}
+
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand().domain(columnKeys).range([0, width]).padding(0.05);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand().domain(rowKeys).range([0, height]).padding(0.05);
+		}
+
+		var sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1]["values"], function (d) {
 			return d["value"];
 		})];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
-
-		// If the sizeScale has not been passed then attempt to calculate.
-		sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
-
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleBand().domain(seriesNames).range([0, width]).padding(0.05) : xScale;
-
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleBand().domain(categoryNames).range([0, height]).padding(0.05) : yScale;
+		if (typeof sizeScale === "undefined") {
+			sizeScale = d3.scaleLinear().domain(sizeExtent).range([minRadius, maxRadius]);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias proportionalAreaCircles
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -3646,77 +4855,111 @@ function componentProportionalAreaCircles () {
 				dispatch.call("customValueClick", this, d);
 			}).merge(spots);
 
-			/*
-   spots.enter()
-     .append("circle")
-     .attr("class", "punchSpot")
-     .attr("cx", function(d) { return (cellWidth / 2 + xScale(d.key)); })
-     .attr("cy", function(d) { return (cellHeight / 2); })
-     .attr("r", 0)
-     .on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-     .on("click", function(d) { dispatch.call("customValueClick", this, d); })
-     .merge(spots)
-     .transition()
-     .duration(transition.duration)
-     .attr("fill", function(d) { return colorScale(d.value); })
-     .attr("r", function(d) { return sizeScale(d['value']); });
-   */
-
 			spots.exit().transition().style("opacity", 0).remove();
 		});
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.sizeScale = function (_) {
+	/**
+  * Size Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.sizeScale = function (_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -3728,12 +4971,11 @@ function componentProportionalAreaCircles () {
 /**
  * Reusable Scatter Plot Component
  *
+ * @module
  */
 function componentScatterPlot () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 400;
 	var height = 400;
 	var transition = { ease: d3.easeLinear, duration: 0 };
@@ -3746,27 +4988,39 @@ function componentScatterPlot () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.rowKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    valueMax = _dataTransform$summar.valueMax;
+
+		var valueExtent = [0, valueMax * 1.05];
 		var dateDomain = d3.extent(data[0].values, function (d) {
 			return d.key;
 		});
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(rowKeys).range(colors);
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = typeof xScale === "undefined" ? d3.scaleTime().domain(dateDomain).range([0, width]) : xScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime().domain(dateDomain).range([0, width]);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue * 1.05]).range([height, 0]) : yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([height, 0]);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias scatterPlot
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -3817,50 +5071,94 @@ function componentScatterPlot () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -3872,12 +5170,11 @@ function componentScatterPlot () {
 /**
  * Reusable Rose Chart Sector
  *
+ * @module
  */
 function componentRoseChartSector () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 300;
 	var height = 300;
 	var transition = { ease: d3.easeBounce, duration: 500 };
@@ -3894,30 +5191,43 @@ function componentRoseChartSector () {
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = stacked ? dataSummary.rowTotalsMax : dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax,
+		    rowTotalsMax = _dataTransform$summar.rowTotalsMax;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(width, height) / 2 : radius;
+		var max = stacked ? rowTotalsMax : valueMax;
+		var valueExtent = [0, max];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = typeof yScale === "undefined" ? d3.scaleLinear().domain([0, maxValue]).range([0, radius]) : yScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		// If the xScale has been passed then re-calculate the start and end angles.
 		if (typeof xScale !== "undefined") {
 			startAngle = xScale(data.key);
 			endAngle = xScale(data.key) + xScale.bandwidth();
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]);
 		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias roseChartSector
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		init(selection.data());
@@ -3977,74 +5287,142 @@ function componentRoseChartSector () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.startAngle = function (_) {
+	/**
+  * Start Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.startAngle = function (_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
-	my.endAngle = function (_) {
+	/**
+  * End Angle Getter / Setter
+  *
+  * @param {number} _v - Angle in degrees.
+  * @returns {*}
+  */
+	my.endAngle = function (_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function (_) {
+	/**
+  * X Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.xScale = function (_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function (_) {
+	/**
+  * Y Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.yScale = function (_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.stacked = function (_) {
+	/**
+  * Stacked Getter / Setter
+  *
+  * @param {boolean} _v - Stacked bars or grouped?
+  * @returns {*}
+  */
+	my.stacked = function (_v) {
 		if (!arguments.length) return stacked;
-		stacked = _;
+		stacked = _v;
 		return my;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -4056,12 +5434,11 @@ function componentRoseChartSector () {
 /**
  * Reusable Size Legend Component
  *
+ * @module
  */
 function componentLegendSize () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 100;
 	var height = 200;
 	var sizeScale = void 0;
@@ -4069,6 +5446,10 @@ function componentLegendSize () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias legendSize
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		height = height ? height : this.attr("height");
@@ -4128,29 +5509,50 @@ function componentLegendSize () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.sizeScale = function (_) {
-		if (!arguments.length) return sizeScale;
-		sizeScale = _;
-		return my;
-	};
-
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
-	my.itemCount = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return my;
+	};
+
+	/**
+  * Size Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 size scale.
+  * @returns {*}
+  */
+	my.sizeScale = function (_v) {
+		if (!arguments.length) return sizeScale;
+		sizeScale = _v;
+		return my;
+	};
+
+	/**
+  * Item Count Getter / Setter
+  *
+  * @param {number} _v - Number of items.
+  * @returns {*}
+  */
+	my.itemCount = function (_v) {
 		if (!arguments.length) return itemCount;
-		itemCount = _;
+		itemCount = _v;
 		return my;
 	};
 
@@ -4160,12 +5562,11 @@ function componentLegendSize () {
 /**
  * Reusable Categorical Legend Component
  *
+ * @module
  */
 function componentLegendColor () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 100;
 	var height = 200;
 	var colorScale = void 0;
@@ -4174,6 +5575,10 @@ function componentLegendColor () {
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias legendColor
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		height = height ? height : this.attr("height");
@@ -4244,29 +5649,50 @@ function componentLegendColor () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.colorScale = function (_) {
-		if (!arguments.length) return colorScale;
-		colorScale = _;
-		return my;
-	};
-
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
-	my.itemType = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return my;
+	};
+
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return my;
+	};
+
+	/**
+  * Item Type Getter / Setter
+  *
+  * @param {string} _v - Item type (‘rect’, ‘circle’).
+  * @returns {*}
+  */
+	my.itemType = function (_v) {
 		if (!arguments.length) return itemType;
-		itemType = _;
+		itemType = _v;
 		return my;
 	};
 
@@ -4275,19 +5701,23 @@ function componentLegendColor () {
 
 /**
  * Reusable Threshold Legend Component
- * https://bl.ocks.org/mbostock/4573883
+ *
+ * @module
+ * @see https://bl.ocks.org/mbostock/4573883
  */
 function componentLegendThreshold () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 100;
 	var height = 200;
 	var thresholdScale = void 0;
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias legendThreshold
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		height = height ? height : this.attr("height");
@@ -4324,23 +5754,38 @@ function componentLegendThreshold () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.thresholdScale = function (_) {
-		if (!arguments.length) return thresholdScale;
-		thresholdScale = _;
-		return my;
-	};
-
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
+		return my;
+	};
+
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return my;
+	};
+
+	/**
+  * Threshold Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 scale.
+  * @returns {*}
+  */
+	my.thresholdScale = function (_v) {
+		if (!arguments.length) return thresholdScale;
+		thresholdScale = _v;
 		return my;
 	};
 
@@ -4350,22 +5795,26 @@ function componentLegendThreshold () {
 /**
  * Reusable Legend Component
  *
+ * @module
  */
 function componentLegend () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var width = 100;
 	var height = 150;
 	var sizeScale = void 0;
 	var colorScale = void 0;
 	var title = void 0;
+	var legend = void 0;
 
 	var opacity = 0.7;
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias legend
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		height = height ? height : this.attr("height");
@@ -4375,8 +5824,6 @@ function componentLegend () {
 		var legendBox = selection.selectAll("#legendBox").data([0]).enter().append("g").attr("id", "legendBox");
 
 		legendBox.append("rect").attr("width", width).attr("height", height).attr("fill-opacity", opacity).attr("fill", "#ffffff").attr("stroke-width", 1).attr("stroke", "#000000");
-
-		var legend = void 0;
 
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {
@@ -4400,6 +5847,10 @@ function componentLegend () {
 
 	/**
   * Detect Scale Type
+  *
+  * @param {d3.scale} scale - Scale type.
+  *
+  * @returns {string}
   */
 	function scaleType(scale) {
 		var s = scale.copy();
@@ -4417,35 +5868,62 @@ function componentLegend () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.height = function (_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
-	my.sizeScale = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return my;
+	};
+
+	/**
+  * Size Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.sizeScale = function (_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return my;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.title = function (_) {
+	/**
+  * Title Getter / Setter
+  *
+  * @param {string} _v - Title text.
+  * @returns {*}
+  */
+	my.title = function (_v) {
 		if (!arguments.length) return title;
-		title = _;
+		title = _v;
 		return my;
 	};
 
@@ -4486,13 +5964,13 @@ var component = {
 
 /**
  * Circular Bar Chart (also called: Progress Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/circular-bar-chart/
  */
 function chartBarChartCircular () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "barChartCircular";
@@ -4503,55 +5981,60 @@ function chartBarChartCircular () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 	var radius = void 0;
 	var innerRadius = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var startAngle = 0;
 	var endAngle = 270;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
+		var valueExtent = [valueMax, 0];
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(seriesNames).rangeRound([innerRadius, radius]).padding(0.15);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		yScale = d3.scaleLinear().domain([maxValue, 0]).range([startAngle, endAngle]);
+		xScale = d3.scaleBand().domain(columnKeys).rangeRound([innerRadius, radius]).padding(0.15);
+
+		yScale = d3.scaleLinear().domain(valueExtent).range([startAngle, endAngle]);
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barChartCircular
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -4605,62 +6088,118 @@ function chartBarChartCircular () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -4671,13 +6210,13 @@ function chartBarChartCircular () {
 
 /**
  * Clustered Bar Chart (also called: Multi-set Bar Chart; Grouped Bar Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/grouped-bar-chart/
  */
 function chartBarChartClustered () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "barChartClustered";
@@ -4688,48 +6227,50 @@ function chartBarChartClustered () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var yAxisLabel = null;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var maxValue = dataSummary.maxValue;
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    maxValue = _dataTransform$summar.maxValue;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, maxValue];
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(categoryNames).rangeRound([0, chartW]).padding(0.1);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
+		xScale = d3.scaleBand().domain(rowKeys).rangeRound([0, chartW]).padding(0.1);
+
+		yScale = d3.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barChartClustered
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -4789,56 +6330,106 @@ function chartBarChartClustered () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.yAxisLabel = function (_) {
+	/**
+  * Y Axix Label Getter / Setter
+  *
+  * @param {string} _v - Label text.
+  * @returns {*}
+  */
+	my.yAxisLabel = function (_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -4849,13 +6440,13 @@ function chartBarChartClustered () {
 
 /**
  * Stacked Bar Chart
+ *
+ * @module
  * @see http://datavizproject.com/data-type/stacked-bar-chart/
  */
 function chartBarChartStacked () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "barChartStacked";
@@ -4866,47 +6457,50 @@ function chartBarChartStacked () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var yAxisLabel = null;
 
 	/**
   * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesTotalsMax = dataSummary.rowTotalsMax;
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    rowTotalsMax = _dataTransform$summar.rowTotalsMax;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, rowTotalsMax];
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(categoryNames).rangeRound([0, chartW]).padding(0.15);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		yScale = d3.scaleLinear().domain([0, seriesTotalsMax]).range([chartH, 0]).nice();
+		xScale = d3.scaleBand().domain(rowKeys).rangeRound([0, chartW]).padding(0.15);
+
+		yScale = d3.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barChartStacked
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -4966,56 +6560,106 @@ function chartBarChartStacked () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.yAxisLabel = function (_) {
+	/**
+  * Y Axix Label Getter / Setter
+  *
+  * @param {string} _v - Label text.
+  * @returns {*}
+  */
+	my.yAxisLabel = function (_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -5026,13 +6670,13 @@ function chartBarChartStacked () {
 
 /**
  * Bar Chart (horizontal) (also called: Bar Chart; Bar Graph)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/bar-chart/
  */
 function chartBarChartHorizontal () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "barChartHorizontal";
@@ -5043,42 +6687,46 @@ function chartBarChartHorizontal () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, valueMax];
 
-		// X & Y Scales
-		yScale = d3.scaleBand().domain(seriesNames).rangeRound([0, chartH]).padding(0.15);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		xScale = d3.scaleLinear().domain([0, maxValue]).range([0, chartW]).nice();
+		yScale = d3.scaleBand().domain(columnKeys).rangeRound([0, chartH]).padding(0.15);
+
+		xScale = d3.scaleLinear().domain(valueExtent).range([0, chartW]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barChartHorizontal
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -5134,44 +6782,82 @@ function chartBarChartHorizontal () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch on Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -5182,13 +6868,13 @@ function chartBarChartHorizontal () {
 
 /**
  * Bar Chart (vertical) (also called: Bar Chart; Bar Graph)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/bar-chart/
  */
 function chartBarChartVertical () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "barChartVertical";
@@ -5199,42 +6885,46 @@ function chartBarChartVertical () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		var valueExtent = [0, valueMax];
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(seriesNames).rangeRound([0, chartW]).padding(0.15);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
+		xScale = d3.scaleBand().domain(columnKeys).rangeRound([0, chartW]).padding(0.15);
+
+		yScale = d3.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias barChartVertical
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -5290,44 +6980,82 @@ function chartBarChartVertical () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -5338,13 +7066,13 @@ function chartBarChartVertical () {
 
 /**
  * Bubble Chart
+ *
+ * @module
  * @see http://datavizproject.com/data-type/bubble-chart/
  */
 function chartBubbleChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "bubbleChart";
@@ -5355,70 +7083,57 @@ function chartBubbleChart () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var sizeScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var minRadius = 3;
 	var maxRadius = 20;
 	var yAxisLabel = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Calculate the extents for each series.
-		// TODO: Use dataTransform() ?
-		function extents(key) {
-			var serExts = [];
-			d3.map(data).values().forEach(function (d) {
-				var vals = d.values.map(function (e) {
-					return +e[key];
-				});
-				serExts.push(d3.extent(vals));
-			});
-			// Merge all the series extents into one array.
-			// Calculate overall extent.
-			return d3.extent([].concat.apply([], serExts));
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    _dataTransform$summar2 = _dataTransform$summar.coordinatesExtent,
+		    xExtent = _dataTransform$summar2.x,
+		    yExtent = _dataTransform$summar2.y,
+		    valueExtent = _dataTransform$summar.valueExtent;
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(rowKeys).range(colors);
 		}
 
-		var xDomain = extents("x");
-		var yDomain = extents("y");
-		var sizeDomain = extents("value");
-		var seriesNames = data.map(function (d) {
-			return d.key;
-		});
+		if (typeof sizeScale === "undefined") {
+			sizeScale = d3.scaleLinear().domain(valueExtent).range([minRadius, maxRadius]);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		xScale = d3.scaleLinear().domain(xExtent).range([0, chartW]).nice();
 
-		// If the sizeScale has not been passed then attempt to calculate.
-		sizeScale = typeof sizeScale === "undefined" ? d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) : sizeScale;
-
-		// X & Y Scales
-		xScale = d3.scaleLinear().domain(xDomain).range([0, chartW]).nice();
-
-		yScale = d3.scaleLinear().domain(yDomain).range([chartH, 0]).nice();
+		yScale = d3.scaleLinear().domain(yExtent).range([chartH, 0]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias bubbleChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -5455,9 +7170,7 @@ function chartBubbleChart () {
 			// Bubble Chart
 			var bubbles = component.bubbles().width(chartW).height(chartH).colorScale(colorScale).xScale(xScale).yScale(yScale).minRadius(minRadius).maxRadius(maxRadius).dispatch(dispatch);
 
-			var bubbleGroups = chart.select(".bubbleGroups").attr('clip-path', function () {
-				return "url(" + window.location + "#plotAreaClip)";
-			}).append("g");
+			var bubbleGroups = chart.select(".bubbleGroups").attr('clip-path', "url(" + window.location + "#plotAreaClip)").append("g");
 
 			var seriesGroup = bubbleGroups.selectAll(".seriesGroup").data(data);
 
@@ -5497,62 +7210,118 @@ function chartBubbleChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.yAxisLabel = function (_) {
+	/**
+  * Y Axis Label Getter / Setter
+  *
+  * @param {string} _v - Label text.
+  * @returns {*}
+  */
+	my.yAxisLabel = function (_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.sizeScale = function (_) {
+	/**
+  * Size Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.sizeScale = function (_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -5563,13 +7332,13 @@ function chartBubbleChart () {
 
 /**
  * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/candlestick-chart/
  */
 function chartCandlestickChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "candlestickChart";
@@ -5580,56 +7349,62 @@ function chartCandlestickChart () {
 	var colors = ["green", "red"];
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Convert dates
+		// TODO: Use dataTransform() to calculate date domains?
 		data.values.forEach(function (d, i) {
+			// Convert to date
 			data.values[i].date = Date.parse(d.date);
 		});
-
-		// Slice Data, calculate totals, max etc.
 		var maxDate = d3.max(data.values, function (d) {
 			return d.date;
 		});
 		var minDate = d3.min(data.values, function (d) {
 			return d.date;
 		});
-		var xDomain = [new Date(minDate - 8.64e7), new Date(maxDate + 8.64e7)];
+
+		var ONE_DAY_IN_MILLISECONDS = 86400000;
+		var dateDomain = [new Date(minDate - ONE_DAY_IN_MILLISECONDS), new Date(maxDate + ONE_DAY_IN_MILLISECONDS)];
+
+		// TODO: Use dataTransform() to calculate candle min/max?
 		var yDomain = [d3.min(data.values, function (d) {
 			return d.low;
 		}), d3.max(data.values, function (d) {
 			return d.high;
 		})];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain([true, false]).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain([true, false]).range(colors);
+		}
 
-		// X & Y Scales
-		xScale = d3.scaleTime().domain(xDomain).range([0, chartW]);
+		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
 
 		yScale = d3.scaleLinear().domain(yDomain).range([chartH, 0]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias candlestickChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -5698,50 +7473,94 @@ function chartCandlestickChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -5752,13 +7571,13 @@ function chartCandlestickChart () {
 
 /**
  * Donut Chart (also called: Doughnut Chart; Pie Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/donut-chart/
  */
 function chartDonutChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "donutChart";
@@ -5769,41 +7588,47 @@ function chartDonutChart () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 	var radius = void 0;
 	var innerRadius = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var colorScale = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys;
 
-		innerRadius = typeof innerRadius === "undefined" ? radius / 2 : innerRadius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias donutChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -5847,62 +7672,118 @@ function chartDonutChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -5913,15 +7794,15 @@ function chartDonutChart () {
 
 /**
  * Gantt Chart
+ *
+ * @module
  * @see http://datavizproject.com/data-type/gannt-chart/
  */
 function chartGanttChart () {
 
-	/**
-  * Default Properties
-  */
-	var svg;
-	var chart;
+	/* Default Properties */
+	var svg = void 0;
+	var chart = void 0;
 	var classed = "ganttChart";
 	var width = 600;
 	var height = 400;
@@ -5930,38 +7811,37 @@ function chartGanttChart () {
 	var colors = d3.ez.palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
-	var chartW;
-	var chartH;
+	/* Chart Dimensions */
+	var chartW = void 0;
+	var chartH = void 0;
 
-	/**
-  * Scales
-  */
-	var xScale;
-	var yScale;
-	var colorScale;
+	/* Scales */
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var tickFormat = "%d-%b-%y";
-	var dateDomainMin;
-	var dateDomainMax;
+	var dateDomainMin = void 0;
+	var dateDomainMax = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	var init = function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys;
 
-		// Calculate Start and End Dates
+		// TODO: Use dataTransform() to calculate date domains?
+
+
 		data.forEach(function (d) {
 			d.values.forEach(function (b) {
 				dateDomainMin = d3.min([b.startDate, dateDomainMin]);
@@ -5970,24 +7850,40 @@ function chartGanttChart () {
 		});
 		var dateDomain = [dateDomainMin, dateDomainMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]).clamp(true);
 
-		yScale = d3.scaleBand().domain(categoryNames).rangeRound([0, chartH]).padding(0.1);
+		yScale = d3.scaleBand().domain(rowKeys).rangeRound([0, chartH]).padding(0.1);
 	};
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias ganttChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	var my = function my(selection) {
 		// Create SVG element (if it does not exist already)
-		svg = selection.append("svg");
-		svg.classed("d3ez", true).attr("width", width).attr("height", height);
+		if (!svg) {
+			svg = function (selection) {
+				var el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			}(selection);
 
-		chart = svg.append("g").classed("chart", true);
+			svg.classed("d3ez", true).attr("width", width).attr("height", height);
+
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
 
 		// Update the chart dimensions and add layer groups
 		var layers = ["ganttBarGroup", "xAxis axis", "yAxis axis"];
@@ -5996,6 +7892,8 @@ function chartGanttChart () {
 		});
 
 		selection.each(function (data) {
+			var _this = this;
+
 			// Initialise Data
 			init(data);
 
@@ -6013,16 +7911,14 @@ function chartGanttChart () {
 
 			bars.enter().append("rect").attr("rx", 3).attr("ry", 3).attr("class", "bar").attr("y", 0).attr("x", function (d) {
 				return xScale(d.startDate);
-			}).attr("height", function (d) {
-				return yScale.bandwidth();
-			}).attr("fill", function (d) {
+			}).attr("height", yScale.bandwidth()).attr("fill", function (d) {
 				return colorScale(d.key);
 			}).attr("width", function (d) {
 				return Math.max(1, xScale(d.endDate) - xScale(d.startDate));
 			}).on("mouseover", function (d) {
-				dispatch.call("customValueMouseOver", this, d);
+				return dispatch.call("customValueMouseOver", _this, d);
 			}).on("click", function (d) {
-				dispatch.call("customValueClick", this, d);
+				return dispatch.call("customValueClick", _this, d);
 			}).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
 				return xScale(d.startDate);
 			}).attr("width", function (d) {
@@ -6040,57 +7936,119 @@ function chartGanttChart () {
 	};
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
-		if (!arguments.length) return colors;
-		colors = _;
-		return this;
-	};
-
-	my.colorScale = function (_) {
-		if (!arguments.length) return colorScale;
-		colorScale = _;
-		return this;
-	};
-
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.timeDomain = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
+		if (!arguments.length) return colors;
+		colors = _v;
+		return this;
+	};
+
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return this;
+	};
+
+	/**
+  * Time Domain Getter / Setter
+  *
+  * @param {array} _v - Time domain array.
+  * @returns {*}
+  */
+	my.timeDomain = function (_v) {
 		if (!arguments.length) return [dateDomainMin, dateDomainMax];
 		dateDomainMin = _[0];
 		dateDomainMax = _[1];
 		return this;
 	};
 
-	my.tickFormat = function (_) {
+	/**
+  * Tick Format Getter / Setter
+  *
+  * @param {string} _v - String format.
+  * @returns {*}
+  */
+	my.tickFormat = function (_v) {
 		if (!arguments.length) return tickFormat;
-		tickFormat = _;
+		tickFormat = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -6101,13 +8059,13 @@ function chartGanttChart () {
 
 /**
  * Circular Heat Map (also called: Radial Heat Map)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/radial-heatmap/
  */
 function chartHeatMapRadial () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "heatMapRadial";
@@ -6118,61 +8076,64 @@ function chartHeatMapRadial () {
 	var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 	var radius = void 0;
 	var innerRadius = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var startAngle = 0;
 	var endAngle = 270;
 	var thresholds = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    tmpThresholds = _dataTransform$summar.thresholds;
 
-		innerRadius = typeof innerRadius === "undefined" ? radius / 4 : innerRadius;
-
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
-
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(seriesNames).rangeRound([startAngle, endAngle]).padding(0.1);
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 
-		yScale = d3.scaleBand().domain(categoryNames).rangeRound([radius, innerRadius]).padding(0.1);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
+		}
+
+		xScale = d3.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.1);
+
+		yScale = d3.scaleBand().domain(rowKeys).rangeRound([radius, innerRadius]).padding(0.1);
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias heatMapRadial
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -6230,68 +8191,130 @@ function chartHeatMapRadial () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function (_) {
+	/**
+  * Inner Radius Getter / Setter
+  *
+  * @param {number} _v - Inner radius in px.
+  * @returns {*}
+  */
+	my.innerRadius = function (_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.thresholds = function (_) {
+	/**
+  * Thresholds Getter / Setter
+  *
+  * @param {Array} _v - Array of thresholds.
+  * @returns {*}
+  */
+	my.thresholds = function (_v) {
 		if (!arguments.length) return thresholds;
-		thresholds = _;
+		thresholds = _v;
 		return my;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -6302,68 +8325,69 @@ function chartHeatMapRadial () {
 
 /**
  * Heat Map (also called: Heat Table; Density Table; Heat Map)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/heat-map/
  */
 function chartHeatMapTable () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "heatMapTable";
 	var width = 400;
 	var height = 300;
 	var margin = { top: 50, right: 20, bottom: 20, left: 50 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
 	var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var thresholds = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    tmpThresholds = _dataTransform$summar.thresholds;
 
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleThreshold().domain(thresholds).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold().domain(thresholds).range(colors);
+		}
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(seriesNames).range([0, chartW]).padding(0.1);
+		xScale = d3.scaleBand().domain(columnKeys).range([0, chartW]).padding(0.1);
 
-		yScale = d3.scaleBand().domain(categoryNames).range([0, chartH]).padding(0.1);
+		yScale = d3.scaleBand().domain(rowKeys).range([0, chartH]).padding(0.1);
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias heatMapTable
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -6419,50 +8443,106 @@ function chartHeatMapTable () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.thresholds = function (_) {
+	/**
+  * Thresholds Getter / Setter
+  *
+  * @param {Array} _v - Array of thresholds.
+  * @returns {*}
+  */
+	my.thresholds = function (_v) {
 		if (!arguments.length) return thresholds;
-		thresholds = _;
+		thresholds = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -6473,13 +8553,13 @@ function chartHeatMapTable () {
 
 /**
  * Line Chart (also called: Line Graph; Spline Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/line-chart/
  */
 function chartLineChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "lineChart";
@@ -6490,37 +8570,35 @@ function chartLineChart () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var yAxisLabel = null;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.rowKeys;
-		var maxValue = dataSummary.maxValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// Convert dates
+		var valueExtent = [0, valueMax];
+
+		// TODO: Use dataTransform() to calculate date domains?
 		data.forEach(function (d, i) {
 			d.values.forEach(function (b, j) {
 				data[i].values[j].key = new Date(b.key * 1000);
@@ -6530,17 +8608,21 @@ function chartLineChart () {
 			return d.key;
 		});
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(rowKeys).range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]);
 
-		yScale = d3.scaleLinear().domain([0, maxValue]).range([chartH, 0]).nice();
+		yScale = d3.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias lineChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -6571,7 +8653,7 @@ function chartLineChart () {
 			// Initialise Data
 			init(data);
 
-			// Add Clip Path - Still Proof of Concept
+			// Add Clip Path (Proof of Concept)
 			chart.append('defs').append('clipPath').attr('id', 'plotAreaClip').append('rect').attr('width', chartW).attr('height', chartH);
 
 			// Line Chart
@@ -6580,9 +8662,7 @@ function chartLineChart () {
 			// Scatter Plot
 			var scatterPlot = component.scatterPlot().width(chartW).height(chartH).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-			var lineGroups = chart.select(".lineGroups").attr('clip-path', function () {
-				return "url(" + window.location + "#plotAreaClip)";
-			}).append("g");
+			var lineGroups = chart.select(".lineGroups").attr('clip-path', "url(" + window.location + "#plotAreaClip)").append("g");
 
 			var seriesGroup = lineGroups.selectAll(".seriesGroup").data(data);
 
@@ -6622,56 +8702,106 @@ function chartLineChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.yAxisLabel = function (_) {
+	/**
+  * Y Axix Label Getter / Setter
+  *
+  * @param {number} _v - Label text.
+  * @returns {*}
+  */
+	my.yAxisLabel = function (_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -6682,16 +8812,16 @@ function chartLineChart () {
 
 /**
  * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 function chartPolarAreaChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
-	var classed = "polarArea";
+	var classed = "polarAreaChart";
 	var width = 400;
 	var height = 300;
 	var margin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -6699,54 +8829,57 @@ function chartPolarAreaChart () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 	var radius = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var startAngle = 0;
 	var endAngle = 360;
 	var capitalizeLabels = false;
 	var colorLabels = false;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var valueExtent = [0, valueMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(seriesNames).rangeRound([startAngle, endAngle]).padding(0.15);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice();
+		xScale = d3.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.15);
+
+		yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]).nice();
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias polarAreaChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -6803,68 +8936,130 @@ function chartPolarAreaChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.radius = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
-		if (!arguments.length) return transition;
-		transition = _;
-		return this;
-	};
-
-	my.capitalizeLabels = function (_) {
+	/**
+  * Capital Labels Getter / Setter
+  *
+  * @param {boolean} _v - Display capital labels or not?
+  * @returns {*}
+  */
+	my.capitalizeLabels = function (_v) {
 		if (!arguments.length) return capitalizeLabels;
-		capitalizeLabels = _;
+		capitalizeLabels = _v;
 		return this;
 	};
 
-	my.colorLabels = function (_) {
+	/**
+  * Color Labels Getter / Setter
+  *
+  * @param {Array} _v - Array of color labels.
+  * @returns {*}
+  */
+	my.colorLabels = function (_v) {
 		if (!arguments.length) return colorLabels;
-		colorLabels = _;
+		colorLabels = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -6875,76 +9070,74 @@ function chartPolarAreaChart () {
 
 /**
  * Punch Card
+ *
+ * @module
  * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
  */
 function chartPunchCard () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "punchCard";
 	var width = 400;
 	var height = 300;
 	var margin = { top: 50, right: 20, bottom: 20, left: 50 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
 	var colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var sizeScale = void 0;
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
-	/**
-  * Other Customisation Options
-  */
+	/* Other Customisation Options */
 	var minRadius = 2;
 	var maxRadius = 20;
 	var useGlobalScale = true;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
-		var minValue = dataSummary.minValue;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueExtent = _dataTransform$summar.valueExtent;
 
-		var valDomain = [minValue, maxValue];
-		var sizeDomain = useGlobalScale ? valDomain : [0, d3.max(data[1]["values"], function (d) {
-			return d["value"];
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleLinear().domain(valueExtent).range(colors);
+		}
+
+		xScale = d3.scaleBand().domain(columnKeys).range([0, chartW]).padding(0.05);
+
+		yScale = d3.scaleBand().domain(rowKeys).range([0, chartH]).padding(0.05);
+
+		var sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1].values, function (d) {
+			return d.value;
 		})];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleLinear().domain(valDomain).range(colors) : colorScale;
-
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(seriesNames).range([0, chartW]).padding(0.05);
-
-		yScale = d3.scaleBand().domain(categoryNames).range([0, chartH]).padding(0.05);
-
-		// Size Scale
-		sizeScale = d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]);
+		sizeScale = d3.scaleLinear().domain(sizeExtent).range([minRadius, maxRadius]);
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias punchCard
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -6999,62 +9192,130 @@ function chartPunchCard () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.minRadius = function (_) {
+	/**
+  * Min Radius Getter / Setter
+  *
+  * @param {number} _v - Min radius in px.
+  * @returns {*}
+  */
+	my.minRadius = function (_v) {
 		if (!arguments.length) return minRadius;
-		minRadius = _;
+		minRadius = _v;
 		return this;
 	};
 
-	my.maxRadius = function (_) {
+	/**
+  * Max Radius Getter / Setter
+  *
+  * @param {number} _v - Max radius in px.
+  * @returns {*}
+  */
+	my.maxRadius = function (_v) {
 		if (!arguments.length) return maxRadius;
-		maxRadius = _;
+		maxRadius = _v;
 		return this;
 	};
 
-	my.sizeScale = function (_) {
+	/**
+  * Size Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.sizeScale = function (_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.useGlobalScale = function (_) {
+	/**
+  * Global Scale Use Getter / Setter
+  *
+  * @param {boolean} _v - Use global scale or not?
+  * @returns {*}
+  */
+	my.useGlobalScale = function (_v) {
 		if (!arguments.length) return useGlobalScale;
-		useGlobalScale = _;
+		useGlobalScale = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -7065,186 +9326,239 @@ function chartPunchCard () {
 
 /**
  * Radar Chart (also called: Spider Chart; Web Chart; Star Plot)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/radar-diagram/
  */
 function chartRadarChart () {
 
-  /**
-   * Default Properties
-   */
-  var svg = void 0;
-  var chart = void 0;
-  var classed = "radarChart";
-  var width = 400;
-  var height = 300;
-  var margin = { top: 20, right: 20, bottom: 20, left: 20 };
-  var transition = { ease: d3.easeBounce, duration: 500 };
-  var colors = palette.categorical(3);
-  var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	/* Default Properties */
+	var svg = void 0;
+	var chart = void 0;
+	var classed = "radarChart";
+	var width = 400;
+	var height = 300;
+	var margin = { top: 20, right: 20, bottom: 20, left: 20 };
+	var transition = { ease: d3.easeBounce, duration: 500 };
+	var colors = palette.categorical(3);
+	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-  /**
-   * Chart Dimensions
-   */
-  var chartW = void 0;
-  var chartH = void 0;
-  var radius = void 0;
+	/* Chart Dimensions */
+	var chartW = void 0;
+	var chartH = void 0;
+	var radius = void 0;
 
-  /**
-   * Scales
-   */
-  var xScale = void 0;
-  var yScale = void 0;
-  var colorScale = void 0;
+	/* Scales */
+	var xScale = void 0;
+	var yScale = void 0;
+	var colorScale = void 0;
 
-  /**
-   * Other Customisation Options
-   */
-  var startAngle = 0;
-  var endAngle = 360;
+	/* Other Customisation Options */
+	var startAngle = 0;
+	var endAngle = 360;
 
-  /**
-   * Initialise Data, Scales and Series
-   */
-  function init(data) {
-    chartW = width - (margin.left + margin.right);
-    chartH = height - (margin.top + margin.bottom);
+	/**
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
+  */
+	function init(data) {
+		chartW = width - (margin.left + margin.right);
+		chartH = height - (margin.top + margin.bottom);
 
-    // If the radius has not been passed then calculate it from width/height.
-    radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-    // Slice Data, calculate totals, max etc.
-    var dataSummary = dataTransform(data).summary();
-    var seriesNames = dataSummary.rowKeys;
-    var categoryNames = dataSummary.columnKeys;
-    var maxValue = dataSummary.maxValue;
+		var valueExtent = [0, valueMax];
 
-    // If the colorScale has not been passed then attempt to calculate.
-    colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-    // X & Y Scales
-    xScale = d3.scaleBand().domain(categoryNames).range([startAngle, endAngle]);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(rowKeys).range(colors);
+		}
 
-    yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]).nice();
-  }
+		xScale = d3.scaleBand().domain(columnKeys).range([startAngle, endAngle]);
 
-  /**
-   * Constructor
-   */
-  function my(selection) {
-    // Create SVG element (if it does not exist already)
-    if (!svg) {
-      svg = function (selection) {
-        var el = selection._groups[0][0];
-        if (!!el.ownerSVGElement || el.tagName === "svg") {
-          return selection;
-        } else {
-          return selection.append("svg");
-        }
-      }(selection);
+		yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]).nice();
+	}
 
-      svg.classed("d3ez", true).attr("width", width).attr("height", height);
+	/**
+  * Constructor
+  *
+  * @constructor
+  * @alias radarChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
+  */
+	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		if (!svg) {
+			svg = function (selection) {
+				var el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			}(selection);
 
-      chart = svg.append("g").classed("chart", true);
-    } else {
-      chart = selection.select(".chart");
-    }
+			svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-    // Update the chart dimensions and add layer groups
-    var layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis", "radarGroup"];
-    chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
-      return d;
-    });
+			chart = svg.append("g").classed("chart", true);
+		} else {
+			chart = selection.select(".chart");
+		}
 
-    selection.each(function (data) {
-      // Initialise Data
-      init(data);
+		// Update the chart dimensions and add layer groups
+		var layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis", "radarGroup"];
+		chart.classed(classed, true).attr("transform", "translate(" + width / 2 + "," + height / 2 + ")").attr("width", chartW).attr("height", chartH).selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+			return d;
+		});
 
-      // Create Circular Axis
-      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).radius(radius);
+		selection.each(function (data) {
+			// Initialise Data
+			init(data);
 
-      chart.select(".circularAxis").call(circularAxis);
+			// Create Circular Axis
+			var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).radius(radius);
 
-      var radarArea = component.radarArea().radius(radius).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
+			chart.select(".circularAxis").call(circularAxis);
 
-      // Create Radars
-      var seriesGroup = chart.select(".radarGroup").selectAll(".seriesGroup").data(data);
+			var radarArea = component.radarArea().radius(radius).colorScale(colorScale).yScale(yScale).xScale(xScale).dispatch(dispatch);
 
-      seriesGroup.enter().append("g").classed("seriesGroup", true).attr("fill", function (d) {
-        return colorScale(d.key);
-      }).style("stroke", function (d) {
-        return colorScale(d.key);
-      }).merge(seriesGroup).call(radarArea);
+			// Create Radars
+			var seriesGroup = chart.select(".radarGroup").selectAll(".seriesGroup").data(data);
 
-      // Creating vertical scale
-      var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
+			seriesGroup.enter().append("g").classed("seriesGroup", true).attr("fill", function (d) {
+				return colorScale(d.key);
+			}).style("stroke", function (d) {
+				return colorScale(d.key);
+			}).merge(seriesGroup).call(radarArea);
 
-      // Render vertical scale on circle
-      var verticalAxis = d3.axisLeft(axisScale);
-      chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
+			// Creating vertical scale
+			var axisScale = d3.scaleLinear().domain(yScale.domain()).range(yScale.range().reverse()).nice();
 
-      // Adding Circular Labels on Page
-      var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(xScale).textAnchor("start");
+			// Render vertical scale on circle
+			var verticalAxis = d3.axisLeft(axisScale);
+			chart.select(".verticalAxis").attr("transform", "translate(0," + -radius + ")").call(verticalAxis);
 
-      chart.select(".circularSectorLabels").call(circularSectorLabels);
-    });
-  }
+			// Adding Circular Labels on Page
+			var circularSectorLabels = component.circularSectorLabels().radius(radius * 1.04).radialScale(xScale).textAnchor("start");
 
-  /**
-   * Configuration Getters & Setters
-   */
-  my.width = function (_) {
-    if (!arguments.length) return width;
-    width = _;
-    return this;
-  };
+			chart.select(".circularSectorLabels").call(circularSectorLabels);
+		});
+	}
 
-  my.height = function (_) {
-    if (!arguments.length) return height;
-    height = _;
-    return this;
-  };
+	/**
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
+  */
+	my.width = function (_v) {
+		if (!arguments.length) return width;
+		width = _v;
+		return this;
+	};
 
-  my.colors = function (_) {
-    if (!arguments.length) return colors;
-    colors = _;
-    return this;
-  };
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return this;
+	};
 
-  my.colorScale = function (_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return this;
-  };
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
+		if (!arguments.length) return radius;
+		radius = _v;
+		return this;
+	};
 
-  my.transition = function (_) {
-    if (!arguments.length) return transition;
-    transition = _;
-    return this;
-  };
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
+		if (!arguments.length) return colors;
+		colors = _v;
+		return this;
+	};
 
-  my.dispatch = function (_) {
-    if (!arguments.length) return dispatch();
-    dispatch = _;
-    return this;
-  };
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return this;
+	};
 
-  my.on = function () {
-    var value = dispatch.on.apply(dispatch, arguments);
-    return value === dispatch ? my : value;
-  };
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
 
-  return my;
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
+		if (!arguments.length) return dispatch();
+		dispatch = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
+	return my;
 }
 
 /**
  * Rose Chart (also called: Coxcomb Chart; Circumplex Chart; Nightingale Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 function chartRoseChart () {
 
-	/**
-  * Default Properties
-  */
+	/* Default Properties */
 	var svg = void 0;
 	var chart = void 0;
 	var classed = "roseChart";
@@ -7255,47 +9569,52 @@ function chartRoseChart () {
 	var colors = palette.categorical(3);
 	var dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-  * Chart Dimensions
-  */
+	/* Chart Dimensions */
 	var chartW = void 0;
 	var chartH = void 0;
 	var radius = void 0;
 
-	/**
-  * Scales
-  */
+	/* Scales */
 	var xScale = void 0;
 	var yScale = void 0;
 	var colorScale = void 0;
 
 	/**
-  * Initialise Data, Scales and Series
+  * Initialise Data and Scales
+  *
+  * @private
+  * @param {Array} data - Chart data.
   */
 	function init(data) {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = typeof radius === "undefined" ? Math.min(chartW, chartH) / 2 : radius;
+		var _dataTransform$summar = dataTransform(data).summary(),
+		    rowKeys = _dataTransform$summar.rowKeys,
+		    columnKeys = _dataTransform$summar.columnKeys,
+		    valueMax = _dataTransform$summar.valueMax;
 
-		// Slice Data, calculate totals, max etc.
-		var dataSummary = dataTransform(data).summary();
-		var categoryNames = dataSummary.rowKeys;
-		var seriesNames = dataSummary.columnKeys;
-		var maxValue = dataSummary.maxValue;
+		var valueExtent = [0, valueMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ? d3.scaleOrdinal().domain(seriesNames).range(colors) : colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// X & Y Scales
-		xScale = d3.scaleBand().domain(categoryNames).rangeRound([0, 360]);
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
+		}
 
-		yScale = d3.scaleLinear().domain([0, maxValue]).range([0, radius]);
+		xScale = d3.scaleBand().domain(rowKeys).rangeRound([0, 360]);
+
+		yScale = d3.scaleLinear().domain(valueExtent).range([0, radius]);
 	}
 
 	/**
   * Constructor
+  *
+  * @constructor
+  * @alias roseChart
+  * @param {d3.selection} selection - The chart holder D3 selection.
   */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -7349,50 +9668,106 @@ function chartRoseChart () {
 	}
 
 	/**
-  * Configuration Getters & Setters
+  * Width Getter / Setter
+  *
+  * @param {number} _v - Width in px.
+  * @returns {*}
   */
-	my.width = function (_) {
+	my.width = function (_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function (_) {
+	/**
+  * Height Getter / Setter
+  *
+  * @param {number} _v - Height in px.
+  * @returns {*}
+  */
+	my.height = function (_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function (_) {
+	/**
+  * Margin Getter / Setter
+  *
+  * @param {number} _v - Margin in px.
+  * @returns {*}
+  */
+	my.margin = function (_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.transition = function (_) {
+	/**
+  * Radius Getter / Setter
+  *
+  * @param {number} _v - Radius in px.
+  * @returns {*}
+  */
+	my.radius = function (_v) {
+		if (!arguments.length) return radius;
+		radius = _v;
+		return this;
+	};
+
+	/**
+  * Transition Getter / Setter
+  *
+  * @param {d3.transition} _v - D3 transition style.
+  * @returns {*}
+  */
+	my.transition = function (_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function (_) {
+	/**
+  * Colors Getter / Setter
+  *
+  * @param {Array} _v - Array of colours used by color scale.
+  * @returns {*}
+  */
+	my.colors = function (_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function (_) {
+	/**
+  * Color Scale Getter / Setter
+  *
+  * @param {d3.scale} _v - D3 color scale.
+  * @returns {*}
+  */
+	my.colorScale = function (_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.dispatch = function (_) {
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
 	my.on = function () {
 		var value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
@@ -7432,18 +9807,23 @@ var author$1 = "James Saunders";
 var date = new Date();
 var copyright = "Copyright (C) " + date.getFullYear() + " " + author$1;
 
-var index = {
-	version: version,
-	author: author$1,
-	copyright: copyright,
-	license: license,
-	base: base,
-	chart: chart,
-	component: component,
-	palette: palette,
-	dataTransform: dataTransform
-};
+var ez = function () {
+	var my = base;
+	my.version = version;
+	my.author = author$1;
+	my.copyright = copyright;
+	my.license = license;
+	my.chart = chart;
+	my.component = component;
+	my.palette = palette;
+	my.dataTransform = dataTransform;
 
-return index;
+	// TODO: Remove when new 'ez' base fully tested.
+	my.base = base;
+
+	return my;
+}();
+
+return ez;
 
 })));

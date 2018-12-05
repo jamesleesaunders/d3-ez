@@ -60,7 +60,7 @@ Construct chart base from the above components:
 See the [Chart Base](#chart-base) for more details.
 
 ```javascript
-var myChart = d3.ez.base()
+var myChart = d3.ez()
 	.width(750)
 	.height(400)
 	.chart(chart)
