@@ -1,5 +1,5 @@
 /**
- * d3-x3dom
+ * d3-ez
  *
  * @author James Saunders [james@saunders-family.net]
  * @copyright Copyright (C) 2018 James Saunders
