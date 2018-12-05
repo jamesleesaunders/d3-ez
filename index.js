@@ -17,14 +17,21 @@ import component from "./src/component";
 import palette from "./src/palette";
 import dataTransform from "./src/dataTransform";
 
-export default {
-	version: version,
-	author: author,
-	copyright: copyright,
-	license: license,
-	base: base,
-	chart: chart,
-	component: component,
-	palette: palette,
-	dataTransform: dataTransform
-};
+const ez = function() {
+	const my = base;
+	my.version = version;
+	my.author = author;
+	my.copyright = copyright;
+	my.license = license;
+	my.chart = chart;
+	my.component = component;
+	my.palette = palette;
+	my.dataTransform = dataTransform;
+
+	// TODO: Remove when new 'ez' base fully tested.
+	my.base = base;
+
+	return my;
+}();
+
+export default ez;
