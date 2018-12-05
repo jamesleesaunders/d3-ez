@@ -1,16 +1,15 @@
 import * as d3 from "d3";
-import { default as componentCreditTag } from "./component/creditTag";
-import { default as componentTitle } from "./component/title";
+import componentCreditTag from "./component/creditTag";
+import componentTitle from "./component/title";
 
 /**
  * Chart Base
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let canvas;
 	let width = 600;
@@ -31,6 +30,9 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		canvasW = width - (margin.left + margin.right);
@@ -59,6 +61,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias base
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
@@ -120,49 +126,87 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.chart = function(_) {
+	/**
+	 * Chart Getter / Setter
+	 *
+	 * @param {d3.ez.chart} _v - Chart component.
+	 * @returns {*}
+	 */
+	my.chart = function(_v) {
 		if (!arguments.length) return chart;
-		chart = _;
+		chart = _v;
 		return this;
 	};
 
-	my.legend = function(_) {
+	/**
+	 * Legend Getter / Setter
+	 *
+	 * @param {d3.ez.component.legend} _v - Legend component.
+	 * @returns {*}
+	 */
+	my.legend = function(_v) {
 		if (!arguments.length) return legend;
-		legend = _;
+		legend = _v;
 		return this;
 	};
 
-	my.title = function(_) {
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {d3.ez.component.title} _v - Title component.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
 		if (!arguments.length) return title;
 		if (typeof _ === "string") {
 			// If the caller has passed a plain string convert it to a title object.
 			title = componentTitle().mainText(_).subText("");
 		} else {
-			title = _;
+			title = _v;
 		}
 		return this;
 	};
 
-	my.yAxisLabel = function(_) {
+	/**
+	 * Y Axix Label Getter / Setter
+	 *
+	 * @param {string} _v - Label text.
+	 * @returns {*}
+	 */
+	my.yAxisLabel = function(_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

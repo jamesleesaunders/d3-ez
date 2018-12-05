@@ -1,17 +1,17 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
-import { default as component } from "../component";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
+import component from "../component";
 
 /**
  * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/candlestick-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let chart;
 	let classed = "candlestickChart";
@@ -22,60 +22,59 @@ export default function() {
 	let colors = ["green", "red"];
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	let chartW;
 	let chartH;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	let xScale;
 	let yScale;
 	let colorScale;
 
-	/**
-	 * Other Customisation Options
-	 */
+	/* Other Customisation Options */
 	let yAxisLabel;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Convert dates
+
+		// TODO: Use dataTransform() to calculate date domains?
 		data.values.forEach(function(d, i) {
+			// Convert to date
 			data.values[i].date = Date.parse(d.date);
 		});
+		const maxDate = d3.max(data.values, (d) => d.date);
+		const minDate = d3.min(data.values, (d) => d.date);
 
-		// Slice Data, calculate totals, max etc.
-		let maxDate = d3.max(data.values, function(d) {
-			return d.date;
-		});
-		let minDate = d3.min(data.values, function(d) {
-			return d.date;
-		});
-		let xDomain = [
-			new Date(minDate - 8.64e7),
-			new Date(maxDate + 8.64e7)
-		];
-		let yDomain = [
-			d3.min(data.values, function(d) { return d.low; }),
-			d3.max(data.values, function(d) { return d.high; })
+		const ONE_DAY_IN_MILLISECONDS = 86400000;
+		const dateDomain = [
+			new Date(minDate - ONE_DAY_IN_MILLISECONDS),
+			new Date(maxDate + ONE_DAY_IN_MILLISECONDS)
 		];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain([true, false]).range(colors) :
-			colorScale;
 
-		// X & Y Scales
+		// TODO: Use dataTransform() to calculate candle min/max?
+		const yDomain = [
+			d3.min(data.values, (d) => d.low),
+			d3.max(data.values, (d) => d.high)
+		];
+
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
+		}
+
 		xScale = d3.scaleTime()
-			.domain(xDomain)
+			.domain(dateDomain)
 			.range([0, chartW]);
 
 		yScale = d3.scaleLinear()
@@ -86,12 +85,16 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias candlestickChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -109,7 +112,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
+		const layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -118,14 +121,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Candle Sticks
-			let candleSticks = component.candleSticks()
+			const candleSticks = component.candleSticks()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -138,7 +141,7 @@ export default function() {
 				.call(candleSticks);
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale)
+			const xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
 			chart.select(".xAxis")
@@ -151,13 +154,13 @@ export default function() {
 				.attr("transform", "rotate(-65)");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);
 
 			// Y Axis Labels
-			let yLabel = chart.select(".yAxis")
+			const yLabel = chart.select(".yAxis")
 				.selectAll(".yAxisLabel")
 				.data([data.key]);
 
@@ -171,12 +174,10 @@ export default function() {
 				.style("text-anchor", "end")
 				.merge(yLabel)
 				.transition()
-				.text(function(d) {
-					return (d);
-				});
+				.text((d) => d);
 
 			// Experimental Brush
-			let brush = d3.brushX()
+			const brush = d3.brushX()
 				.extent([[0, 0], [chartW, chartH]])
 				.on("brush start", brushStart)
 				.on("brush end", brushEnd);
@@ -195,50 +196,94 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function(_) {
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _v - Margin in px.
+	 * @returns {*}
+	 */
+	my.margin = function(_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function(_) {
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

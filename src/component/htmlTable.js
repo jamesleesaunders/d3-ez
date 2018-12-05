@@ -1,47 +1,33 @@
 import * as d3 from "d3";
+import dataTransform from "../dataTransform";
 
 /**
  * Simple HTML Table
  *
+ * @module
  */
 export default function() {
-	// HTML Table Element (Populated by 'my' function)
+
+	/* HTML List Element */
 	let tableEl;
 
-	// Default Options (Configurable via setters)
+	/* Default Properties */
 	let classed = "htmlTable";
 	let width = 800;
-
-	// Data Options (Populated by 'init' function)
-	let rowNames = [];
-	let columnNames = [];
 
 	// Dispatch (Custom events)
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
-	 * Initialise Data
-	 */
-	function init(data) {
-		// Cut the data in different ways....
-		rowNames = data.map(function(d) {
-			return d.key;
-		});
-
-		columnNames = [];
-		data.map(function(d) {
-			return d.values;
-		})[0].forEach(function(d, i) {
-			columnNames[i] = d.key;
-		});
-	}
-
-	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias htmlTable
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.each(function(data) {
-			init(data);
+			const { rowKeys, columnKeys } = dataTransform(data).summary();
 
 			// Create HTML Table 'table' element (if it does not exist already)
 			if (!tableEl) {
@@ -54,18 +40,18 @@ export default function() {
 				tableEl.selectAll("*")
 					.remove();
 			}
-			let head = tableEl.append("thead");
-			let foot = tableEl.append("tfoot");
-			let body = tableEl.append("tbody");
+			const head = tableEl.append("thead");
+			const foot = tableEl.append("tfoot");
+			const body = tableEl.append("tbody");
 
 			// Add table headings
-			let hdr = head.append("tr");
+			const hdr = head.append("tr");
 
 			hdr.selectAll("th")
 				.data(function() {
 					// Tack on a blank cell at the beginning,
 					// this is for the top of the first column.
-					return [""].concat(columnNames);
+					return [""].concat(columnKeys);
 				})
 				.enter()
 				.append("th")
@@ -74,10 +60,10 @@ export default function() {
 				});
 
 			// Add table body
-			let rowsSelect = body.selectAll("tr")
+			const rowsSelect = body.selectAll("tr")
 				.data(data);
 
-			let rows = rowsSelect.enter()
+			const rows = rowsSelect.enter()
 				.append("tr")
 				.attr("class", function(d) {
 					return d.key;
@@ -109,20 +95,34 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.classed = function(_) {
+	/**
+	 * Class Getter / Setter
+	 *
+	 * @param {string} _v - HTML class.
+	 * @returns {*}
+	 */
+	my.classed = function(_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

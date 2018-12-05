@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Labeled Node Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let color = "steelblue";
 	let opacity = 1;
 	let strokeColor = "#000000";
@@ -22,6 +21,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias labeledNode
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 
@@ -31,9 +34,9 @@ export default function() {
 		}
 
 		selection.each(function(data) {
-			let r = sizeAccessor(data);
+			const r = sizeAccessor(data);
 
-			let node = d3.select(this)
+			const node = d3.select(this)
 				.classed(classed, true);
 
 			node.append("circle")
@@ -55,44 +58,84 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Color Getter / Setter
+	 *
+	 * @param {string} _v - Color.
+	 * @returns {*}
 	 */
-	my.color = function(_) {
+	my.color = function(_v) {
 		if (!arguments.length) return color;
-		color = _;
+		color = _v;
 		return this;
 	};
 
-	my.opacity = function(_) {
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _v - Level of opacity.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
 		if (!arguments.length) return opacity;
-		opacity = _;
+		opacity = _v;
 		return this;
 	};
 
-	my.radius = function(_) {
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _v - Radius in px.
+	 * @returns {*}
+	 */
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.label = function(_) {
+	/**
+	 * Label Getter / Setter
+	 *
+	 * @param {string} _v - Label text.
+	 * @returns {*}
+	 */
+	my.label = function(_v) {
 		if (!arguments.length) return label;
-		label = _;
+		label = _v;
 		return this;
 	};
 
-	my.display = function(_) {
+	/**
+	 * Display Getter / Setter
+	 *
+	 * @param {string} _v - HTML display type (e.g. 'block')
+	 * @returns {*}
+	 */
+	my.display = function(_v) {
 		if (!arguments.length) return display;
-		display = _;
+		display = _v;
 		return this;
 	};
 
-	my.fontSize = function(_) {
+	/**
+	 * Font Size Getter / Setter
+	 *
+	 * @param {number} _v - Fint size.
+	 * @returns {*}
+	 */
+	my.fontSize = function(_v) {
 		if (!arguments.length) return fontSize;
-		fontSize = _;
+		fontSize = _v;
 		return this;
 	};
 
+	/**
+	 * Stroke Getter / Setter
+	 *
+	 * @param {number} _width - Width in px.
+	 * @param {string} _color - Colour.
+	 * @returns {*}
+	 */
 	my.stroke = function(_width, _color) {
 		if (!arguments.length) return [strokeWidth, strokeColor];
 		strokeWidth = _width;
@@ -100,18 +143,35 @@ export default function() {
 		return this;
 	};
 
-	my.classed = function(_) {
+	/**
+	 * Class Getter / Setter
+	 *
+	 * @param {string} _v - HTML class name.
+	 * @returns {*}
+	 */
+	my.classed = function(_v) {
 		if (!arguments.length) return classed;
-		classed = _;
+		classed = _v;
 		return this;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

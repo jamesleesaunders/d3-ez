@@ -1,16 +1,15 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
 
 /**
  * Reusable Candle Stick Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 400;
 	let height = 400;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -24,61 +23,73 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		// Slice Data, calculate totals, max etc.
-		let maxDate = d3.max(data.values, function(d) {
-			return d.date;
-		});
-		let minDate = d3.min(data.values, function(d) {
-			return d.date;
-		});
+		// TODO: Use dataTransform() to calculate date domains?
+		const maxDate = d3.max(data.values, (d) => d.date);
+		const minDate = d3.min(data.values, (d) => d.date);
 
-		let xDomain = [
-      new Date(minDate - 8.64e7),
-      new Date(maxDate + 8.64e7)
-    ];
-		let yDomain = [
-      d3.min(data.values, function(d) { return d.low; }),
-      d3.max(data.values, function(d) { return d.high; })
-    ];
+		const ONE_DAY_IN_MILLISECONDS = 86400000;
+		const dateDomain = [
+			new Date(minDate - ONE_DAY_IN_MILLISECONDS),
+			new Date(maxDate + ONE_DAY_IN_MILLISECONDS)
+		];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain([true, false]).range(colors) :
-			colorScale;
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleTime().domain(xDomain).range([0, width]) :
-			xScale;
+		// TODO: Use dataTransform() to calculate candle min/max?
+		const yDomain = [
+			d3.min(data.values, function(d) { return d.low; }),
+			d3.max(data.values, function(d) { return d.high; })
+		];
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain(yDomain).range([height, 0]).nice() :
-			yScale;
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
+		}
+
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime()
+				.domain(dateDomain)
+				.range([0, width]);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear()
+				.domain(yDomain)
+				.range([height, 0])
+				.nice();
+		}
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias candleSticks
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
-	let my = function(selection) {
+	function my(selection) {
 		init(selection.data()[0]);
 		selection.each(function() {
 
 			// Is Up Day
-			let isUpDay = function(d) {
+			const isUpDay = function(d) {
 				return d.close > d.open;
 			};
 
 			// Line Function
-			let line = d3.line()
+			const line = d3.line()
 				.x(function(d) { return d.x; })
 				.y(function(d) { return d.y; });
 
 			// High Low Lines
-			let highLowLines = function(bars) {
-				let paths = bars.selectAll(".high-low-line")
+			const highLowLines = function(bars) {
+				const paths = bars.selectAll(".high-low-line")
 					.data(function(d) { return [d]; });
 
 				paths.enter()
@@ -88,12 +99,12 @@ export default function() {
 						return line([
 							{ x: xScale(d.date), y: yScale(d.high) },
 							{ x: xScale(d.date), y: yScale(d.low) }
-            ]);
+						]);
 					});
 			};
 
 			// Open Close Bars
-			let openCloseBars = function(bars) {
+			const openCloseBars = function(bars) {
 				let rect = bars.selectAll(".open-close-bar")
 					.data(function(d) { return [d]; });
 
@@ -115,7 +126,7 @@ export default function() {
 			};
 
 			// Open Close Ticks
-			let openCloseTicks = function(bars) {
+			const openCloseTicks = function(bars) {
 				let open = bars.selectAll(".open-tick")
 					.data(function(d) { return [d]; });
 
@@ -129,7 +140,7 @@ export default function() {
 						return line([
 							{ x: xScale(d.date) - candleWidth, y: yScale(d.open) },
 							{ x: xScale(d.date), y: yScale(d.open) }
-            ]);
+						]);
 					});
 
 				close.enter()
@@ -139,12 +150,12 @@ export default function() {
 						return line([
 							{ x: xScale(d.date), y: yScale(d.close) },
 							{ x: xScale(d.date) + candleWidth, y: yScale(d.close) }
-            ]);
+						]);
 					});
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -152,10 +163,10 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add candles to series
-			let candlesSelect = seriesGroup.selectAll(".candle")
+			const candlesSelect = seriesGroup.selectAll(".candle")
 				.data(function(d) { return d.values; });
 
-			let candles = candlesSelect.enter()
+			const candles = candlesSelect.enter()
 				.append("g")
 				.classed("candle", true)
 				.attr("fill", function(d) { return colorScale(isUpDay(d)); })
@@ -171,59 +182,109 @@ export default function() {
 			candles.exit()
 				.remove();
 		});
+	}
+
+	/**
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
+	 */
+	my.width = function(_v) {
+		if (!arguments.length) return width;
+		width = _v;
+		return this;
 	};
 
 	/**
-	 * Configuration Getters & Setters
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
-		if (!arguments.length) return width;
-		width = _;
-		return this;
-	};
-
-	my.height = function(_) {
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function(_) {
+	/**
+	 * X Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.xScale = function(_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function(_) {
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.candleWidth = function(_) {
+	/**
+	 * Candle Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
+	 */
+	my.candleWidth = function(_v) {
 		if (!arguments.length) return candleWidth;
-		candleWidth = _;
+		candleWidth = _v;
 		return my;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

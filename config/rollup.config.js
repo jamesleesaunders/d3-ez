@@ -1,13 +1,14 @@
 import json from "rollup-plugin-json";
 import babel from "rollup-plugin-babel";
 
-let banner = "/**\n\
- * d3-ez\n\
- *\n\
- * @author James Saunders [james@saunders-family.net]\n\
- * @copyright Copyright (C) 2018 James Saunders\n\
- * @license GPLv2\n\
- */\n";
+let banner = `/**
+ * d3-ez
+ *
+ * @author James Saunders [james@saunders-family.net]
+ * @copyright Copyright (C) 2018 James Saunders
+ * @license GPLv2
+ */
+`;
 
 export default {
   input: "index.js",

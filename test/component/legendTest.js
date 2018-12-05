@@ -1,8 +1,8 @@
-let d3Ez = require("../");
-let tape = require("tape");
+let test = require("tape");
+let d3Ez = require("../../build/d3-ez");
 let d3 = require("d3");
 
-tape("componentLegendTest", function(t) {
+test("componentLegendTest", function(t) {
 	let domain = [3, 9];
 	let sizes = [5, 25];
 

@@ -1,17 +1,17 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
-import { default as component } from "../component";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
+import component from "../component";
 
 /**
  * Line Chart (also called: Line Graph; Spline Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/line-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let chart;
 	let classed = "lineChart";
@@ -22,68 +22,69 @@ export default function() {
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	let chartW;
 	let chartH;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	let xScale;
 	let yScale;
 	let colorScale;
 
-	/**
-	 * Other Customisation Options
-	 */
+	/* Other Customisation Options */
 	let yAxisLabel = null;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.rowKeys;
-		let maxValue = dataSummary.maxValue;
+		const { rowKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
-		// Convert dates
+
+		// TODO: Use dataTransform() to calculate date domains?
 		data.forEach(function(d, i) {
 			d.values.forEach(function(b, j) {
 				data[i].values[j].key = new Date(b.key * 1000);
 			});
 		});
-		let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const dateDomain = d3.extent(data[0].values, (d) => d.key);
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
 
-		// X & Y Scales
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
+		}
+
 		xScale = d3.scaleTime()
 			.domain(dateDomain)
 			.range([0, chartW]);
 
 		yScale = d3.scaleLinear()
-			.domain([0, maxValue])
+			.domain(valueExtent)
 			.range([chartH, 0])
 			.nice();
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias lineChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -101,7 +102,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
+		const layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -110,13 +111,13 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
-			// Add Clip Path - Still Proof of Concept
+			// Add Clip Path (Proof of Concept)
 			chart.append('defs')
 				.append('clipPath')
 				.attr('id', 'plotAreaClip')
@@ -125,7 +126,7 @@ export default function() {
 				.attr('height', chartH);
 
 			// Line Chart
-			let lineChart = component.lineChart()
+			const lineChart = component.lineChart()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -134,7 +135,7 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Scatter Plot
-			let scatterPlot = component.scatterPlot()
+			const scatterPlot = component.scatterPlot()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -142,17 +143,17 @@ export default function() {
 				.xScale(xScale)
 				.dispatch(dispatch);
 
-			let lineGroups = chart.select(".lineGroups")
-				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
+			const lineGroups = chart.select(".lineGroups")
+				.attr('clip-path', "url(" + window.location + "#plotAreaClip)")
 				.append("g");
 
-			let seriesGroup = lineGroups.selectAll(".seriesGroup")
+			const seriesGroup = lineGroups.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
-				.style("fill", function(d) { return colorScale(d.key); })
+				.style("fill", (d) => colorScale(d.key))
 				.merge(seriesGroup)
 				.call(lineChart)
 				.call(scatterPlot);
@@ -161,7 +162,7 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale)
+			const xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
 			chart.select(".xAxis")
@@ -174,7 +175,7 @@ export default function() {
 				.attr("transform", "rotate(-65)");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis)
@@ -187,7 +188,7 @@ export default function() {
 				.text(yAxisLabel);
 
 			// Zoom
-			let zoom = d3.zoom()
+			const zoom = d3.zoom()
 				.extent([[0, 0], [chartW, chartH]])
 				.scaleExtent([1, 8])
 				.translateExtent([[0, 0], [chartW, chartH]])
@@ -202,7 +203,7 @@ export default function() {
 				.call(zoom);
 
 			function zoomed() {
-				let xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				const xScaleZoomed = d3.event.transform.rescaleX(xScale);
 
 				xAxis.scale(xScaleZoomed);
 				lineChart.xScale(xScaleZoomed);
@@ -224,56 +225,106 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function(_) {
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _v - Margin in px.
+	 * @returns {*}
+	 */
+	my.margin = function(_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.yAxisLabel = function(_) {
+	/**
+	 * Y Axix Label Getter / Setter
+	 *
+	 * @param {number} _v - Label text.
+	 * @returns {*}
+	 */
+	my.yAxisLabel = function(_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
-	my.transition = function(_) {
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

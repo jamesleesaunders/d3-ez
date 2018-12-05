@@ -1,16 +1,15 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
 
 /**
  * Reusable Stacked Bar Chart Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 100;
 	let height = 300;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -22,32 +21,41 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
-		let seriesTotalsMax = dataSummary.rowTotalsMax;
+		const { columnKeys, rowTotalsMax } = dataTransform(data).summary();
+		const valueExtent = [0, rowTotalsMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain([0, seriesTotalsMax]).range([0, height]).nice() :
-			yScale;
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([0, height])
+				.nice();
+		}
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias barsStacked
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		init(selection.data());
 		selection.each(function() {
 
 			// Stack Generator
-			let stacker = function(data) {
+			const stacker = function(data) {
 				let series = [];
 				let y0 = 0;
 				let y1 = 0;
@@ -66,7 +74,7 @@ export default function() {
 			};
 
 			// Update bar group
-			let barGroup = d3.select(this);
+			const barGroup = d3.select(this);
 			barGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -74,7 +82,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add bars to group
-			let bars = barGroup.selectAll(".bar")
+			const bars = barGroup.selectAll(".bar")
 				.data(function(d) { return stacker(d.values); });
 
 			bars.enter()
@@ -106,44 +114,82 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.yScale = function(_) {
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

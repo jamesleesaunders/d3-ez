@@ -1,17 +1,17 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
-import { default as component } from "../component";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
+import component from "../component";
 
 /**
  * Rose Chart (also called: Coxcomb Chart; Circumplex Chart; Nightingale Chart)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let chart;
 	let classed = "roseChart";
@@ -22,61 +22,60 @@ export default function() {
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	let chartW;
 	let chartH;
 	let radius;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	let xScale;
 	let yScale;
 	let colorScale;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		chartW = width - margin.left - margin.right;
 		chartH = height - margin.top - margin.bottom;
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(chartW, chartH) / 2) :
-			radius;
+		const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = dataSummary.maxValue;
+		if (typeof radius === "undefined") {
+			radius = Math.min(chartW, chartH) / 2;
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// X & Y Scales
 		xScale = d3.scaleBand()
-			.domain(categoryNames)
+			.domain(rowKeys)
 			.rangeRound([0, 360]);
 
 		yScale = d3.scaleLinear()
-			.domain([0, maxValue])
+			.domain(valueExtent)
 			.range([0, radius]);
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias roseChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -94,7 +93,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["circularSectorLabels", "rosePetalGroups"];
+		const layers = ["circularSectorLabels", "rosePetalGroups"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
 			.attr("width", chartW)
@@ -103,14 +102,14 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Rose Sectors
-			let roseChartSector = component.roseChartSector()
+			const roseChartSector = component.roseChartSector()
 				.radius(radius)
 				.colorScale(colorScale)
 				.yScale(yScale)
@@ -118,7 +117,7 @@ export default function() {
 				.dispatch(dispatch);
 
 			// Create Series Group
-			let seriesGroup = chart.select(".rosePetalGroups")
+			const seriesGroup = chart.select(".rosePetalGroups")
 				.selectAll(".seriesGroup")
 				.data(data);
 
@@ -127,8 +126,8 @@ export default function() {
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
 				.each(function(d) {
-					let startAngle = xScale(d.key);
-					let endAngle = xScale(d.key) + xScale.bandwidth();
+					const startAngle = xScale(d.key);
+					const endAngle = xScale(d.key) + xScale.bandwidth();
 					roseChartSector.startAngle(startAngle).endAngle(endAngle);
 					d3.select(this).call(roseChartSector);
 				});
@@ -137,7 +136,7 @@ export default function() {
 				.remove();
 
 			// Circular Labels
-			let circularSectorLabels = component.circularSectorLabels()
+			const circularSectorLabels = component.circularSectorLabels()
 				.radius(radius * 1.04)
 				.radialScale(xScale)
 				.textAnchor("start")
@@ -150,50 +149,106 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function(_) {
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _v - Margin in px.
+	 * @returns {*}
+	 */
+	my.margin = function(_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.transition = function(_) {
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _v - Radius in px.
+	 * @returns {*}
+	 */
+	my.radius = function(_v) {
+		if (!arguments.length) return radius;
+		radius = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

@@ -1,17 +1,17 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
-import { default as component } from "../component";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
+import component from "../component";
 
 /**
  * Bubble Chart
+ *
+ * @module
  * @see http://datavizproject.com/data-type/bubble-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let chart;
 	let classed = "bubbleChart";
@@ -22,86 +22,68 @@ export default function() {
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	let chartW;
 	let chartH;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	let xScale;
 	let yScale;
 	let sizeScale;
 	let colorScale;
 
-	/**
-	 * Other Customisation Options
-	 */
+	/* Other Customisation Options */
 	let minRadius = 3;
 	let maxRadius = 20;
 	let yAxisLabel;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Calculate the extents for each series.
-		// TODO: Use dataTransform() ?
-		function extents(key) {
-			let serExts = [];
-			d3.map(data).values().forEach(function(d) {
-				let vals = d.values.map(function(e) {
-					return +e[key];
-				});
-				serExts.push(d3.extent(vals));
-			});
-			// Merge all the series extents into one array.
-			// Calculate overall extent.
-			return d3.extent([].concat.apply([], serExts));
+		const { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = dataTransform(data).summary();
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
 		}
 
-		let xDomain = extents("x");
-		let yDomain = extents("y");
-		let sizeDomain = extents("value");
-		let seriesNames = data.map(function(d) {
-			return d.key;
-		});
+		if (typeof sizeScale === "undefined") {
+			sizeScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([minRadius, maxRadius]);
+		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
-
-		// If the sizeScale has not been passed then attempt to calculate.
-		sizeScale = (typeof sizeScale === "undefined") ?
-			d3.scaleLinear().domain(sizeDomain).range([minRadius, maxRadius]) :
-			sizeScale;
-
-		// X & Y Scales
 		xScale = d3.scaleLinear()
-			.domain(xDomain)
+			.domain(xExtent)
 			.range([0, chartW])
 			.nice();
 
 		yScale = d3.scaleLinear()
-			.domain(yDomain)
+			.domain(yExtent)
 			.range([chartH, 0])
 			.nice();
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias bubbleChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -119,7 +101,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
+		const layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -128,7 +110,7 @@ export default function() {
 			.data(layers)
 			.enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
@@ -143,7 +125,7 @@ export default function() {
 				.attr('height', chartH);
 
 			// Bubble Chart
-			let bubbles = component.bubbles()
+			const bubbles = component.bubbles()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -153,11 +135,11 @@ export default function() {
 				.maxRadius(maxRadius)
 				.dispatch(dispatch);
 
-			let bubbleGroups = chart.select(".bubbleGroups")
-				.attr('clip-path', function() { return "url(" + window.location + "#plotAreaClip)" })
+			const bubbleGroups = chart.select(".bubbleGroups")
+				.attr('clip-path', "url(" + window.location + "#plotAreaClip)")
 				.append("g");
 
-			let seriesGroup = bubbleGroups.selectAll(".seriesGroup")
+			const seriesGroup = bubbleGroups.selectAll(".seriesGroup")
 				.data(data);
 
 			seriesGroup.enter()
@@ -170,7 +152,7 @@ export default function() {
 				.remove();
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale);
+			const xAxis = d3.axisBottom(xScale);
 
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
@@ -182,10 +164,10 @@ export default function() {
 				.attr("transform", "rotate(-65)");
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			// Zoom
-			let zoom = d3.zoom()
+			const zoom = d3.zoom()
 				.extent([[0, 0], [chartW, chartH]])
 				.scaleExtent([1, 20])
 				.translateExtent([[0, 0], [chartW, chartH]])
@@ -200,8 +182,8 @@ export default function() {
 				.call(zoom);
 
 			function zoomed() {
-				let xScaleZoomed = d3.event.transform.rescaleX(xScale);
-				let yScaleZoomed = d3.event.transform.rescaleY(yScale);
+				const xScaleZoomed = d3.event.transform.rescaleX(xScale);
+				const yScaleZoomed = d3.event.transform.rescaleY(yScale);
 
 				xAxis.scale(xScaleZoomed);
 				yAxis.scale(yScaleZoomed);
@@ -226,62 +208,118 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.margin = function(_) {
+	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _v - Margin in px.
+	 * @returns {*}
+	 */
+	my.margin = function(_v) {
 		if (!arguments.length) return margin;
-		margin = _;
+		margin = _v;
 		return this;
 	};
 
-	my.yAxisLabel = function(_) {
+	/**
+	 * Y Axis Label Getter / Setter
+	 *
+	 * @param {string} _v - Label text.
+	 * @returns {*}
+	 */
+	my.yAxisLabel = function(_v) {
 		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _;
+		yAxisLabel = _v;
 		return this;
 	};
 
-	my.transition = function(_) {
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.sizeScale = function(_) {
+	/**
+	 * Size Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.sizeScale = function(_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return this;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

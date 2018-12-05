@@ -1,16 +1,15 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
 
 /**
  * Reusable Line Chart Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 400;
 	let height = 400;
 	let transition = { ease: d3.easeLinear, duration: 0 };
@@ -23,44 +22,58 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.rowKeys;
-		let maxValue = dataSummary.maxValue;
-		let dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
+		const { rowKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleTime().domain(dateDomain).range([0, width]) :
-			xScale;
+		// TODO: Use dataTransform() to calculate date domains?
+		const dateDomain = d3.extent(data[0].values, function(d) { return d.key; });
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleLinear().domain([0, (maxValue * 1.05)]).range([height, 0]) :
-			yScale;
+
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
+		}
+
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleTime()
+				.domain(dateDomain)
+				.range([0, width]);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([height, 0])
+				.nice();
+		}
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias lineChart
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		init(selection.data());
 		selection.each(function() {
 
 			// Line generation function
-			let line = d3.line()
+			const line = d3.line()
 				.curve(d3.curveCardinal)
 				.x(function(d) { return xScale(d.key); })
 				.y(function(d) { return yScale(d.value); });
 
 			// Line animation tween
-			let pathTween = function(data) {
+			const pathTween = function(data) {
 				let interpolate = d3.scaleQuantile()
 					.domain([0, 1])
 					.range(d3.range(1, data.length + 1));
@@ -70,7 +83,7 @@ export default function() {
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -78,7 +91,7 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Create series group
-			let seriesLine = seriesGroup.selectAll(".seriesLine")
+			const seriesLine = seriesGroup.selectAll(".seriesLine")
 				.data(function(d) { return [d]; });
 
 			seriesLine.enter()
@@ -100,50 +113,94 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.xScale = function(_) {
+	/**
+	 * X Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.xScale = function(_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function(_) {
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

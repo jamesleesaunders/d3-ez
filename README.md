@@ -60,7 +60,7 @@ Construct chart base from the above components:
 See the [Chart Base](#chart-base) for more details.
 
 ```javascript
-var myChart = d3.ez.base()
+var myChart = d3.ez()
 	.width(750)
 	.height(400)
 	.chart(chart)
@@ -199,6 +199,7 @@ For reference here are a few other alternative D3 chart libraries which also fol
 -   [ReD3](https://github.com/bugzin/reD3)
 -   [Miso d3.chart](http://misoproject.com/d3-chart/)
 -   [d3fc](https://d3fc.io)
+-   [Docs](http://jamesleesaunders.github.io/d3-ez/)
 
 ### Credits
 

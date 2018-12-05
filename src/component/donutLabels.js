@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Donut Chart Label Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 300;
 	let height = 300;
 	let transition = { ease: d3.easeBounce, duration: 500 };
@@ -18,64 +17,70 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		innerRadius = (typeof innerRadius === "undefined") ?
-			(radius / 4) :
-			innerRadius;
+		if (typeof innerRadius === "undefined") {
+			innerRadius = radius / 4;
+		}
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias donutLabels
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.each(function(data) {
 			init(data);
 
 			// Pie Generator
-			let pie = d3.pie()
+			const pie = d3.pie()
 				.value(function(d) { return d.value; })
 				.sort(null)
 				.padAngle(0.015);
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.innerRadius(innerRadius)
 				.outerRadius(radius)
 				.cornerRadius(2);
 
 			// Outer Arc Generator
-			let outerArc = d3.arc()
+			const outerArc = d3.arc()
 				.innerRadius(radius * 0.9)
 				.outerRadius(radius * 0.9);
 
 			// Mid Angle
-			let midAngle = function(d) {
+			const midAngle = function(d) {
 				return d.startAngle + (d.endAngle - d.startAngle) / 2;
 			};
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true);
 
 			// Text Labels
-			let labelsGroupSelect = seriesGroup.selectAll("g.labels")
+			const labelsGroupSelect = seriesGroup.selectAll("g.labels")
 				.data(function(d) {
 					return [d];
 				});
 
-			let labelsGroup = labelsGroupSelect.enter()
+			const labelsGroup = labelsGroupSelect.enter()
 				.append("g")
 				.attr("class", "labels")
 				.merge(labelsGroupSelect);
 
-			let labels = labelsGroup.selectAll("text.label")
+			const labels = labelsGroup.selectAll("text.label")
 				.data(function(d) {
 					return pie(d.values);
 				});
@@ -92,7 +97,7 @@ export default function() {
 				})
 				.attrTween("transform", function(d) {
 					this._current = this._current || d;
-					let interpolate = d3.interpolate(this._current, d);
+					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return function(t) {
 						let d2 = interpolate(t);
@@ -106,7 +111,7 @@ export default function() {
 					let interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return function(t) {
-						let d2 = interpolate(t);
+						const d2 = interpolate(t);
 						return midAngle(d2) < Math.PI ? "start" : "end";
 					};
 				});
@@ -115,17 +120,17 @@ export default function() {
 				.remove();
 
 			// Text Label to Slice Connectors
-			let connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
+			const connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
 				.data(function(d) {
 					return [d];
 				});
 
-			let connectorsGroup = connectorsGroupSelect.enter()
+			const connectorsGroup = connectorsGroupSelect.enter()
 				.append("g")
 				.attr("class", "connectors")
 				.merge(connectorsGroupSelect);
 
-			let connectors = connectorsGroup.selectAll("polyline.connector")
+			const connectors = connectorsGroup.selectAll("polyline.connector")
 				.data(function(d) {
 					return pie(d.values);
 				});
@@ -138,11 +143,11 @@ export default function() {
 				.duration(transition.duration)
 				.attrTween("points", function(d) {
 					this._current = this._current || d;
-					let interpolate = d3.interpolate(this._current, d);
+					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return function(t) {
-						let d2 = interpolate(t);
-						let pos = outerArc.centroid(d2);
+						const d2 = interpolate(t);
+						const pos = outerArc.centroid(d2);
 						pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
 						return [arc.centroid(d2), outerArc.centroid(d2), pos];
 					};
@@ -154,29 +159,50 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function(_) {
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _v - Radius in px.
+	 * @returns {*}
+	 */
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function(_) {
+	/**
+	 * Inner Radius Getter / Setter
+	 *
+	 * @param {number} _v - Inner radius in px.
+	 * @returns {*}
+	 */
+	my.innerRadius = function(_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 

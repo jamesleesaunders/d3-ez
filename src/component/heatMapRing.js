@@ -1,16 +1,15 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
 
 /**
  * Reusable Heat Map Ring Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 300;
 	let height = 300;
 	let radius = 150;
@@ -28,49 +27,57 @@ export default function() {
 
 	/**
 	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
-		let dataSummary = dataTransform(data).summary();
-		let categoryNames = dataSummary.rowKeys;
-		let seriesNames = dataSummary.columnKeys;
+		const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
-		// If the radius has not been passed then calculate it from width/height.
-		radius = (typeof radius === "undefined") ?
-			(Math.min(width, height) / 2) :
-			radius;
-
-		// If thresholds values are not set attempt to auto-calculate the thresholds.
-		if (!thresholds) {
-			thresholds = dataSummary.thresholds;
+		if (typeof thresholds === "undefined") {
+			thresholds = tmpThresholds;
 		}
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = (typeof colorScale === "undefined") ?
-			d3.scaleThreshold().domain(thresholds).range(colors) :
-			colorScale;
+		if (typeof radius === "undefined") {
+			radius = Math.min(width, height) / 2;
+		}
 
-		// If the xScale has not been passed then attempt to calculate.
-		xScale = (typeof xScale === "undefined") ?
-			d3.scaleBand().domain(seriesNames).rangeRound([startAngle, endAngle]).padding(0.1) :
-			xScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
+		}
 
-		// If the yScale has not been passed then attempt to calculate.
-		yScale = (typeof yScale === "undefined") ?
-			d3.scaleBand().domain(categoryNames).rangeRound([radius, innerRadius]).padding(0.1) :
-			yScale;
+		if (typeof xScale === "undefined") {
+			xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.rangeRound([startAngle, endAngle])
+				.padding(0.1);
+		}
+
+		if (typeof yScale === "undefined") {
+			yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.rangeRound([radius, innerRadius])
+				.padding(0.1);
+		}
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias heatMapRing
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		init(selection.data());
 		selection.each(function() {
 
 			// Pie Generator
-			let segStartAngle = d3.min(xScale.range());
-			let segEndAngle = d3.max(xScale.range());
-			let pie = d3.pie()
+			const segStartAngle = d3.min(xScale.range());
+			const segEndAngle = d3.max(xScale.range());
+			const pie = d3.pie()
 				.value(1)
 				.sort(null)
 				.startAngle(segStartAngle * (Math.PI / 180))
@@ -78,13 +85,13 @@ export default function() {
 				.padAngle(0.015);
 
 			// Arc Generator
-			let arc = d3.arc()
+			const arc = d3.arc()
 				.outerRadius(radius)
 				.innerRadius(innerRadius)
 				.cornerRadius(2);
 
 			// Update series group
-			let seriesGroup = d3.select(this);
+			const seriesGroup = d3.select(this);
 			seriesGroup
 				.classed(classed, true)
 				.attr("id", function(d) { return d.key; })
@@ -92,10 +99,10 @@ export default function() {
 				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
 
 			// Add segments to series group
-			let segments = seriesGroup.selectAll(".segment")
+			const segments = seriesGroup.selectAll(".segment")
 				.data(function(d) {
-					let key = d.key;
-					let data = pie(d.values);
+					const key = d.key;
+					const data = pie(d.values);
 					data.forEach(function(d, i) {
 						data[i].key = key;
 					});
@@ -123,80 +130,154 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.radius = function(_) {
+	/**
+	 * Radius Getter / Setter
+	 *
+	 * @param {number} _v - Radius in px.
+	 * @returns {*}
+	 */
+	my.radius = function(_v) {
 		if (!arguments.length) return radius;
-		radius = _;
+		radius = _v;
 		return this;
 	};
 
-	my.innerRadius = function(_) {
+	/**
+	 * Inner Radius Getter / Setter
+	 *
+	 * @param {number} _v - Inner radius in px.
+	 * @returns {*}
+	 */
+	my.innerRadius = function(_v) {
 		if (!arguments.length) return innerRadius;
-		innerRadius = _;
+		innerRadius = _v;
 		return this;
 	};
 
-	my.startAngle = function(_) {
+	/**
+	 * Start Angle Getter / Setter
+	 *
+	 * @param {number} _v - Angle in degrees.
+	 * @returns {*}
+	 */
+	my.startAngle = function(_v) {
 		if (!arguments.length) return startAngle;
-		startAngle = _;
+		startAngle = _v;
 		return this;
 	};
 
-	my.endAngle = function(_) {
+	/**
+	 * End Angle Getter / Setter
+	 *
+	 * @param {number} _v - Angke in degrees.
+	 * @returns {*}
+	 */
+	my.endAngle = function(_v) {
 		if (!arguments.length) return endAngle;
-		endAngle = _;
+		endAngle = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return my;
 	};
 
-	my.thresholds = function(_) {
+	/**
+	 * Thresholds Getter / Setter
+	 *
+	 * @param {Array} _v - Array of thresholds.
+	 * @returns {*}
+	 */
+	my.thresholds = function(_v) {
 		if (!arguments.length) return thresholds;
-		thresholds = _;
+		thresholds = _v;
 		return my;
 	};
 
-	my.xScale = function(_) {
+	/**
+	 * X Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.xScale = function(_v) {
 		if (!arguments.length) return xScale;
-		xScale = _;
+		xScale = _v;
 		return my;
 	};
 
-	my.yScale = function(_) {
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
-		yScale = _;
+		yScale = _v;
 		return my;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

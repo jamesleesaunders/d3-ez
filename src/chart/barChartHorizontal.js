@@ -1,17 +1,17 @@
 import * as d3 from "d3";
-import { default as palette } from "../palette";
-import { default as dataTransform } from "../dataTransform";
-import { default as component } from "../component";
+import palette from "../palette";
+import dataTransform from "../dataTransform";
+import component from "../component";
 
 /**
  * Bar Chart (horizontal) (also called: Bar Chart; Bar Graph)
+ *
+ * @module
  * @see http://datavizproject.com/data-type/bar-chart/
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let svg;
 	let chart;
 	let classed = "barChartHorizontal";
@@ -22,56 +22,57 @@ export default function() {
 	let colors = palette.categorical(3);
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/**
-	 * Chart Dimensions
-	 */
+	/* Chart Dimensions */
 	let chartW;
 	let chartH;
 
-	/**
-	 * Scales
-	 */
+	/* Scales */
 	let xScale;
 	let yScale;
 	let colorScale;
 
 	/**
-	 * Initialise Data, Scales and Series
+	 * Initialise Data and Scales
+	 *
+	 * @private
+	 * @param {Array} data - Chart data.
 	 */
 	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		// Slice Data, calculate totals, max etc.
-		let dataSummary = dataTransform(data).summary();
-		let seriesNames = dataSummary.columnKeys;
-		let maxValue = dataSummary.maxValue;
+		const { columnKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
-		// If the colorScale has not been passed then attempt to calculate.
-		colorScale = typeof colorScale === "undefined" ?
-			d3.scaleOrdinal().domain(seriesNames).range(colors) :
-			colorScale;
+		if (typeof colorScale === "undefined") {
+			colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+		}
 
-		// X & Y Scales
 		yScale = d3.scaleBand()
-			.domain(seriesNames)
+			.domain(columnKeys)
 			.rangeRound([0, chartH])
 			.padding(0.15);
 
 		xScale = d3.scaleLinear()
-			.domain([0, maxValue])
+			.domain(valueExtent)
 			.range([0, chartW])
 			.nice();
 	}
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias barChartHorizontal
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = function(selection) {
-				let el = selection._groups[0][0];
+				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
@@ -89,7 +90,7 @@ export default function() {
 		}
 
 		// Update the chart dimensions and add layer groups
-		let layers = ["barChart", "xAxis axis", "yAxis axis"];
+		const layers = ["barChart", "xAxis axis", "yAxis axis"];
 		chart.classed(classed, true)
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.attr("width", chartW)
@@ -97,14 +98,14 @@ export default function() {
 			.selectAll("g")
 			.data(layers).enter()
 			.append("g")
-			.attr("class", function(d) { return d; });
+			.attr("class", (d) => d);
 
 		selection.each(function(data) {
 			// Initialise Data
 			init(data);
 
 			// Horizontal Bars
-			let barsHorizontal = component.barsHorizontal()
+			const barsHorizontal = component.barsHorizontal()
 				.width(chartW)
 				.height(chartH)
 				.colorScale(colorScale)
@@ -117,20 +118,20 @@ export default function() {
 				.call(barsHorizontal);
 
 			// X Axis
-			let xAxis = d3.axisBottom(xScale);
+			const xAxis = d3.axisBottom(xScale);
 
 			chart.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis);
 
 			// Y Axis
-			let yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale);
 
 			chart.select(".yAxis")
 				.call(yAxis);
 
 			// Y Axis Label
-			let yLabel = chart.select(".yAxis")
+			const yLabel = chart.select(".yAxis")
 				.selectAll(".yAxisLabel")
 				.data([data.key]);
 
@@ -142,49 +143,87 @@ export default function() {
 				.style("text-anchor", "center")
 				.merge(yLabel)
 				.transition()
-				.text(function(d) { return d; });
+				.text((d) => d);
 		});
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return this;
 	};
 
-	my.height = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
 		if (!arguments.length) return height;
-		height = _;
+		height = _v;
 		return this;
 	};
 
-	my.colors = function(_) {
+	/**
+	 * Colors Getter / Setter
+	 *
+	 * @param {Array} _v - Array of colours used by color scale.
+	 * @returns {*}
+	 */
+	my.colors = function(_v) {
 		if (!arguments.length) return colors;
-		colors = _;
+		colors = _v;
 		return this;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return this;
 	};
 
-	my.transition = function(_) {
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
 		if (!arguments.length) return transition;
-		transition = _;
+		transition = _v;
 		return this;
 	};
 
-	my.dispatch = function(_) {
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
 		if (!arguments.length) return dispatch();
-		dispatch = _;
+		dispatch = _v;
 		return this;
 	};
 
+	/**
+	 * Dispatch on Getter
+	 *
+	 * @returns {*}
+	 */
 	my.on = function() {
 		let value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;

@@ -1,34 +1,38 @@
 import * as d3 from "d3";
-import { default as componentLegendSize } from "./legendSize";
-import { default as componentLegendColor } from "./legendColor";
-import { default as componentLegendThreshold } from "./legendThreshold";
+import componentLegendSize from "./legendSize";
+import componentLegendColor from "./legendColor";
+import componentLegendThreshold from "./legendThreshold";
 
 /**
  * Reusable Legend Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let width = 100;
 	let height = 150;
 	let sizeScale;
 	let colorScale;
 	let title;
+	let legend;
 
 	let opacity = 0.7;
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias legend
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		height = (height ? height : this.attr("height"));
 		width = (width ? width : this.attr("width"));
 
 		// Legend Box
-		let legendBox = selection.selectAll("#legendBox")
+		const legendBox = selection.selectAll("#legendBox")
 			.data([0])
 			.enter()
 			.append("g")
@@ -41,8 +45,6 @@ export default function() {
 			.attr("fill", "#ffffff")
 			.attr("stroke-width", 1)
 			.attr("stroke", "#000000");
-
-		let legend;
 
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {
@@ -78,6 +80,10 @@ export default function() {
 
 	/**
 	 * Detect Scale Type
+	 *
+	 * @param {d3.scale} scale - Scale type.
+	 *
+	 * @returns {string}
 	 */
 	function scaleType(scale) {
 		let s = scale.copy();
@@ -95,35 +101,62 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return my;
-	};
-
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
 		return my;
 	};
 
-	my.sizeScale = function(_) {
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return my;
+	};
+
+	/**
+	 * Size Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.sizeScale = function(_v) {
 		if (!arguments.length) return sizeScale;
-		sizeScale = _;
+		sizeScale = _v;
 		return my;
 	};
 
-	my.colorScale = function(_) {
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
 		if (!arguments.length) return colorScale;
-		colorScale = _;
+		colorScale = _v;
 		return my;
 	};
 
-	my.title = function(_) {
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _v - Title text.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
 		if (!arguments.length) return title;
-		title = _;
+		title = _v;
 		return my;
 	};
 

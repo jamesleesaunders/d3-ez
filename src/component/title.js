@@ -3,12 +3,11 @@ import * as d3 from "d3";
 /**
  * Reusable Title Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let mainText = "Title";
 	let subText = "Sub Title";
 	let height = 40;
@@ -16,6 +15,10 @@ export default function() {
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias title
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
 		selection.selectAll("#titleGroup")
@@ -23,21 +26,21 @@ export default function() {
 			.enter()
 			.append("g")
 			.attr("id", "titleGroup");
-		let titleGroup = selection.select("#titleGroup");
+		const titleGroup = selection.select("#titleGroup");
 
 		titleGroup.selectAll(".title").data([mainText])
 			.enter()
 			.append("text")
 			.classed("title", true)
 			.text(function(d) { return d; });
-		let title = titleGroup.select(".title").text(mainText);
+		const title = titleGroup.select(".title").text(mainText);
 
 		titleGroup.selectAll(".subTitle").data([subText])
 			.enter()
 			.append("text")
 			.classed("subTitle", true)
 			.text(function(d) { return d; });
-		let subTitle = titleGroup.select(".subTitle").text(subText);
+		const subTitle = titleGroup.select(".subTitle").text(subText);
 
 		// Centre Text
 		// let titleOffset = 0 - (title.node().getBBox().width / 2);
@@ -49,29 +52,50 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
 	 */
-	my.mainText = function(_) {
-		if (!arguments.length) return mainText;
-		mainText = _;
-		return this;
-	};
-
-	my.subText = function(_) {
-		if (!arguments.length) return subText;
-		subText = _;
-		return this;
-	};
-
-	my.height = function(_) {
-		if (!arguments.length) return height;
-		height = _;
-		return this;
-	};
-
-	my.width = function(_) {
+	my.width = function(_v) {
 		if (!arguments.length) return width;
-		width = _;
+		width = _v;
+		return this;
+	};
+
+	/**
+	 * Height Getter / Setter
+	 *
+	 * @param {number} _v - Height in px.
+	 * @returns {*}
+	 */
+	my.height = function(_v) {
+		if (!arguments.length) return height;
+		height = _v;
+		return this;
+	};
+
+	/**
+	 * Main Text Getter / Setter
+	 *
+	 * @param {string} _v - Main text title.
+	 * @returns {*}
+	 */
+	my.mainText = function(_v) {
+		if (!arguments.length) return mainText;
+		mainText = _v;
+		return this;
+	};
+
+	/**
+	 * Sub Text Getter / Setter
+	 *
+	 * @param {string} _v - Sub text description.
+	 * @returns {*}
+	 */
+	my.subText = function(_v) {
+		if (!arguments.length) return subText;
+		subText = _v;
 		return this;
 	};
 

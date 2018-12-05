@@ -20,13 +20,13 @@ GENERATED_FILES := build/d3-ez.js \
                    README.md \
                    LICENSE.md
 
-all: js css min zip
-.PHONY: js css min zip
+all: js css min zip docs
+.PHONY: js css min zip docs
 
 js:
 	@echo Compiling JS Files...
 	@rm -f build/d3-ez.js
-	@rollup -c
+	@./node_modules/rollup/bin/rollup -c config/rollup.config.js
 
 css: $(CSS_FILES)
 	@echo Concatenating CSS Files...
@@ -36,9 +36,14 @@ css: $(CSS_FILES)
 min:
 	@echo Minifying...
 	@rm -f build/d3-ez.min.js
-	@uglifyjs build/d3-ez.js > build/d3-ez.min.js
+	@./node_modules/uglify-es/bin/uglifyjs build/d3-ez.js > build/d3-ez.min.js
 
 zip: $(GENERATED_FILES)
 	@echo Zipping...
 	@rm -f build/d3-ez.zip
 	@zip -qj build/d3-ez.zip $^
+
+docs:
+	@echo Generating Docs...
+	@rm -rf docs
+	@node ./node_modules/jsdoc/jsdoc.js -c config/jsdoc.conf.json

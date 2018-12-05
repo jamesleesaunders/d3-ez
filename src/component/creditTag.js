@@ -3,26 +3,29 @@ import * as d3 from "d3";
 /**
  * Reusable Credit Tag Component
  *
+ * @module
  */
 export default function() {
 
-	/**
-	 * Default Properties
-	 */
+	/* Default Properties */
 	let text = "d3-ez.net";
 	let href = "http://d3-ez.net";
 
 	/**
 	 * Constructor
+	 *
+	 * @constructor
+	 * @alias creditTag
+	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		let creditTag = selection.selectAll("#creditTag")
+		const creditTag = selection.selectAll("#creditTag")
 			.data([0])
 			.enter()
 			.append("g")
 			.attr("id", "creditTag");
 
-		let creditText = creditTag.append("text")
+		const creditText = creditTag.append("text")
 			.text(text)
 			.style("text-anchor", "end")
 			.attr("baseline", "middle")
@@ -33,17 +36,26 @@ export default function() {
 	}
 
 	/**
-	 * Configuration Getters & Setters
+	 * Text Getter / Setter
+	 *
+	 * @param {string} _v - Credit tag text.
+	 * @returns {*}
 	 */
-	my.text = function(_) {
+	my.text = function(_v) {
 		if (!arguments.length) return text;
-		text = _;
+		text = _v;
 		return this;
 	};
 
-	my.href = function(_) {
+	/**
+	 * Link Getter / Setter
+	 *
+	 * @param {string} _v - Credit tag link.
+	 * @returns {*}
+	 */
+	my.href = function(_v) {
 		if (!arguments.length) return href;
-		href = _;
+		href = _v;
 		return this;
 	};
 
