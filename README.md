@@ -1,5 +1,4 @@
 # d3-ez
-
 ## D3 Easy Reusable Charts
 
 [![npm version](https://badge.fury.io/js/d3-ez.svg)](https://badge.fury.io/js/d3-ez)
@@ -7,6 +6,27 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/jamesleesaunders/d3-ez/badge.svg?targetFile=package.json)](https://snyk.io/test/github/jamesleesaunders/d3-ez?targetFile=package.json)
 
 **d3-ez** is a library of reusable charts which use [D3.js](http://www.d3js.org/). Inspired by Mike Bostock's tutorial [Towards Reusable Charts](http://bost.ocks.org/mike/chart/), the aim of the library is to harness the power of D3, whilst simplifying the process of creating charts and graph making with D3. **d3-ez** makes it easier for people who are still learning JavaScript or D3 to quickly produce data visualisations with minimal code.
+
+### Examples
+
+Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. One of the aims of **d3-ez** to make it easier to create visualizations with graphs which are clickable interact with each other, this is done though the use of D3's dispatch, please see the 'Showcase' link below for example:
+
+-   [Bar Chart (Circular)](http://bl.ocks.org/jamesleesaunders/7505129553c74ba04191d40e4fe6e2d7)
+-   [Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
+-   [Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
+-   [Bar Chart (Vertical)](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
+-   [Bubble Chart](http://bl.ocks.org/jamesleesaunders/e724157a7a387dcc08dd4ba80e48b72f)
+-   [Candlestick Chart](http://bl.ocks.org/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7)
+-   [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
+-   [Heat Map (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
+-   [Heat Map (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
+-   [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
+-   [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
+-   [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
+-   [Rose Chart](http://bl.ocks.org/jamesleesaunders/)
+-   [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
+-   [HTML List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
+-   [Multi Chart Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
 ### Getting Started
 
@@ -84,7 +104,7 @@ The chart base has 3 components:
 -   Legend
 -   Chart
 
-### Chart Components
+### Components and Charts
 
 As described in the [Chart Base](#chart-base) section a **d3-ez** chart is made up of 3 components:
 
@@ -150,30 +170,9 @@ d3.select("#chartholder")
 	.call(myChart);
 ```
 
-### Data Structure
+### Data Structures
 
 The format of the d3-ez data must be in key / value pairs.
-
-### Examples
-
-Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. One of the aims of **d3-ez** to make it easier to create visualizations with graphs which are clickable interact with each other, this is done though the use of D3's dispatch, please see the 'Showcase' link below for example:
-
--   [Bar Chart (Circular)](http://bl.ocks.org/jamesleesaunders/7505129553c74ba04191d40e4fe6e2d7)
--   [Bar Chart (Clustered)](http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb)
--   [Bar Chart (Stacked)](http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d)
--   [Bar Chart (Vertical)](http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be)
--   [Bubble Chart](http://bl.ocks.org/jamesleesaunders/e724157a7a387dcc08dd4ba80e48b72f)
--   [Candlestick Chart](http://bl.ocks.org/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7)
--   [Donut Chart](http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902)
--   [Heat Map (Radial)](http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f)
--   [Heat Map (Tabular)](https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a)
--   [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
--   [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
--   [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
--   [Rose Chart](http://bl.ocks.org/jamesleesaunders/)
--   [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
--   [HTML List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
--   [Multi Chart Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
 
 ### What type of chart should I use?
 
@@ -203,7 +202,8 @@ For reference here are a few other alternative D3 chart libraries which also fol
 
 ### Credits
 
--   Peter Cook <http://animateddata.co.uk/> For giving permission to use his Radial Bar and Radial Heat Map charts.
--   Virgin Media <http://www.virginmedia.co.uk/> For support in development of the Tabular Heat Map.
--   Data Viz Project <http://datavizproject.com/> For helping me while deciding on naming of chart types.
--   Dip Parmar <https://github.com/DipParmar> For contributing to zooming, radar and horizontal bar charts.
+* Peter Cook <http://animateddata.co.uk/> For giving permission to use his Radial Bar and Radial Heat Map charts.
+* Virgin Media <http://www.virginmedia.co.uk/> For support in development of the Tabular Heat Map.
+* Data Viz Project <http://datavizproject.com/> For helping me while deciding on naming of chart types.
+* Dip Parmar <https://github.com/DipParmar> For contributing to zooming, radar and horizontal bar charts.
+* You may also be interested in the sister project [d3-x3dom](https://github.com/jamesleesaunders/d3-x3dom) D3 X3DOM Data Visualisation Library.
