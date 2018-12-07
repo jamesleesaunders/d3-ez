@@ -9800,20 +9800,17 @@ var date = new Date();
 var copyright = "Copyright (C) " + date.getFullYear() + " " + author$1;
 
 var ez = function () {
-	var ez = base;
-	ez.version = version;
-	ez.author = author$1;
-	ez.copyright = copyright;
-	ez.license = license;
-	ez.chart = chart;
-	ez.component = component;
-	ez.palette = palette;
-	ez.dataTransform = dataTransform;
-
-	// TODO: Remove base when new 'ez' constructor fully tested.
-	ez.base = base;
-
-	return ez;
+	return {
+		version: version,
+		author: author$1,
+		copyright: copyright,
+		license: license,
+		chart: chart,
+		component: component,
+		palette: palette,
+		dataTransform: dataTransform,
+		base: base
+	};
 }();
 
 return ez;

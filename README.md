@@ -97,7 +97,7 @@ var title = d3.ez.component.title()
 Construct chart base from the above components:
 
 ```javascript
-var myChart = d3.ez()
+var myChart = d3.ez.base()
 	.width(750)
 	.height(400)
 	.chart(chart)

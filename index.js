@@ -18,20 +18,17 @@ import palette from "./src/palette";
 import dataTransform from "./src/dataTransform";
 
 const ez = function() {
-	const ez = base;
-	ez.version = version;
-	ez.author = author;
-	ez.copyright = copyright;
-	ez.license = license;
-	ez.chart = chart;
-	ez.component = component;
-	ez.palette = palette;
-	ez.dataTransform = dataTransform;
-
-	// TODO: Remove base when new 'ez' constructor fully tested.
-	ez.base = base;
-
-	return ez;
+	return {
+		version: version,
+		author: author,
+		copyright: copyright,
+		license: license,
+		chart: chart,
+		component: component,
+		palette: palette,
+		dataTransform: dataTransform,
+		base: base
+	};
 }();
 
 export default ez;
