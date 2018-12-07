@@ -103,9 +103,9 @@ function componentTitle () {
 		var subTitle = titleGroup.select(".subTitle").text(subText);
 
 		// Centre Text
-		// let titleOffset = 0 - (title.node().getBBox().width / 2);
-		// let subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+		// const titleOffset = 0 - (title.node().getBBox().width / 2);
 		title.style("text-anchor", "middle").attr("transform", "translate(0, 15)");
+		// const subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
 		subTitle.style("text-anchor", "middle").attr("transform", "translate(0, 30)");
 	}
 
@@ -2440,8 +2440,8 @@ function componentCircularAxis () {
 
 		// Spoke Data Generator
 		var spokeData = function spokeData() {
-			var spokeCount = 0;
 			var spokeArray = [];
+			var spokeCount = 0;
 			if (typeof radialScale.ticks === "function") {
 				// scaleLinear
 				var min = d3.min(radialScale.domain());
@@ -7823,7 +7823,7 @@ function chartGanttChart () {
   * @private
   * @param {Array} data - Chart data.
   */
-	var init = function init(data) {
+	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
@@ -7849,7 +7849,7 @@ function chartGanttChart () {
 		xScale = d3.scaleTime().domain(dateDomain).range([0, chartW]).clamp(true);
 
 		yScale = d3.scaleBand().domain(rowKeys).rangeRound([0, chartH]).padding(0.1);
-	};
+	}
 
 	/**
   * Constructor
@@ -7858,7 +7858,7 @@ function chartGanttChart () {
   * @alias ganttChart
   * @param {d3.selection} selection - The chart holder D3 selection.
   */
-	var my = function my(selection) {
+	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = function (selection) {
@@ -7925,7 +7925,7 @@ function chartGanttChart () {
 
 			chart.select(".yAxis").call(yAxis);
 		});
-	};
+	}
 
 	/**
   * Width Getter / Setter

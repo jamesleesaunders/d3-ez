@@ -38,10 +38,10 @@ export default function() {
 
 			if (typeof radialScale.ticks === "function") {
 				// scaleLinear
-				let min = d3.min(radialScale.domain());
-				let max = d3.max(radialScale.domain());
+				const min = d3.min(radialScale.domain());
+				const max = d3.max(radialScale.domain());
 				tickCount = radialScale.ticks().length;
-				let tickIncrement = (max - min) / tickCount;
+				const tickIncrement = (max - min) / tickCount;
 				for (let i = 0; i <= tickCount; i++) {
 					tickArray[i] = (tickIncrement * i).toFixed(0);
 				}
@@ -105,7 +105,7 @@ export default function() {
 				return "#" + pathId;
 			})
 			.text((d) => {
-				let text = d.value;
+				const text = d.value;
 				return capitalizeLabels ? text.toUpperCase() : text;
 			})
 			.attr("startOffset", (d) => d.offset + "%")
@@ -115,7 +115,7 @@ export default function() {
 		textSelect.transition()
 			.select("textPath")
 			.text((d) => {
-				let text = d.value;
+				const text = d.value;
 				return capitalizeLabels ? text.toUpperCase() : text;
 			})
 			.attr("startOffset", (d) => d.offset + "%");

@@ -56,7 +56,7 @@ export default function() {
 
 			// Stack Generator
 			const stacker = function(data) {
-				let series = [];
+				const series = [];
 				let y0 = 0;
 				let y1 = 0;
 				data.forEach((d, i) => {

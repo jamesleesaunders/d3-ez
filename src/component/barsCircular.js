@@ -84,7 +84,7 @@ export default function() {
 
 			// Arc Tween
 			const arcTween = function(d) {
-				let i = d3.interpolate(this._current, d);
+				const i = d3.interpolate(this._current, d);
 				this._current = i(0);
 
 				return (t) => arc(i(t));

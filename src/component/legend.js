@@ -86,7 +86,7 @@ export default function() {
 	 * @returns {string}
 	 */
 	function scaleType(scale) {
-		let s = scale.copy();
+		const s = scale.copy();
 		if (s.domain([1, 2]).range([1, 2])(1.5) === 1) {
 			return "ordinal";
 		} else if (typeof s.invert !== "function") {

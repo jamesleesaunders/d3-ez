@@ -42,16 +42,16 @@ export default function() {
 	 * @private
 	 * @param {Array} data - Chart data.
 	 */
-	let init = function(data) {
+	function init(data) {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		let { rowKeys, columnKeys } = dataTransform(data).summary();
+		const { rowKeys, columnKeys } = dataTransform(data).summary();
 
 
 		// TODO: Use dataTransform() to calculate date domains?
-		data.forEach(function(d) {
-			d.values.forEach(function(b) {
+		data.forEach((d) => {
+			d.values.forEach((b) => {
 				dateDomainMin = d3.min([b.startDate, dateDomainMin]);
 				dateDomainMax = d3.max([b.endDate, dateDomainMax]);
 			});
@@ -74,7 +74,7 @@ export default function() {
 			.domain(rowKeys)
 			.rangeRound([0, chartH])
 			.padding(0.1);
-	};
+	}
 
 	/**
 	 * Constructor
@@ -83,7 +83,7 @@ export default function() {
 	 * @alias ganttChart
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
-	let my = function(selection) {
+	function my(selection) {
 		// Create SVG element (if it does not exist already)
 		if (!svg) {
 			svg = (function(selection) {
@@ -170,7 +170,7 @@ export default function() {
 			chart.select(".yAxis")
 				.call(yAxis);
 		});
-	};
+	}
 
 	/**
 	 * Width Getter / Setter

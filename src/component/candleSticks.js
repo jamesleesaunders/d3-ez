@@ -111,13 +111,13 @@ export default function() {
 					.append("rect")
 					.classed("open-close-bar", true)
 					.attr("x", (d) => xScale(d.date) - candleWidth)
-					.attr("y", function(d) {
+					.attr("y", (d) => {
 						return isUpDay(d) ?
 							yScale(d.close) :
 							yScale(d.open);
 					})
 					.attr("width", candleWidth * 2)
-					.attr("height", function(d) {
+					.attr("height", (d) => {
 						return isUpDay(d) ?
 							yScale(d.open) - yScale(d.close) :
 							yScale(d.close) - yScale(d.open);
