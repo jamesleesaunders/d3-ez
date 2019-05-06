@@ -42,7 +42,7 @@
 		"eslint": "^4.19.1",
 		"jsdom": "^11.11.0",
 		"gh-pages": "^2.0.1",
-		"jsdoc": "^3.5.5",
+		"jsdoc": "^3.6.0",
 		"rollup": "^0.56.2",
 		"minami": "^1.2.3",
 		"rollup-plugin-babel": "^3.0.7",
