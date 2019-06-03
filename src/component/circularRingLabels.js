@@ -49,15 +49,15 @@ export default function() {
 			.append("path")
 			.attr("id", (d, i) => ("radialLabelPath" + "-" + i))
 			.attr("d", (d) => {
-				let r = radialScale(d);
-				let arc = d3.arc()
+				const r = radialScale(d);
+				const arc = d3.arc()
 					.outerRadius(r)
 					.innerRadius(r);
-				let pathConf = {
+				const pathConf = {
 					startAngle: (startAngle * Math.PI) / 180,
 					endAngle: (endAngle * Math.PI) / 180
 				};
-				let pathStr = arc(pathConf).split(/[A-Z]/);
+				const pathStr = arc(pathConf).split(/[A-Z]/);
 				return "M" + pathStr[1] + "A" + pathStr[2];
 			});
 

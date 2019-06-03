@@ -103,7 +103,7 @@ export default function() {
 				.data((d) => {
 					const key = d.key;
 					const data = pie(d.values);
-					data.forEach(function(d, i) {
+					data.forEach((d, i) => {
 						data[i].key = key;
 					});
 

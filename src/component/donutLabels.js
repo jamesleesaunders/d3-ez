@@ -94,15 +94,15 @@ export default function() {
 					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return (t) => {
-						let d2 = interpolate(t);
-						let pos = outerArc.centroid(d2);
+						const d2 = interpolate(t);
+						const pos = outerArc.centroid(d2);
 						pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
 						return "translate(" + pos + ")";
 					};
 				})
 				.styleTween("text-anchor", function(d) {
 					this._current = this._current || d;
-					let interpolate = d3.interpolate(this._current, d);
+					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
 					return (t) => {
 						const d2 = interpolate(t);
@@ -135,7 +135,7 @@ export default function() {
 					this._current = this._current || d;
 					const interpolate = d3.interpolate(this._current, d);
 					this._current = interpolate(0);
-					return function(t) {
+					return (t) => {
 						const d2 = interpolate(t);
 						const pos = outerArc.centroid(d2);
 						pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1.2 : -1.2);

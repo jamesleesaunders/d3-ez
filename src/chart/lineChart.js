@@ -49,8 +49,8 @@ export default function() {
 
 
 		// TODO: Use dataTransform() to calculate date domains?
-		data.forEach(function(d, i) {
-			d.values.forEach(function(b, j) {
+		data.forEach((d, i) => {
+			d.values.forEach((b, j) => {
 				data[i].values[j].key = new Date(b.key * 1000);
 			});
 		});

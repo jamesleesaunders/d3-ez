@@ -84,7 +84,7 @@ export default function() {
 					const seriesValues = d.values;
 
 					return seriesValues.map((el) => {
-						let o = Object.assign({}, el);
+						const o = Object.assign({}, el);
 						o.series = seriesName;
 						return o;
 					});

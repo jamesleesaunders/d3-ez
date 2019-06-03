@@ -97,8 +97,8 @@ export default function() {
 
 		// Spoke Data Generator
 		const spokeData = function() {
-			let spokeCount = 0;
 			let spokeArray = [];
+			let spokeCount = 0;
 			if (typeof radialScale.ticks === "function") {
 				// scaleLinear
 				let min = d3.min(radialScale.domain());
@@ -115,7 +115,7 @@ export default function() {
 				spokeArray.push("");
 			}
 
-			let spokeScale = d3.scaleLinear()
+			const spokeScale = d3.scaleLinear()
 				.domain([0, spokeCount])
 				.range(radialScale.range());
 

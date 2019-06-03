@@ -43,10 +43,10 @@ export default function() {
 		const subTitle = titleGroup.select(".subTitle").text(subText);
 
 		// Centre Text
-		// let titleOffset = 0 - (title.node().getBBox().width / 2);
-		// let subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+		// const titleOffset = 0 - (title.node().getBBox().width / 2);
 		title.style("text-anchor", "middle")
 			.attr("transform", "translate(0, 15)");
+		// const subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
 		subTitle.style("text-anchor", "middle")
 			.attr("transform", "translate(0, 30)");
 	}
