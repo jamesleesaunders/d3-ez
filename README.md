@@ -32,7 +32,7 @@ Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. O
 * [Line Chart](http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714)
 * [Polar Area Chart](http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209)
 * [Punch Card](http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f)
-* [Rose Chart](http://bl.ocks.org/jamesleesaunders/)
+* [Rose Chart](http://bl.ocks.org/jamesleesaunders/00eee0463f5f7edfa0b1006c28421c2d)
 * [HTML Table](http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358)
 * [HTML List](http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958)
 * [Multi Chart Showcase](http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be)
