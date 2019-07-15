@@ -44,8 +44,8 @@ Include D3.js and d3-ez js and css files in the `<head>` section of your page:
 ```html
 <head>
    <script src="https://d3js.org/d3.v5.min.js"></script> 
-   <script src="https://raw.githack.com/jamesleesaunders/d3-ez/master/build/d3-ez.min.js"></script>
-   <link rel="stylesheet" type="text/css" href="https://raw.githack.com/jamesleesaunders/d3-ez/master/build/d3-ez.css" />
+   <script src="https://raw.githack.com/jamesleesaunders/d3-ez/master/dist/d3-ez.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="https://raw.githack.com/jamesleesaunders/d3-ez/master/dist/d3-ez.css" />
 </head>
 ```
 

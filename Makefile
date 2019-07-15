@@ -14,9 +14,9 @@ CSS_FILES :=       css/global.css \
                    css/punchCard.css \
                    css/roseChart.css
 
-GENERATED_FILES := build/d3-ez.js \
-                   build/d3-ez.min.js \
-                   build/d3-ez.css \
+GENERATED_FILES := dist/d3-ez.js \
+                   dist/d3-ez.min.js \
+                   dist/d3-ez.css \
                    README.md \
                    LICENSE.md
 
@@ -25,23 +25,23 @@ all: js css min zip docs
 
 js:
 	@echo Compiling JS Files...
-	@rm -f build/d3-ez.js
+	@rm -f dist/d3-ez.js
 	@./node_modules/rollup/bin/rollup -c config/rollup.config.js
 
 css: $(CSS_FILES)
 	@echo Concatenating CSS Files...
-	@rm -f build/d3-ez.css
-	@for file in $^; do cat "$$file"; echo "\n"; done > build/d3-ez.css
+	@rm -f dist/d3-ez.css
+	@for file in $^; do cat "$$file"; echo "\n"; done > dist/d3-ez.css
 
 min:
 	@echo Minifying...
-	@rm -f build/d3-ez.min.js
-	@./node_modules/uglify-es/bin/uglifyjs build/d3-ez.js > build/d3-ez.min.js
+	@rm -f dist/d3-ez.min.js
+	@./node_modules/uglify-es/bin/uglifyjs dist/d3-ez.js > dist/d3-ez.min.js
 
 zip: $(GENERATED_FILES)
 	@echo Zipping...
-	@rm -f build/d3-ez.zip
-	@zip -qj build/d3-ez.zip $^
+	@rm -f dist/d3-ez.zip
+	@zip -qj dist/d3-ez.zip $^
 
 docs:
 	@echo Generating Docs...

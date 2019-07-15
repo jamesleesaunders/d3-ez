@@ -1,5 +1,5 @@
 let test = require("tape");
-let d3Ez = require("../../build/d3-ez");
+let d3Ez = require("../../dist/d3-ez");
 let d3 = require("d3");
 
 test("componentLegendTest", function(t) {

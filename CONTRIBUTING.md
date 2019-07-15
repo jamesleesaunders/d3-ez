@@ -3,8 +3,8 @@
 
 **d3-ez** is a library of reusable graphs and charts which use [D3](http://www.d3js.org/).
 
-The `build/d3-ez.js` and `build/d3-ez.css` files are built from source files in the `src` directory.
-Do NOT edit the `build` files directly, but rather edit the `src` files and then run `make` or `npm test` to generate the `build` files.
+The `dist/d3-ez.js` and `dist/d3-ez.css` files are built from source files in the `src` directory.
+Do NOT edit the `dist` files directly, but rather edit the `src` files and then run `make` or `npm test` to generate the `dist` files.
 
 ## Code Styles
 
