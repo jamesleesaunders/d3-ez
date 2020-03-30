@@ -1,44 +1,69 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
-	<g class="seriesGroup bubbles" id="Europe">
-		<g transform="translate(170.00000000000003,4.615384615384357)" class="bubble">
-			<circle r="13.333333333333332" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #3f51b5;"></circle>
-			<text dx="-13.333333333333332" dy="-13.333333333333332" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">UK</text>
+		<g class="seriesGroup bubbles" id="Europe">
+				<g transform="translate(170.00000000000003,4.615384615384366)" class="bubble">
+						<circle r="13.333333333333334" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #3f51b5;"></circle>
+						<text dx="-13.333333333333334" dy="-13.333333333333334"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">UK
+						</text>
+				</g>
+				<g transform="translate(110.00000000000001,184.6153846153846)" class="bubble">
+						<circle r="11.11111111111111" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #3f51b5;"></circle>
+						<text dx="-11.11111111111111" dy="-11.11111111111111"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">France
+						</text>
+				</g>
+				<g transform="translate(220.00000000000003,50.769230769230525)" class="bubble">
+						<circle r="11.481481481481481" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #3f51b5;"></circle>
+						<text dx="-11.481481481481481" dy="-11.481481481481481"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Spain
+						</text>
+				</g>
 		</g>
-		<g transform="translate(110.00000000000001,184.6153846153846)" class="bubble">
-			<circle r="11.11111111111111" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #3f51b5;"></circle>
-			<text dx="-11.11111111111111" dy="-11.11111111111111" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">France</text>
+		<g class="seriesGroup bubbles" id="Africa">
+				<g transform="translate(0,244.61538461538447)" class="bubble">
+						<circle r="10.37037037037037" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #ff9800;"></circle>
+						<text dx="-10.37037037037037" dy="-10.37037037037037"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Kenya
+						</text>
+				</g>
+				<g transform="translate(209.99999999999994,124.61538461538474)" class="bubble">
+						<circle r="20" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #ff9800;"></circle>
+						<text dx="-20" dy="-20" style="display: none; font-size: 10px; text-anchor: end;"
+									alignment-baseline="middle">Nigeria
+						</text>
+				</g>
+				<g transform="translate(290.00000000000006,4.615384615384366)" class="bubble">
+						<circle r="14.074074074074074" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #ff9800;"></circle>
+						<text dx="-14.074074074074074" dy="-14.074074074074074"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Ethiopia
+						</text>
+				</g>
 		</g>
-		<g transform="translate(220.00000000000003,50.76923076923052)" class="bubble">
-			<circle r="11.481481481481481" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #3f51b5;"></circle>
-			<text dx="-11.481481481481481" dy="-11.481481481481481" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Spain</text>
+		<g class="seriesGroup bubbles" id="Asia">
+				<g transform="translate(150,290.76923076923066)" class="bubble">
+						<circle r="16.296296296296298" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #8bc34a;"></circle>
+						<text dx="-16.296296296296298" dy="-16.296296296296298"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">India
+						</text>
+				</g>
+				<g transform="translate(90,32.30769230769243)" class="bubble">
+						<circle r="10" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #8bc34a;"></circle>
+						<text dx="-10" dy="-10" style="display: none; font-size: 10px; text-anchor: end;"
+									alignment-baseline="middle">China
+						</text>
+				</g>
+				<g transform="translate(220.00000000000003,203.07692307692335)" class="bubble">
+						<circle r="13.333333333333334" fill-opacity="1"
+										style="stroke: white; stroke-width: 1; fill: #8bc34a;"></circle>
+						<text dx="-13.333333333333334" dy="-13.333333333333334"
+									style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Japan
+						</text>
+				</g>
 		</g>
-	</g>
-	<g class="seriesGroup bubbles" id="Africa">
-		<g transform="translate(0,244.61538461538447)" class="bubble">
-			<circle r="10.37037037037037" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #ff9800;"></circle>
-			<text dx="-10.37037037037037" dy="-10.37037037037037" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Kenya</text>
-		</g>
-		<g transform="translate(209.99999999999994,124.61538461538473)" class="bubble">
-			<circle r="20" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #ff9800;"></circle>
-			<text dx="-20" dy="-20" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Nigeria</text>
-		</g>
-		<g transform="translate(290.00000000000006,4.615384615384357)" class="bubble">
-			<circle r="14.074074074074074" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #ff9800;"></circle>
-			<text dx="-14.074074074074074" dy="-14.074074074074074" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Ethiopia</text>
-		</g>
-	</g>
-	<g class="seriesGroup bubbles" id="Asia">
-		<g transform="translate(150,290.76923076923066)" class="bubble">
-			<circle r="16.296296296296298" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #8bc34a;"></circle>
-			<text dx="-16.296296296296298" dy="-16.296296296296298" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">India</text>
-		</g>
-		<g transform="translate(90,32.307692307692434)" class="bubble">
-			<circle r="10" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #8bc34a;"></circle>
-			<text dx="-10" dy="-10" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">China</text>
-		</g>
-		<g transform="translate(220.00000000000003,203.07692307692332)" class="bubble">
-			<circle r="13.333333333333332" fill-opacity="1" style="stroke: white; stroke-width: 1; fill: #8bc34a;"></circle>
-			<text dx="-13.333333333333332" dy="-13.333333333333332" style="display: none; font-size: 10px; text-anchor: end;" alignment-baseline="middle">Japan</text>
-		</g>
-	</g>
 </svg>
