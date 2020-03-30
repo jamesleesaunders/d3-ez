@@ -2,7 +2,7 @@
  * d3-ez
  *
  * @author James Saunders [james@saunders-family.net]
- * @copyright Copyright (C) 2018 James Saunders
+ * @copyright Copyright (C) 2020 James Saunders
  * @license GPLv2
  */
 
