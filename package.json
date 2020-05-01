@@ -1,59 +1,63 @@
 {
-	"name": "d3-ez",
-	"version": "3.3.15",
-	"description": "D3 Easy Reusable Chart Library",
-	"license": "GPL-2.0",
-	"keywords": [
-		"d3",
-		"d3-module",
-		"visualization",
-		"chart",
-		"graph",
-		"data",
-		"svg",
-		"dataviz"
-	],
-	"homepage": "http://d3-ez.net",
-	"author": "James Saunders (james@saunders-family.net)",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jamesleesaunders/d3-ez.git"
-	},
-	"bugs": {
-		"url": "https://github.com/jamesleesaunders/d3-ez/issues"
-	},
-	"main": "dist/d3-ez.js",
-	"unpkg": "dist/d3-ez.min.js",
-	"module": "index",
-	"scripts": {
-		"pretest": "make",
-		"test": "tape 'test/**/*Test.js' | tap-spec",
-		"build:docs": "jsdoc -c config/jsdoc.conf.json",
-		"deploy:docs": "npm run build:docs && gh-pages -d docs"
-	},
-	"peerDependencies": {
-		"d3": "^5.0.0"
-	},
-	"devDependencies": {
-		"babel-core": "^6.26.0",
-		"babel-plugin-external-helpers": "^6.22.0",
-		"babel-plugin-transform-object-assign": "^6.22.0",
-		"babel-preset-env": "^1.7.0",
-		"eslint": "^6.8.0",
-		"gh-pages": "^2.2.0",
-		"jsdoc": "^3.6.4",
-		"jsdom": "^15.2.1",
-		"minami": "^1.2.3",
-		"rollup": "^0.68.2",
-		"rollup-plugin-babel": "^3.0.7",
-		"rollup-plugin-json": "^2.3.1",
-		"tap-spec": "^5.0.0",
-		"tape": "^4.13.2",
-		"toast-jsdoc": "^1.0.2",
-		"uglify-es": "^3.3.10",
-		"vows": "^0.8.3"
-	},
-	"dependencies": {
-		"d3": "^5.15.0"
-	}
+  "name": "d3-ez",
+  "version": "3.3.15",
+  "description": "D3 Easy Reusable Chart Library",
+  "license": "GPL-2.0",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "visualization",
+    "chart",
+    "graph",
+    "data",
+    "svg",
+    "dataviz"
+  ],
+  "homepage": "http://d3-ez.net",
+  "author": "James Saunders (james@saunders-family.net)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesleesaunders/d3-ez.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jamesleesaunders/d3-ez/issues"
+  },
+  "main": "dist/d3-ez.js",
+  "unpkg": "dist/d3-ez.min.js",
+  "module": "index",
+  "scripts": {
+    "pretest": "make",
+    "test": "tape 'test/**/*Test.js' | tap-spec",
+    "build:docs": "jsdoc -c config/jsdoc.conf.json",
+    "deploy:docs": "npm run build:docs && gh-pages -d docs",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "peerDependencies": {
+    "d3": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^6.8.0",
+    "gh-pages": "^2.2.0",
+    "jsdoc": "^3.6.4",
+    "jsdom": "^15.2.1",
+    "minami": "^1.2.3",
+    "rollup": "^0.68.2",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-json": "^2.3.1",
+    "tap-spec": "^5.0.0",
+    "tape": "^4.13.2",
+    "toast-jsdoc": "^1.0.2",
+    "uglify-es": "^3.3.10",
+    "vows": "^0.8.3"
+  },
+  "dependencies": {
+    "d3": "^5.15.0",
+    "snyk": "^1.316.1"
+  },
+  "snyk": true
 }
