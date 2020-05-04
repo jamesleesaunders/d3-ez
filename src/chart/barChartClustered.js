@@ -44,8 +44,8 @@ export default function() {
 		chartW = width - (margin.left + margin.right);
 		chartH = height - (margin.top + margin.bottom);
 
-		const { rowKeys, columnKeys, maxValue } = dataTransform(data).summary();
-		const valueExtent = [0, maxValue];
+		const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
+		const valueExtent = [0, valueMax];
 
 		if (typeof colorScale === "undefined") {
 			colorScale = d3.scaleOrdinal()
