@@ -470,6 +470,16 @@
 	  return target;
 	};
 
+	var toConsumableArray = function (arr) {
+	  if (Array.isArray(arr)) {
+	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+	    return arr2;
+	  } else {
+	    return Array.from(arr);
+	  }
+	};
+
 	/**
 	 * Data Transform
 	 *
@@ -496,7 +506,7 @@
 	  */
 		var rowKey = function () {
 			if (dataType === SINGLE_SERIES) {
-				return d3.values(data)[0];
+				return Object.values(data)[0];
 			}
 		}();
 
@@ -534,11 +544,12 @@
 		var rowTotals = function () {
 			if (dataType === MULTI_SERIES) {
 				var ret = {};
-				d3.map(data).values().forEach(function (d) {
-					var rowKey = d.key;
-					d.values.forEach(function (d) {
-						ret[rowKey] = typeof ret[rowKey] === "undefined" ? 0 : ret[rowKey];
-						ret[rowKey] += d.value;
+				data.forEach(function (item) {
+					var rowKey = item.key;
+
+					item.values.forEach(function (value) {
+						ret[rowKey] = ret[rowKey] || 0;
+						ret[rowKey] += value.value;
 					});
 				});
 				return ret;
@@ -552,7 +563,7 @@
 	  */
 		var rowTotalsMax = function () {
 			if (dataType === MULTI_SERIES) {
-				return d3.max(d3.values(rowTotals));
+				return d3.max(Object.values(rowTotals));
 			}
 		}();
 
@@ -570,50 +581,24 @@
 		}();
 
 		/**
-	  * Union Two Arrays
-	  *
-	  * @private
-	  * @param {Array} array1 - First Array.
-	  * @param {Array} array2 - First Array.
-	  * @returns {Array}
-	  */
-		var union = function union(array1, array2) {
-			var ret = [];
-			var arr = array1.concat(array2);
-			var len = arr.length;
-			var assoc = {};
-
-			while (len--) {
-				var item = arr[len];
-
-				if (!assoc[item]) {
-					ret.unshift(item);
-					assoc[item] = true;
-				}
-			}
-
-			return ret;
-		};
-
-		/**
 	  * Column Keys
 	  *
 	  * @returns {Array}
 	  */
 		var columnKeys = function () {
 			if (dataType === SINGLE_SERIES) {
-				return d3.values(data.values).map(function (d) {
+				return data.values.map(function (d) {
 					return d.key;
 				});
 			}
 
 			var ret = [];
-			d3.map(data).values().forEach(function (d) {
+			data.forEach(function (item) {
 				var tmp = [];
-				d.values.forEach(function (d, i) {
-					tmp[i] = d.key;
+				item.values.forEach(function (value) {
+					tmp.push(value.key);
 				});
-				ret = union(tmp, ret);
+				ret = Array.from(new Set([].concat(tmp, toConsumableArray(ret))));
 			});
 
 			return ret;
@@ -630,11 +615,11 @@
 			}
 
 			var ret = {};
-			d3.map(data).values().forEach(function (d) {
-				d.values.forEach(function (d) {
-					var columnName = d.key;
-					ret[columnName] = typeof ret[columnName] === "undefined" ? 0 : ret[columnName];
-					ret[columnName] += d.value;
+			data.forEach(function (item) {
+				item.values.forEach(function (value) {
+					var columnName = value.key;
+					ret[columnName] = ret[columnName] || 0;
+					ret[columnName] += value.value;
 				});
 			});
 
@@ -648,7 +633,7 @@
 	  */
 		var columnTotalsMax = function () {
 			if (dataType === MULTI_SERIES) {
-				return d3.max(d3.values(columnTotals));
+				return d3.max(Object.values(columnTotals));
 			}
 		}();
 
@@ -665,9 +650,9 @@
 			}
 
 			var ret = void 0;
-			d3.map(data).values().forEach(function (d) {
-				d.values.forEach(function (d) {
-					ret = typeof ret === "undefined" ? d.value : d3.min([ret, +d.value]);
+			data.forEach(function (item) {
+				item.values.forEach(function (value) {
+					ret = typeof ret === "undefined" ? value.value : Math.min(ret, +value.value);
 				});
 			});
 
@@ -683,13 +668,13 @@
 			var ret = void 0;
 
 			if (dataType === SINGLE_SERIES) {
-				ret = d3.max(data.values, function (d) {
+				ret = Math.max.apply(Math, toConsumableArray(data.values.map(function (d) {
 					return +d.value;
-				});
+				})));
 			} else {
-				d3.map(data).values().forEach(function (d) {
-					d.values.forEach(function (d) {
-						ret = typeof ret !== "undefined" ? d3.max([ret, +d.value]) : +d.value;
+				data.forEach(function (item) {
+					item.values.forEach(function (value) {
+						ret = typeof ret !== "undefined" ? Math.max(ret, +value.value) : +value.value;
 					});
 				});
 			}
@@ -716,16 +701,16 @@
 
 			if (dataType === SINGLE_SERIES) {
 				coordinateKeys.forEach(function (key) {
-					ret[key] = d3.min(data.values, function (d) {
+					ret[key] = Math.min.apply(Math, toConsumableArray(data.values.map(function (d) {
 						return +d[key];
-					});
+					})));
 				});
 				return ret;
 			} else {
-				d3.map(data).values().forEach(function (d) {
-					d.values.forEach(function (d) {
+				data.forEach(function (item) {
+					item.values.forEach(function (value) {
 						coordinateKeys.forEach(function (key) {
-							ret[key] = key in ret ? d3.min([ret[key], +d[key]]) : d[key];
+							ret[key] = key in ret ? Math.min(ret[key], +value[key]) : +value[key];
 						});
 					});
 				});
@@ -744,16 +729,16 @@
 
 			if (dataType === SINGLE_SERIES) {
 				coordinateKeys.forEach(function (key) {
-					ret[key] = d3.max(data.values, function (d) {
+					ret[key] = Math.max.apply(Math, toConsumableArray(data.values.map(function (d) {
 						return +d[key];
-					});
+					})));
 				});
 				return ret;
 			} else {
-				d3.map(data).values().forEach(function (d) {
-					d.values.forEach(function (d) {
+				data.forEach(function (item) {
+					item.values.forEach(function (value) {
 						coordinateKeys.forEach(function (key) {
-							ret[key] = key in ret ? d3.max([ret[key], +d[key]]) : d[key];
+							ret[key] = key in ret ? Math.max(ret[key], +value[key]) : +value[key];
 						});
 					});
 				});
@@ -804,9 +789,9 @@
 		var maxDecimalPlace = function () {
 			var ret = 0;
 			if (dataType === MULTI_SERIES) {
-				d3.map(data).values().forEach(function (d) {
-					d.values.forEach(function (d) {
-						ret = d3.max([ret, decimalPlaces(d.value)]);
+				data.forEach(function (item) {
+					item.values.forEach(function (value) {
+						ret = Math.max(ret, decimalPlaces(value.value));
 					});
 				});
 			}
@@ -6242,9 +6227,9 @@
 			var _dataTransform$summar = dataTransform(data).summary(),
 			    rowKeys = _dataTransform$summar.rowKeys,
 			    columnKeys = _dataTransform$summar.columnKeys,
-			    maxValue = _dataTransform$summar.maxValue;
+			    valueMax = _dataTransform$summar.valueMax;
 
-			var valueExtent = [0, maxValue];
+			var valueExtent = [0, valueMax];
 
 			if (typeof colorScale === "undefined") {
 				colorScale = d3.scaleOrdinal().domain(columnKeys).range(colors);
