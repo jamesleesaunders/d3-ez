@@ -1,10 +1,9 @@
 import * as d3 from "d3";
-import palette from "../palette";
 import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Punch Card
+ * Punch Card (aka: Proportional Area Chart)
  *
  * @module
  * @see http://datavizproject.com/data-type/proportional-area-chart-circle/
@@ -12,65 +11,20 @@ import component from "../component";
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "punchCard";
-	let width = 400;
-	let height = 300;
-	let margin = { top: 50, right: 20, bottom: 20, left: 50 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let width = 700;
+	let height = 400;
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-
-	/* Scales */
-	let sizeScale;
-	let xScale;
-	let yScale;
-	let colorScale;
-
 	/* Other Customisation Options */
+	let opacity = 1;
+	let showAxis = true;
 	let minRadius = 2;
 	let maxRadius = 20;
 	let useGlobalScale = true;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - margin.left - margin.right;
-		chartH = height - margin.top - margin.bottom;
-
-		const { rowKeys, columnKeys, valueExtent } = dataTransform(data).summary();
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range(colors);
-		}
-
-		xScale = d3.scaleBand()
-			.domain(columnKeys)
-			.range([0, chartW])
-			.padding(0.05);
-
-		yScale = d3.scaleBand()
-			.domain(rowKeys)
-			.range([0, chartH])
-			.padding(0.05);
-
-		const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1].values, (d) => d.value)];
-
-		sizeScale = d3.scaleLinear()
-			.domain(sizeExtent)
-			.range([minRadius, maxRadius]);
-	}
 
 	/**
 	 * Constructor
@@ -80,9 +34,38 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+
+			const { rowKeys, columnKeys, valueExtent } = dataTransform(data).summary();
+
+			const xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, chartW])
+				.padding(0.05);
+
+			const yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, chartH])
+				.padding(0.05);
+
+			const colorScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range(colors);
+
+			const sizeExtent = useGlobalScale ? valueExtent : [0, d3.max(data[1].values, (d) => d.value)];
+
+			const sizeScale = d3.scaleLinear()
+				.domain(sizeExtent)
+				.range([minRadius, maxRadius]);
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -95,54 +78,62 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["punchRowGroups", "xAxis axis", "yAxis axis"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
 
-			// Proportional Area Circles
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
+
+			// Proportional Area Circle Component
 			const proportionalAreaCircles = component.proportionalAreaCircles()
-				.width(chartW)
-				.height(chartH)
-				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
+				.colorScale(colorScale)
 				.sizeScale(sizeScale)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.opacity(opacity);
 
-			const seriesGroup = chart.select(".punchRowGroups")
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
 				.selectAll(".seriesGroup")
 				.data(data);
 
-			seriesGroup.enter().append("g")
+			seriesGroup.enter()
+				.append("g")
 				.attr("class", "seriesGroup")
-				.attr("transform", (d) => "translate(0, " + yScale(d.key) + ")")
 				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", (d) => "translate(0, " + yScale(d.key) + ")")
 				.call(proportionalAreaCircles);
 
 			seriesGroup.exit()
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.remove();
 
-			// X Axis
+			// X-Axis
 			const xAxis = d3.axisTop(xScale);
 
-			chart.select(".xAxis")
+			containerEnter.select(".xAxis")
 				.call(xAxis)
 				.selectAll("text")
 				.attr("y", 0)
@@ -150,11 +141,25 @@ export default function() {
 				.attr("transform", "rotate(60)")
 				.style("text-anchor", "end");
 
-			// Y Axis
+			// Y-Axis
 			const yAxis = d3.axisLeft(yScale);
 
-			chart.select(".yAxis")
+			containerEnter.select(".yAxis")
 				.call(yAxis);
+
+			containerEnter.selectAll(".axis")
+				.attr('opacity', showAxis ? 1 : 0);
+
+			// Legend
+			const legend = component.legend()
+				.sizeScale(sizeScale)
+				.height(legendH)
+				.width(legendW)
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -219,18 +224,6 @@ export default function() {
 	};
 
 	/**
-	 * Size Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.sizeScale = function(_v) {
-		if (!arguments.length) return sizeScale;
-		sizeScale = _v;
-		return this;
-	};
-
-	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.
@@ -243,6 +236,18 @@ export default function() {
 	};
 
 	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {Number} _v - Opacity level.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
+	};
+
+	/**
 	 * Global Scale Use Getter / Setter
 	 *
 	 * @param {boolean} _v - Use global scale or not?
@@ -251,6 +256,18 @@ export default function() {
 	my.useGlobalScale = function(_v) {
 		if (!arguments.length) return useGlobalScale;
 		useGlobalScale = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
 		return this;
 	};
 

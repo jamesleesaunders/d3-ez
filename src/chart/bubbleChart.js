@@ -4,73 +4,29 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Bubble Chart
+ * Bubble Chart (aka: Bubble Plot)
  *
  * @module
  * @see http://datavizproject.com/data-type/bubble-chart/
+ * @see https://www.atlassian.com/data/charts/bubble-chart-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "bubbleChart";
-	let width = 400;
-	let height = 300;
-	let margin = { top: 20, right: 20, bottom: 40, left: 40 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let colors = palette.categorical(3);
+	let width = 700;
+	let height = 400;
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let colors = palette.categorical(1);
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-
-	/* Scales */
-	let xScale;
-	let yScale;
-	let sizeScale;
-	let colorScale;
-
 	/* Other Customisation Options */
+	let opacity = 1;
+	let showAxis = true;
+	let yAxisLabel = null;
 	let minRadius = 3;
 	let maxRadius = 20;
-	let yAxisLabel;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-
-		const { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = dataTransform(data).summary();
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-		}
-
-		if (typeof sizeScale === "undefined") {
-			sizeScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([minRadius, maxRadius]);
-		}
-
-		xScale = d3.scaleLinear()
-			.domain(xExtent)
-			.range([0, chartW])
-			.nice();
-
-		yScale = d3.scaleLinear()
-			.domain(yExtent)
-			.range([chartH, 0])
-			.nice();
-	}
 
 	/**
 	 * Constructor
@@ -80,9 +36,36 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+
+			const { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = dataTransform(data).summary();
+
+			const xScale = d3.scaleLinear()
+				.domain(xExtent)
+				.range([0, chartW])
+				.nice();
+
+			const yScale = d3.scaleLinear()
+				.domain(yExtent)
+				.range([chartH, 0])
+				.nice();
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
+
+			const sizeScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([minRadius, maxRadius]);
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -95,66 +78,58 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["zoomArea", "bubbleGroups", "xAxis axis", "yAxis axis"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
 
-			// Add Clip Path - Still Proof of Concept
-			chart.append('defs')
-				.append('clipPath')
-				.attr('id', 'plotAreaClip')
-				.append('rect')
-				.attr('width', chartW)
-				.attr('height', chartH);
+			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
 
-			// Bubble Chart
+			// Bubble Component
 			const bubbles = component.bubbles()
-				.width(chartW)
-				.height(chartH)
-				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
-				.minRadius(minRadius)
-				.maxRadius(maxRadius)
+				.colorScale(colorScale)
+				.sizeScale(sizeScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
 
-			const bubbleGroups = chart.select(".bubbleGroups")
-				.attr('clip-path', "url(" + window.location + "#plotAreaClip)")
-				.append("g");
-
-			const seriesGroup = bubbleGroups.selectAll(".seriesGroup")
-				.data(data);
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data((d) => d);
 
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.call(bubbles);
 
 			seriesGroup.exit()
 				.remove();
 
-			// X Axis
+			// X-Axis
 			const xAxis = d3.axisBottom(xScale);
 
-			chart.select(".xAxis")
+			containerEnter.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis)
 				.selectAll("text")
@@ -163,47 +138,25 @@ export default function() {
 				.attr("dy", ".15em")
 				.attr("transform", "rotate(-65)");
 
-			// Y Axis
+			// Y-Axis
 			const yAxis = d3.axisLeft(yScale);
 
-			// Zoom
-			const zoom = d3.zoom()
-				.extent([[0, 0], [chartW, chartH]])
-				.scaleExtent([1, 20])
-				.translateExtent([[0, 0], [chartW, chartH]])
-				.on("zoom", zoomed);
-
-			chart.select(".zoomArea")
-				.append("rect")
-				.attr("width", chartW)
-				.attr("height", chartH)
-				.attr("fill", "none")
-				.attr("pointer-events", "all")
-				.call(zoom);
-
-			function zoomed() {
-				const xScaleZoomed = d3.event.transform.rescaleX(xScale);
-				const yScaleZoomed = d3.event.transform.rescaleY(yScale);
-
-				xAxis.scale(xScaleZoomed);
-				yAxis.scale(yScaleZoomed);
-				bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
-
-				chart.select(".xAxis")
-					.call(xAxis)
-					.selectAll("text")
-					.style("text-anchor", "end")
-					.attr("dx", "-.8em")
-					.attr("dy", ".15em")
-					.attr("transform", "rotate(-65)");
-				chart.select(".yAxis").call(yAxis);
-
-				bubbleGroups.selectAll(".seriesGroup")
-					.call(bubbles);
-			}
-
-			chart.select(".yAxis")
+			containerEnter.select(".yAxis")
 				.call(yAxis);
+
+			containerEnter.selectAll(".axis")
+				.attr('opacity', showAxis ? 1 : 0);
+
+			// Legend
+			const legend = component.legend()
+				.sizeScale(sizeScale)
+				.height(legendH)
+				.width(legendW)
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -300,6 +253,30 @@ export default function() {
 	my.sizeScale = function(_v) {
 		if (!arguments.length) return sizeScale;
 		sizeScale = _v;
+		return this;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {Number} _v - Opacity level.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
 		return this;
 	};
 

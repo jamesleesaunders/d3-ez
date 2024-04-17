@@ -48,7 +48,7 @@ export default function() {
 			const hdr = head.append("tr");
 
 			hdr.selectAll("th")
-				.data(() => [""].concat(columnKeys)) 	// Tack a blank cell at the beginning this is the empty 'A1' cell.
+				.data(() => [""].concat(columnKeys))  // Tack a blank cell at the beginning this is the empty 'A1' cell.
 				.enter()
 				.append("th")
 				.html((d) => d);
@@ -60,7 +60,9 @@ export default function() {
 			const rows = rowsSelect.enter()
 				.append("tr")
 				.attr("class", (d) => d.key)
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); })
+				.on("click", function(d) {
+					dispatch.call("customSeriesClick", this, d);
+				})
 				.merge(rowsSelect);
 
 			// Add the first column of headings (categories)
@@ -74,7 +76,9 @@ export default function() {
 				.append("td")
 				.attr("class", (d) => d.key)
 				.html((d) => d.value)
-				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); });
+				.on("mouseover", function(d) {
+					dispatch.call("customValueMouseOver", this, d);
+				});
 		});
 	}
 

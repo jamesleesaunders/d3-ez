@@ -1,35 +1,16 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Donut Chart Label Component
+ * Reusable Donut Chart Labels Component
  *
  * @module
  */
 export default function() {
 
 	/* Default Properties */
-	let width = 300;
-	let height = 300;
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let radius = 150;
-	let innerRadius;
 	let classed = "donutLabels";
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		if (typeof radius === "undefined") {
-			radius = Math.min(width, height) / 2;
-		}
-
-		if (typeof innerRadius === "undefined") {
-			innerRadius = radius / 4;
-		}
-	}
+	let xScale;
+	let transition = { ease: d3.easeBounce, duration: 500 };
 
 	/**
 	 * Constructor
@@ -39,8 +20,8 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		selection.each(function(data) {
-			init(data);
+		selection.each(function() {
+			const [innerRadius, radius] = xScale.range();
 
 			// Pie Generator
 			const pie = d3.pie()
@@ -51,8 +32,7 @@ export default function() {
 			// Arc Generator
 			const arc = d3.arc()
 				.innerRadius(innerRadius)
-				.outerRadius(radius)
-				.cornerRadius(2);
+				.outerRadius(radius);
 
 			// Outer Arc Generator
 			const outerArc = d3.arc()
@@ -64,27 +44,37 @@ export default function() {
 				return d.startAngle + (d.endAngle - d.startAngle) / 2;
 			};
 
-			// Update series group
+			// Update Series Group
 			const seriesGroup = d3.select(this);
-			seriesGroup
-				.classed(classed, true);
+
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
 
 			// Text Labels
-			const labelsGroupSelect = seriesGroup.selectAll("g.labels")
+			const labelsGroup = componentGroup
+				.selectAll("g.labels")
 				.data((d) => [d]);
 
-			const labelsGroup = labelsGroupSelect.enter()
+			const labelsGroupEnter = labelsGroup.enter()
 				.append("g")
 				.attr("class", "labels")
-				.merge(labelsGroupSelect);
+				.merge(labelsGroup);
 
-			const labels = labelsGroup.selectAll("text.label")
+			const labels = labelsGroupEnter.selectAll("text.label")
 				.data((d) => pie(d.values));
 
 			labels.enter()
 				.append("text")
 				.attr("class", "label")
+				.attr("font-size", "0.8em")
 				.attr("dy", ".35em")
+				.attr("fill", "currentColor")
 				.merge(labels)
 				.transition()
 				.duration(transition.duration)
@@ -113,8 +103,8 @@ export default function() {
 			labels.exit()
 				.remove();
 
-			// Text Label to Slice Connectors
-			const connectorsGroupSelect = seriesGroup.selectAll("g.connectors")
+			// Label to Slice Connectors
+			const connectorsGroupSelect = componentGroup.selectAll("g.connectors")
 				.data((d) => [d]);
 
 			const connectorsGroup = connectorsGroupSelect.enter()
@@ -128,6 +118,9 @@ export default function() {
 			connectors.enter()
 				.append("polyline")
 				.attr("class", "connector")
+				.attr("fill", "none")
+				.attr("stroke", "currentColor")
+				.attr("stroke-width", "1.5px")
 				.merge(connectors)
 				.transition()
 				.duration(transition.duration)
@@ -149,51 +142,15 @@ export default function() {
 	}
 
 	/**
-	 * Width Getter / Setter
+	 * X Scale Getter / Setter
 	 *
-	 * @param {number} _v - Width in px.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Height Getter / Setter
-	 *
-	 * @param {number} _v - Height in px.
-	 * @returns {*}
-	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
-	};
-
-	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
-	 * Inner Radius Getter / Setter
-	 *
-	 * @param {number} _v - Inner radius in px.
-	 * @returns {*}
-	 */
-	my.innerRadius = function(_v) {
-		if (!arguments.length) return innerRadius;
-		innerRadius = _v;
-		return this;
+	my.xScale = function(_v) {
+		if (!arguments.length) return xScale;
+		xScale = _v;
+		return my;
 	};
 
 	return my;

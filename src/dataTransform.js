@@ -24,7 +24,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const rowKey = function () {
+	const rowKey = function() {
 		if (dataType === SINGLE_SERIES) {
 			return Object.values(data)[0];
 		}
@@ -35,7 +35,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const rowTotal = function () {
+	const rowTotal = function() {
 		if (dataType === SINGLE_SERIES) {
 			return d3.sum(data.values, (d) => d.value);
 		}
@@ -46,7 +46,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const rowKeys = function () {
+	const rowKeys = function() {
 		if (dataType === MULTI_SERIES) {
 			return data.map((d) => d.key);
 		}
@@ -57,7 +57,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const rowTotals = function () {
+	const rowTotals = function() {
 		if (dataType === MULTI_SERIES) {
 			const ret = {};
 			data.forEach((item) => {
@@ -73,11 +73,22 @@ export default function dataTransform(data) {
 	}();
 
 	/**
+	 * Row Totals Min
+	 *
+	 * @returns {number}
+	 */
+	const rowTotalsMin = function() {
+		if (dataType === MULTI_SERIES) {
+			return d3.min(Object.values(rowTotals));
+		}
+	}();
+
+	/**
 	 * Row Totals Max
 	 *
 	 * @returns {number}
 	 */
-	const rowTotalsMax = function () {
+	const rowTotalsMax = function() {
 		if (dataType === MULTI_SERIES) {
 			return d3.max(Object.values(rowTotals));
 		}
@@ -88,7 +99,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const rowValuesKeys = function () {
+	const rowValuesKeys = function() {
 		if (dataType === SINGLE_SERIES) {
 			return Object.keys(data.values[0]);
 		} else {
@@ -104,7 +115,7 @@ export default function dataTransform(data) {
 	 * @param {Array} array2 - First Array.
 	 * @returns {Array}
 	 */
-	const union = function (array1, array2) {
+	const union = function(array1, array2) {
 		const ret = [];
 		const arr = array1.concat(array2);
 		let len = arr.length;
@@ -127,7 +138,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const columnKeys = function () {
+	const columnKeys = function() {
 		if (dataType === SINGLE_SERIES) {
 			return data.values.map((d) => d.key);
 		}
@@ -149,7 +160,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const columnTotals = function () {
+	const columnTotals = function() {
 		if (dataType !== MULTI_SERIES) {
 			return;
 		}
@@ -167,11 +178,22 @@ export default function dataTransform(data) {
 	}();
 
 	/**
+	 * Column Totals Min
+	 *
+	 * @returns {Array}
+	 */
+	const columnTotalsMin = function() {
+		if (dataType === MULTI_SERIES) {
+			return d3.min(Object.values(columnTotals));
+		}
+	}();
+
+	/**
 	 * Column Totals Max
 	 *
 	 * @returns {Array}
 	 */
-	const columnTotalsMax = function () {
+	const columnTotalsMax = function() {
 		if (dataType === MULTI_SERIES) {
 			return d3.max(Object.values(columnTotals));
 		}
@@ -182,7 +204,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {number}
 	 */
-	const valueMin = function () {
+	const valueMin = function() {
 		if (dataType === SINGLE_SERIES) {
 			return d3.min(data.values, (d) => +d.value);
 		}
@@ -202,7 +224,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {number}
 	 */
-	const valueMax = (function () {
+	const valueMax = (function() {
 		let ret;
 
 		if (dataType === SINGLE_SERIES) {
@@ -223,16 +245,54 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const valueExtent = function () {
+	const valueExtent = function() {
 		return [valueMin, valueMax];
 	}();
+
+	/**
+	 * Value Extent Stacked
+	 *
+	 * @returns {Array}
+	 */
+	const valueExtentStacked = (function() {
+		let lowestNegativeSum = Infinity;
+		let highestPositiveSum = -Infinity;
+
+		if (dataType === MULTI_SERIES) {
+			data.forEach(row => {
+				const [negativeSum, positiveSum] = row.values.reduce(
+					(acc, column) => {
+						const value = column.value;
+						if (value < 0) {
+							acc[0] += value;
+						} else if (value > 0) {
+							acc[1] += value;
+						}
+						return acc;
+					},
+					[0, 0]
+				);
+
+				lowestNegativeSum = Math.min(lowestNegativeSum, negativeSum);
+				highestPositiveSum = Math.max(highestPositiveSum, positiveSum);
+			});
+		}
+		// Check if lowestNegativeSum is still Infinity (no negative values found), if so, set it to 0
+		const finalLowestNegativeSum = lowestNegativeSum === Infinity ? 0 : lowestNegativeSum;
+
+		// Check if highestPositiveSum is still -Infinity (no positive values found), if so, set it to 0
+		const finalHighestPositiveSum = highestPositiveSum === -Infinity ? 0 : highestPositiveSum;
+
+		// Return the final results as an array
+		return [finalLowestNegativeSum, finalHighestPositiveSum];
+	})();
 
 	/**
 	 * Coordinates Min
 	 *
 	 * @returns {Array}
 	 */
-	const coordinatesMin = (function () {
+	const coordinatesMin = (function() {
 		let ret = {};
 
 		if (dataType === SINGLE_SERIES) {
@@ -260,7 +320,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const coordinatesMax = (function () {
+	const coordinatesMax = (function() {
 		let ret = {};
 
 		if (dataType === SINGLE_SERIES) {
@@ -287,9 +347,9 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const coordinatesExtent = function () {
+	const coordinatesExtent = function() {
 		let ret = {};
-		coordinateKeys.forEach(function (key) {
+		coordinateKeys.forEach(function(key) {
 			ret[key] = [coordinatesMin[key], coordinatesMax[key]]
 		});
 
@@ -303,7 +363,7 @@ export default function dataTransform(data) {
 	 * @param {number} num - Float.
 	 * @returns {number}
 	 */
-	const decimalPlaces = function (num) {
+	const decimalPlaces = function(num) {
 		const match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
 		if (!match) {
 			return 0;
@@ -324,7 +384,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {number}
 	 */
-	const maxDecimalPlace = (function () {
+	const maxDecimalPlace = (function() {
 		let ret = 0;
 		if (dataType === MULTI_SERIES) {
 			data.forEach((item) => {
@@ -338,15 +398,14 @@ export default function dataTransform(data) {
 		return ret > 20 ? 20 : ret;
 	})();
 
-
 	/**
 	 * Thresholds
 	 *
 	 * @returns {Array}
 	 */
-	const thresholds = function () {
+	const thresholds = function() {
 		const distance = valueMax - valueMin;
-		const bands = [0.15, 0.40, 0.55, 0.90];
+		const bands = [0.25, 0.50, 0.75, 1.00];
 
 		return bands.map((v) => Number((valueMin + (v * distance)).toFixed(maxDecimalPlace)));
 	}();
@@ -357,21 +416,24 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const summary = function () {
+	const summary = function() {
 		return {
 			dataType: dataType,
 			rowKey: rowKey,
 			rowTotal: rowTotal,
 			rowKeys: rowKeys,
 			rowTotals: rowTotals,
+			rowTotalsMin: rowTotalsMin,
 			rowTotalsMax: rowTotalsMax,
 			rowValuesKeys: rowValuesKeys,
 			columnKeys: columnKeys,
 			columnTotals: columnTotals,
+			columnTotalsMin: columnTotalsMin,
 			columnTotalsMax: columnTotalsMax,
 			valueMin: valueMin,
 			valueMax: valueMax,
 			valueExtent: valueExtent,
+			valueExtentStacked: valueExtentStacked,
 			coordinatesMin: coordinatesMin,
 			coordinatesMax: coordinatesMax,
 			coordinatesExtent: coordinatesExtent,
@@ -385,7 +447,7 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {Array}
 	 */
-	const rotate = function () {
+	const rotate = function() {
 		const columnKeys = data.map((d) => d.key);
 		const rowKeys = data[0].values.map((d) => d.key);
 

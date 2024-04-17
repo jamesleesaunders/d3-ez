@@ -8,6 +8,7 @@ import * as d3 from "d3";
 export default function() {
 
 	/* Default Properties */
+	let classed = "labeledNode";
 	let color = "steelblue";
 	let opacity = 1;
 	let strokeColor = "#000000";
@@ -16,7 +17,6 @@ export default function() {
 	let label;
 	let display = "block";
 	let fontSize = 10;
-	let classed = "labeledNode";
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
 	/**
@@ -36,22 +36,36 @@ export default function() {
 		selection.each(function(data) {
 			const r = sizeAccessor(data);
 
-			const node = d3.select(this)
-				.classed(classed, true);
+			const circle = d3.select(this)
+				.classed(classed, true)
+				.selectAll("circle")
+				.data([data]);
 
-			node.append("circle")
-				.attr("r", r)
+			circle.enter()
+				.append("circle")
+				.merge(circle)
+				.transition()
+				.attr("r", (d) => sizeAccessor(d))
 				.attr("fill-opacity", opacity)
-				.style("stroke", strokeColor)
+				.style("stroke", color)
 				.style("stroke-width", strokeWidth)
 				.style("fill", color);
 
-			node.append("text")
+			const text = d3.select(this)
+				.classed(classed, true)
+				.selectAll("text")
+				.data([data]);
+
+			text.enter()
+				.append("text")
+				.merge(text)
+				.transition()
 				.text(label)
 				.attr("dx", -r)
 				.attr("dy", -r)
 				.style("display", display)
 				.style("font-size", fontSize + "px")
+				.attr("fill", "currentColor")
 				.attr("alignment-baseline", "middle")
 				.style("text-anchor", "end");
 		});
@@ -140,18 +154,6 @@ export default function() {
 		if (!arguments.length) return [strokeWidth, strokeColor];
 		strokeWidth = _width;
 		strokeColor = _color;
-		return this;
-	};
-
-	/**
-	 * Class Getter / Setter
-	 *
-	 * @param {string} _v - HTML class name.
-	 * @returns {*}
-	 */
-	my.classed = function(_v) {
-		if (!arguments.length) return classed;
-		classed = _v;
 		return this;
 	};
 

@@ -1,6 +1,4 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
  * Reusable Line Chart Component
@@ -10,50 +8,13 @@ import dataTransform from "../dataTransform";
 export default function() {
 
 	/* Default Properties */
-	let width = 400;
-	let height = 400;
-	let transition = { ease: d3.easeLinear, duration: 0 };
-	let colors = palette.categorical(3);
-	let colorScale;
+	let classed = "lineChart";
 	let xScale;
 	let yScale;
+	let colorScale;
+	let opacity = 1;
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let classed = "lineChart";
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		const { rowKeys, valueMax } = dataTransform(data).summary();
-		const valueExtent = [0, valueMax];
-
-
-		// TODO: Use dataTransform() to calculate date domains?
-		const dateDomain = d3.extent(data[0].values, (d) => d.key);
-
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-		}
-
-		if (typeof xScale === "undefined") {
-			xScale = d3.scaleTime()
-				.domain(dateDomain)
-				.range([0, width]);
-		}
-
-		if (typeof yScale === "undefined") {
-			yScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([height, 0])
-				.nice();
-		}
-	}
 
 	/**
 	 * Constructor
@@ -63,100 +24,62 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		init(selection.data());
 		selection.each(function() {
-
-			// Line generation function
-			const line = d3.line()
-				.curve(d3.curveCardinal)
-				.x((d) => xScale(d.key))
-				.y((d) => yScale(d.value));
-
 			// Line animation tween
 			const pathTween = function(data) {
-				let interpolate = d3.scaleQuantile()
+				const line = d3.line()
+					.curve(d3.curveCardinal)
+					.x((d) => xScale(d.key))
+					.y((d) => yScale(d.value));
+
+				const interpolate = d3.scaleQuantile()
 					.domain([0, 1])
 					.range(d3.range(1, data.length + 1));
+
 				return (t) => line(data.slice(0, interpolate(t)));
 			};
 
 			// Update series group
-			const seriesGroup = d3.select(this);
-			seriesGroup
-				.classed(classed, true)
+			const seriesGroup = d3.select(this)
 				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
+				.on("mouseover", function(e, d) {
+					dispatch.call("customSeriesMouseOver", this, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customSeriesClick", this, d);
+				});
 
-			// Create series group
-			const seriesLine = seriesGroup.selectAll(".seriesLine")
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
+
+			// Add lines to series group
+			const line = componentGroup.selectAll(".line")
 				.data((d) => [d]);
 
-			seriesLine.enter()
+			line.enter()
 				.append("path")
-				.attr("class", "seriesLine")
+				.attr("class", "line")
 				.attr("stroke-width", 1.5)
-				.attr("stroke", (d) => colorScale(d.key))
 				.attr("fill", "none")
-				.merge(seriesLine)
+				.merge(line)
 				.transition()
 				.duration(transition.duration)
-				.attrTween("d", (d) => pathTween(d.values));
+				.attr("stroke", (d) => colorScale(d.key))
+				.attrTween("d", (d) => pathTween(d.values))
+				.attr("opacity", opacity);
 
-			seriesLine.exit()
+			line.exit()
 				.transition()
 				.style("opacity", 0)
 				.remove();
 		});
 	}
-
-	/**
-	 * Width Getter / Setter
-	 *
-	 * @param {number} _v - Width in px.
-	 * @returns {*}
-	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Height Getter / Setter
-	 *
-	 * @param {number} _v - Height in px.
-	 * @returns {*}
-	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
-	};
-
-	/**
-	 * Color Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return my;
-	};
-
-	/**
-	 * Colors Getter / Setter
-	 *
-	 * @param {Array} _v - Array of colours used by color scale.
-	 * @returns {*}
-	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
-		return my;
-	};
 
 	/**
 	 * X Scale Getter / Setter
@@ -183,6 +106,30 @@ export default function() {
 	};
 
 	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return my;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _v - Opacity 0 -1.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -200,7 +147,7 @@ export default function() {
 	 * @returns {*}
 	 */
 	my.on = function() {
-		let value = dispatch.on.apply(dispatch, arguments);
+		const value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
 	};
 

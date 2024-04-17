@@ -4,32 +4,34 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Circular Bar Chart (aka: Progress Chart)
+ * Bar Chart (Vertical) (aka: Bar Chart; Bar Graph)
  *
  * @module
- * @see http://datavizproject.com/data-type/circular-bar-chart/
+ * @see http://datavizproject.com/data-type/bar-chart/
+ * @see https://www.atlassian.com/data/charts/stacked-bar-chart-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let classed = "barChartCircular";
+	let classed = "barChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let colors = palette.categorical(3);
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let colors = palette.categorical(1);
 	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
 	let opacity = 1;
-	let startAngle = 0;
-	let endAngle = 270;
+	let showAxis = true;
+	let yAxisLabel = null;
+	let stacked = false;
 
 	/**
 	 * Constructor
 	 *
 	 * @constructor
-	 * @alias barChartCircular
+	 * @alias barChartVertical
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
@@ -40,48 +42,37 @@ export default function() {
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
-			const radius = (Math.min(chartW, chartH) / data.length) / 2;
-			const innerRadius = radius / 4;
 
-			const { columnKeys, valueMax } = dataTransform(data).summary();
-			const valueExtent = [0, valueMax];
+			// Create Scales and Axis
+			data = dataTransform(data).rotate();
+			let { rowKeys, columnKeys, valueExtent, valueExtentStacked } = dataTransform(data).summary();
+			let [valueMin, valueMax] = valueExtent;
+			if (stacked) {
+				// Sum negative stacked bars
+				[valueMin, valueMax] = valueExtentStacked;
+			} else {
+				// Set min to zero if min is more than zero
+				valueMin = valueMin > 0 ? 0 : valueMin;
+			}
+			const yDomain = [valueMin, valueMax];
+
+			const xScale2 = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, chartW])
+				.padding(0.2);
+
+			const xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, xScale2.bandwidth()])
+				.padding(0.05);
+
+			const yScale = d3.scaleLinear()
+				.domain(yDomain)
+				.range([chartH, 0]);
 
 			const colorScale = d3.scaleOrdinal()
 				.domain(columnKeys)
 				.range(colors);
-
-			const xScale = d3.scaleBand()
-				.domain(columnKeys)
-				.rangeRound([innerRadius, radius])
-				.padding(0.15);
-
-			const yScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([startAngle, endAngle]);
-
-			function generateLayout(cellCount, width, height) {
-				const layout = [];
-				const cols = Math.ceil(Math.sqrt(cellCount));
-				const rows = Math.ceil(cellCount / cols);
-				const cellWidth = width / cols;
-				const cellHeight = height / rows;
-				let index = 0;
-
-				for (let i = 0; i < rows; i++) {
-					for (let j = 0; j < cols; j++) {
-						if (index < cellCount) {
-							const x = (j * cellWidth) + (cellWidth / 2);
-							const y = (i * cellHeight) + (cellHeight / 2);
-							layout.push({ x: x, y: y, width: cellWidth, height: cellHeight });
-							index++;
-						}
-					}
-				}
-
-				return layout;
-			}
-
-			const layout = generateLayout(data.length, chartW, chartH);
 
 			// Create SVG element (if it does not exist already)
 			const svg = (function(selection) {
@@ -112,36 +103,19 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(yScale)
-				.ringScale(xScale);
-
-			// Radial Bars
-			const barsCircular = component.barsCircular()
-				.colorScale(colorScale)
-				.xScale(xScale)
-				.opacity(opacity)
+			// Bars Component
+			const bars = stacked ? component.barsStacked().xScale(xScale2) : component.barsVertical().xScale(xScale)
+			bars.colorScale(colorScale)
 				.yScale(yScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
-
-			// Outer Labels
-			const circularSectorLabels = component.circularSectorLabels()
-				.ringScale(xScale)
-				.radialScale(yScale)
-				.textAnchor("middle");
-
-			// Ring Labels
-			const circularRingLabels = component.circularRingLabels()
-				.radialScale(xScale)
-				.textAnchor("middle");
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -155,21 +129,49 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d, i) => {
-					const x = layout[i].x;
-					const y = layout[i].y;
+				.attr("transform", (d) => {
+					const x = xScale2(d.key);
+					const y = chartH - yScale(valueMin);
 					return `translate(${x},${y})`
 				})
-				.call(circularAxis)
-				.call(barsCircular)
-				.call(circularSectorLabels)
-				.call(circularRingLabels);
+				.call(bars);
 
 			seriesGroup.exit()
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
 				.remove();
+
+			// X-Axis
+			const xAxis = d3.axisBottom(xScale2);
+
+			containerEnter.select(".xAxis")
+				.attr("transform", `translate(0,${chartH})`)
+				.call(xAxis);
+
+			// Y-Axis
+			const yAxis = d3.axisLeft(yScale);
+
+			containerEnter.select(".yAxis")
+				.call(yAxis);
+
+			// Y Axis Label
+			containerEnter.select(".yAxis")
+				.selectAll(".yAxisLabel")
+				.data([yAxisLabel])
+				.enter()
+				.append("text")
+				.classed("yAxisLabel", true)
+				.attr("transform", "rotate(-90)")
+				.attr("y", -40)
+				.attr("dy", ".71em")
+				.attr("fill", "currentColor")
+				.style("text-anchor", "end")
+				.transition()
+				.text((d) => d);
+
+			containerEnter.selectAll(".axis")
+				.attr('opacity', showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -234,6 +236,18 @@ export default function() {
 	};
 
 	/**
+	 * Stacked Getter / Setter
+	 *
+	 * @param {Boolean} _v - Stacked or grouped bar chart.
+	 * @returns {*}
+	 */
+	my.stacked = function(_v) {
+		if (!arguments.length) return stacked;
+		stacked = _v;
+		return this;
+	};
+
+	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {Number} _v - Opacity level.
@@ -242,6 +256,30 @@ export default function() {
 	my.opacity = function(_v) {
 		if (!arguments.length) return opacity;
 		opacity = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
+		return this;
+	};
+
+	/**
+	 * Y Axix Label Getter / Setter
+	 *
+	 * @param {number} _v - Label text.
+	 * @returns {*}
+	 */
+	my.yAxisLabel = function(_v) {
+		if (!arguments.length) return yAxisLabel;
+		yAxisLabel = _v;
 		return this;
 	};
 
@@ -275,7 +313,7 @@ export default function() {
 	 * @returns {*}
 	 */
 	my.on = function() {
-		let value = dispatch.on.apply(dispatch, arguments);
+		const value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
 	};
 

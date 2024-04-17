@@ -1,6 +1,5 @@
 import componentBarsCircular from "./component/barsCircular";
 import componentBarsStacked from "./component/barsStacked";
-import componentBarsHorizontal from "./component/barsHorizontal";
 import componentBarsVertical from "./component/barsVertical";
 import componentBubbles from "./component/bubbles";
 import componentCandleSticks from "./component/candleSticks";
@@ -23,22 +22,18 @@ import componentRoseChartSector from "./component/roseChartSector";
 import componentLabeledNode from "./component/labeledNode";
 import componentLegend from "./component/legend";
 import componentLegendSize from "./component/legendSize";
-import componentLegendColor from "./component/legendColor";
+import componentLegendCategorical from "./component/legendCategorical";
 import componentLegendThreshold from "./component/legendThreshold";
-import componentTitle from "./component/title";
-import componentCreditTag from "./component/creditTag";
 
 export default {
 	barsCircular: componentBarsCircular,
 	barsStacked: componentBarsStacked,
-	barsHorizontal: componentBarsHorizontal,
 	barsVertical: componentBarsVertical,
 	bubbles: componentBubbles,
 	candleSticks: componentCandleSticks,
 	circularAxis: componentCircularAxis,
 	circularRingLabels: componentCircularRingLabels,
 	circularSectorLabels: componentCircularSectorLabels,
-	creditTag: componentCreditTag,
 	donut: componentDonut,
 	donutLabels: componentDonutLabels,
 	heatMapRing: componentHeatMapRing,
@@ -48,7 +43,7 @@ export default {
 	labeledNode: componentLabeledNode,
 	legend: componentLegend,
 	legendSize: componentLegendSize,
-	legendColor: componentLegendColor,
+	legendColor: componentLegendCategorical,
 	legendThreshold: componentLegendThreshold,
 	lineChart: componentLineChart,
 	numberCard: componentNumberCard,
@@ -56,6 +51,5 @@ export default {
 	radarArea: componentRadarArea,
 	roseChartSector: componentRoseChartSector,
 	proportionalAreaCircles: componentProportionalAreaCircles,
-	scatterPlot: componentScatterPlot,
-	title: componentTitle
+	scatterPlot: componentScatterPlot
 };

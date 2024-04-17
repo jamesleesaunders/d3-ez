@@ -4,7 +4,7 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Radar Chart (also called: Spider Chart; Web Chart; Star Plot)
+ * Radar Chart (aka: Spider Chart; Web Chart; Star Plot)
  *
  * @module
  * @see http://datavizproject.com/data-type/radar-diagram/
@@ -12,62 +12,18 @@ import component from "../component";
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "radarChart";
-	let width = 400;
-	let height = 300;
+	let width = 700;
+	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
 	let colors = palette.categorical(3);
+	let transition = { ease: d3.easeBounce, duration: 500 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-	let radius;
-
-	/* Scales */
-	let xScale;
-	let yScale;
-	let colorScale;
-
 	/* Other Customisation Options */
+	let opacity = 1;
 	let startAngle = 0;
 	let endAngle = 360;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-
-		const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
-		const valueExtent = [0, valueMax];
-
-		if (typeof radius === "undefined") {
-			radius = Math.min(chartW, chartH) / 2;
-		}
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-		}
-
-		xScale = d3.scaleBand()
-			.domain(columnKeys)
-			.range([startAngle, endAngle]);
-
-		yScale = d3.scaleLinear()
-			.domain(valueExtent)
-			.range([0, radius])
-			.nice();
-	}
 
 	/**
 	 * Constructor
@@ -77,60 +33,91 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+			const radius = Math.min(chartW, chartH) / 2.5;
+
+			const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
+			const valueExtent = [0, valueMax];
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
+
+			const xScale = d3.scalePoint()
+				.domain(columnKeys)
+				.range([startAngle, endAngle]);
+
+			const yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([0, radius])
+				.nice();
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
 				} else {
 					return selection.append("svg");
 				}
-			}(selection);
+			})(selection);
 
-			svg.classed("d3ez", true).attr("width", width).attr("height", height);
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["circularAxis", "circularSectorLabels", "verticalAxis axis", "radarGroup"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			// Update the chart dimensions and container and layer groups
+			const layers = ["axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
 
 			// Create Circular Axis
 			const circularAxis = component.circularAxis()
 				.radialScale(xScale)
 				.ringScale(yScale)
-				.radius(radius);
-
-			chart.select(".circularAxis")
-				.call(circularAxis);
+				.showAxis(false);
 
 			const radarArea = component.radarArea()
-				.radius(radius)
-				.colorScale(colorScale)
-				.yScale(yScale)
 				.xScale(xScale)
+				.yScale(yScale)
+				.colorScale(colorScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
 
+			// Adding Circular Labels on Page
+			const circularSectorLabels = component.circularSectorLabels()
+				.ringScale(yScale)
+				.radialScale(xScale)
+				.textAnchor("middle");
+
 			// Create Radars
-			const seriesGroup = chart.select(".radarGroup")
+			const seriesGroup = containerEnter.select(".chart")
 				.selectAll(".seriesGroup")
-				.data(data);
+				.data((d) => d);
 
 			seriesGroup.enter()
 				.append("g")
@@ -138,28 +125,33 @@ export default function() {
 				.attr("fill", (d) => colorScale(d.key))
 				.style("stroke", (d) => colorScale(d.key))
 				.merge(seriesGroup)
-				.call(radarArea);
+				.call(radarArea)
+				.attr("transform", () => {
+					const x = chartW / 2;
+					const y = chartH / 2;
+					return `translate(${x},${y})`
+				});
 
-			// Creating vertical scale
-			const axisScale = d3.scaleLinear()
-				.domain(yScale.domain())
-				.range(yScale.range().reverse())
-				.nice();
+			containerEnter.select(".axis")
+				.attr("transform", () => {
+					const x = chartW / 2;
+					const y = chartH / 2;
+					return `translate(${x},${y})`
+				})
+				.call(circularSectorLabels)
+				.call(circularAxis);
 
-			// Render vertical scale on circle
-			const verticalAxis = d3.axisLeft(axisScale);
-			chart.select(".verticalAxis")
-				.attr("transform", "translate(0," + -radius + ")")
-				.call(verticalAxis);
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.itemType("rect")
+				.opacity(opacity);
 
-			// Adding Circular Labels on Page
-			const circularSectorLabels = component.circularSectorLabels()
-				.radius(radius * 1.04)
-				.radialScale(xScale)
-				.textAnchor("start");
-
-			chart.select(".circularSectorLabels")
-				.call(circularSectorLabels);
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -188,18 +180,6 @@ export default function() {
 	};
 
 	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.
@@ -212,14 +192,14 @@ export default function() {
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {number} _v - Opacity 0 -1.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 

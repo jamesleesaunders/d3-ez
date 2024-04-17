@@ -1,6 +1,4 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
  * Reusable Stacked Bar Chart Component
@@ -10,38 +8,14 @@ import dataTransform from "../dataTransform";
 export default function() {
 
 	/* Default Properties */
-	let width = 100;
-	let height = 300;
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let colors = palette.categorical(3);
-	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let classed = "bars";
+	let xScale;
 	let yScale;
 	let colorScale;
-	let classed = "barsStacked";
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		const { columnKeys, rowTotalsMax } = dataTransform(data).summary();
-		const valueExtent = [0, rowTotalsMax];
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
-		}
-
-		if (typeof yScale === "undefined") {
-			yScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([0, height])
-				.nice();
-		}
-	}
+	let transition = { ease: d3.easeBounce, duration: 200 };
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let opacity = 1;
+	let cornerRadius = 2;
 
 	/**
 	 * Constructor
@@ -51,60 +25,94 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		init(selection.data());
 		selection.each(function() {
+			const height = d3.max(yScale.range());
+			const width = xScale.bandwidth();
+			const [valueMin, valueMax] = d3.extent(yScale.domain());
 
 			// Stack Generator
 			const stacker = function(data) {
 				const series = [];
 				let y0 = 0;
 				let y1 = 0;
+				let yn0 = 0;
+				let yn1 = 0;
 				data.forEach((d, i) => {
-					y1 = y0 + d.value;
-					series[i] = {
-						key: d.key,
-						value: d.value,
-						y0: y0,
-						y1: y1
-					};
-					y0 += d.value;
+					if (d.value < 0) {
+						// It's a negative bar - we want it to go down.
+						yn1 = yn1 + d.value;
+						series[i] = {
+							key: d.key,
+							value: d.value,
+							y1: yn0,
+							y0: yn1
+						};
+						yn0 += d.value;
+					} else {
+						// It's a positive bar - we want it to go up.
+						y1 = y0 + d.value;
+						series[i] = {
+							key: d.key,
+							value: d.value,
+							y0: y0,
+							y1: y1
+						};
+						y0 += d.value;
+					}
 				});
 
 				return series;
 			};
 
-			// Update bar group
-			const barGroup = d3.select(this);
-			barGroup
-				.classed(classed, true)
+			// Update series group
+			const seriesGroup = d3.select(this)
 				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
+				.on("mouseover", function(e, d) {
+					dispatch.call("customSeriesMouseOver", this, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customSeriesClick", this, d);
+				});
 
-			// Add bars to group
-			const bars = barGroup.selectAll(".bar")
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
+
+			// Add bars to series group
+			const bars = componentGroup.selectAll(".bar")
 				.data((d) => stacker(d.values));
 
 			bars.enter()
 				.append("rect")
 				.classed("bar", true)
-				.attr("width", width)
-				.attr("x", 0)
-				.attr("y", height)
-				.attr("rx", 0)
-				.attr("ry", 0)
-				.attr("height", 0)
-				.attr("fill", (d) => colorScale(d.key))
-				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
+				.on("mouseover", function(e, d) {
+					dispatch.call("customValueMouseOver", this, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customValueClick", this, d);
+				})
 				.merge(bars)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("width", width)
 				.attr("x", 0)
-				.attr("y", (d) => height - yScale(d.y1))
-				.attr("height", (d) => yScale(d.value));
+				.attr("y", (d) => yScale(d.y1))
+				.attr("width", width)
+				.attr("height", (d) => {
+					const padding = 3;
+					return d.value < 0 ? yScale(d.value + valueMax) - padding : height - yScale(d.value + valueMin) - padding;
+				})
+				.attr("fill", (d) => colorScale(d.key))
+				.attr("fill-opacity", opacity)
+				.attr("stroke", (d) => colorScale(d.key))
+				.attr("stroke-width", "1px")
+				.attr("rx", cornerRadius)
+				.attr("ry", cornerRadius);
 
 			bars.exit()
 				.transition()
@@ -114,27 +122,27 @@ export default function() {
 	}
 
 	/**
-	 * Width Getter / Setter
+	 * X Scale Getter / Setter
 	 *
-	 * @param {number} _v - Width in px.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
+	my.xScale = function(_v) {
+		if (!arguments.length) return xScale;
+		xScale = _v;
+		return my;
 	};
 
 	/**
-	 * Height Getter / Setter
+	 * Y Scale Getter / Setter
 	 *
-	 * @param {number} _v - Height in px.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
+	my.yScale = function(_v) {
+		if (!arguments.length) return yScale;
+		yScale = _v;
+		return my;
 	};
 
 	/**
@@ -150,27 +158,15 @@ export default function() {
 	};
 
 	/**
-	 * Colors Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {Array} _v - Array of colours used by color scale.
+	 * @param {number} _v - Opacity 0 -1.
 	 * @returns {*}
 	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
-	};
-
-	/**
-	 * Y Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 scale.
-	 * @returns {*}
-	 */
-	my.yScale = function(_v) {
-		if (!arguments.length) return yScale;
-		yScale = _v;
-		return my;
 	};
 
 	/**
@@ -191,7 +187,7 @@ export default function() {
 	 * @returns {*}
 	 */
 	my.on = function() {
-		let value = dispatch.on.apply(dispatch, arguments);
+		const value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
 	};
 

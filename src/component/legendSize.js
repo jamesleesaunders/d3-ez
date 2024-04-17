@@ -9,9 +9,11 @@ export default function() {
 
 	/* Default Properties */
 	let width = 100;
-	let height = 200;
+	let height = 150;
 	let sizeScale;
 	let itemCount = 4;
+	let opacity = 1;
+	let transition = { ease: d3.easeLinear, duration: 0 };
 
 	/**
 	 * Constructor
@@ -23,17 +25,6 @@ export default function() {
 	function my(selection) {
 		height = (height ? height : this.attr("height"));
 		width = (width ? width : this.attr("width"));
-
-		// Legend Box
-		const legendSelect = selection.selectAll("#legendBox")
-			.data([0]);
-
-		const legend = legendSelect.enter()
-			.append("g")
-			.attr("id", "legendBox")
-			.attr("width", width)
-			.attr("height", height)
-			.merge(legendSelect);
 
 		const data = function() {
 			// Calculate radiusScale
@@ -54,38 +45,63 @@ export default function() {
 				.domain(yDomain)
 				.range(yRange);
 
+			// '\u2014' = em dash '—'
 			return ranges.map((v, i) => ({
 					x: sizeScale(domainMax),
 					y: yScale(i),
 					r: sizeScale(ranges[i][0]),
-					text: v[0].toFixed(0) + " - " + v[1].toFixed(0)
+					text: v[0].toFixed(0) + " \u2014 " + v[1].toFixed(0)
 				}
 			));
-		};
+		}();
 
-		const itemsSelect = legend.selectAll(".legendItem")
-			.data(data);
+		// Legend Container
+		const legendContainer = selection.selectAll(".legendContainer")
+			.data([data]);
 
-		const items = itemsSelect.enter()
+		const legendContainerEnter = legendContainer.enter()
+			.append("g")
+			.classed("legendContainer", true)
+			.attr("width", width)
+			.attr("height", height)
+			.merge(legendContainer);
+
+		const items = legendContainerEnter.selectAll(".legendItem")
+			.data((d) => d);
+
+		const itemsEnter = items.enter()
 			.append("g")
 			.classed("legendItem", true)
-			.attr("transform", (d) => "translate(0," + d.y + ")")
-			.merge(itemsSelect);
+			.attr("transform", (d) => "translate(0," + d.y + ")");
 
 		items.exit()
 			.remove();
 
-		items.append("circle")
+		itemsEnter.append("circle")
 			.attr("r", (d) => d.r)
 			.attr("cx", (d) => d.x)
-			.attr("fill", "lightgrey")
-			.attr("stroke", "grey")
-			.attr("stroke-width", 1);
+			.attr("fill", "#cad4e7")
+			.attr("stroke", "#cad4e7")
+			.attr("stroke-width", 1)
+			.attr("fill-opacity", opacity / 2);
 
-		items.append("text")
-			.text((d) => d.text)
+		itemsEnter.append("text")
+			.attr("font-size", "0.9em")
+			.attr("fill", "currentColor")
 			.attr("dominant-baseline", "middle")
-			.attr("x", (d) => (d.x * 2) + 5);
+			.attr("x", (d) => (d.x * 2) + 5)
+			.text((d) => d.text);
+
+		let itemsTrans = items.transition()
+			.ease(transition.ease)
+			.duration(transition.duration)
+			.attr("transform", (d) => "translate(0," + d.y + ")");
+
+		itemsTrans.select("text")
+			.text((d) => d.text);
+
+		itemsTrans.select("circle")
+			.attr("fill-opacity", opacity);
 	}
 
 	/**
@@ -134,6 +150,30 @@ export default function() {
 		if (!arguments.length) return itemCount;
 		itemCount = _v;
 		return my;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _v - Opacity 0 -1.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
 	};
 
 	return my;

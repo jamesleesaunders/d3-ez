@@ -1,6 +1,4 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
  * Reusable Candle Stick Component
@@ -10,61 +8,15 @@ import dataTransform from "../dataTransform";
 export default function() {
 
 	/* Default Properties */
-	let width = 400;
-	let height = 400;
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let colors = ["green", "red"];
-	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let classed = "candleSticks";
 	let xScale;
 	let yScale;
-	let colorScale = d3.scaleOrdinal().range(colors).domain([true, false]);
-	let candleWidth = 3;
-	let classed = "candleSticks";
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		// TODO: Use dataTransform() to calculate date domains?
-		const maxDate = d3.max(data.values, (d) => d.date);
-		const minDate = d3.min(data.values, (d) => d.date);
-
-		const ONE_DAY_IN_MILLISECONDS = 86400000;
-		const dateDomain = [
-			new Date(minDate - ONE_DAY_IN_MILLISECONDS),
-			new Date(maxDate + ONE_DAY_IN_MILLISECONDS)
-		];
-
-
-		// TODO: Use dataTransform() to calculate candle min/max?
-		const yDomain = [
-			d3.min(data.values, (d) => d.low),
-			d3.max(data.values, (d) => d.high)
-		];
-
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain([true, false])
-				.range(colors);
-		}
-
-		if (typeof xScale === "undefined") {
-			xScale = d3.scaleTime()
-				.domain(dateDomain)
-				.range([0, width]);
-		}
-
-		if (typeof yScale === "undefined") {
-			yScale = d3.scaleLinear()
-				.domain(yDomain)
-				.range([height, 0])
-				.nice();
-		}
-	}
+	let colorScale;
+	let transition = { ease: d3.easeBounce, duration: 0 };
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let candleWidth = 4;
+	let opacity = 1;
+	let cornerRadius = 2;
 
 	/**
 	 * Constructor
@@ -74,7 +26,6 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		init(selection.data()[0]);
 		selection.each(function() {
 
 			// Is Up Day
@@ -95,21 +46,31 @@ export default function() {
 				paths.enter()
 					.append("path")
 					.classed("high-low-line", true)
+					.merge(paths)
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
 					.attr("d", (d) => line([
 							{ x: xScale(d.date), y: yScale(d.high) },
 							{ x: xScale(d.date), y: yScale(d.low) }
 						])
 					);
+
+				return bars;
 			};
 
 			// Open Close Bars
-			const openCloseBars = function(bars) {
-				let rect = bars.selectAll(".open-close-bar")
+			const openCloseBars = function(candle) {
+				const rect = candle.selectAll(".open-close-bar")
 					.data((d) => [d]);
 
 				rect.enter()
 					.append("rect")
 					.classed("open-close-bar", true)
+					.merge(rect)
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
 					.attr("x", (d) => xScale(d.date) - candleWidth)
 					.attr("y", (d) => {
 						return isUpDay(d) ?
@@ -121,20 +82,28 @@ export default function() {
 						return isUpDay(d) ?
 							yScale(d.open) - yScale(d.close) :
 							yScale(d.close) - yScale(d.open);
-					});
+					})
+					.attr("rx", cornerRadius)
+					.attr("ry", cornerRadius);
+
+				return candle;
 			};
 
 			// Open Close Ticks
-			const openCloseTicks = function(bars) {
-				let open = bars.selectAll(".open-tick")
+			const openCloseTicks = function(candle) {
+				let open = candle.selectAll(".open-tick")
 					.data((d) => [d]);
 
-				let close = bars.selectAll(".close-tick")
+				let close = candle.selectAll(".close-tick")
 					.data((d) => [d]);
 
 				open.enter()
 					.append("path")
 					.classed("open-tick", true)
+					.merge(open)
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
 					.attr("d", (d) => line([
 							{ x: xScale(d.date) - candleWidth, y: yScale(d.open) },
 							{ x: xScale(d.date), y: yScale(d.open) }
@@ -144,90 +113,68 @@ export default function() {
 				close.enter()
 					.append("path")
 					.classed("close-tick", true)
+					.merge(close)
+					.transition()
+					.ease(transition.ease)
+					.duration(transition.duration)
 					.attr("d", (d) => line([
 							{ x: xScale(d.date), y: yScale(d.close) },
 							{ x: xScale(d.date) + candleWidth, y: yScale(d.close) }
 						])
 					);
+
+				return candle;
 			};
 
 			// Update series group
-			const seriesGroup = d3.select(this);
-			seriesGroup
-				.classed(classed, true)
+			const seriesGroup = d3.select(this)
 				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
+				.on("mouseover", function(e, d) {
+					dispatch.call("customSeriesMouseOver", this, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customSeriesClick", this, d);
+				});
 
-			// Add candles to series
-			const candlesSelect = seriesGroup.selectAll(".candle")
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
+
+			// Add candles to series group
+			const candles = componentGroup.selectAll(".candle")
 				.data((d) => d.values);
 
-			const candles = candlesSelect.enter()
+			candles.enter()
 				.append("g")
 				.classed("candle", true)
+				.on("mouseover", function(e, d) {
+					dispatch.call("customValueMouseOver", this, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customValueClick", this, d);
+				})
+				.merge(candles)
 				.attr("fill", (d) => colorScale(isUpDay(d)))
 				.attr("stroke", (d) => colorScale(isUpDay(d)))
-				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
-				.merge(candlesSelect);
+				.attr("fill-opacity", opacity)
+				.call(highLowLines)
+				// .call(openCloseTicks)
+				.call(openCloseBars);
 
-			highLowLines(candles);
-			openCloseBars(candles);
+			// OR:
+			// highLowLines(candles);
 			// openCloseTicks(candles);
+			// openCloseBars(candles);
 
 			candles.exit()
 				.remove();
 		});
 	}
-
-	/**
-	 * Width Getter / Setter
-	 *
-	 * @param {number} _v - Width in px.
-	 * @returns {*}
-	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Height Getter / Setter
-	 *
-	 * @param {number} _v - Height in px.
-	 * @returns {*}
-	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
-	};
-
-	/**
-	 * Color Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return my;
-	};
-
-	/**
-	 * Colors Getter / Setter
-	 *
-	 * @param {Array} _v - Array of colours used by color scale.
-	 * @returns {*}
-	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
-		return my;
-	};
 
 	/**
 	 * X Scale Getter / Setter
@@ -254,6 +201,18 @@ export default function() {
 	};
 
 	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return my;
+	};
+
+	/**
 	 * Candle Width Getter / Setter
 	 *
 	 * @param {number} _v - Width in px.
@@ -263,6 +222,18 @@ export default function() {
 		if (!arguments.length) return candleWidth;
 		candleWidth = _v;
 		return my;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _v - Opacity 0 -1.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
 	};
 
 	/**
