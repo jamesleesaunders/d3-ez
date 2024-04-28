@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <title>d3-ez : Donut Chart Example</title>
+    <title>d3-ez : Bar Chart (Circular) Example</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="../dist/d3-ez.js"></script>
     <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
@@ -20,7 +20,7 @@
         var colors = ["#cc0000", "#3366cc", "#ff9900", "#ffcc00", "#03cc14", "#ff18c0"];
 
         // Create chart base
-        var myChart = d3.ez.chart.donutChart()
+        var myChart = d3.ez.chart.barChartCircular()
           .width(1000)
           .height(600)
           .colors(colors)
@@ -35,7 +35,7 @@
         function update() {
           var i = Math.round(Math.random() * 2) + 1;
           d3.select("#chartholder")
-            .datum(data)
+            .datum([data[i]])  // TODO: Convert to support multi-series
             .call(myChart);
         }
 

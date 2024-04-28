@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>d3-ez : Rose Chart Example</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
+
+  <body>
+    <svg id="chartholder"></svg>
+    <br />
+    <div>Value: <span id="message"></span></div>
+
+    <script type="text/javascript">
+      d3.json("data/nightingale_rose.json").then(function(json) {
+        // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
+
+        var colors = ["#599ad3", "#727272", "#f1595f"];
+
+        // Convert json to d3-ez data format
+        var monthNames = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        var data = d3.nest()
+          .key(function(d) {
+            return d.date;
+          })
+          .entries(json).map(function(obj) {
+            var rec = obj.values[0];
+            var scalar = 1000 * 12 / rec.army_size;
+            var datetime = new Date(obj.key);
+
+            var values = {
+              key: monthNames[datetime.getMonth()],
+              datetime: datetime,
+              values: [{
+                key: 'Zymotic Diseases',
+                value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI
+              },
+                {
+                  key: 'Other Causes',
+                  value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI
+                },
+                {
+                  key: 'Wounds & Injuries',
+                  value: Math.sqrt(rec.wounds_and_injuries * scalar) / Math.PI
+                }
+              ]
+            };
+            return values;
+          })
+          .filter(function(d) {
+            return d.datetime < new Date("1855-04-01T07:00:00.000Z");
+          });
+
+        // Create chart base
+        var myChart = d3.ez.chart.roseChart()
+          .width(1000)
+          .height(600)
+          .colors(colors)
+          .on("customValueMouseOver", function(d) {
+            d3.select("#message").text(d.value);
+          });
+
+        // Add to page
+        d3.select("#chartholder")
+          .datum(data)
+          .call(myChart);
+      });
+    </script>
+  </body>
+
+</html>

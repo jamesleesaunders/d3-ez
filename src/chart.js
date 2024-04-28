@@ -11,7 +11,6 @@ import chartPunchCard from "./chart/punchCard";
 import chartRadarChart from "./chart/radarChart";
 import chartRoseChart from "./chart/roseChart";
 
-
 export default {
 	barChartCircular: chartBarChartCircular,
 	barChart: chartBarChart,

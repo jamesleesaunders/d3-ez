@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>d3-ez : Polar Area Chart Example</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <script src="./data/random_data.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
+
+  <body>
+    <svg id="chartholder"></svg>
+    <br />
+    <div>Value: <span id="message"></span></div>
+
+    <script type="text/javascript">
+      var colors = d3.ez.palette.categorical(1);
+
+      // Create chart base
+      var myChart = d3.ez.chart.polarAreaChart()
+        .width(1000)
+        .height(600)
+        .colors(colors)
+        .on("customValueMouseOver", function(d) {
+          d3.select("#message").text(d.value);
+        })
+        .on("customSeriesClick", function(d) {
+          console.log(d);
+        });
+
+      // Add to page
+      function update() {
+        var data = randomDataset1();
+
+        var i = Math.round(Math.random() * 3) + 1;
+        d3.select("#chartholder")
+          .datum([data])  // TODO: Convert to support multi-series
+          .call(myChart);
+      }
+
+      update();
+      setInterval(update, 2000);
+    </script>
+  </body>
+
+</html>

@@ -51,12 +51,12 @@ export default function() {
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
 				.range([0, chartW])
-				.padding(0.1);
+				.padding(0.15);
 
 			const yScale = d3.scaleBand()
 				.domain(rowKeys)
 				.range([0, chartH])
-				.padding(0.1);
+				.padding(0.15);
 
 			const colorScale = d3.scaleThreshold()
 				.domain(thresholds)

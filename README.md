@@ -1,4 +1,5 @@
 # d3-ez
+
 ## D3 Easy Reusable Charts Library
 
 [![npm version](https://badge.fury.io/js/d3-ez.svg)](https://badge.fury.io/js/d3-ez)

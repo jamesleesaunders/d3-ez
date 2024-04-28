@@ -224,6 +224,24 @@ table.htmlTable {
 }
 
 
+/* === Tabular Heat Chart Styles === */
+
+.heatMapTable rect.cell {
+		stroke: #999999;
+		stroke-width: 0.5px;
+}
+
+.heatMapTable rect.cell:hover {
+		opacity: 0.7;
+		stroke: black;
+		cursor: pointer;
+}
+
+.heatMapTable .xAxis path, .heatMapTable .yAxis path {
+		display: none;
+}
+
+
 /* === Circular Heat Chart Styles === */
 
 .heatMapRadial path.segment {
@@ -246,24 +264,6 @@ table.htmlTable {
 		font-size: 1.1em;
 		font-weight: bold;
 		letter-spacing: -0.2px;
-}
-
-
-/* === Tabular Heat Chart Styles === */
-
-.heatMapTable rect.cell {
-		stroke: #999999;
-		stroke-width: 0.5px;
-}
-
-.heatMapTable rect.cell:hover {
-		opacity: 0.7;
-		stroke: black;
-		cursor: pointer;
-}
-
-.heatMapTable .xAxis path, .heatMapTable .yAxis path {
-		display: none;
 }
 
 

@@ -2,20 +2,34 @@
 <html>
 
   <head>
-    <title>d3-ez : Punch Card Example</title>
+    <title>d3-ez : Heat Map (Radial) Example</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="../dist/d3-ez.js"></script>
-    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css"/>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
   </head>
 
   <body>
     <svg id="chartholder"></svg>
-    <br/>
+    <br />
     <div>Value: <span id="message"></span></div>
 
     <script type="text/javascript">
       d3.json("data/netflix_isp_speed_index.json").then(function(json) {
         // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
+
+        var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"].reverse();
+
+        // Create chart base
+        var myChart = d3.ez.chart.heatMapRadial()
+          .width(1000)
+          .height(600)
+          .colors(colors)
+          .on("customValueMouseOver", function(d) {
+            d3.select("#message").text(d.value);
+          })
+          .on("customSeriesClick", function(d) {
+            console.log(d);
+          });
 
         // Convert json to d3-ez data format
         var data = d3.nest().key(function(d) {
@@ -29,17 +43,6 @@
           });
           return obj;
         });
-
-        // Create chart base
-        var myChart = d3.ez.chart.punchCard()
-          .width(1000)
-          .height(600)
-          .on("customValueMouseOver", function(d) {
-            d3.select("#message").text(d.value);
-          })
-          .on("customSeriesClick", function(d) {
-            console.log(d);
-          });
 
         d3.select('#chartholder')
           .datum(data)

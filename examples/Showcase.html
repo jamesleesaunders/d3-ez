@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>d3-ez : Showcase</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
+
+  <body>
+    <svg id="chartholder1"></svg>
+    <svg id="chartholder2"></svg>
+    <svg id="chartholder3"></svg>
+    <svg id="chartholder4"></svg>
+    <svg id="chartholder5"></svg>
+    <svg id="chartholder6"></svg>
+    <svg id="chartholder7"></svg>
+    <svg id="chartholder8"></svg>
+
+    <script src="data/random_data.js"></script>
+    <script type="text/javascript">
+      // Generate some sample data
+      var data = randomDataset2();
+      console.log(data);
+
+      // Setup chart components
+      myChart1 = d3.ez.component.htmlTable()
+        .width(400)
+        .on("customSeriesClick", function(d) {
+          update5(data);
+          update2(d);
+          update3(d);
+          update4(d);
+        });
+
+      myChart2 = d3.ez.chart.barChart()
+        .width(400)
+        .height(200)
+        .on("customValueMouseOver", function(d) {
+          console.log(d);
+        });
+
+      myChart3 = d3.ez.chart.donutChart()
+        .width(400)
+        .height(200);
+
+      myChart4 = d3.ez.chart.polarAreaChart()
+        .width(400)
+        .height(200);
+
+      myChart6 = d3.ez.chart.heatMapRadial()
+        .width(400)
+        .height(200);
+
+      myChart7 = d3.ez.chart.heatMap()
+        .width(400)
+        .height(200);
+
+      myChart8 = d3.ez.chart.punchCard()
+        .width(400)
+        .height(200)
+        .minRadius(2)
+        .useGlobalScale(true)
+        .maxRadius(18)
+        .on("customValueMouseOver", function(d) {
+          console.log(d);
+        });
+
+      // Functions to add charts to page and update charts
+      function update1(data) {
+        // htmlTable
+        d3.select("#chartholder1")
+          .datum(data)
+          .call(myChart1);
+      }
+
+      function update2(data) {
+        // barClustered
+        d3.select("#chartholder2")
+          .datum(data)
+          .call(myChart2);
+      }
+
+      function update3(data) {
+        // barVertical
+        d3.select("#chartholder3")
+          .datum(data)
+          .call(myChart3);
+      }
+
+      function update4(data) {
+        // donutChart
+        d3.select("#chartholder4")
+          .datum(data)
+          .call(myChart4);
+      }
+
+      function update6(data) {
+        // heatMapRadial
+        d3.select("#chartholder6")
+          .datum(data)
+          .call(myChart6);
+      }
+
+      function update7(data) {
+        // heatMapTable
+        d3.select("#chartholder7")
+          .datum(data)
+          .call(myChart7);
+      }
+
+      function update8(data) {
+        // punchCard
+        d3.select("#chartholder8")
+          .datum(data)
+          .call(myChart8);
+      }
+
+      update1(data); // htmlTable
+      update2(data[0]); // verticalBar
+      update3(data[0]); // donutChart
+      update4(data[0]); // polarArea
+      update5(data); // barClustered
+      update6(data); // heatMapRadial
+      update7(data); // heatMapTable
+      update8(data); // punchCard
+    </script>
+  </body>
+
+</html>
