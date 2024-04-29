@@ -9,8 +9,6 @@ export default function() {
 
 	/* Default Properties */
 	let classed = "roseChartSector";
-	let startAngle = 0;
-	let endAngle = 45;
 	let xScale;
 	let yScale;
 	let colorScale;
@@ -28,7 +26,7 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		selection.each(function() {
+		selection.each(function(data) {
 			// Stack Generator
 			const stacker = function(data) {
 				// Calculate inner and outer radius values
@@ -50,6 +48,8 @@ export default function() {
 			};
 
 			// Arc Generator
+			let startAngle = xScale(data.key);
+			let endAngle = xScale(data.key) + xScale.bandwidth();
 			const arc = d3.arc()
 				.innerRadius((d) => d.innerRadius)
 				.outerRadius((d) => d.outerRadius)
@@ -107,42 +107,6 @@ export default function() {
 	}
 
 	/**
-	 * Start Angle Getter / Setter
-	 *
-	 * @param {number} _v - Angle in degrees.
-	 * @returns {*}
-	 */
-	my.startAngle = function(_v) {
-		if (!arguments.length) return startAngle;
-		startAngle = _v;
-		return this;
-	};
-
-	/**
-	 * End Angle Getter / Setter
-	 *
-	 * @param {number} _v - Angle in degrees.
-	 * @returns {*}
-	 */
-	my.endAngle = function(_v) {
-		if (!arguments.length) return endAngle;
-		endAngle = _v;
-		return this;
-	};
-
-	/**
-	 * Color Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return my;
-	};
-
-	/**
 	 * X Scale Getter / Setter
 	 *
 	 * @param {d3.scale} _v - D3 scale.
@@ -163,6 +127,18 @@ export default function() {
 	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
 		yScale = _v;
+		return my;
+	};
+
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
 		return my;
 	};
 

@@ -200,30 +200,6 @@ export default function() {
 	};
 
 	/**
-	 * Min Radius Getter / Setter
-	 *
-	 * @param {number} _v - Min radius in px.
-	 * @returns {*}
-	 */
-	my.minRadius = function(_v) {
-		if (!arguments.length) return minRadius;
-		minRadius = _v;
-		return this;
-	};
-
-	/**
-	 * Max Radius Getter / Setter
-	 *
-	 * @param {number} _v - Max radius in px.
-	 * @returns {*}
-	 */
-	my.maxRadius = function(_v) {
-		if (!arguments.length) return maxRadius;
-		maxRadius = _v;
-		return this;
-	};
-
-	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.
@@ -248,6 +224,42 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
+	 * Min Radius Getter / Setter
+	 *
+	 * @param {number} _v - Min radius in px.
+	 * @returns {*}
+	 */
+	my.minRadius = function(_v) {
+		if (!arguments.length) return minRadius;
+		minRadius = _v;
+		return this;
+	};
+
+	/**
+	 * Max Radius Getter / Setter
+	 *
+	 * @param {number} _v - Max radius in px.
+	 * @returns {*}
+	 */
+	my.maxRadius = function(_v) {
+		if (!arguments.length) return maxRadius;
+		maxRadius = _v;
+		return this;
+	};
+
+	/**
 	 * Global Scale Use Getter / Setter
 	 *
 	 * @param {boolean} _v - Use global scale or not?
@@ -268,18 +280,6 @@ export default function() {
 	my.showAxis = function(_v) {
 		if (!arguments.length) return showAxis;
 		showAxis = _v;
-		return this;
-	};
-
-	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
 		return this;
 	};
 

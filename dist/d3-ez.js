@@ -640,7 +640,7 @@
 	  var colorScale;
 	  var transition = {
 	    ease: d3__namespace.easeBounce,
-	    duration: 200
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -707,18 +707,6 @@
 	  }
 
 	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
 	   * X Scale Getter / Setter
 	   *
 	   * @param {d3.scale} _v - D3 scale.
@@ -739,6 +727,18 @@
 	  my.yScale = function (_v) {
 	    if (!arguments.length) return yScale;
 	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
 	    return my;
 	  };
 
@@ -2307,7 +2307,6 @@
 	    ease: d3__namespace.easeBounce,
 	    duration: 0
 	  };
-	  var thresholds;
 	  var opacity = 1;
 	  var cornerRadius = 2;
 
@@ -2367,18 +2366,6 @@
 	      segments.exit().transition().style("opacity", 0).remove();
 	    });
 	  }
-
-	  /**
-	   * Thresholds Getter / Setter
-	   *
-	   * @param {Array} _v - Array of thresholds.
-	   * @returns {*}
-	   */
-	  my.thresholds = function (_v) {
-	    if (!arguments.length) return thresholds;
-	    thresholds = _v;
-	    return my;
-	  };
 
 	  /**
 	   * X Scale Getter / Setter
@@ -3066,7 +3053,6 @@
 	  var classed = "polarArea";
 	  var xScale;
 	  var yScale;
-	  var colors = palette.categorical(3);
 	  var colorScale;
 	  var transition = {
 	    ease: d3__namespace.easeBounce,
@@ -3128,30 +3114,6 @@
 	  }
 
 	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Colors Getter / Setter
-	   *
-	   * @param {Array} _v - Array of colours used by color scale.
-	   * @returns {*}
-	   */
-	  my.colors = function (_v) {
-	    if (!arguments.length) return colors;
-	    colors = _v;
-	    return my;
-	  };
-
-	  /**
 	   * X Scale Getter / Setter
 	   *
 	   * @param {d3.scale} _v - D3 scale.
@@ -3172,6 +3134,18 @@
 	  my.yScale = function (_v) {
 	    if (!arguments.length) return yScale;
 	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
 	    return my;
 	  };
 
@@ -3426,30 +3400,6 @@
 	  }
 
 	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Size Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.sizeScale = function (_v) {
-	    if (!arguments.length) return sizeScale;
-	    sizeScale = _v;
-	    return my;
-	  };
-
-	  /**
 	   * X Scale Getter / Setter
 	   *
 	   * @param {d3.scale} _v - D3 scale.
@@ -3470,6 +3420,30 @@
 	  my.yScale = function (_v) {
 	    if (!arguments.length) return yScale;
 	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Size Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.sizeScale = function (_v) {
+	    if (!arguments.length) return sizeScale;
+	    sizeScale = _v;
 	    return my;
 	  };
 
@@ -3647,8 +3621,6 @@
 	function componentRoseChartSector () {
 	  /* Default Properties */
 	  var classed = "roseChartSector";
-	  var startAngle = 0;
-	  var endAngle = 45;
 	  var xScale;
 	  var yScale;
 	  var colorScale;
@@ -3669,7 +3641,7 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
-	    selection.each(function () {
+	    selection.each(function (data) {
 	      // Stack Generator
 	      var stacker = function stacker(data) {
 	        // Calculate inner and outer radius values
@@ -3690,6 +3662,8 @@
 	      };
 
 	      // Arc Generator
+	      var startAngle = xScale(data.key);
+	      var endAngle = xScale(data.key) + xScale.bandwidth();
 	      var arc = d3__namespace.arc().innerRadius(function (d) {
 	        return d.innerRadius;
 	      }).outerRadius(function (d) {
@@ -3728,42 +3702,6 @@
 	  }
 
 	  /**
-	   * Start Angle Getter / Setter
-	   *
-	   * @param {number} _v - Angle in degrees.
-	   * @returns {*}
-	   */
-	  my.startAngle = function (_v) {
-	    if (!arguments.length) return startAngle;
-	    startAngle = _v;
-	    return this;
-	  };
-
-	  /**
-	   * End Angle Getter / Setter
-	   *
-	   * @param {number} _v - Angle in degrees.
-	   * @returns {*}
-	   */
-	  my.endAngle = function (_v) {
-	    if (!arguments.length) return endAngle;
-	    endAngle = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
 	   * X Scale Getter / Setter
 	   *
 	   * @param {d3.scale} _v - D3 scale.
@@ -3784,6 +3722,18 @@
 	  my.yScale = function (_v) {
 	    if (!arguments.length) return yScale;
 	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
 	    return my;
 	  };
 
@@ -4917,18 +4867,6 @@
 	  };
 
 	  /**
-	   * Stacked Getter / Setter
-	   *
-	   * @param {Boolean} _v - Stacked or grouped bar chart.
-	   * @returns {*}
-	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {Number} _v - Opacity level.
@@ -4937,6 +4875,30 @@
 	  my.opacity = function (_v) {
 	    if (!arguments.length) return opacity;
 	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Stacked Getter / Setter
+	   *
+	   * @param {Boolean} _v - Stacked or grouped bar chart.
+	   * @returns {*}
+	   */
+	  my.stacked = function (_v) {
+	    if (!arguments.length) return stacked;
+	    stacked = _v;
 	    return this;
 	  };
 
@@ -4961,18 +4923,6 @@
 	  my.yAxisLabel = function (_v) {
 	    if (!arguments.length) return yAxisLabel;
 	    yAxisLabel = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
 	    return this;
 	  };
 
@@ -5140,14 +5090,26 @@
 	  };
 
 	  /**
-	   * Y Axis Label Getter / Setter
+	   * Colors Getter / Setter
 	   *
-	   * @param {string} _v - Label text.
+	   * @param {Array} _v - Array of colours used by color scale.
 	   * @returns {*}
 	   */
-	  my.yAxisLabel = function (_v) {
-	    if (!arguments.length) return yAxisLabel;
-	    yAxisLabel = _v;
+	  my.colors = function (_v) {
+	    if (!arguments.length) return colors;
+	    colors = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {Number} _v - Opacity level.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
 	    return this;
 	  };
 
@@ -5164,50 +5126,14 @@
 	  };
 
 	  /**
-	   * Colors Getter / Setter
+	   * Y Axis Label Getter / Setter
 	   *
-	   * @param {Array} _v - Array of colours used by color scale.
+	   * @param {string} _v - Label text.
 	   * @returns {*}
 	   */
-	  my.colors = function (_v) {
-	    if (!arguments.length) return colors;
-	    colors = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Size Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.sizeScale = function (_v) {
-	    if (!arguments.length) return sizeScale;
-	    sizeScale = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {Number} _v - Opacity level.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
+	  my.yAxisLabel = function (_v) {
+	    if (!arguments.length) return yAxisLabel;
+	    yAxisLabel = _v;
 	    return this;
 	  };
 
@@ -5440,6 +5366,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Show Axis Getter / Setter
 	   *
 	   * @param {Boolean} _v - Show axis true / false.
@@ -5460,18 +5398,6 @@
 	  my.yAxisLabel = function (_v) {
 	    if (!arguments.length) return yAxisLabel;
 	    yAxisLabel = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
 	    return this;
 	  };
 
@@ -5801,7 +5727,9 @@
 	      var circularRingLabels = component.circularRingLabels().radialScale(yScale).textAnchor("middle");
 
 	      // Create Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
+	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
+	        return d;
+	      });
 	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", "translate(" + chartW / 2 + "," + chartH / 2 + ")").call(heatMapRing).call(circularRingLabels);
 	      seriesGroup.exit().remove();
 
@@ -5875,18 +5803,6 @@
 	  };
 
 	  /**
-	   * Thresholds Getter / Setter
-	   *
-	   * @param {Array} _v - Array of thresholds.
-	   * @returns {*}
-	   */
-	  my.thresholds = function (_v) {
-	    if (!arguments.length) return thresholds;
-	    thresholds = _v;
-	    return my;
-	  };
-
-	  /**
 	   * Transition Getter / Setter
 	   *
 	   * @param {d3.transition} _v - D3 transition style.
@@ -5896,6 +5812,18 @@
 	    if (!arguments.length) return transition;
 	    transition = _v;
 	    return this;
+	  };
+
+	  /**
+	   * Thresholds Getter / Setter
+	   *
+	   * @param {Array} _v - Array of thresholds.
+	   * @returns {*}
+	   */
+	  my.thresholds = function (_v) {
+	    if (!arguments.length) return thresholds;
+	    thresholds = _v;
+	    return my;
 	  };
 
 	  /**
@@ -6072,18 +6000,6 @@
 	  };
 
 	  /**
-	   * Thresholds Getter / Setter
-	   *
-	   * @param {Array} _v - Array of thresholds.
-	   * @returns {*}
-	   */
-	  my.thresholds = function (_v) {
-	    if (!arguments.length) return thresholds;
-	    thresholds = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {Number} _v - Opacity level.
@@ -6096,18 +6012,6 @@
 	  };
 
 	  /**
-	   * Show Axis Getter / Setter
-	   *
-	   * @param {Boolean} _v - Show axis true / false.
-	   * @returns {*}
-	   */
-	  my.showAxis = function (_v) {
-	    if (!arguments.length) return showAxis;
-	    showAxis = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Transition Getter / Setter
 	   *
 	   * @param {d3.transition} _v - D3 transition style.
@@ -6116,6 +6020,30 @@
 	  my.transition = function (_v) {
 	    if (!arguments.length) return transition;
 	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Thresholds Getter / Setter
+	   *
+	   * @param {Array} _v - Array of thresholds.
+	   * @returns {*}
+	   */
+	  my.thresholds = function (_v) {
+	    if (!arguments.length) return thresholds;
+	    thresholds = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Show Axis Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show axis true / false.
+	   * @returns {*}
+	   */
+	  my.showAxis = function (_v) {
+	    if (!arguments.length) return showAxis;
+	    showAxis = _v;
 	    return this;
 	  };
 
@@ -6317,6 +6245,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Show Axis Getter / Setter
 	   *
 	   * @param {Boolean} _v - Show axis true / false.
@@ -6337,18 +6277,6 @@
 	  my.yAxisLabel = function (_v) {
 	    if (!arguments.length) return yAxisLabel;
 	    yAxisLabel = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
 	    return this;
 	  };
 
@@ -6736,30 +6664,6 @@
 	  };
 
 	  /**
-	   * Min Radius Getter / Setter
-	   *
-	   * @param {number} _v - Min radius in px.
-	   * @returns {*}
-	   */
-	  my.minRadius = function (_v) {
-	    if (!arguments.length) return minRadius;
-	    minRadius = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Max Radius Getter / Setter
-	   *
-	   * @param {number} _v - Max radius in px.
-	   * @returns {*}
-	   */
-	  my.maxRadius = function (_v) {
-	    if (!arguments.length) return maxRadius;
-	    maxRadius = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Colors Getter / Setter
 	   *
 	   * @param {Array} _v - Array of colours used by color scale.
@@ -6784,6 +6688,42 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Min Radius Getter / Setter
+	   *
+	   * @param {number} _v - Min radius in px.
+	   * @returns {*}
+	   */
+	  my.minRadius = function (_v) {
+	    if (!arguments.length) return minRadius;
+	    minRadius = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Max Radius Getter / Setter
+	   *
+	   * @param {number} _v - Max radius in px.
+	   * @returns {*}
+	   */
+	  my.maxRadius = function (_v) {
+	    if (!arguments.length) return maxRadius;
+	    maxRadius = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Global Scale Use Getter / Setter
 	   *
 	   * @param {boolean} _v - Use global scale or not?
@@ -6804,18 +6744,6 @@
 	  my.showAxis = function (_v) {
 	    if (!arguments.length) return showAxis;
 	    showAxis = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
 	    return this;
 	  };
 
@@ -6976,6 +6904,18 @@
 	  };
 
 	  /**
+	   * Margin Getter / Setter
+	   *
+	   * @param {number} _v - Margin in px.
+	   * @returns {*}
+	   */
+	  my.margin = function (_v) {
+	    if (!arguments.length) return margin;
+	    margin = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Colors Getter / Setter
 	   *
 	   * @param {Array} _v - Array of colours used by color scale.
@@ -7122,7 +7062,7 @@
 	      });
 
 	      // Rose Sectors
-	      var roseChartSector = component.roseChartSector().yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch);
+	      var roseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch);
 
 	      // Circular Axis
 	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
@@ -7138,10 +7078,7 @@
 	        var x = chartW / 2;
 	        var y = chartH / 2;
 	        return "translate(".concat(x, ",").concat(y, ")");
-	      }).each(function (d) {
-	        var startAngle = xScale(d.key);
-	        var endAngle = xScale(d.key) + xScale.bandwidth();
-	        roseChartSector.startAngle(startAngle).endAngle(endAngle);
+	      }).each(function () {
 	        d3__namespace.select(this).call(roseChartSector);
 	      });
 	      seriesGroup.exit().remove();
@@ -7192,18 +7129,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Colors Getter / Setter
 	   *
 	   * @param {Array} _v - Array of colours used by color scale.
@@ -7216,18 +7141,6 @@
 	  };
 
 	  /**
-	   * Stacked Getter / Setter
-	   *
-	   * @param {Boolean} _v - Stacked or grouped bar chart.
-	   * @returns {*}
-	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {Number} _v - Opacity level.
@@ -7236,6 +7149,30 @@
 	  my.opacity = function (_v) {
 	    if (!arguments.length) return opacity;
 	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Stacked Getter / Setter
+	   *
+	   * @param {Boolean} _v - Stacked or grouped bar chart.
+	   * @returns {*}
+	   */
+	  my.stacked = function (_v) {
+	    if (!arguments.length) return stacked;
+	    stacked = _v;
 	    return this;
 	  };
 

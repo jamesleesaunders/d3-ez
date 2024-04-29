@@ -180,6 +180,18 @@ export default function() {
 	};
 
 	/**
+	 * Margin Getter / Setter
+	 *
+	 * @param {number} _v - Margin in px.
+	 * @returns {*}
+	 */
+	my.margin = function(_v) {
+		if (!arguments.length) return margin;
+		margin = _v;
+		return this;
+	};
+
+	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.

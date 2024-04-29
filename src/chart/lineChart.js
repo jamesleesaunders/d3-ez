@@ -257,6 +257,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Show Axis Getter / Setter
 	 *
 	 * @param {Boolean} _v - Show axis true / false.
@@ -277,18 +289,6 @@ export default function() {
 	my.yAxisLabel = function(_v) {
 		if (!arguments.length) return yAxisLabel;
 		yAxisLabel = _v;
-		return this;
-	};
-
-	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
 		return this;
 	};
 

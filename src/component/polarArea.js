@@ -12,7 +12,6 @@ export default function() {
 	let classed = "polarArea";
 	let xScale;
 	let yScale;
-	let colors = palette.categorical(3);
 	let colorScale;
 	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -96,30 +95,6 @@ export default function() {
 	}
 
 	/**
-	 * Color Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return my;
-	};
-
-	/**
-	 * Colors Getter / Setter
-	 *
-	 * @param {Array} _v - Array of colours used by color scale.
-	 * @returns {*}
-	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
-		return my;
-	};
-
-	/**
 	 * X Scale Getter / Setter
 	 *
 	 * @param {d3.scale} _v - D3 scale.
@@ -140,6 +115,18 @@ export default function() {
 	my.yScale = function(_v) {
 		if (!arguments.length) return yScale;
 		yScale = _v;
+		return my;
+	};
+
+	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
 		return my;
 	};
 

@@ -236,18 +236,6 @@ export default function() {
 	};
 
 	/**
-	 * Stacked Getter / Setter
-	 *
-	 * @param {Boolean} _v - Stacked or grouped bar chart.
-	 * @returns {*}
-	 */
-	my.stacked = function(_v) {
-		if (!arguments.length) return stacked;
-		stacked = _v;
-		return this;
-	};
-
-	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {Number} _v - Opacity level.
@@ -256,6 +244,30 @@ export default function() {
 	my.opacity = function(_v) {
 		if (!arguments.length) return opacity;
 		opacity = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
+	 * Stacked Getter / Setter
+	 *
+	 * @param {Boolean} _v - Stacked or grouped bar chart.
+	 * @returns {*}
+	 */
+	my.stacked = function(_v) {
+		if (!arguments.length) return stacked;
+		stacked = _v;
 		return this;
 	};
 
@@ -280,18 +292,6 @@ export default function() {
 	my.yAxisLabel = function(_v) {
 		if (!arguments.length) return yAxisLabel;
 		yAxisLabel = _v;
-		return this;
-	};
-
-	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
 		return this;
 	};
 

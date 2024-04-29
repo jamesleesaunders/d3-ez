@@ -197,14 +197,26 @@ export default function() {
 	};
 
 	/**
-	 * Y Axis Label Getter / Setter
+	 * Colors Getter / Setter
 	 *
-	 * @param {string} _v - Label text.
+	 * @param {Array} _v - Array of colours used by color scale.
 	 * @returns {*}
 	 */
-	my.yAxisLabel = function(_v) {
-		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _v;
+	my.colors = function(_v) {
+		if (!arguments.length) return colors;
+		colors = _v;
+		return this;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {Number} _v - Opacity level.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 
@@ -221,50 +233,14 @@ export default function() {
 	};
 
 	/**
-	 * Colors Getter / Setter
+	 * Y Axis Label Getter / Setter
 	 *
-	 * @param {Array} _v - Array of colours used by color scale.
+	 * @param {string} _v - Label text.
 	 * @returns {*}
 	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
-		return this;
-	};
-
-	/**
-	 * Color Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return this;
-	};
-
-	/**
-	 * Size Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.sizeScale = function(_v) {
-		if (!arguments.length) return sizeScale;
-		sizeScale = _v;
-		return this;
-	};
-
-	/**
-	 * Opacity Getter / Setter
-	 *
-	 * @param {Number} _v - Opacity level.
-	 * @returns {*}
-	 */
-	my.opacity = function(_v) {
-		if (!arguments.length) return opacity;
-		opacity = _v;
+	my.yAxisLabel = function(_v) {
+		if (!arguments.length) return yAxisLabel;
+		yAxisLabel = _v;
 		return this;
 	};
 

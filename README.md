@@ -44,17 +44,17 @@ Include D3.js and d3-ez js and css files in the `<head>` section of your page:
 
 ```html
 <head>
-   <script src="https://d3js.org/d3.v5.min.js"></script> 
+   <script src="https://d3js.org/d3.v7.min.js"></script> 
    <script src="https://raw.githack.com/jamesleesaunders/d3-ez/master/dist/d3-ez.min.js"></script>
    <link rel="stylesheet" type="text/css" href="https://raw.githack.com/jamesleesaunders/d3-ez/master/dist/d3-ez.css" />
 </head>
 ```
 
-Add a chartholder `<div>` and `<script>` tags to your page `<body>`:
+Add a chartholder `<svg>` and `<script>` tags to your page `<body>`:
 
 ```html
 <body>
-   <div id="chartholder"></div>
+   <svg id="chartholder"></svg>
    <script></script>
 </body>
 ```
@@ -70,44 +70,29 @@ var chartHolder = d3.select("#chartholder");
 Generate some [data](#data-structure):
 
 ```javascript
-var myData = {
-	"key": "Fruit",
-	"values": [
-		{ key: "Apples", value: 9 },
-		{ key: "Oranges", value: 3 },
-		{ key: "Pears", value: 5 },
-		{ key: "Bananas", value: 7 }
-	]
-};
+var myData = [
+	{
+		"key": "Fruit",
+		"values": [
+			{ key: "Apples", value: 9 },
+			{ key: "Oranges", value: 3 },
+			{ key: "Pears", value: 5 },
+			{ key: "Bananas", value: 7 }
+		]
+	}
+];
 ```
 
-Declare the [chart and components](#components-and-charts) component: `chart`, `legend` and `title`:
+Create chart component:
 
 ```javascript
-var chart = d3.ez.chart.barChartVertical()
-	.colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
-
-var legend = d3.ez.component.legend()
-	.title("Fruit Type");
-
-var title = d3.ez.component.title()
-	.mainText("Super Fruit Survey")
-	.subText("Which fruit do you like?");
-```
-
-Construct chart base from the above components:
-
-```javascript
-var myChart = d3.ez.base()
+var myChart = d3.ez.chart.barChartVertical()
 	.width(750)
 	.height(400)
-	.chart(chart)
-	.legend(legend)
-	.title(title);
+	.colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
 ```
 
 Attach chart and data to the chartholder:
-
 ```javascript
 chartHolder
 	.datum(myData)
@@ -130,79 +115,30 @@ Then in your project:
 let d3Ez = require("d3-ez");
 ```
 
-### Components and Charts
-
-As described above, d3-ez charts are made up of three components: `chart`, `legend` and `title`. 
-For more information see the [API Reference](https://jamesleesaunders.github.io/d3-ez/).
-
-#### Chart
+#### Chart Types
 
 The following charts are currently supported:
 
--   barChartClustered()
--   barChartStacked()
--   barChartHorizontal()
--   barChartVertical()
+-   barChart()
 -   barChartCircular()
 -   bubbleChart()
+-   candlestickChart()
 -   donutChart()
--   heatMapTable()
+-   heatMap()
 -   heatMapRadial()
--   candleChart()
 -   lineChart()
 -   polarAreaChart()
 -   punchCard()
 -   radarChart()
 -   roseChart()
 
-All the above charts can also be used stand-alone without having to attach them to a chart base. This can be useful should you just want the main chart but not a legend or title, or you may wish to insert the chart into your own custom D3 project.
-
-```javascript
-var myChart = d3.ez.chart.discreteBar()
-	.width(750)
-	.height(400)
-	.colors(['#00c41d', '#FFA500', '#800080', '#ffe714']);
-
-d3.select("#chartholder")
-	.datum(data)
-	.call(myChart);
-```
-
-#### Legend
-
-The title component has the following options:
-
-* title()     The legend title.
-
-```javascript
-var legend = d3.ez.component.legend()
-	.title("Fruit Type");
-```
-
-#### Title
-
-The title component has the following options:
-
-* mainText()   The main title.
-* subText()    The sub title.
-
-```javascript
-var title = d3.ez.component.title()
-	.mainText("Super Fruit Survey")
-	.subText("Which fruit do you like?");
-```
-
-All of the components above support the following options:
-
-* colors()
+For more information see the [API Reference](https://jamesleesaunders.github.io/d3-ez/).
 
 ### Data Structures
 
 At its most basic description, the format of the d3-ez data is a series of key / value pairs. Depending on whether the chart is a single series or multi series chart the data structure differs slightly.
 
-#### Single Series Data
-
-Used by charts such as a single series bar chart, the data structure is an object with the following structure:
+The data structure is an object with the following structure:
 * `key` {string} - The series name
 * `values` {array} - An array of objects containing:
   * `key` {string} - The value name
@@ -211,21 +147,6 @@ Used by charts such as a single series bar chart, the data structure is an objec
   * `y` {number} - Y axis value\*
 	
 _\*optional, `x` & `y` values are used for cartesian coordinate type graphs such as the bubble chart._
-
-```javascript
-var myData = {
-	key: "UK",
-	values: [
-		{ key: "Apples", value: 9, x: 1, y: 2, z: 5 },
-		/* ... */
-		{ key: "Bananas", value: 7, x: 6, y: 3, z: 8 }
-	]
-};
-```
-
-#### Multi Series Data
-
-Used by charts such as the multi series scatter plot, the multi series data structure is simply an array of the single series data objects above.
 
 ```javascript
 var myData = [

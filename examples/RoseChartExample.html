@@ -61,6 +61,7 @@
           .width(1000)
           .height(600)
           .colors(colors)
+          .stacked(false)
           .on("customValueMouseOver", function(d) {
             d3.select("#message").text(d.value);
           });

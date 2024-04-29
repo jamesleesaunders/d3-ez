@@ -14,7 +14,6 @@ export default function() {
 	let yScale;
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let transition = { ease: d3.easeBounce, duration: 0 };
-	let thresholds;
 	let opacity = 1;
 	let cornerRadius = 2;
 
@@ -104,18 +103,6 @@ export default function() {
 				.remove();
 		});
 	}
-
-	/**
-	 * Thresholds Getter / Setter
-	 *
-	 * @param {Array} _v - Array of thresholds.
-	 * @returns {*}
-	 */
-	my.thresholds = function(_v) {
-		if (!arguments.length) return thresholds;
-		thresholds = _v;
-		return my;
-	};
 
 	/**
 	 * X Scale Getter / Setter

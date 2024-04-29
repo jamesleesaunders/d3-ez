@@ -209,18 +209,6 @@ export default function() {
 	};
 
 	/**
-	 * Thresholds Getter / Setter
-	 *
-	 * @param {Array} _v - Array of thresholds.
-	 * @returns {*}
-	 */
-	my.thresholds = function(_v) {
-		if (!arguments.length) return thresholds;
-		thresholds = _v;
-		return this;
-	};
-
-	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {Number} _v - Opacity level.
@@ -233,18 +221,6 @@ export default function() {
 	};
 
 	/**
-	 * Show Axis Getter / Setter
-	 *
-	 * @param {Boolean} _v - Show axis true / false.
-	 * @returns {*}
-	 */
-	my.showAxis = function(_v) {
-		if (!arguments.length) return showAxis;
-		showAxis = _v;
-		return this;
-	};
-
-	/**
 	 * Transition Getter / Setter
 	 *
 	 * @param {d3.transition} _v - D3 transition style.
@@ -253,6 +229,30 @@ export default function() {
 	my.transition = function(_v) {
 		if (!arguments.length) return transition;
 		transition = _v;
+		return this;
+	};
+
+	/**
+	 * Thresholds Getter / Setter
+	 *
+	 * @param {Array} _v - Array of thresholds.
+	 * @returns {*}
+	 */
+	my.thresholds = function(_v) {
+		if (!arguments.length) return thresholds;
+		thresholds = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
 		return this;
 	};
 

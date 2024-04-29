@@ -122,7 +122,7 @@ export default function() {
 			// Create Series Group
 			const seriesGroup = containerEnter.select(".chart")
 				.selectAll(".seriesGroup")
-				.data(data);
+				.data((d) => d);
 
 			seriesGroup.enter()
 				.append("g")
@@ -217,18 +217,6 @@ export default function() {
 	};
 
 	/**
-	 * Thresholds Getter / Setter
-	 *
-	 * @param {Array} _v - Array of thresholds.
-	 * @returns {*}
-	 */
-	my.thresholds = function(_v) {
-		if (!arguments.length) return thresholds;
-		thresholds = _v;
-		return my;
-	};
-
-	/**
 	 * Transition Getter / Setter
 	 *
 	 * @param {d3.transition} _v - D3 transition style.
@@ -238,6 +226,18 @@ export default function() {
 		if (!arguments.length) return transition;
 		transition = _v;
 		return this;
+	};
+
+	/**
+	 * Thresholds Getter / Setter
+	 *
+	 * @param {Array} _v - Array of thresholds.
+	 * @returns {*}
+	 */
+	my.thresholds = function(_v) {
+		if (!arguments.length) return thresholds;
+		thresholds = _v;
+		return my;
 	};
 
 	/**
