@@ -60,7 +60,7 @@ export default function() {
 			const rows = rowsSelect.enter()
 				.append("tr")
 				.attr("class", (d) => d.key)
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customSeriesClick", this, d);
 				})
 				.merge(rowsSelect);
@@ -76,7 +76,7 @@ export default function() {
 				.append("td")
 				.attr("class", (d) => d.key)
 				.html((d) => d.value)
-				.on("mouseover", function(d) {
+				.on("mouseover", function(e, d) {
 					dispatch.call("customValueMouseOver", this, d);
 				});
 		});

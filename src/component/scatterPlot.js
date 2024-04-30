@@ -27,11 +27,10 @@ export default function() {
 		selection.each(function() {
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) {
+				.on("mouseover", function(e, d) {
 					dispatch.call("customSeriesMouseOver", this, d);
 				})
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customSeriesClick", this, d);
 				});
 

@@ -105,8 +105,7 @@ export default function() {
 				.xScale(xScale)
 				.yScale(yScale)
 				.opacity(opacity)
-				.dispatch(dispatch)
-				.thresholds(thresholds);
+				.dispatch(dispatch);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()

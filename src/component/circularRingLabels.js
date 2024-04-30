@@ -40,10 +40,9 @@ export default function() {
 
 			const element = d3.select(this);
 
-			const uId = () => "uid-" + Math.floor(1000 + Math.random() * 9000);
+			const uId = "uid-" + Math.floor(1000 + Math.random() * 9000);
 
 			const labels = element
-				.attr("id", uId)
 				.selectAll(`g.${classed}`)
 				.data([0]);
 
@@ -61,7 +60,7 @@ export default function() {
 				.append("def")
 				.append("path")
 				.attr("id", (d, i) => {
-					return element.attr("id") + "-path-" + i;
+					return `${uId}-path-${i}`;
 				})
 				.attr("d", (d) => pathGen(d))
 				.merge(def)
@@ -71,7 +70,7 @@ export default function() {
 				.select("path")
 				.attr("d", (d) => pathGen(d))
 				.attr("id", (d, i) => {
-					return element.attr("id") + "-path-" + i;
+					return `${uId}-path-${i}`;
 				})
 
 			const text = labelsEnter.selectAll("text")
@@ -84,7 +83,7 @@ export default function() {
 				.attr("dx", 5)
 				.append("textPath")
 				.attr("xlink:href", (d, i) => {
-					return "#" + element.attr("id") + "-path-" + i;
+					return `#${uId}-path-${i}`;
 				})
 				.attr("startOffset", "0%")
 				.attr("font-size", (d) => {
@@ -102,7 +101,7 @@ export default function() {
 					return `${fontPx}px`;
 				})
 				.attr("xlink:href", (d, i) => {
-					return "#" + element.attr("id") + "-path-" + i;
+					return `#${uId}-path-${i}`;
 				});
 
 			text.exit()

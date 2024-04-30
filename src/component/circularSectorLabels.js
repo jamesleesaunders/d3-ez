@@ -62,10 +62,9 @@ export default function() {
 			const element = d3.select(this);
 
 			// Unique id so that the text path defs are unique - is there a better way to do this?
-			const uId = () => "uid-" + Math.floor(1000 + Math.random() * 9000);
+			const uId = "uid-" + Math.floor(1000 + Math.random() * 9000);
 
 			const labels = element
-				.attr("id", uId)
 				.selectAll(`g.${classed}`)
 				.data(() => [tickData()]);
 
@@ -89,7 +88,7 @@ export default function() {
 				.append("def")
 				.append("path")
 				.attr("id", () => {
-					return element.attr("id") + "-path";
+					return `${uId}-path`;
 				})
 				.attr("d", (d) => {
 					// Add a little padding
@@ -102,7 +101,7 @@ export default function() {
 				.duration(transition.duration)
 				.select("path")
 				.attr("id", () => {
-					return element.attr("id") + "-path";
+					return `${uId}-path`;
 				})
 				.attr("d", (d) => {
 					// Add a little padding
@@ -124,7 +123,7 @@ export default function() {
 				.style("text-anchor", textAnchor)
 				.append("textPath")
 				.attr("xlink:href", () => {
-					return "#" + element.attr("id") + "-path";
+					return `#${uId}-path`;
 				})
 				.text((d) => {
 					const text = d.value;
@@ -143,7 +142,7 @@ export default function() {
 					return capitalizeLabels ? text.toUpperCase() : text;
 				})
 				.attr("xlink:href", () => {
-					return "#" + element.attr("id") + "-path";
+					return `#${uId}-path`;
 				})
 				.attr("startOffset", (d) => d.offset + "%")
 				.attr("id", (d) => d.value);

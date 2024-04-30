@@ -34,7 +34,7 @@ export default function() {
 			const axis = axisSelect.enter()
 				.append("g")
 				.classed(classed, true)
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customClick", this, d);
 				})
 				.merge(axisSelect);
@@ -147,7 +147,6 @@ export default function() {
 
 			spokes.enter()
 				.append("line")
-				.attr("id", (d) => d.value)
 				.attr("stroke", "currentColor")
 				.attr("stroke-width", 1)
 				.attr("stroke-dasharray", "2,2")

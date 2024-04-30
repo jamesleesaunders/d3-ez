@@ -47,11 +47,10 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) {
+				.on("mouseover", function(e, d) {
 					dispatch.call("customSeriesMouseOver", this, d);
 				})
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customSeriesClick", this, d);
 				});
 
@@ -71,10 +70,10 @@ export default function() {
 			bars.enter()
 				.append("path")
 				.classed("bar", true)
-				.on("mouseover", function(d) {
+				.on("mouseover", function(e, d) {
 					dispatch.call("customValueMouseOver", this, d);
 				})
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customValueClick", this, d);
 				})
 				.merge(bars)

@@ -30,19 +30,25 @@ export default function() {
 			const cellWidth = xScale.bandwidth();
 
 			// Update series group
-			const seriesGroup = d3.select(this);
-			seriesGroup
-				.classed(classed, true)
-				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) {
+			const seriesGroup = d3.select(this)
+				.on("mouseover", function(e, d) {
 					dispatch.call("customSeriesMouseOver", this, d);
 				})
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customSeriesClick", this, d);
 				});
 
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
+
 			// Add numbers to series
-			const numbers = seriesGroup.selectAll(".number")
+			const numbers = componentGroup.selectAll(".number")
 				.data((d) => d.values);
 
 			numbers.enter()
@@ -50,10 +56,10 @@ export default function() {
 				.attr("class", "number")
 				.attr("text-anchor", "middle")
 				.attr("dominant-baseline", "central")
-				.on("mouseover", function(d) {
+				.on("mouseover", function(e, d) {
 					dispatch.call("customValueMouseOver", this, d);
 				})
-				.on("click", function(d) {
+				.on("click", function(e, d) {
 					dispatch.call("customValueClick", this, d);
 				})
 				.merge(numbers)

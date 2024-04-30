@@ -43,8 +43,8 @@ export default function() {
 				.text((d) => d.key)
 				.on("click", expand);
 
-			function expand(d) {
-				d3.event.stopPropagation();
+			function expand(e, d) {
+				e.stopPropagation();
 				dispatch.call("customValueMouseOver", this, d);
 
 				if (typeof d.values === "undefined") {

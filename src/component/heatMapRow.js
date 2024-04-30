@@ -31,9 +31,7 @@ export default function() {
 			const cellWidth = xScale.bandwidth();
 
 			// Update series group
-			const seriesGroup = d3.select(this);
-			seriesGroup
-				.attr("id", (d) => d.key)
+			const seriesGroup = d3.select(this)
 				.on("mouseover", function(e, d) {
 					dispatch.call("customSeriesMouseOver", this, d);
 				})
