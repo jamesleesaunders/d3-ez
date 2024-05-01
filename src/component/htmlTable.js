@@ -60,8 +60,11 @@ export default function() {
 			const rows = rowsSelect.enter()
 				.append("tr")
 				.attr("class", (d) => d.key)
+				.on("mouseover", function(e, d) {
+					dispatch.call("customSeriesMouseOver", this, e, d);
+				})
 				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, d);
+					dispatch.call("customSeriesClick", this, e, d);
 				})
 				.merge(rowsSelect);
 
@@ -77,7 +80,10 @@ export default function() {
 				.attr("class", (d) => d.key)
 				.html((d) => d.value)
 				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, d);
+					dispatch.call("customValueMouseOver", this, e, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customValueClick", this, e, d);
 				});
 		});
 	}

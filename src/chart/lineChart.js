@@ -45,7 +45,6 @@ export default function() {
 			const isTimeSeries = false;
 
 			// Create Scales and Axis
-			// data = dataTransform(data).rotate();
 			let { rowKeys, columnKeys, valueMin, valueMax } = dataTransform(data).summary();
 			// Set min to zero if min is more than zero
 			valueMin = valueMin > 0 ? 0 : valueMin;

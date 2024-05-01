@@ -24,6 +24,7 @@
           "January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"
         ];
+
         var data = d3.nest()
           .key(function(d) {
             return d.date;
@@ -63,6 +64,7 @@
           .colors(colors)
           .stacked(false)
           .on("customValueMouseOver", function(d) {
+            // TODO: Convert this to D3v7 function(e, d)
             d3.select("#message").text(d.value);
           });
 

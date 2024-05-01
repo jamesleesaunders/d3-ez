@@ -677,9 +677,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -692,9 +692,9 @@
 	        return d.values;
 	      });
 	      bars.enter().append("path").classed("bar", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
@@ -846,9 +846,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -861,9 +861,9 @@
 	        return stacker(d.values);
 	      });
 	      bars.enter().append("rect").classed("bar", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
 	        return yScale(d.y1);
 	      }).attr("width", width).attr("height", function (d) {
@@ -987,9 +987,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -1002,9 +1002,9 @@
 	        return d.values;
 	      });
 	      bars.enter().append("rect").classed("bar", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("y", function (d) {
@@ -1273,9 +1273,9 @@
 	    selection.each(function (data) {
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -1294,11 +1294,11 @@
 	      });
 	      bubbles.enter().append("g").classed("bubble", true).on("mouseover", function (e, d) {
 	        d3__namespace.select(this).select("text").style("display", "block");
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("mouseout", function () {
 	        d3__namespace.select(this).select("text").style("display", "none");
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(bubbles).attr("transform", function (d) {
 	        return "translate(" + xScale(d.x) + "," + yScale(d.y) + ")";
 	      }).call(bubble);
@@ -1465,9 +1465,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -1480,9 +1480,9 @@
 	        return d.values;
 	      });
 	      candles.enter().append("g").classed("candle", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(candles).attr("fill", function (d) {
 	        return colorScale(isUpDay(d));
 	      }).attr("stroke", function (d) {
@@ -1618,7 +1618,7 @@
 	      // Create axis group
 	      var axisSelect = d3__namespace.select(this).selectAll("g.".concat(classed)).data([0]);
 	      var axis = axisSelect.enter().append("g").classed(classed, true).on("click", function (e, d) {
-	        dispatch.call("customClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(axisSelect);
 
 	      // Outer circle
@@ -2065,9 +2065,9 @@
 
 	      // Update Series Group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -2080,9 +2080,9 @@
 	        return pie(d.values);
 	      });
 	      slices.enter().append("path").attr("class", "slice").on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
@@ -2198,9 +2198,9 @@
 
 	      // Update Series Group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -2317,9 +2317,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -2337,9 +2337,9 @@
 	        return data;
 	      });
 	      segments.enter().append("path").attr("d", arc).classed("segment", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d.data);
+	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d.data);
+	        dispatch.call("customValueClick", this, e, d.data);
 	      }).merge(segments).transition().duration(transition.duration).attr("fill", function (d) {
 	        return colorScale(d.data.value);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
@@ -2455,9 +2455,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -2476,9 +2476,9 @@
 	        });
 	      });
 	      cells.enter().append("rect").attr("class", "cell").on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("y", 0).attr("rx", cornerRadius).attr("ry", cornerRadius).attr("width", cellWidth).attr("height", cellHeight).attr("fill", function (d) {
@@ -2597,7 +2597,7 @@
 	      }).on("click", expand);
 	      function expand(e, d) {
 	        e.stopPropagation();
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	        if (typeof d.values === "undefined") {
 	          return 0;
 	        }
@@ -2693,8 +2693,10 @@
 	      var rowsSelect = body.selectAll("tr").data(data);
 	      var rows = rowsSelect.enter().append("tr").attr("class", function (d) {
 	        return d.key;
+	      }).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      }).merge(rowsSelect);
 
 	      // Add the first column of headings (categories)
@@ -2710,7 +2712,9 @@
 	      }).html(function (d) {
 	        return d.value;
 	      }).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
 	      });
 	    });
 	  }
@@ -2793,9 +2797,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -2921,9 +2925,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -2936,9 +2940,9 @@
 	        return d.values;
 	      });
 	      numbers.enter().append("text").attr("class", "number").attr("text-anchor", "middle").attr("dominant-baseline", "central").on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).text(function (d) {
 	        return d["value"];
 	      }).attr("fill", function (d) {
@@ -3063,9 +3067,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -3078,9 +3082,9 @@
 	        return pie(d.values);
 	      });
 	      segments.enter().append("path").classed("segment", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d.data);
+	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d.data);
+	        dispatch.call("customValueClick", this, e, d.data);
 	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).style("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
@@ -3201,9 +3205,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -3341,9 +3345,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -3364,11 +3368,11 @@
 	      });
 	      spots.enter().append("g").classed("punchSpot", true).on("mouseover", function (e, d) {
 	        d3__namespace.select(this).select("text").style("display", "block");
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("mouseout", function () {
 	        d3__namespace.select(this).select("text").style("display", "none");
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
 	        return "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + cellHeight / 2 + ")";
 	      }).call(spot);
@@ -3489,9 +3493,9 @@
 	    selection.each(function () {
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -3504,9 +3508,9 @@
 	        return d.values;
 	      });
 	      dots.enter().append("circle").attr("class", "dot").attr("r", 3).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
 	        return xScale(d.key);
 	      }).attr("cy", function (d) {
@@ -3647,9 +3651,9 @@
 
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, d);
+	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, d);
+	        dispatch.call("customSeriesClick", this, e, d);
 	      });
 
 	      // Add Component Level Group
@@ -3666,9 +3670,9 @@
 	      }).attr("stroke", function (d) {
 	        return colorScale(d.key);
 	      }).attr("stroke-width", "1px").on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, d);
+	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, d);
+	        dispatch.call("customValueClick", this, e, d);
 	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("fill-opacity", opacity).attr("d", arc);
 	      arcs.exit().transition().style("opacity", 0).remove();
 	    });
@@ -4712,7 +4716,6 @@
 	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
-	      data = dataTransform(data).rotate();
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -6091,7 +6094,6 @@
 	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
-	      // data = dataTransform(data).rotate();
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -6576,7 +6578,7 @@
 	      });
 
 	      // Proportional Area Circle Component
-	      var proportionalAreaCircles = component.proportionalAreaCircles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).dispatch(dispatch).opacity(opacity);
+	      var proportionalAreaCircles = component.proportionalAreaCircles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);

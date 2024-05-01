@@ -3,7 +3,7 @@
 
   <head>
     <title>d3-ez : Heat Map (Radial) Example</title>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../dist/d3-ez.js"></script>
     <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
   </head>
@@ -24,25 +24,18 @@
           .width(1000)
           .height(600)
           .colors(colors)
-          .on("customValueMouseOver", function(d) {
+          .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           })
-          .on("customSeriesClick", function(d) {
+          .on("customSeriesClick", function(e, d) {
             console.log(d);
           });
 
-        // Convert json to d3-ez data format
-        var data = d3.nest().key(function(d) {
-          return d.ISP;
-        }).entries(json.Data).map(function(obj) {
-          obj.values = obj.values.map(function(values) {
-            return {
-              key: values.Month,
-              value: values.Value
-            };
-          });
-          return obj;
-        });
+        // Group the data by the 'ISP' attribute
+        var data = Array.from(d3.group(json.Data, d => d.ISP), ([key, values]) => ({
+          key: key,
+          values: values.map(d => ({ key: d.Month, value: d.Value }))
+        }));
 
         d3.select('#chartholder')
           .datum(data)

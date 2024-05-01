@@ -33,34 +33,30 @@
         .domain(rowKeys)
         .range(colors);
 
-      // Setup chart components
-      var myChart1 = d3.ez.component.htmlTable()
-        .on("customSeriesClick", function(d) {
-          update2(d);
-        });
-
-      var myChart2 = d3.ez.component.barsVertical()
-        .xScale(xScale)
-        .yScale(yScale)
-        .colorScale(colorScale)
-        .on("customValueMouseOver", function(d) {
-          console.log(d);
-        });
-
       // Functions to add charts to page and update charts
       function update1(data) {
-        // htmlTable
+        var htmlTable = d3.ez.component.htmlTable()
+          .on("customSeriesMouseOver", function(e, d) {
+            update2(d);
+          });
+
         d3.select("#chartholder1")
           .datum(data)
-          .call(myChart1);
+          .call(htmlTable);
       }
 
       function update2(data) {
-        // barClustered
-        console.log(data);
+        var barsVertical = d3.ez.component.barsVertical()
+          .xScale(xScale)
+          .yScale(yScale)
+          .colorScale(colorScale)
+          .on("customValueClick", function(e, d) {
+            console.log(d);
+          });
+
         d3.select("#chartholder2")
           .datum(data)
-          .call(myChart2);
+          .call(barsVertical);
       }
 
       update1(data);    // htmlTable

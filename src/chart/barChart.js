@@ -44,7 +44,6 @@ export default function() {
 			const legendH = Math.max(chartH / 2, 100);
 
 			// Create Scales and Axis
-			data = dataTransform(data).rotate();
 			let { rowKeys, columnKeys, valueExtent, valueExtentStacked } = dataTransform(data).summary();
 			let [valueMin, valueMax] = valueExtent;
 			if (stacked) {

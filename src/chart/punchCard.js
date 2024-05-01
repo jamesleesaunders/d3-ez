@@ -106,8 +106,8 @@ export default function() {
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.sizeScale(sizeScale)
-				.dispatch(dispatch)
-				.opacity(opacity);
+				.opacity(opacity)
+				.dispatch(dispatch);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")

@@ -45,7 +45,7 @@ export default function() {
 
 			function expand(e, d) {
 				e.stopPropagation();
-				dispatch.call("customValueMouseOver", this, d);
+				dispatch.call("customValueMouseOver", this, e, d);
 
 				if (typeof d.values === "undefined") {
 					return 0;

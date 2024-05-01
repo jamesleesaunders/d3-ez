@@ -35,7 +35,7 @@ export default function() {
 				.append("g")
 				.classed(classed, true)
 				.on("click", function(e, d) {
-					dispatch.call("customClick", this, d);
+					dispatch.call("customValueClick", this, e, d);
 				})
 				.merge(axisSelect);
 

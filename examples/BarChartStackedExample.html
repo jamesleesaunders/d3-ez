@@ -24,7 +24,7 @@
           .colors(colors)
           .stacked(true)
           .yAxisLabel("Seats")
-          .on("customValueMouseOver", function(d) {
+          .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           });
 

@@ -31,10 +31,10 @@ export default function() {
 			// Update series group
 			const seriesGroup = d3.select(this)
 				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, d);
+					dispatch.call("customSeriesMouseOver", this, e, d);
 				})
 				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, d);
+					dispatch.call("customSeriesClick", this, e, d);
 				});
 
 			// Add Component Level Group
@@ -64,13 +64,13 @@ export default function() {
 				.classed("bubble", true)
 				.on("mouseover", function(e, d) {
 					d3.select(this).select("text").style("display", "block");
-					dispatch.call("customValueMouseOver", this, d);
+					dispatch.call("customValueMouseOver", this, e, d);
 				})
 				.on("mouseout", function() {
 					d3.select(this).select("text").style("display", "none");
 				})
 				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, d);
+					dispatch.call("customValueClick", this, e, d);
 				})
 				.merge(bubbles)
 				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")")

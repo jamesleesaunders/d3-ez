@@ -34,10 +34,11 @@
         var myChart = d3.ez.chart.punchCard()
           .width(1000)
           .height(600)
-          .on("customValueMouseOver", function(d) {
-            d3.select("#message").text(d.value);
+          .on("customValueMouseOver", function(e, d) {
+            console.log(d)
+            d3.select("#message").text(d);
           })
-          .on("customSeriesClick", function(d) {
+          .on("customSeriesClick", function(e, d) {
             console.log(d);
           });
 

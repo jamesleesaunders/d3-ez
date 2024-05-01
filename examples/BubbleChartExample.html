@@ -39,10 +39,10 @@
           .height(600)
           .colors(colors)
           .yAxisLabel("yScale")
-          .on("customValueMouseOver", function(d) {
+          .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           })
-          .on("customSeriesClick", function(d) {
+          .on("customSeriesClick", function(e, d) {
             console.log(d);
           });
 
