@@ -45,13 +45,7 @@ export default function() {
 			};
 
 			// Update Series Group
-			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+			const seriesGroup = d3.select(this);
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup

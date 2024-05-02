@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import dataTransform from "../dataTransform";
 import component from "../component";
+import palette from "../palette";
 
 /**
  * Radial Heat Map (aka: Circular Heat Map)
@@ -15,7 +16,7 @@ export default function() {
 	let width = 700;
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
+	let colors = palette.diverging(2).slice(0, 5);
 	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 

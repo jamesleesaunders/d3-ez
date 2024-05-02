@@ -7,13 +7,8 @@ import * as d3 from "d3";
  */
 export default function() {
 
-	/* HTML List Element */
-	let listEl;
-
 	/* Default Properties */
 	let classed = "htmlList";
-
-	/* Dispatch */
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
@@ -24,24 +19,28 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		selection.each(function(data) {
-			// Create HTML List 'ul' element (if it does not exist already)
-			if (!listEl) {
-				listEl = d3.select(this)
-					.append("ul")
-					.classed("d3ez", true)
-					.classed(classed, true);
-			} else {
-				listEl.selectAll("*")
-					.remove();
-			}
+		selection.each(function() {
+			let list = d3.select(this).selectAll("ul")
+				.data((d) => [d]);
 
-			listEl.selectAll("li")
-				.data(data)
-				.enter()
+			let listEnter = list.enter()
+				.append("ul")
+				.classed(classed, true)
+				.merge(list);
+
+			let seriesGroup = listEnter.selectAll("li")
+				.data((d) => d);
+
+			seriesGroup.exit()
+				.remove();
+
+			seriesGroup.enter()
 				.append("li")
 				.text((d) => d.key)
-				.on("click", expand);
+				.on("click", expand)
+				.merge(seriesGroup)
+				.transition()
+				.text((d) => d.key);
 
 			function expand(e, d) {
 				e.stopPropagation();
@@ -56,8 +55,12 @@ export default function() {
 					.append("ul");
 
 				const li = ul.selectAll("li")
-					.data(d.values)
-					.enter()
+					.data(d.values);
+
+				li.exit()
+					.remove();
+
+				li.enter()
 					.append("li")
 					.text((d) => {
 						if (typeof d.value !== "undefined") {
@@ -69,8 +72,8 @@ export default function() {
 					.on("click", expand);
 			}
 
-			function collapse() {
-				d3.event.stopPropagation();
+			function collapse(e, d) {
+				e.stopPropagation();
 				d3.select(this)
 					.on("click", expand)
 					.selectAll("*")

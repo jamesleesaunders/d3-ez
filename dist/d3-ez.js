@@ -2197,11 +2197,7 @@
 	      };
 
 	      // Update Series Group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
+	      var seriesGroup = d3__namespace.select(this);
 
 	      // Add Component Level Group
 	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
@@ -2568,13 +2564,8 @@
 	 * @module
 	 */
 	function componentHtmlList () {
-	  /* HTML List Element */
-	  var listEl;
-
 	  /* Default Properties */
 	  var classed = "htmlList";
-
-	  /* Dispatch */
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /**
@@ -2585,16 +2576,20 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
-	    selection.each(function (data) {
-	      // Create HTML List 'ul' element (if it does not exist already)
-	      if (!listEl) {
-	        listEl = d3__namespace.select(this).append("ul").classed("d3ez", true).classed(classed, true);
-	      } else {
-	        listEl.selectAll("*").remove();
-	      }
-	      listEl.selectAll("li").data(data).enter().append("li").text(function (d) {
+	    selection.each(function () {
+	      var list = d3__namespace.select(this).selectAll("ul").data(function (d) {
+	        return [d];
+	      });
+	      var listEnter = list.enter().append("ul").classed(classed, true).merge(list);
+	      var seriesGroup = listEnter.selectAll("li").data(function (d) {
+	        return d;
+	      });
+	      seriesGroup.exit().remove();
+	      seriesGroup.enter().append("li").text(function (d) {
 	        return d.key;
-	      }).on("click", expand);
+	      }).on("click", expand).merge(seriesGroup).transition().text(function (d) {
+	        return d.key;
+	      });
 	      function expand(e, d) {
 	        e.stopPropagation();
 	        dispatch.call("customValueMouseOver", this, e, d);
@@ -2602,7 +2597,9 @@
 	          return 0;
 	        }
 	        var ul = d3__namespace.select(this).on("click", collapse).append("ul");
-	        ul.selectAll("li").data(d.values).enter().append("li").text(function (d) {
+	        var li = ul.selectAll("li").data(d.values);
+	        li.exit().remove();
+	        li.enter().append("li").text(function (d) {
 	          if (typeof d.value !== "undefined") {
 	            return d.key + " : " + d.value;
 	          } else {
@@ -2610,8 +2607,8 @@
 	          }
 	        }).on("click", expand);
 	      }
-	      function collapse() {
-	        d3__namespace.event.stopPropagation();
+	      function collapse(e, d) {
+	        e.stopPropagation();
 	        d3__namespace.select(this).on("click", expand).selectAll("*").remove();
 	      }
 	    });
@@ -2647,14 +2644,9 @@
 	 * @module
 	 */
 	function componentHtmlTable () {
-	  /* HTML List Element */
-	  var tableEl;
-
 	  /* Default Properties */
 	  var classed = "htmlTable";
 	  var width = 800;
-
-	  // Dispatch (Custom events)
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /**
@@ -2666,70 +2658,60 @@
 	   */
 	  function my(selection) {
 	    selection.each(function (data) {
-	      var _dataTransform$summar = dataTransform(data).summary();
-	        _dataTransform$summar.rowKeys;
-	        var columnKeys = _dataTransform$summar.columnKeys;
-
-	      // Create HTML Table 'table' element (if it does not exist already)
-	      if (!tableEl) {
-	        tableEl = d3__namespace.select(this).append("table").classed("d3ez", true).classed(classed, true).attr("width", width);
-	      } else {
-	        tableEl.selectAll("*").remove();
-	      }
-	      var head = tableEl.append("thead");
-	      tableEl.append("tfoot");
-	      var body = tableEl.append("tbody");
+	      var _dataTransform$summar = dataTransform(data).summary(),
+	        columnKeys = _dataTransform$summar.columnKeys;
+	      var table = d3__namespace.select(this).selectAll("table").data(function (d) {
+	        return [d];
+	      });
+	      var tableEnter = table.enter().append("table").classed(classed, true).merge(table);
+	      tableEnter.append("thead");
+	      tableEnter.append("tfoot");
+	      tableEnter.append("tbody");
 
 	      // Add table headings
-	      var hdr = head.append("tr");
-	      hdr.selectAll("th").data(function () {
-	        return [""].concat(columnKeys);
-	      }) // Tack a blank cell at the beginning this is the empty 'A1' cell.
-	      .enter().append("th").html(function (d) {
+	      var head = tableEnter.select("thead").selectAll("tr").data([columnKeys]);
+	      head.exit().remove();
+	      var headEnter = head.enter().append("tr").merge(head);
+	      var th = headEnter.selectAll("th").data(function (d) {
+	        // Tack a blank cell at the beginning this is the empty 'A1' cell.
+	        d.unshift("");
+	        return d;
+	      });
+	      th.exit().remove();
+	      th.enter().append("th").merge(th).html(function (d) {
 	        return d;
 	      });
 
 	      // Add table body
-	      var rowsSelect = body.selectAll("tr").data(data);
-	      var rows = rowsSelect.enter().append("tr").attr("class", function (d) {
+	      var body = tableEnter.select("tbody").selectAll("tr").data(data);
+	      body.exit().remove();
+	      var bodyEnter = body.enter().append("tr").attr("class", function (d) {
 	        return d.key;
 	      }).on("mouseover", function (e, d) {
 	        dispatch.call("customSeriesMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customSeriesClick", this, e, d);
-	      }).merge(rowsSelect);
-
-	      // Add the first column of headings (categories)
-	      rows.append("th").html(function (d) {
-	        return d.key;
-	      });
+	      }).merge(body);
 
 	      // Add the main data values
-	      rows.selectAll("td").data(function (d) {
+	      var td = bodyEnter.selectAll("td").data(function (d) {
+	        // Add key name to first column.
+	        d.values.unshift({
+	          key: d.key,
+	          value: d.key
+	        });
 	        return d.values;
-	      }).enter().append("td").attr("class", function (d) {
-	        return d.key;
-	      }).html(function (d) {
-	        return d.value;
-	      }).on("mouseover", function (e, d) {
+	      });
+	      td.exit().remove();
+	      td.enter().append("td").on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
+	      }).merge(td).html(function (d) {
+	        return d.value;
 	      });
 	    });
 	  }
-
-	  /**
-	   * Width Getter / Setter
-	   *
-	   * @param {number} _v - Width in px.
-	   * @returns {*}
-	   */
-	  my.width = function (_v) {
-	    if (!arguments.length) return width;
-	    width = _v;
-	    return this;
-	  };
 
 	  /**
 	   * Class Getter / Setter
@@ -2740,6 +2722,18 @@
 	  my.classed = function (_v) {
 	    if (!arguments.length) return classed;
 	    classed = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Width Getter / Setter
+	   *
+	   * @param {number} _v - Width in px.
+	   * @returns {*}
+	   */
+	  my.width = function (_v) {
+	    if (!arguments.length) return width;
+	    width = _v;
 	    return this;
 	  };
 
@@ -5632,7 +5626,7 @@
 	    bottom: 20,
 	    left: 20
 	  };
-	  var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
+	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeBounce,
 	    duration: 0

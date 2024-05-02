@@ -8,14 +8,9 @@ import dataTransform from "../dataTransform";
  */
 export default function() {
 
-	/* HTML List Element */
-	let tableEl;
-
 	/* Default Properties */
 	let classed = "htmlTable";
 	let width = 800;
-
-	// Dispatch (Custom events)
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
@@ -27,37 +22,57 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function(data) {
-			const { rowKeys, columnKeys } = dataTransform(data).summary();
+			const { columnKeys } = dataTransform(data).summary();
 
-			// Create HTML Table 'table' element (if it does not exist already)
-			if (!tableEl) {
-				tableEl = d3.select(this)
-					.append("table")
-					.classed("d3ez", true)
-					.classed(classed, true)
-					.attr("width", width);
-			} else {
-				tableEl.selectAll("*")
-					.remove();
-			}
-			const head = tableEl.append("thead");
-			const foot = tableEl.append("tfoot");
-			const body = tableEl.append("tbody");
+			let table = d3.select(this).selectAll("table")
+				.data((d) => [d]);
+
+			let tableEnter = table.enter()
+				.append("table")
+				.classed(classed, true)
+				.merge(table);
+
+			tableEnter.append("thead");
+			tableEnter.append("tfoot");
+			tableEnter.append("tbody");
 
 			// Add table headings
-			const hdr = head.append("tr");
+			const head = tableEnter.select("thead")
+				.selectAll("tr")
+				.data([columnKeys]);
 
-			hdr.selectAll("th")
-				.data(() => [""].concat(columnKeys))  // Tack a blank cell at the beginning this is the empty 'A1' cell.
-				.enter()
+			head.exit()
+				.remove()
+
+			let headEnter = head.enter()
+				.append("tr")
+				.merge(head);
+
+			let th = headEnter
+				.selectAll("th")
+				.data((d) => {
+					// Tack a blank cell at the beginning this is the empty 'A1' cell.
+					d.unshift("")
+					return d;
+				});
+
+			th.exit()
+				.remove()
+
+			th.enter()
 				.append("th")
+				.merge(th)
 				.html((d) => d);
 
 			// Add table body
-			const rowsSelect = body.selectAll("tr")
+			const body = tableEnter.select("tbody")
+				.selectAll("tr")
 				.data(data);
 
-			const rows = rowsSelect.enter()
+			body.exit()
+				.remove()
+
+			const bodyEnter = body.enter()
 				.append("tr")
 				.attr("class", (d) => d.key)
 				.on("mouseover", function(e, d) {
@@ -66,39 +81,32 @@ export default function() {
 				.on("click", function(e, d) {
 					dispatch.call("customSeriesClick", this, e, d);
 				})
-				.merge(rowsSelect);
-
-			// Add the first column of headings (categories)
-			rows.append("th")
-				.html((d) => d.key);
+				.merge(body);
 
 			// Add the main data values
-			rows.selectAll("td")
-				.data((d) => d.values)
-				.enter()
+			const td = bodyEnter
+				.selectAll("td")
+				.data((d) => {
+					// Add key name to first column.
+					d.values.unshift({ key: d.key, value: d.key })
+					return d.values;
+				});
+
+			td.exit()
+				.remove()
+
+			td.enter()
 				.append("td")
-				.attr("class", (d) => d.key)
-				.html((d) => d.value)
 				.on("mouseover", function(e, d) {
 					dispatch.call("customValueMouseOver", this, e, d);
 				})
 				.on("click", function(e, d) {
 					dispatch.call("customValueClick", this, e, d);
-				});
+				})
+				.merge(td)
+				.html((d) => d.value);
 		});
 	}
-
-	/**
-	 * Width Getter / Setter
-	 *
-	 * @param {number} _v - Width in px.
-	 * @returns {*}
-	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
 
 	/**
 	 * Class Getter / Setter
@@ -109,6 +117,18 @@ export default function() {
 	my.classed = function(_v) {
 		if (!arguments.length) return classed;
 		classed = _v;
+		return this;
+	};
+
+	/**
+	 * Width Getter / Setter
+	 *
+	 * @param {number} _v - Width in px.
+	 * @returns {*}
+	 */
+	my.width = function(_v) {
+		if (!arguments.length) return width;
+		width = _v;
 		return this;
 	};
 
