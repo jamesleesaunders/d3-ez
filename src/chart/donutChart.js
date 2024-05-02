@@ -4,59 +4,25 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Donut Chart (also called: Doughnut Chart; Pie Chart)
+ * Donut Chart (aka: Doughnut Chart; Pie Chart)
  *
  * @module
  * @see http://datavizproject.com/data-type/donut-chart/
+ * @see https://www.atlassian.com/data/charts/pie-chart-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "donutChart";
-	let width = 400;
-	let height = 300;
+	let width = 700;
+	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let transition = { ease: d3.easeCubic, duration: 750 };
 	let colors = palette.categorical(3);
+	let transition = { ease: d3.easeCubic, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-	let radius;
-	let innerRadius;
-
-	/* Scales */
-	let colorScale;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-
-		const { columnKeys } = dataTransform(data).summary();
-
-		if (typeof radius === "undefined") {
-			radius = Math.min(chartW, chartH) / 2;
-		}
-
-		if (typeof innerRadius === "undefined") {
-			innerRadius = radius / 2;
-		}
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
-		}
-	}
+	/* Other Customisation Options */
+	let opacity = 1;
 
 	/**
 	 * Constructor
@@ -66,9 +32,52 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+			const radius = (Math.min(chartW, chartH) / data.length) / 2;
+			const innerRadius = radius / 2;
+
+			const { columnKeys } = dataTransform(data).summary();
+
+			const xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([innerRadius, radius]);
+
+			let colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+
+			function generateLayout(cellCount, width, height) {
+				const layout = [];
+				const cols = Math.ceil(Math.sqrt(cellCount));
+				const rows = Math.ceil(cellCount / cols);
+				const cellWidth = width / cols;
+				const cellHeight = height / rows;
+				let index = 0;
+
+				for (let i = 0; i < rows; i++) {
+					for (let j = 0; j < cols; j++) {
+						if (index < cellCount) {
+							const x = (j * cellWidth) + (cellWidth / 2);
+							const y = (i * cellHeight) + (cellHeight / 2);
+							layout.push({ x: x, y: y, width: cellWidth, height: cellHeight });
+							index++;
+						}
+					}
+				}
+
+				return layout;
+			}
+
+			const layout = generateLayout(data.length, chartW, chartH);
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -81,46 +90,76 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["donut", "donutLabels"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
 
-			// Donut Slices
-			const donutChart = component.donut()
-				.radius(radius)
-				.innerRadius(innerRadius)
+			const layers = ["chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
+
+			// Donut Slice Component
+			const donut = component.donut()
+				.xScale(xScale)
 				.colorScale(colorScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
 
-			chart.select(".donut")
-				.datum(data)
-				.call(donutChart);
-
-			// Donut Labels
+			// Donut Label Component
 			const donutLabels = component.donutLabels()
-				.radius(radius)
-				.innerRadius(innerRadius);
+				.xScale(xScale);
 
-			chart.select(".donutLabels")
-				.datum(data)
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data((d) => d);
+
+			seriesGroup.enter()
+				.append("g")
+				.classed("seriesGroup", true)
+				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", (d, i) => {
+					const x = layout[i].x;
+					const y = layout[i].y;
+					return `translate(${x},${y})`
+				})
+				.call(donut)
 				.call(donutLabels);
+
+			seriesGroup.exit()
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.remove();
+
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.itemType("rect")
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -161,30 +200,6 @@ export default function() {
 	};
 
 	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
-	 * Inner Radius Getter / Setter
-	 *
-	 * @param {number} _v - Inner radius in px.
-	 * @returns {*}
-	 */
-	my.innerRadius = function(_v) {
-		if (!arguments.length) return innerRadius;
-		innerRadius = _v;
-		return this;
-	};
-
-	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.
@@ -197,14 +212,14 @@ export default function() {
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {Number} _v - Opacity level.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 

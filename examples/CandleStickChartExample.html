@@ -1,46 +1,42 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Candlestick Chart Example</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../dist/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
-</head>
+  <head>
+    <title>d3-ez : Candlestick Chart Example</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
 
-<body>
-  <div id="chartholder"></div>
-  <br />
-  <div>Value: <span id="message"></span></div>
+  <body>
+    <svg id="chartholder"></svg>
+    <br />
+    <div>Value: <span id="message"></span></div>
 
-  <script type="text/javascript">
-    d3.json("data/bitcoin_price.json").then(function(data) {
-      // Bitcoin Price Data Source: https://coinmarketcap.com/currencies/bitcoin/historical-data/?start=20180204&end=20180306
+    <script type="text/javascript">
+      d3.json("data/bitcoin_price.json").then(function(data) {
+        // Bitcoin Price Data Source: https://coinmarketcap.com/currencies/bitcoin/historical-data/?start=20180204&end=20180306
 
-      var chart = d3.ez.chart.candlestickChart();
-      var legend = d3.ez.component.legend().title("Bitcoin Price");
-      var title = d3.ez.component.title().mainText("Bitcoin Price").subText("Bitcoin Price");
+        // TODO: Convert data to multi-series.
+        data = [data];
 
-      // Create chart base
-      var myChart = d3.ez.base()
-        .width(750)
-        .height(400)
-        .chart(chart)
-        .legend(legend)
-        .title(title)
-        .on("customValueMouseOver", function(d) {
-          d3.select("#message").text(d.open);
-        })
-        .on("customSeriesClick", function(d) {
-          console.log(d);
-        });
+        // Create chart base
+        var myChart =  d3.ez.chart.candlestickChart()
+          .width(1000)
+          .height(600)
+          .on("customValueMouseOver", function(e, d) {
+            d3.select("#message").text(d.open);
+          })
+          .on("customSeriesClick", function(e, d) {
+            console.log(d);
+          });
 
-      d3.select('#chartholder')
-        .datum(data)
-        .call(myChart);
+        d3.select('#chartholder')
+          .datum(data)
+          .call(myChart);
 
-    });
-  </script>
-</body>
+      });
+    </script>
+  </body>
 
 </html>

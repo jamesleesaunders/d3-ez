@@ -1,5 +1,5 @@
-import json from "rollup-plugin-json";
-import babel from "rollup-plugin-babel";
+import json from "@rollup/plugin-json";
+import babel from "@rollup/plugin-babel";
 
 let banner = `/**
  * d3-ez
@@ -26,10 +26,10 @@ export default {
     babel({
       exclude: ["node_modules/**", "*.json"],
       babelrc: false,
-      presets: [["env", { modules: false }]],
+      presets: [["@babel/preset-env", { modules: false }]],
       plugins: [
-         "external-helpers",
-         "transform-object-assign"
+      //   "@babel/plugin-external-helpers",
+      //   "@babel/plugin-transform-object-assign"
       ]
     }),
     json({

@@ -4,74 +4,27 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Line Chart (also called: Line Graph; Spline Chart)
+ * Line Chart (aks: Line Graph; Spline Chart)
  *
  * @module
  * @see http://datavizproject.com/data-type/line-chart/
+ * @see https://www.atlassian.com/data/charts/line-chart-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "lineChart";
-	let width = 400;
-	let height = 300;
-	let margin = { top: 20, right: 20, bottom: 40, left: 40 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let colors = palette.categorical(3);
+	let width = 700;
+	let height = 400;
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let colors = palette.categorical(1);
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-
-	/* Scales */
-	let xScale;
-	let yScale;
-	let colorScale;
-
 	/* Other Customisation Options */
+	let opacity = 1;
+	let showAxis = true;
 	let yAxisLabel = null;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - margin.left - margin.right;
-		chartH = height - margin.top - margin.bottom;
-
-		const { rowKeys, valueMax } = dataTransform(data).summary();
-		const valueExtent = [0, valueMax];
-
-
-		// TODO: Use dataTransform() to calculate date domains?
-		data.forEach((d, i) => {
-			d.values.forEach((b, j) => {
-				data[i].values[j].key = new Date(b.key * 1000);
-			});
-		});
-		const dateDomain = d3.extent(data[0].values, (d) => d.key);
-
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-		}
-
-		xScale = d3.scaleTime()
-			.domain(dateDomain)
-			.range([0, chartW]);
-
-		yScale = d3.scaleLinear()
-			.domain(valueExtent)
-			.range([chartH, 0])
-			.nice();
-	}
 
 	/**
 	 * Constructor
@@ -81,9 +34,51 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+
+			const isTimeSeries = false;
+
+			// Create Scales and Axis
+			let { rowKeys, columnKeys, valueMin, valueMax } = dataTransform(data).summary();
+			// Set min to zero if min is more than zero
+			valueMin = valueMin > 0 ? 0 : valueMin;
+			const valueExtent = [valueMin, valueMax];
+
+			let xScale = d3.scalePoint()
+				.domain(columnKeys)
+				.range([0, chartW]);
+
+			if (isTimeSeries) {
+				// TODO: Use dataTransform() to calculate date domains?
+				data.forEach((d, i) => {
+					d.values.forEach((b, j) => {
+						data[i].values[j].key = new Date(b.key);
+					});
+				});
+				const dateExtent = d3.extent(data[0].values, (d) => d.key);
+
+				xScale = d3.scaleTime()
+					.domain(dateExtent)
+					.range([0, chartW]);
+			}
+
+			const yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([chartH, 0])
+				.nice();
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -96,131 +91,107 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["zoomArea", "lineGroups", "xAxis axis", "yAxis axis"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
 
-			// Add Clip Path (Proof of Concept)
-			chart.append('defs')
-				.append('clipPath')
-				.attr('id', 'plotAreaClip')
-				.append('rect')
-				.attr('width', chartW)
-				.attr('height', chartH);
+			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
 
-			// Line Chart
+			// Line Chart Component
 			const lineChart = component.lineChart()
-				.width(chartW)
-				.height(chartH)
 				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
 
-			// Scatter Plot
+			// Scatter Plot Component
 			const scatterPlot = component.scatterPlot()
-				.width(chartW)
-				.height(chartH)
 				.colorScale(colorScale)
 				.yScale(yScale)
 				.xScale(xScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
 
-			const lineGroups = chart.select(".lineGroups")
-				.attr('clip-path', "url(" + window.location + "#plotAreaClip)")
-				.append("g");
-
-			const seriesGroup = lineGroups.selectAll(".seriesGroup")
-				.data(data);
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data((d) => d);
 
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
-				.style("fill", (d) => colorScale(d.key))
 				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.call(lineChart)
 				.call(scatterPlot);
 
 			seriesGroup.exit()
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.remove();
 
-			// X Axis
-			const xAxis = d3.axisBottom(xScale)
-				.tickFormat(d3.timeFormat("%d-%b-%y"));
+			// X-Axis
+			const xAxis = d3.axisBottom(xScale);
 
-			chart.select(".xAxis")
+			containerEnter.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
-				.call(xAxis)
-				.selectAll("text")
-				.style("text-anchor", "end")
-				.attr("dx", "-.8em")
-				.attr("dy", ".15em")
-				.attr("transform", "rotate(-65)");
+				.call(xAxis);
 
-			// Y Axis
+			// Y-Axis
 			const yAxis = d3.axisLeft(yScale);
 
-			chart.select(".yAxis")
-				.call(yAxis)
+			containerEnter.select(".yAxis")
+				.call(yAxis);
+
+			// Y-Axis Label
+			containerEnter.select(".yAxis")
+				.selectAll(".yAxisLabel")
+				.data([yAxisLabel])
+				.enter()
 				.append("text")
+				.classed("yAxisLabel", true)
 				.attr("transform", "rotate(-90)")
 				.attr("y", -40)
 				.attr("dy", ".71em")
-				.attr("fill", "#000000")
+				.attr("fill", "currentColor")
 				.style("text-anchor", "end")
-				.text(yAxisLabel);
+				.transition()
+				.text((d) => d);
 
-			// Zoom
-			const zoom = d3.zoom()
-				.extent([[0, 0], [chartW, chartH]])
-				.scaleExtent([1, 8])
-				.translateExtent([[0, 0], [chartW, chartH]])
-				.on("zoom", zoomed);
+			containerEnter.selectAll(".axis")
+				.attr('opacity', showAxis ? 1 : 0);
 
-			chart.select(".zoomArea")
-				.append("rect")
-				.attr("width", chartW)
-				.attr("height", chartH)
-				.attr("fill", "none")
-				.attr("pointer-events", "all")
-				.call(zoom);
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.itemType("line")
+				.opacity(opacity);
 
-			function zoomed() {
-				const xScaleZoomed = d3.event.transform.rescaleX(xScale);
-
-				xAxis.scale(xScaleZoomed);
-				lineChart.xScale(xScaleZoomed);
-				scatterPlot.xScale(xScaleZoomed);
-
-				chart.select(".xAxis")
-					.call(xAxis)
-					.selectAll("text")
-					.style("text-anchor", "end")
-					.attr("dx", "-.8em")
-					.attr("dy", ".15em")
-					.attr("transform", "rotate(-65)");
-
-				lineGroups.selectAll(".seriesGroup")
-					.call(lineChart)
-					.call(scatterPlot);
-			}
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -261,14 +232,26 @@ export default function() {
 	};
 
 	/**
-	 * Y Axix Label Getter / Setter
+	 * Colors Getter / Setter
 	 *
-	 * @param {number} _v - Label text.
+	 * @param {Array} _v - Array of colours used by color scale.
 	 * @returns {*}
 	 */
-	my.yAxisLabel = function(_v) {
-		if (!arguments.length) return yAxisLabel;
-		yAxisLabel = _v;
+	my.colors = function(_v) {
+		if (!arguments.length) return colors;
+		colors = _v;
+		return this;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {Number} _v - Opacity level.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 
@@ -285,26 +268,26 @@ export default function() {
 	};
 
 	/**
-	 * Colors Getter / Setter
+	 * Show Axis Getter / Setter
 	 *
-	 * @param {Array} _v - Array of colours used by color scale.
+	 * @param {Boolean} _v - Show axis true / false.
 	 * @returns {*}
 	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
 		return this;
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Y Axix Label Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {number} _v - Label text.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
+	my.yAxisLabel = function(_v) {
+		if (!arguments.length) return yAxisLabel;
+		yAxisLabel = _v;
 		return this;
 	};
 
@@ -326,7 +309,7 @@ export default function() {
 	 * @returns {*}
 	 */
 	my.on = function() {
-		let value = dispatch.on.apply(dispatch, arguments);
+		const value = dispatch.on.apply(dispatch, arguments);
 		return value === dispatch ? my : value;
 	};
 

@@ -4,32 +4,33 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Circular Bar Chart (aka: Progress Chart)
+ * Heat Map (aka: Heat Table; Density Table; Heat Map)
  *
  * @module
- * @see http://datavizproject.com/data-type/circular-bar-chart/
+ * @see http://datavizproject.com/data-type/heat-map/
+ * @see https://www.atlassian.com/data/charts/heatmap-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let classed = "barChartCircular";
+	let classed = "heatMap";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let colors = palette.categorical(3);
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let colors = palette.diverging(2).slice(0, 5);
 	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
 	let opacity = 1;
-	let startAngle = 0;
-	let endAngle = 270;
+	let showAxis = true;
+	let thresholds;
 
 	/**
 	 * Constructor
 	 *
 	 * @constructor
-	 * @alias barChartCircular
+	 * @alias heatMap
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
@@ -40,48 +41,26 @@ export default function() {
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
-			const radius = (Math.min(chartW, chartH) / data.length) / 2;
-			const innerRadius = radius / 4;
 
-			const { columnKeys, valueMax } = dataTransform(data).summary();
-			const valueExtent = [0, valueMax];
+			const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
-			const colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
+			if (typeof thresholds === "undefined") {
+				thresholds = tmpThresholds;
+			}
 
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
-				.rangeRound([innerRadius, radius])
+				.range([0, chartW])
 				.padding(0.15);
 
-			const yScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([startAngle, endAngle]);
+			const yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, chartH])
+				.padding(0.15);
 
-			function generateLayout(cellCount, width, height) {
-				const layout = [];
-				const cols = Math.ceil(Math.sqrt(cellCount));
-				const rows = Math.ceil(cellCount / cols);
-				const cellWidth = width / cols;
-				const cellHeight = height / rows;
-				let index = 0;
-
-				for (let i = 0; i < rows; i++) {
-					for (let j = 0; j < cols; j++) {
-						if (index < cellCount) {
-							const x = (j * cellWidth) + (cellWidth / 2);
-							const y = (i * cellHeight) + (cellHeight / 2);
-							layout.push({ x: x, y: y, width: cellWidth, height: cellHeight });
-							index++;
-						}
-					}
-				}
-
-				return layout;
-			}
-
-			const layout = generateLayout(data.length, chartW, chartH);
+			const colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
 
 			// Create SVG element (if it does not exist already)
 			const svg = (function(selection) {
@@ -112,58 +91,35 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(yScale)
-				.ringScale(xScale);
-
-			// Radial Bars
-			const barsCircular = component.barsCircular()
-				.colorScale(colorScale)
+			// Heat Map Row Component
+			const heatMapRow = component.heatMapRow()
 				.xScale(xScale)
-				.opacity(opacity)
 				.yScale(yScale)
+				.colorScale(colorScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
-
-			// Outer Labels
-			const circularSectorLabels = component.circularSectorLabels()
-				.ringScale(xScale)
-				.radialScale(yScale)
-				.textAnchor("middle");
-
-			// Ring Labels
-			const circularRingLabels = component.circularRingLabels()
-				.radialScale(xScale)
-				.textAnchor("middle");
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
 				.selectAll(".seriesGroup")
-				.data((d) => d);
+				.data(data);
 
 			seriesGroup.enter()
 				.append("g")
-				.classed("seriesGroup", true)
+				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d, i) => {
-					const x = layout[i].x;
-					const y = layout[i].y;
-					return `translate(${x},${y})`
-				})
-				.call(circularAxis)
-				.call(barsCircular)
-				.call(circularSectorLabels)
-				.call(circularRingLabels);
+				.attr("transform", (d) => "translate(0, " + yScale(d.key) + ")")
+				.call(heatMapRow);
 
 			seriesGroup.exit()
 				.transition()
@@ -171,12 +127,31 @@ export default function() {
 				.duration(transition.duration)
 				.remove();
 
+			// X-Axis
+			const xAxis = d3.axisTop(xScale);
+
+			containerEnter.select(".xAxis")
+				.call(xAxis)
+				.selectAll("text")
+				.attr("y", 0)
+				.attr("x", -8)
+				.attr("transform", "rotate(60)")
+				.style("text-anchor", "end");
+
+			// Y-Axis
+			const yAxis = d3.axisLeft(yScale);
+
+			containerEnter.select(".yAxis")
+				.call(yAxis);
+
+			containerEnter.selectAll(".axis")
+				.attr('opacity', showAxis ? 1 : 0);
+
 			// Legend
 			const legend = component.legend()
 				.colorScale(colorScale)
 				.height(legendH)
 				.width(legendW)
-				.itemType("rect")
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
@@ -254,6 +229,30 @@ export default function() {
 	my.transition = function(_v) {
 		if (!arguments.length) return transition;
 		transition = _v;
+		return this;
+	};
+
+	/**
+	 * Thresholds Getter / Setter
+	 *
+	 * @param {Array} _v - Array of thresholds.
+	 * @returns {*}
+	 */
+	my.thresholds = function(_v) {
+		if (!arguments.length) return thresholds;
+		thresholds = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
 		return this;
 	};
 

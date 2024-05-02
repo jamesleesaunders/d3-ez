@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : HTML Table Example</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../dist/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
-</head>
+  <head>
+    <title>d3-ez : HTML Table Example</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
 
-<body>
-  <div id="tableholder"></div>
-  <br />
-  <div>Value: <span id="message"></span></div>
+  <body>
+    <div id="tableholder"></div>
+    <br />
+    <div>Value: <span id="message"></span></div>
 
-  <script type="text/javascript">
-    var request = new XMLHttpRequest();
-    request.open("GET", "data/uk_elections.json", false);
-    // UK Election Results Source: http://www.ukpolitical.info/2015.htm
-    request.send(null);
-    var data = JSON.parse(request.responseText);
+    <script type="text/javascript">
+      var request = new XMLHttpRequest();
+      request.open("GET", "data/uk_elections.json", false);
+      // UK Election Results Source: http://www.ukpolitical.info/2015.htm
+      request.send(null);
+      var data = JSON.parse(request.responseText);
 
-    // Create chart base
-    var myTable = d3.ez.component.htmlTable()
-      .width(600)
-      .on("customValueMouseOver", function(d) {
-        d3.select("#message").text(d.value);
-      })
-      .on("customSeriesClick", function(d) {
-        console.log(d);
-      });
+      // Create chart base
+      var myTable = d3.ez.component.htmlTable()
+        .width(600)
+        .on("customValueMouseOver", function(e, d) {
+          d3.select("#message").text(d.value);
+        })
+        .on("customSeriesClick", function(e, d) {
+          console.log(d);
+        });
 
-    // Add to page
-    d3.select("#tableholder")
-      .datum(data)
-      .call(myTable);
-  </script>
-</body>
+      // Add to page
+      d3.select("#tableholder")
+        .datum(data)
+        .call(myTable);
+    </script>
+  </body>
 
 </html>

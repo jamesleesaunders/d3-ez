@@ -1,6 +1,4 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
  * Reusable Circular Axis Component
@@ -10,13 +8,12 @@ import dataTransform from "../dataTransform";
 export default function() {
 
 	/* Default Properties */
-	let width = 300;
-	let height = 300;
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let radius;
+	let classed = "circularAxis";
 	let radialScale;
 	let ringScale;
+	let transition = { ease: d3.easeBounce, duration: 0 };
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let showAxis = false;
 
 	/**
 	 * Constructor
@@ -26,163 +23,148 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		if (typeof radius === "undefined") {
-			radius = Math.min(width, height) / 2;
-		}
+		selection.each(function() {
+			const [innerRadius, radius] = ringScale.range();
 
-		// Create axis group
-		const axisSelect = selection.selectAll(".axis")
-			.data([0]);
+			// Create axis group
+			const axisSelect = d3.select(this)
+				.selectAll(`g.${classed}`)
+				.data([0]);
 
-		const axis = axisSelect.enter()
-			.append("g")
-			.classed("axis", true)
-			.on("click", function(d) { dispatch.call("customClick", this, d); })
-			.merge(axisSelect);
+			const axis = axisSelect.enter()
+				.append("g")
+				.classed(classed, true)
+				.on("click", function(e, d) {
+					dispatch.call("customValueClick", this, e, d);
+				})
+				.merge(axisSelect);
 
-		// Outer circle
-		const outerCircle = axis.selectAll(".outerCircle")
-			.data([radius])
-			.enter()
-			.append("circle")
-			.classed("outerCircle", true)
-			.attr("r", (d) => d)
-			.style("fill", "none")
-			.attr("stroke-width", 2)
-			.attr("stroke", "#ddd");
+			// Outer circle
+			const outerCircle = axis.selectAll(".outerCircle")
+				.data([radius]);
 
-		// Tick Data Generator
-		const tickData = function() {
-			let tickArray, tickPadding;
-			if (typeof ringScale.ticks === "function") {
-				// scaleLinear
-				tickArray = ringScale.ticks();
-				tickPadding = 0;
-			} else {
-				// scaleBand
-				tickArray = ringScale.domain();
-				tickPadding = ringScale.bandwidth() / 2;
+			outerCircle.enter()
+				.append("circle")
+				.classed("outerCircle", true)
+				.merge(outerCircle)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("r", (d) => d)
+				.style("fill", "none")
+				.attr("stroke-width", 2)
+				.attr("stroke", "currentColor");
+
+			// Tick Data Generator
+			const tickData = function() {
+				let tickArray, tickPadding;
+				if (typeof ringScale.ticks === "function") {
+					// scaleLinear
+					tickArray = ringScale.ticks();
+					tickPadding = 0;
+				} else {
+					// scaleBand
+					tickArray = ringScale.domain();
+					tickPadding = ringScale.bandwidth() / 2;
+				}
+
+				return tickArray.map((d) => ({
+						value: d,
+						radius: ringScale(d),
+						padding: tickPadding
+					}
+				));
+			};
+
+			const tickCirclesGroupSelect = axis.selectAll(".tickCircles")
+				.data(() => [tickData()]);
+
+			const tickCirclesGroup = tickCirclesGroupSelect.enter()
+				.append("g")
+				.classed("tickCircles", true)
+				.merge(tickCirclesGroupSelect);
+
+			const tickCircles = tickCirclesGroup.selectAll("circle")
+				.data((d) => d);
+
+			tickCircles.enter()
+				.append("circle")
+				.style("fill", "none")
+				.attr("stroke", "currentColor")
+				.attr("stroke-width", 1)
+				.attr("stroke-dasharray", "1,1")
+				.attr("opacity", 0.5)
+				.merge(tickCircles)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("r", (d) => (d.radius + d.padding));
+
+			tickCircles.exit()
+				.remove();
+
+			// Spoke Data Generator
+			const spokeData = function() {
+				let spokeArray = [];
+				let spokeCount = 0;
+				if (typeof radialScale.ticks === "function") {
+					// scaleLinear
+					let min = d3.min(radialScale.domain());
+					let max = d3.max(radialScale.domain());
+					spokeCount = radialScale.ticks().length;
+					let spokeIncrement = (max - min) / spokeCount;
+					for (let i = 0; i <= spokeCount; i++) {
+						spokeArray[i] = (spokeIncrement * i).toFixed(0);
+					}
+				} else {
+					// scaleBand
+					spokeArray = radialScale.domain();
+					spokeCount = spokeArray.length;
+					spokeArray.push("");
+				}
+
+				const spokeScale = d3.scaleLinear()
+					.domain([0, spokeCount])
+					.range(radialScale.range());
+
+				return spokeArray.map((d, i) => ({
+						value: d,
+						rotate: spokeScale(i)
+					}
+				));
+			};
+
+			const spokeGroup = axis.selectAll(".spokes")
+				.data(() => [spokeData()]);
+
+			const spokeGroupEnter = spokeGroup.enter()
+				.append("g")
+				.classed("spokes", true)
+				.merge(spokeGroup);
+
+			const spokes = spokeGroupEnter.selectAll("line")
+				.data((d) => d);
+
+			spokes.enter()
+				.append("line")
+				.attr("stroke", "currentColor")
+				.attr("stroke-width", 1)
+				.attr("stroke-dasharray", "2,2")
+				.attr("opacity", 0.5)
+				.merge(spokes)
+				.attr("transform", (d) => "rotate(" + d.rotate + ")")
+				.attr("y2", -radius);
+
+			spokes.exit()
+				.remove();
+
+			if (showAxis) {
+				const verticalAxis = d3.axisLeft(ringScale);
+				axis.call(verticalAxis)
 			}
 
-			return tickArray.map((d) => ({
-					value: d,
-					radius: ringScale(d),
-					padding: tickPadding
-				}
-			));
-		};
-
-		const tickCirclesGroupSelect = axis.selectAll(".tickCircles")
-			.data(() => [tickData()]);
-
-		const tickCirclesGroup = tickCirclesGroupSelect.enter()
-			.append("g")
-			.classed("tickCircles", true)
-			.merge(tickCirclesGroupSelect);
-
-		const tickCircles = tickCirclesGroup.selectAll("circle")
-			.data((d) => d);
-
-		tickCircles.enter()
-			.append("circle")
-			.style("fill", "none")
-			.attr("stroke-width", 1)
-			.attr("stroke", "#ddd")
-			.merge(tickCircles)
-			.transition()
-			.attr("r", (d) => (d.radius + d.padding));
-
-		tickCircles.exit()
-			.remove();
-
-		// Spoke Data Generator
-		const spokeData = function() {
-			let spokeArray = [];
-			let spokeCount = 0;
-			if (typeof radialScale.ticks === "function") {
-				// scaleLinear
-				let min = d3.min(radialScale.domain());
-				let max = d3.max(radialScale.domain());
-				spokeCount = radialScale.ticks().length;
-				let spokeIncrement = (max - min) / spokeCount;
-				for (let i = 0; i <= spokeCount; i++) {
-					spokeArray[i] = (spokeIncrement * i).toFixed(0);
-				}
-			} else {
-				// scaleBand
-				spokeArray = radialScale.domain();
-				spokeCount = spokeArray.length;
-				spokeArray.push("");
-			}
-
-			const spokeScale = d3.scaleLinear()
-				.domain([0, spokeCount])
-				.range(radialScale.range());
-
-			return spokeArray.map((d, i) => ({
-					value: d,
-					rotate: spokeScale(i)
-				}
-			));
-		};
-
-		const spokesGroupSelect = axis.selectAll(".spokes")
-			.data(() => [spokeData()]);
-
-		const spokesGroup = spokesGroupSelect.enter()
-			.append("g")
-			.classed("spokes", true)
-			.merge(spokesGroupSelect);
-
-		const spokes = spokesGroup.selectAll("line")
-			.data((d) => d);
-
-		spokes.enter()
-			.append("line")
-			.attr("id", (d) => d.value)
-			.attr("y2", -radius)
-			.merge(spokes)
-			.attr("transform", (d) => "rotate(" + d.rotate + ")");
-
-		spokes.exit()
-			.remove();
+		});
 	}
-
-	/**
-	 * Width Getter / Setter
-	 *
-	 * @param {number} _v - Width in px.
-	 * @returns {*}
-	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
-	};
-
-	/**
-	 * Height Getter / Setter
-	 *
-	 * @param {number} _v - Height in px.
-	 * @returns {*}
-	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
 
 	/**
 	 * Radial Scale Getter / Setter
@@ -205,6 +187,18 @@ export default function() {
 	my.ringScale = function(_v) {
 		if (!arguments.length) return ringScale;
 		ringScale = _v;
+		return my;
+	};
+
+	/**
+	 * Show Axis Labels
+	 *
+	 * @param {boolean} _v - True / False.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
 		return my;
 	};
 

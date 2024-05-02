@@ -1,65 +1,22 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 import componentLabeledNode from "./labeledNode";
 
 /**
- * Reusable Scatter Plot Component
+ * Reusable Bubble Plot Component
  *
  * @module
  */
 export default function() {
 
 	/* Default Properties */
-	let width = 300;
-	let height = 300;
-	let transition = { ease: d3.easeLinear, duration: 0 };
-	let colors = palette.categorical(3);
-	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let classed = "bubbles";
 	let xScale;
 	let yScale;
 	let colorScale;
 	let sizeScale;
-	let classed = "bubbles";
-
-	let minRadius = 10;
-	let maxRadius = 20;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		const { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = dataTransform(data).summary();
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-		}
-
-		if (typeof sizeScale === "undefined") {
-			sizeScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([minRadius, maxRadius]);
-		}
-
-		if (typeof xScale === "undefined") {
-			xScale = d3.scaleLinear()
-				.domain(xExtent)
-				.range([0, width])
-				.nice();
-		}
-
-		if (typeof yScale === "undefined") {
-			yScale = d3.scaleLinear()
-				.domain(yExtent)
-				.range([height, 0])
-				.nice();
-		}
-	}
+	let transition = { ease: d3.easeLinear, duration: 200 };
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let opacity = 1;
 
 	/**
 	 * Constructor
@@ -69,104 +26,64 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		init(selection.data());
-		selection.each(function() {
+		selection.each(function(data) {
 
 			// Update series group
-			const seriesGroup = d3.select(this);
-			seriesGroup
-				.classed(classed, true)
-				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
+			const seriesGroup = d3.select(this)
+				.on("mouseover", function(e, d) {
+					dispatch.call("customSeriesMouseOver", this, e, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customSeriesClick", this, e, d);
+				});
 
-			// Add bubbles to series
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
+
+			// Add bubbles to series group
 			const bubble = componentLabeledNode()
 				.radius((d) => sizeScale(d.value))
-				.color((d) => colorScale(d.series))
+				.color(colorScale(data.key))
 				.label((d) => d.key)
-				.stroke(1, "white")
 				.display("none")
-				.classed("bubble")
+				.opacity(opacity)
+				.stroke(1, "white")
 				.dispatch(dispatch);
 
-			const bubbles = seriesGroup.selectAll(".bubble")
+			const bubbles = componentGroup.selectAll(".bubble")
 				.data((d) => d.values);
 
 			bubbles.enter()
 				.append("g")
-				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")")
-				.on("mouseover", function(d) {
+				.classed("bubble", true)
+				.on("mouseover", function(e, d) {
 					d3.select(this).select("text").style("display", "block");
-					dispatch.call("customValueMouseOver", this, d);
+					dispatch.call("customValueMouseOver", this, e, d);
 				})
 				.on("mouseout", function() {
 					d3.select(this).select("text").style("display", "none");
 				})
-				.on("click", function(d) {
-					dispatch.call("customValueClick", this, d);
+				.on("click", function(e, d) {
+					dispatch.call("customValueClick", this, e, d);
 				})
-				.call(bubble)
 				.merge(bubbles)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
-				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")");
+				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")")
+				.call(bubble);
 
 			bubbles.exit()
 				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.style("opacity", 0)
 				.remove();
 		});
 	}
-
-	/**
-	 * Width Getter / Setter
-	 *
-	 * @param {number} _v - Width in px.
-	 * @returns {*}
-	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Height Getter / Setter
-	 *
-	 * @param {number} _v - Height in px.
-	 * @returns {*}
-	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
-	};
-
-	/**
-	 * Color Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 color scale.
-	 * @returns {*}
-	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return my;
-	};
-
-	/**
-	 * Colors Getter / Setter
-	 *
-	 * @param {Array} _v - Array of colours used by color scale.
-	 * @returns {*}
-	 */
-	my.colors = function(_v) {
-		if (!arguments.length) return colors;
-		colors = _v;
-		return my;
-	};
 
 	/**
 	 * X Scale Getter / Setter
@@ -193,6 +110,18 @@ export default function() {
 	};
 
 	/**
+	 * Color Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 color scale.
+	 * @returns {*}
+	 */
+	my.colorScale = function(_v) {
+		if (!arguments.length) return colorScale;
+		colorScale = _v;
+		return my;
+	};
+
+	/**
 	 * Size Scale Getter / Setter
 	 *
 	 * @param {d3.scale} _v - D3 scale.
@@ -205,26 +134,14 @@ export default function() {
 	};
 
 	/**
-	 * Min Radius Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {number} _v - Radius in px.
+	 * @param {number} _v - Opacity 0 -1.
 	 * @returns {*}
 	 */
-	my.minRadius = function(_v) {
-		if (!arguments.length) return minRadius;
-		minRadius = _v;
-		return this;
-	};
-
-	/**
-	 * Max Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.maxRadius = function(_v) {
-		if (!arguments.length) return maxRadius;
-		maxRadius = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 

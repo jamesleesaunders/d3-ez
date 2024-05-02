@@ -1,23 +1,18 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
- * Reusable Radial Labels Component
+ * Reusable Circular Ring Labels Component
  *
  * @module
  */
 export default function() {
 
 	/* Default Properties */
-	let width = 300;
-	let height = 300;
-	let radius;
-	let startAngle = 0;
-	let endAngle = 360;
-	let capitalizeLabels = false;
-	let textAnchor = "centre";
+	let classed = "circularRingLabels";
 	let radialScale;
+	let transition = { ease: d3.easeBounce, duration: 0 };
+	let capitalizeLabels = false;
+	let textAnchor = "middle";
 
 	/**
 	 * Constructor
@@ -27,113 +22,92 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		if (typeof radius === "undefined") {
-			radius = Math.min(width, height) / 2;
-		}
-
-		const labelsSelect = selection.selectAll(".radialLabels")
-			.data([0]);
-
-		const labels = labelsSelect.enter()
-			.append("g")
-			.classed("radialLabels", true)
-			.merge(labelsSelect);
-
-		const radData = radialScale.domain();
-
-		const defSelect = labels.selectAll("def")
-			.data(radData);
-
-		defSelect.enter()
-			.append("def")
-			.append("path")
-			.attr("id", (d, i) => ("radialLabelPath" + "-" + i))
-			.attr("d", (d) => {
+		selection.each(function() {
+			const pathGen = function(d) {
 				const r = radialScale(d);
 				const arc = d3.arc()
 					.outerRadius(r)
 					.innerRadius(r);
+
 				const pathConf = {
-					startAngle: (startAngle * Math.PI) / 180,
-					endAngle: (endAngle * Math.PI) / 180
+					startAngle: (0 * Math.PI) / 180,
+					endAngle: (360 * Math.PI) / 180
 				};
+
 				const pathStr = arc(pathConf).split(/[A-Z]/);
 				return "M" + pathStr[1] + "A" + pathStr[2];
-			});
+			};
 
-		const textSelect = labels.selectAll("text")
-			.data(radData);
+			const element = d3.select(this);
 
-		textSelect.enter()
-			.append("text")
-			.style("text-anchor", "start")
-			.attr("dy", -5)
-			.attr("dx", 5)
-			.append("textPath")
-			.attr("xlink:href", (d, i) => ("#radialLabelPath" + "-" + i))
-			.attr("startOffset", "0%")
-			.text((d) => d);
+			const uId = "uid-" + Math.floor(1000 + Math.random() * 9000);
+
+			const labels = element
+				.selectAll(`g.${classed}`)
+				.data([0]);
+
+			const labelsEnter = labels.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(labels);
+
+			const radData = radialScale.domain();
+
+			const def = labelsEnter.selectAll("def")
+				.data(radData);
+
+			def.enter()
+				.append("def")
+				.append("path")
+				.attr("id", (d, i) => {
+					return `${uId}-path-${i}`;
+				})
+				.attr("d", (d) => pathGen(d))
+				.merge(def)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.select("path")
+				.attr("d", (d) => pathGen(d))
+				.attr("id", (d, i) => {
+					return `${uId}-path-${i}`;
+				})
+
+			const text = labelsEnter.selectAll("text")
+				.data(radData);
+
+			text.enter()
+				.append("text")
+				.style("text-anchor", "start")
+				.attr("dy", -2)
+				.attr("dx", 5)
+				.append("textPath")
+				.attr("xlink:href", (d, i) => {
+					return `#${uId}-path-${i}`;
+				})
+				.attr("startOffset", "0%")
+				.attr("font-size", (d) => {
+					let fontPx = radialScale.bandwidth() * 0.5;
+					return `${fontPx}px`;
+				})
+				.text((d) => d)
+				.merge(text)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.select("textPath")
+				.attr("font-size", (d) => {
+					let fontPx = radialScale.bandwidth() * 0.5;
+					return `${fontPx}px`;
+				})
+				.attr("xlink:href", (d, i) => {
+					return `#${uId}-path-${i}`;
+				});
+
+			text.exit()
+				.remove()
+		});
 	}
-
-	/**
-	 * Width Getter / Setter
-	 *
-	 * @param {number} _v - Width in px.
-	 * @returns {*}
-	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
-	};
-
-	/**
-	 * Height Getter / Setter
-	 *
-	 * @param {number} _v - Height in px.
-	 * @returns {*}
-	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
-	 * Start Angle Getter / Setter
-	 *
-	 * @param {number} _v - Angle in degrees.
-	 * @returns {*}
-	 */
-	my.startAngle = function(_v) {
-		if (!arguments.length) return startAngle;
-		startAngle = _v;
-		return this;
-	};
-
-	/**
-	 * End Angle Getter / Setter
-	 *
-	 * @param {number} _v - Angle in degrees.
-	 * @returns {*}
-	 */
-	my.endAngle = function(_v) {
-		if (!arguments.length) return endAngle;
-		endAngle = _v;
-		return this;
-	};
 
 	/**
 	 * Capital Label Getter / Setter

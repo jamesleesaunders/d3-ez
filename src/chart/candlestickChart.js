@@ -1,87 +1,28 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Candlestick Chart (also called: Japanese Candlestick; OHLC Chart; Box Plot)
+ * Candlestick Chart (aka: Japanese Candlestick; OHLC Chart; Box Plot)
  *
  * @module
  * @see http://datavizproject.com/data-type/candlestick-chart/
+ * @see https://www.atlassian.com/data/charts/box-plot-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "candlestickChart";
-	let width = 400;
-	let height = 300;
-	let margin = { top: 20, right: 20, bottom: 40, left: 40 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let width = 700;
+	let height = 400;
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = ["green", "red"];
+	let transition = { ease: d3.easeBounce, duration: 500 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-
-	/* Scales */
-	let xScale;
-	let yScale;
-	let colorScale;
-
 	/* Other Customisation Options */
-	let yAxisLabel;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-
-
-		// TODO: Use dataTransform() to calculate date domains?
-		data.values.forEach((d, i) => {
-			// Convert to date
-			data.values[i].date = Date.parse(d.date);
-		});
-		const maxDate = d3.max(data.values, (d) => d.date);
-		const minDate = d3.min(data.values, (d) => d.date);
-
-		const ONE_DAY_IN_MILLISECONDS = 86400000;
-		const dateDomain = [
-			new Date(minDate - ONE_DAY_IN_MILLISECONDS),
-			new Date(maxDate + ONE_DAY_IN_MILLISECONDS)
-		];
-
-
-		// TODO: Use dataTransform() to calculate candle min/max?
-		const yDomain = [
-			d3.min(data.values, (d) => d.low),
-			d3.max(data.values, (d) => d.high)
-		];
-
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain([true, false])
-				.range(colors);
-		}
-
-		xScale = d3.scaleTime()
-			.domain(dateDomain)
-			.range([0, chartW]);
-
-		yScale = d3.scaleLinear()
-			.domain(yDomain)
-			.range([chartH, 0])
-			.nice();
-	}
+	let opacity = 1;
+	let showAxis = true;
+	let yAxisLabel = null;
 
 	/**
 	 * Constructor
@@ -91,9 +32,50 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+
+			data = data[0]; // FIXME: Convert input data to support multi-series.
+
+			// TODO: Use dataTransform() to calculate date domains?
+			data.values.forEach((d, i) => {
+				// Convert to date
+				data.values[i].date = Date.parse(d.date);
+			});
+			const maxDate = d3.max(data.values, (d) => d.date);
+			const minDate = d3.min(data.values, (d) => d.date);
+
+			const ONE_DAY_IN_MILLISECONDS = 86400000;
+			const dateDomain = [
+				new Date(minDate - ONE_DAY_IN_MILLISECONDS),
+				new Date(maxDate + ONE_DAY_IN_MILLISECONDS)
+			];
+
+			// TODO: Use dataTransform() to calculate candle min/max?
+			const yDomain = [
+				d3.min(data.values, (d) => d.low),
+				d3.max(data.values, (d) => d.high)
+			];
+
+			const colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
+
+			const xScale = d3.scaleTime()
+				.domain(dateDomain)
+				.range([0, chartW]);
+
+			const yScale = d3.scaleLinear()
+				.domain(yDomain)
+				.range([chartH, 0])
+				.nice();
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -106,45 +88,61 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["zoomArea", "candleSticks", "xAxis axis", "yAxis axis"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
 
-			// Candle Sticks
+			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
+
+			// Candle Stick Component
 			const candleSticks = component.candleSticks()
-				.width(chartW)
-				.height(chartH)
-				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
-				.dispatch(dispatch);
+				.colorScale(colorScale)
+				.dispatch(dispatch)
+				.opacity(opacity);
 
-			chart.select(".candleSticks")
-				.datum(data)
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data((d) => [d]); // FIXME: Convert input data to support multi-series.
+
+			seriesGroup.enter()
+				.append("g")
+				.attr("class", "seriesGroup")
+				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.call(candleSticks);
+
+			seriesGroup.exit()
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.remove();
 
 			// X Axis
 			const xAxis = d3.axisBottom(xScale)
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
-			chart.select(".xAxis")
+			containerEnter.select(".xAxis")
 				.attr("transform", "translate(0," + chartH + ")")
 				.call(xAxis)
 				.selectAll("text")
@@ -153,14 +151,14 @@ export default function() {
 				.attr("dy", ".15em")
 				.attr("transform", "rotate(-65)");
 
-			// Y Axis
+			// Y-Axis
 			const yAxis = d3.axisLeft(yScale);
 
-			chart.select(".yAxis")
+			containerEnter.select(".yAxis")
 				.call(yAxis);
 
-			// Y Axis Labels
-			const yLabel = chart.select(".yAxis")
+			// Y-Axis Labels
+			const yLabel = container.select(".yAxis")
 				.selectAll(".yAxisLabel")
 				.data([data.key]);
 
@@ -176,13 +174,16 @@ export default function() {
 				.transition()
 				.text((d) => d);
 
+			containerEnter.selectAll(".axis")
+				.attr('opacity', showAxis ? 1 : 0);
+
 			// Experimental Brush
 			const brush = d3.brushX()
 				.extent([[0, 0], [chartW, chartH]])
 				.on("brush start", brushStart)
 				.on("brush end", brushEnd);
 
-			chart.select(".zoomArea")
+			containerEnter.select(".zoomArea")
 				.call(brush);
 
 			function brushStart() {
@@ -192,6 +193,18 @@ export default function() {
 			function brushEnd() {
 				// console.log(this);
 			}
+
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.itemType("line")
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -244,14 +257,14 @@ export default function() {
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {Number} _v - Opacity level.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 
@@ -264,6 +277,30 @@ export default function() {
 	my.transition = function(_v) {
 		if (!arguments.length) return transition;
 		transition = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
+		return this;
+	};
+
+	/**
+	 * Y Axix Label Getter / Setter
+	 *
+	 * @param {number} _v - Label text.
+	 * @returns {*}
+	 */
+	my.yAxisLabel = function(_v) {
+		if (!arguments.length) return yAxisLabel;
+		yAxisLabel = _v;
 		return this;
 	};
 

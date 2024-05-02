@@ -1,59 +1,47 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Heat Map (Radial) Example</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../dist/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
-</head>
+  <head>
+    <title>d3-ez : Heat Map (Radial) Example</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
 
-<body>
-  <div id="chartholder"></div>
-  <br />
-  <div>Value: <span id="message"></span></div>
+  <body>
+    <svg id="chartholder"></svg>
+    <br />
+    <div>Value: <span id="message"></span></div>
 
-  <script type="text/javascript">
-    d3.json("data/netflix_isp_speed_index.json").then(function(json) {
-      // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
+    <script type="text/javascript">
+      d3.json("data/netflix_isp_speed_index.json").then(function(json) {
+        // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
-      var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"].reverse();
-      var chart = d3.ez.chart.heatMapRadial().colors(colors);
-      var legend = d3.ez.component.legend().title("Speed Index");
-      var title = d3.ez.component.title().mainText(json.Metadata.Title).subText(json.Metadata.Detail);
+        var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"].reverse();
 
-      // Create chart base
-      var myChart = d3.ez.base()
-        .width(750)
-        .height(400)
-        .chart(chart)
-        .legend(legend)
-        .title(title)
-        .on("customValueMouseOver", function(d) {
-          d3.select("#message").text(d.value);
-        })
-        .on("customSeriesClick", function(d) {
-          console.log(d);
-        });
+        // Create chart base
+        var myChart = d3.ez.chart.heatMapRadial()
+          .width(1000)
+          .height(600)
+          .colors(colors)
+          .on("customValueMouseOver", function(e, d) {
+            d3.select("#message").text(d.value);
+          })
+          .on("customSeriesClick", function(e, d) {
+            console.log(d);
+          });
 
-      // Convert json to d3-ez data format
-      var data = d3.nest().key(function(d) {
-        return d.ISP;
-      }).entries(json.Data).map(function(obj) {
-        obj.values = obj.values.map(function(values) {
-          return {
-            key: values.Month,
-            value: values.Value
-          };
-        });
-        return obj;
+        // Group the data by the 'ISP' attribute
+        var data = Array.from(d3.group(json.Data, d => d.ISP), ([key, values]) => ({
+          key: key,
+          values: values.map(d => ({ key: d.Month, value: d.Value }))
+        }));
+
+        d3.select('#chartholder')
+          .datum(data)
+          .call(myChart);
       });
-
-      d3.select('#chartholder')
-        .datum(data)
-        .call(myChart);
-    });
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

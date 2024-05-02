@@ -1,81 +1,79 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Rose Chart Example</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../dist/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
-</head>
+  <head>
+    <title>d3-ez : Rose Chart Example</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
 
-<body>
-  <div id="chartholder"></div>
-  <br />
-  <div>Value: <span id="message"></span></div>
+  <body>
+    <svg id="chartholder"></svg>
+    <br />
+    <div>Value: <span id="message"></span></div>
 
-  <script type="text/javascript">
-    d3.json("data/nightingale_rose.json").then(function(json) {
-      // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
+    <script type="text/javascript">
+      d3.json("data/nightingale_rose.json").then(function(json) {
+        // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
 
-      var colors = ["#599ad3", "#727272", "#f1595f"];
-      var chart = d3.ez.chart.roseChart().colors(colors);
-      var legend = d3.ez.component.legend().title("Causes of Mortality");
-      var title = d3.ez.component.title().mainText("Diagram of the Causes of Mortality in the Army in The East").subText("April 1854 to March 1855");
+        var colors = ["#599ad3", "#727272", "#f1595f"];
 
-      // Convert json to d3-ez data format
-      var monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-      var data = d3.nest()
-        .key(function(d) {
-          return d.date;
-        })
-        .entries(json).map(function(obj) {
-          var rec = obj.values[0];
-          var scalar = 1000 * 12 / rec.army_size;
-          var datetime = new Date(obj.key);
+        // Convert json to d3-ez data format
+        var monthNames = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
 
-          var values = {
-            key: monthNames[datetime.getMonth()],
-            datetime: datetime,
-            values: [{
+        var data = d3.nest()
+          .key(function(d) {
+            return d.date;
+          })
+          .entries(json).map(function(obj) {
+            var rec = obj.values[0];
+            var scalar = 1000 * 12 / rec.army_size;
+            var datetime = new Date(obj.key);
+
+            var values = {
+              key: monthNames[datetime.getMonth()],
+              datetime: datetime,
+              values: [{
                 key: 'Zymotic Diseases',
                 value: Math.sqrt(rec.zymotic_diseases * scalar) / Math.PI
               },
-              {
-                key: 'Other Causes',
-                value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI
-              },
-              {
-                key: 'Wounds & Injuries',
-                value: Math.sqrt(rec.wounds_and_injuries * scalar) / Math.PI
-              }
-            ]
-          };
-          return values;
-        })
-        .filter(function(d) {
-          return d.datetime < new Date("1855-04-01T07:00:00.000Z");
-        });
+                {
+                  key: 'Other Causes',
+                  value: Math.sqrt(rec.all_other_causes * scalar) / Math.PI
+                },
+                {
+                  key: 'Wounds & Injuries',
+                  value: Math.sqrt(rec.wounds_and_injuries * scalar) / Math.PI
+                }
+              ]
+            };
+            return values;
+          })
+          .filter(function(d) {
+            return d.datetime < new Date("1855-04-01T07:00:00.000Z");
+          });
 
-      // Create chart base
-      var myChart = d3.ez.base()
-        .width(750)
-        .height(400)
-        .chart(chart)
-        .legend(legend)
-        .title(title)
-        .on("customValueMouseOver", function(d) {
-          d3.select("#message").text(d.value);
-        });
+        // Create chart base
+        var myChart = d3.ez.chart.roseChart()
+          .width(1000)
+          .height(600)
+          .colors(colors)
+          .stacked(false)
+          .on("customValueMouseOver", function(d) {
+            // TODO: Convert this to D3v7 function(e, d)
+            d3.select("#message").text(d.value);
+          });
 
-      // Add to page
-      d3.select("#chartholder")
-        .datum(data)
-        .call(myChart);
-    });
-  </script>
-</body>
+        // Add to page
+        d3.select("#chartholder")
+          .datum(data)
+          .call(myChart);
+      });
+    </script>
+  </body>
 
 </html>

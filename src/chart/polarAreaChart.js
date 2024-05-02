@@ -4,7 +4,7 @@ import dataTransform from "../dataTransform";
 import component from "../component";
 
 /**
- * Polar Area Chart (also called: Coxcomb Chart; Rose Chart)
+ * Polar Area Chart (aks: Coxcomb Chart; Rose Chart)
  *
  * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
@@ -12,65 +12,18 @@ import component from "../component";
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "polarAreaChart";
-	let width = 400;
-	let height = 300;
+	let width = 700;
+	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
 	let colors = palette.categorical(3);
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-	let radius;
-
-	/* Scales */
-	let xScale;
-	let yScale;
-	let colorScale;
-
 	/* Other Customisation Options */
+	let opacity = 1;
 	let startAngle = 0;
 	let endAngle = 360;
-	let capitalizeLabels = false;
-	let colorLabels = false;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-
-		const { columnKeys, valueMax } = dataTransform(data).summary();
-		const valueExtent = [0, valueMax];
-
-		if (typeof radius === "undefined") {
-			radius = Math.min(chartW, chartH) / 2;
-		}
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
-		}
-
-		xScale = d3.scaleBand()
-			.domain(columnKeys)
-			.rangeRound([startAngle, endAngle])
-			.padding(0.15);
-
-		yScale = d3.scaleLinear()
-			.domain(valueExtent)
-			.range([0, radius])
-			.nice();
-	}
 
 	/**
 	 * Constructor
@@ -80,9 +33,58 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+			const radius = (Math.min(chartW, chartH) / data.length) / 2;
+
+			const { columnKeys, valueMax } = dataTransform(data).summary();
+			const valueExtent = [0, valueMax];
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
+
+			const xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.rangeRound([startAngle, endAngle])
+				.padding(0.15);
+
+			const yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([0, radius])
+				.nice();
+
+			function generateLayout(cellCount, width, height) {
+				const layout = [];
+				const cols = Math.ceil(Math.sqrt(cellCount));
+				const rows = Math.ceil(cellCount / cols);
+				const cellWidth = width / cols;
+				const cellHeight = height / rows;
+				let index = 0;
+
+				for (let i = 0; i < rows; i++) {
+					for (let j = 0; j < cols; j++) {
+						if (index < cellCount) {
+							const x = (j * cellWidth) + (cellWidth / 2);
+							const y = (i * cellHeight) + (cellHeight / 2);
+							layout.push({ x: x, y: y, width: cellWidth, height: cellHeight });
+							index++;
+						}
+					}
+				}
+
+				return layout;
+			}
+
+			const layout = generateLayout(data.length, chartW, chartH);
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -95,70 +97,85 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["circularAxis", "polarArea", "circularSectorLabels", "verticalAxis axis"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			const layers = ["chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
 
 			// Circular Axis
 			const circularAxis = component.circularAxis()
 				.radialScale(xScale)
-				.ringScale(yScale)
-				.radius(radius);
-
-			chart.select(".circularAxis")
-				.call(circularAxis);
+				.ringScale(yScale);
 
 			// Radial Bar Chart
 			const polarArea = component.polarArea()
-				.radius(radius)
-				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
+				.colorScale(colorScale)
+				.opacity(opacity)
 				.dispatch(dispatch);
-
-			chart.select(".polarArea")
-				.datum(data)
-				.call(polarArea);
-
-			// Vertical Axis
-			// We reverse the yScale
-			const axisScale = d3.scaleLinear()
-				.domain(yScale.domain())
-				.range(yScale.range().reverse())
-				.nice();
-
-			const verticalAxis = d3.axisLeft(axisScale);
-
-			chart.select(".verticalAxis")
-				.attr("transform", "translate(0," + -radius + ")")
-				.call(verticalAxis);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
-				.radius(radius * 1.04)
+				.ringScale(yScale)
 				.radialScale(xScale)
-				.textAnchor("start");
+				.textAnchor("middle");
 
-			chart.select(".circularSectorLabels")
-				.call(circularSectorLabels);
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data((d) => d);
 
+			seriesGroup.enter()
+				.append("g")
+				.classed("seriesGroup", true)
+				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", (d, i) => {
+					const x = layout[i].x;
+					const y = layout[i].y;
+					return `translate(${x},${y})`
+				})
+				.call(circularAxis)
+				.call(circularSectorLabels)
+				.call(polarArea);
+
+			seriesGroup.exit()
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.remove();
+
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.itemType("rect")
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -199,18 +216,6 @@ export default function() {
 	};
 
 	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.
@@ -223,38 +228,14 @@ export default function() {
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {Number} _v - Opacity level.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return this;
-	};
-
-	/**
-	 * Capital Labels Getter / Setter
-	 *
-	 * @param {boolean} _v - Display capital labels or not?
-	 * @returns {*}
-	 */
-	my.capitalizeLabels = function(_v) {
-		if (!arguments.length) return capitalizeLabels;
-		capitalizeLabels = _v;
-		return this;
-	};
-
-	/**
-	 * Color Labels Getter / Setter
-	 *
-	 * @param {Array} _v - Array of color labels.
-	 * @returns {*}
-	 */
-	my.colorLabels = function(_v) {
-		if (!arguments.length) return colorLabels;
-		colorLabels = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
 		return this;
 	};
 

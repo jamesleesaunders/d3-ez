@@ -5,10 +5,10 @@ CSS_FILES :=       css/global.css \
                    css/htmlTable.css \
                    css/barChart.css \
                    css/bubbleChart.css \
-                   css/candleSticks.css \
+                   css/candlestickChart.css \
                    css/donutChart.css \
+                   css/heatMap.css \
                    css/heatMapRadial.css \
-                   css/heatMapTable.css \
                    css/lineChart.css \
                    css/polarAreaChart.css \
                    css/punchCard.css \
@@ -26,7 +26,7 @@ all: js css min zip docs
 js:
 	@echo Compiling JS Files...
 	@rm -f dist/d3-ez.js
-	@./node_modules/rollup/bin/rollup -c config/rollup.config.js
+	@./node_modules/rollup/dist/bin/rollup -c config/rollup.config.js --bundleConfigAsCjs
 
 css: $(CSS_FILES)
 	@echo Concatenating CSS Files...

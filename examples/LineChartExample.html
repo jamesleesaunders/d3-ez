@@ -1,79 +1,73 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Line Chart (Multi Series) Example</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../dist/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
-</head>
+  <head>
+    <title>d3-ez : Line Chart (Multi Series) Example</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css"/>
+  </head>
 
-<body>
-  <div id="chartholder"></div>
-  <br />
-  <div>Value: <span id="message"></span></div>
+  <body>
+    <svg id="chartholder"></svg>
+    <br/>
+    <div>Value: <span id="message"></span></div>
 
-  <script type="text/javascript">
-    d3.csv("data/exchange_rates.csv").then(function(csv) {
-      // Historical Exchange Rates Source: https://www.ofx.com/en-gb/forex-news/historical-exchange-rates/
+    <script type="text/javascript">
+      d3.csv("data/exchange_rates.csv").then(function(csv) {
+        // Historical Exchange Rates Source: https://www.ofx.com/en-gb/forex-news/historical-exchange-rates/
 
-      var colors = d3.ez.palette.categorical(3);
-      var chart = d3.ez.chart.lineChart().colors(colors).yAxisLabel("Rate");
-      var legend = d3.ez.component.legend().title("Currency");
-      var title = d3.ez.component.title().mainText("Historical Exchange Rates").subText("Comparison against GBP");
+        var colors = d3.ez.palette.categorical(3);
+        var chart = d3.ez.chart.lineChart()
+          .width(1000)
+          .height(600)
+          .colors(colors)
+          .yAxisLabel("Rate")
+          .on("customValueMouseOver", function(e, d) {
+            d3.select("#message").text(d);
+          })
+          .on("customSeriesClick", function(e, d) {
+            console.log(d);
+          });
 
-      // Convert csv to d3-ez data format
-      dateConvert = function(dateYMD) {
-        parser = d3.timeParse('%d-%b-%y');
-        var dateISO = parser(dateYMD).toISOString();
-        var dateUnix = new Date(dateISO) / 1000;
-        return dateUnix;
-      }
+        // Convert csv to d3-ez data format
+        dateConvert = function(dateYMD) {
+          parser = d3.timeParse('%d-%b-%y');
+          var dateISO = parser(dateYMD).toISOString();
+          var dateUnix = new Date(dateISO) / 1000;
+          return dateUnix;
+        }
 
-      var data = [{
-        key: "USD",
-        values: []
-      }, {
-        key: "EUR",
-        values: []
-      }, {
-        key: "AUD",
-        values: []
-      }];
-      d3.map(csv).values().forEach(function(d) {
-        data[0].values.push({
-          key: dateConvert(d.Date),
-          value: d['USD']
+        var data = [{
+          key: "USD",
+          values: []
+        }, {
+          key: "EUR",
+          values: []
+        }, {
+          key: "AUD",
+          values: []
+        }];
+        d3.map(csv).values().forEach(function(d) {
+          data[0].values.push({
+            key: dateConvert(d.Date),
+            value: d['USD']
+          });
+          data[1].values.push({
+            key: dateConvert(d.Date),
+            value: d['EUR']
+          });
+          data[2].values.push({
+            key: dateConvert(d.Date),
+            value: d['AUD']
+          });
         });
-        data[1].values.push({
-          key: dateConvert(d.Date),
-          value: d['EUR']
-        });
-        data[2].values.push({
-          key: dateConvert(d.Date),
-          value: d['AUD']
-        });
+
+        d3.select('#chartholder')
+          .datum(data)
+          .call(chart);
       });
-
-      // Create chart base
-      var myChart = d3.ez.base()
-        .width(750)
-        .height(400)
-        .chart(chart)
-        .legend(legend)
-        .title(title)
-        .on("customValueMouseOver", function(d) {
-          d3.select("#message").text(d.value);
-        })
-        .on("customSeriesClick", function(d) {
-          console.log(d);
-        });
-
-      d3.select('#chartholder')
-        .datum(data)
-        .call(myChart);
-    });
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

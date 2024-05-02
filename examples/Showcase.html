@@ -1,150 +1,68 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Showcase</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../dist/d3-ez.js"></script>
-  <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
-</head>
+  <head>
+    <title>d3-ez : Showcase</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../dist/d3-ez.js"></script>
+    <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css" />
+  </head>
 
-<body>
-  <div id="chartholder1"></div>
-  <div id="chartholder2"></div>
-  <div id="chartholder3"></div>
-  <div id="chartholder4"></div>
-  <div id="chartholder5"></div>
-  <div id="chartholder6"></div>
-  <div id="chartholder7"></div>
-  <div id="chartholder8"></div>
+  <body>
+    <div id="chartholder1"></div>
+    <svg id="chartholder2" width="300" height="300"></svg>
 
-  <script src="data/random_data.js"></script>
-  <script type="text/javascript">
-    // Generate some sample data
-    var data = randomDataset2();
-    console.log(data);
+    <script src="data/random_data.js"></script>
+    <script type="text/javascript">
+      // Generate some sample data
+      var data = randomDataset2();
 
-    // Setup chart components
-    myChart1 = d3.ez.component.htmlTable()
-      .width(400)
-      .on("customSeriesClick", function(d) {
-        update5(data);
-        update2(d);
-        update3(d);
-        update4(d);
-      });
+      var rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
+      var columnKeys = ["UK", "France", "Spain", "Germany", "Italy", "Portugal"];
+      var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
 
-    myChart2 = d3.ez.chart.barChartVertical()
-      .width(400)
-      .height(200)
-      .on("customValueMouseOver", function(d) {
-        console.log(d);
-      });
+      var xScale = d3.scaleBand()
+        .domain(columnKeys)
+        .range([0, 300]);
 
-    myChart3 = d3.ez.chart.donutChart()
-      .width(400)
-      .height(200)
-      .innerRadius(40);
+      var yScale = d3.scaleLinear()
+        .domain([0, 10])
+        .range([300, 0]);
 
-    myChart4 = d3.ez.chart.polarAreaChart()
-      .width(400)
-      .height(200);
+      var colorScale = d3.scaleOrdinal()
+        .domain(rowKeys)
+        .range(colors);
 
-    myChart5 = d3.ez.chart.barChartClustered()
-      .width(400)
-      .height(200)
-      .yAxisLabel("Fruit")
-      .on("customSeriesClick", function(d) {
-        update2(d);
-        update3(d);
-        update4(d);
-      });
+      // Functions to add charts to page and update charts
+      function update1(data) {
+        var htmlTable = d3.ez.component.htmlTable()
+          .on("customSeriesMouseOver", function(e, d) {
+            update2(d);
+          });
 
-    myChart6 = d3.ez.chart.heatMapRadial()
-      .width(400)
-      .height(200)
-      .innerRadius(5);
+        d3.select("#chartholder1")
+          .datum(data)
+          .call(htmlTable);
+      }
 
-    myChart7 = d3.ez.chart.heatMapTable()
-      .width(400)
-      .height(200);
+      function update2(data) {
+        var barsVertical = d3.ez.component.barsVertical()
+          .xScale(xScale)
+          .yScale(yScale)
+          .colorScale(colorScale)
+          .on("customValueClick", function(e, d) {
+            console.log(d);
+          });
 
-    myChart8 = d3.ez.chart.punchCard()
-      .width(400)
-      .height(200)
-      .minRadius(2)
-      .useGlobalScale(true)
-      .maxRadius(18)
-      .on("customValueMouseOver", function(d) {
-        console.log(d);
-      });
+        d3.select("#chartholder2")
+          .datum(data)
+          .call(barsVertical);
+      }
 
-    // Functions to add charts to page and update charts
-    function update1(data) {
-      // htmlTable
-      d3.select("#chartholder1")
-        .datum(data)
-        .call(myChart1);
-    }
+      update1(data);    // htmlTable
+      update2(data[0]); // verticalBar
 
-    function update2(data) {
-      // barClustered
-      d3.select("#chartholder2")
-        .datum(data)
-        .call(myChart2);
-    }
-
-    function update3(data) {
-      // barVertical
-      d3.select("#chartholder3")
-        .datum(data)
-        .call(myChart3);
-    }
-
-    function update4(data) {
-      // donutChart
-      d3.select("#chartholder4")
-        .datum(data)
-        .call(myChart4);
-    }
-
-    function update5(data) {
-      // polarArea
-      d3.select("#chartholder5")
-        .datum(data)
-        .call(myChart5);
-    }
-
-    function update6(data) {
-      // heatMapRadial
-      d3.select("#chartholder6")
-        .datum(data)
-        .call(myChart6);
-    }
-
-    function update7(data) {
-      // heatMapTable
-      d3.select("#chartholder7")
-        .datum(data)
-        .call(myChart7);
-    }
-
-    function update8(data) {
-      // punchCard
-      d3.select("#chartholder8")
-        .datum(data)
-        .call(myChart8);
-    }
-
-    update1(data); // htmlTable
-    update2(data[0]); // verticalBar
-    update3(data[0]); // donutChart
-    update4(data[0]); // polarArea
-    update5(data); // barClustered
-    update6(data); // heatMapRadial
-    update7(data); // heatMapTable
-    update8(data); // punchCard
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

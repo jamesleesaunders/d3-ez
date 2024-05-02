@@ -1,23 +1,19 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
- * Reusable Circular Labels Component
+ * Reusable Circular Sector Labels Component
  *
  * @module
  */
 export default function() {
 
 	/* Default Properties */
-	let width = 300;
-	let height = 300;
-	let radius;
-	let startAngle = 0;
-	let endAngle = 360;
-	let capitalizeLabels = false;
-	let textAnchor = "centre";
+	let classed = "circularSectorLabels";
 	let radialScale;
+	let ringScale;
+	let transition = { ease: d3.easeBounce, duration: 0 };
+	let capitalizeLabels = false;
+	let textAnchor = "middle";
 
 	/**
 	 * Constructor
@@ -27,160 +23,156 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		if (typeof radius === "undefined") {
-			radius = Math.min(width, height) / 2;
-		}
+		selection.each(function() {
+			textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with middle.
 
-		// Tick Data Generator
-		const tickData = function() {
-			let tickCount = 0;
-			let tickArray = [];
+			const [innerRadius, radius] = ringScale.range();
 
-			if (typeof radialScale.ticks === "function") {
-				// scaleLinear
-				const min = d3.min(radialScale.domain());
-				const max = d3.max(radialScale.domain());
-				tickCount = radialScale.ticks().length;
-				const tickIncrement = (max - min) / tickCount;
-				for (let i = 0; i <= tickCount; i++) {
-					tickArray[i] = (tickIncrement * i).toFixed(0);
+			// Tick Data Generator
+			const tickData = function() {
+				let tickCount = 0;
+				let tickArray = [];
+
+				if (typeof radialScale.ticks === "function") {
+					// scaleLinear
+					const min = d3.min(radialScale.domain());
+					const max = d3.max(radialScale.domain());
+					tickCount = radialScale.ticks().length;
+					const tickIncrement = (max - min) / tickCount;
+					for (let i = 0; i <= tickCount; i++) {
+						tickArray[i] = (tickIncrement * i).toFixed(0);
+					}
+				} else {
+					// scaleBand / scalePoint
+					tickArray = radialScale.domain();
+					tickCount = tickArray.length;
 				}
-			} else {
-				// scaleBand
-				tickArray = radialScale.domain();
-				tickCount = tickArray.length;
-			}
 
-			const tickScale = d3.scaleLinear()
-				.domain([0, tickCount])
-				.range(radialScale.range());
+				const tickScale = d3.scaleLinear()
+					.domain([0, tickCount])
+					.range(radialScale.range());
 
-			return tickArray.map((d, i) => ({
-					value: d,
-					offset: ((tickScale(i) / 360) * 100)
-				}
-			));
-		};
+				return tickArray.map((d, i) => ({
+						value: d,
+						offset: (tickScale(i) / 360) * 100
+					}
+				));
+			};
 
-		// Unique id so that the text path defs are unique - is there a better way to do this?
-		const uId = selection.attr("id") ?
-			selection.attr("id") :
-			"uid-" + Math.floor(1000 + Math.random() * 9000);
-		selection.attr("id", uId);
+			const element = d3.select(this);
 
-		const labelsSelect = selection.selectAll(".circularLabels")
-			.data(() => [tickData()]);
+			// Unique id so that the text path defs are unique - is there a better way to do this?
+			const uId = "uid-" + Math.floor(1000 + Math.random() * 9000);
 
-		const labels = labelsSelect.enter()
-			.append("g")
-			.classed("circularLabels", true)
-			.merge(labelsSelect);
+			const labels = element
+				.selectAll(`g.${classed}`)
+				.data(() => [tickData()]);
 
-		// Labels
-		const defSelect = labels.selectAll("def")
-			.data([radius]);
+			const labelsEnter = labels.enter()
+				.append("g")
+				.classed(classed, true)
+				.attr("transform", () => {
+					let offset = 0;
+					if (typeof radialScale.ticks !== "function") {
+						offset = radialScale.bandwidth() / 2;
+					}
+					return `rotate(${offset})`;
+				})
+				.merge(labels);
 
-		defSelect.enter()
-			.append("def")
-			.append("path")
-			.attr("id", () => {
-				const pathId = selection.attr("id") + "-path";
-				return pathId;
-			})
-			.attr("d", (d) => ("m0 " + -d + " a" + d + " " + d + " 0 1,1 -0.01 0"))
-			.merge(defSelect);
+			// Labels
+			const def = labelsEnter.selectAll("def")
+				.data([radius]);
 
-		defSelect.exit()
-			.remove();
+			def.enter()
+				.append("def")
+				.append("path")
+				.attr("id", () => {
+					return `${uId}-path`;
+				})
+				.attr("d", (d) => {
+					// Add a little padding
+					const r = d * 1.04;
+					return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
+				})
+				.merge(def)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.select("path")
+				.attr("id", () => {
+					return `${uId}-path`;
+				})
+				.attr("d", (d) => {
+					// Add a little padding
+					const r = d * 1.04;
+					return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
+				});
 
-		const textSelect = labels.selectAll("text")
-			.data((d) => d);
+			def.exit()
+				.remove();
 
-		textSelect.enter()
-			.append("text")
-			.style("text-anchor", textAnchor)
-			.append("textPath")
-			.attr("xlink:href", () => {
-				const pathId = selection.attr("id") + "-path";
-				return "#" + pathId;
-			})
-			.text((d) => {
-				const text = d.value;
-				return capitalizeLabels ? text.toUpperCase() : text;
-			})
-			.attr("startOffset", (d) => d.offset + "%")
-			.attr("id", (d) => d.value)
-			.merge(textSelect);
+			const text = labelsEnter.selectAll(".label")
+				.data((d) => d);
 
-		textSelect.transition()
-			.select("textPath")
-			.text((d) => {
-				const text = d.value;
-				return capitalizeLabels ? text.toUpperCase() : text;
-			})
-			.attr("startOffset", (d) => d.offset + "%");
+			text.enter()
+				.append("text")
+				.classed("label", true)
+				.attr("font-size", "0.8em")
+				.attr("color", "currentColor")
+				.style("text-anchor", textAnchor)
+				.append("textPath")
+				.attr("xlink:href", () => {
+					return `#${uId}-path`;
+				})
+				.text((d) => {
+					const text = d.value;
+					return capitalizeLabels ? text.toUpperCase() : text;
+				})
+				.attr("startOffset", (d) => d.offset + "%")
+				.attr("id", (d) => d.value)
+				.attr("fill", "currentColor")
+				.merge(text)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.select("textPath")
+				.text((d) => {
+					const text = d.value;
+					return capitalizeLabels ? text.toUpperCase() : text;
+				})
+				.attr("xlink:href", () => {
+					return `#${uId}-path`;
+				})
+				.attr("startOffset", (d) => d.offset + "%")
+				.attr("id", (d) => d.value);
 
-		textSelect.exit()
-			.remove();
+			text.exit()
+				.remove();
+		});
 	}
 
 	/**
-	 * Width Getter / Setter
+	 * Radial Scale Getter / Setter
 	 *
-	 * @param {number} _v - Width in px.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.height = function(_v) {
-		if (!arguments.length) return height;
-		height = _v;
-		return this;
+	my.radialScale = function(_v) {
+		if (!arguments.length) return radialScale;
+		radialScale = _v;
+		return my;
 	};
 
 	/**
-	 * Height Getter / Setter
+	 * Ring Scale Getter / Setter
 	 *
-	 * @param {number} _v - Height in px.
+	 * @param {d3.scale} _v - D3 scale.
 	 * @returns {*}
 	 */
-	my.width = function(_v) {
-		if (!arguments.length) return width;
-		width = _v;
-		return this;
-	};
-
-	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
-	 * Start Angle Getter / Setter
-	 *
-	 * @param {number} _v - Angle in degrees.
-	 * @returns {*}
-	 */
-	my.startAngle = function(_v) {
-		if (!arguments.length) return startAngle;
-		startAngle = _v;
-		return this;
-	};
-
-	/**
-	 * End Angle Getter / Setter
-	 *
-	 * @param {number} _v - Angle in degrees.
-	 * @returns {*}
-	 */
-	my.endAngle = function(_v) {
-		if (!arguments.length) return endAngle;
-		endAngle = _v;
+	my.ringScale = function(_v) {
+		if (!arguments.length) return ringScale;
+		ringScale = _v;
 		return this;
 	};
 
@@ -194,18 +186,6 @@ export default function() {
 		if (!arguments.length) return capitalizeLabels;
 		capitalizeLabels = _v;
 		return this;
-	};
-
-	/**
-	 * Radial Scale Getter / Setter
-	 *
-	 * @param {d3.scale} _v - D3 scale.
-	 * @returns {*}
-	 */
-	my.radialScale = function(_v) {
-		if (!arguments.length) return radialScale;
-		radialScale = _v;
-		return my;
 	};
 
 	/**

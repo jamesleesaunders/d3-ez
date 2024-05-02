@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import componentLegendSize from "./legendSize";
-import componentLegendColor from "./legendColor";
+import componentLegendCategorical from "./legendCategorical";
 import componentLegendThreshold from "./legendThreshold";
 
 /**
@@ -13,12 +13,14 @@ export default function() {
 	/* Default Properties */
 	let width = 100;
 	let height = 150;
+	let margin = { top: 35, right: 10, bottom: 10, left: 10 };
 	let sizeScale;
 	let colorScale;
-	let title;
+	let title = "Key";
 	let legend;
-
-	let opacity = 0.7;
+	let opacity = 1;
+	let transition = { ease: d3.easeBounce, duration: 0 };
+	let itemType = "rect";
 
 	/**
 	 * Constructor
@@ -31,21 +33,6 @@ export default function() {
 		height = (height ? height : this.attr("height"));
 		width = (width ? width : this.attr("width"));
 
-		// Legend Box
-		const legendBox = selection.selectAll("#legendBox")
-			.data([0])
-			.enter()
-			.append("g")
-			.attr("id", "legendBox");
-
-		legendBox.append("rect")
-			.attr("width", width)
-			.attr("height", height)
-			.attr("fill-opacity", opacity)
-			.attr("fill", "#ffffff")
-			.attr("stroke-width", 1)
-			.attr("stroke", "#000000");
-
 		// Size Legend
 		if (typeof sizeScale !== "undefined") {
 			legend = componentLegendSize()
@@ -53,28 +40,66 @@ export default function() {
 				.itemCount(4);
 		}
 
-		// Colour Legend
+		// Thereshold or Categorical Legend
 		if (typeof colorScale !== "undefined") {
 			if (scaleType(colorScale) === "threshold") {
 				legend = componentLegendThreshold()
 					.thresholdScale(colorScale);
 			} else {
-				legend = componentLegendColor()
+				legend = componentLegendCategorical()
 					.colorScale(colorScale)
-					.itemType("rect");
+					.itemType(itemType);
 			}
 		}
 
-		legendBox.append("g")
+		legend.opacity(opacity).transition(transition);
+
+		// Legend Box
+		const legendBox = selection.selectAll(".legendBox")
+			.data([0]);
+
+		const legendBoxEnter = legendBox.enter()
+			.append("g")
+			.attr("class", "legendBox");
+
+		// Border Box
+		legendBoxEnter.append("rect")
+			.classed("legendBorder", true)
+			.attr("width", width)
+			.attr("height", height)
+			.attr("fill-opacity", 0)
+			.attr("stroke-width", 1)
+			.attr("stroke", "currentcolor");
+
+		legendBox.transition()
+			.ease(transition.ease)
+			.duration(transition.duration)
+			.selectAll(".legendBorder")
+			.attr("width", width)
+			.attr("height", height);
+
+		// Legend Title
+		legendBoxEnter.append("g")
+			.classed("legendTitle", true)
 			.attr("transform", "translate(10, 10)")
 			.append("text")
 			.style("font-weight", "bold")
 			.attr("dominant-baseline", "hanging")
+			.attr("fill", "currentColor")
 			.text(title);
 
-		legend.width(width - 20).height(height - 40);
-		legendBox.append("g")
-			.attr("transform", "translate(10, 30)")
+		// Legend Component
+		legend
+			.width(width - (margin.left + margin.right))
+			.height(height - (margin.top + margin.bottom));
+
+		// Legend Items
+		legendBoxEnter.append("g")
+			.classed("legendBox", true)
+			.attr("transform", `translate(${margin.left}, ${margin.top})`)
+			.call(legend);
+
+		legendBox.selectAll(".legendBox")
 			.call(legend);
 	}
 
@@ -158,6 +183,42 @@ export default function() {
 		if (!arguments.length) return title;
 		title = _v;
 		return my;
+	};
+
+	/**
+	 * Item Type Getter / Setter
+	 *
+	 * @param {number} _v - Rect or Line
+	 * @returns {*}
+	 */
+	my.itemType = function(_v) {
+		if (!arguments.length) return itemType;
+		itemType = _v;
+		return this;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _v - Opacity 0 -1.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
 	};
 
 	return my;

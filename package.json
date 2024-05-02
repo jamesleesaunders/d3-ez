@@ -1,6 +1,6 @@
 {
 	"name": "d3-ez",
-	"version": "3.3.15",
+	"version": "4.0.0",
 	"description": "D3 Easy Reusable Chart Library",
 	"license": "GPL-2.0",
 	"keywords": [
@@ -35,25 +35,25 @@
 		"d3": "^5.0.0"
 	},
 	"devDependencies": {
-		"babel-core": "^6.26.0",
-		"babel-plugin-external-helpers": "^6.22.0",
-		"babel-plugin-transform-object-assign": "^6.22.0",
-		"babel-preset-env": "^1.7.0",
+		"@babel/core": "^7.24.4",
+		"@babel/plugin-external-helpers": "^7.24.1",
+		"@babel/plugin-transform-object-assign": "^7.24.1",
+		"@babel/preset-env": "^7.24.4",
+		"@rollup/plugin-babel": "^6.0.4",
+		"@rollup/plugin-json": "^6.1.0",
 		"eslint": "^6.8.0",
 		"gh-pages": "^2.2.0",
 		"jsdoc": "^3.6.6",
 		"jsdom": "^15.2.1",
 		"minami": "^1.2.3",
-		"rollup": "^0.68.2",
-		"rollup-plugin-babel": "^3.0.7",
-		"rollup-plugin-json": "^2.3.1",
+		"rollup": "^4.17.1",
 		"tap-spec": "^5.0.0",
-		"tape": "^4.13.3",
+		"tape": "^5.7.5",
 		"toast-jsdoc": "^1.0.2",
 		"uglify-es": "^3.3.10",
 		"vows": "^0.8.3"
 	},
 	"dependencies": {
-		"d3": "^5.16.0"
+		"d3": "^5.0.0"
 	}
 }

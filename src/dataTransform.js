@@ -26,7 +26,7 @@ export default function dataTransform(data) {
 	 */
 	const rowKey = function() {
 		if (dataType === SINGLE_SERIES) {
-			return d3.values(data)[0];
+			return Object.values(data)[0];
 		}
 	}();
 
@@ -60,14 +60,26 @@ export default function dataTransform(data) {
 	const rowTotals = function() {
 		if (dataType === MULTI_SERIES) {
 			const ret = {};
-			d3.map(data).values().forEach((d) => {
-				const rowKey = d.key;
-				d.values.forEach((d) => {
-					ret[rowKey] = (typeof ret[rowKey] === "undefined") ? 0 : ret[rowKey];
-					ret[rowKey] += d.value;
+			data.forEach((item) => {
+				const rowKey = item.key;
+
+				item.values.forEach((value) => {
+					ret[rowKey] = ret[rowKey] || 0;
+					ret[rowKey] += value.value;
 				});
 			});
 			return ret;
+		}
+	}();
+
+	/**
+	 * Row Totals Min
+	 *
+	 * @returns {number}
+	 */
+	const rowTotalsMin = function() {
+		if (dataType === MULTI_SERIES) {
+			return d3.min(Object.values(rowTotals));
 		}
 	}();
 
@@ -78,7 +90,7 @@ export default function dataTransform(data) {
 	 */
 	const rowTotalsMax = function() {
 		if (dataType === MULTI_SERIES) {
-			return d3.max(d3.values(rowTotals));
+			return d3.max(Object.values(rowTotals));
 		}
 	}();
 
@@ -128,16 +140,16 @@ export default function dataTransform(data) {
 	 */
 	const columnKeys = function() {
 		if (dataType === SINGLE_SERIES) {
-			return d3.values(data.values).map((d) => d.key);
+			return data.values.map((d) => d.key);
 		}
 
 		let ret = [];
-		d3.map(data).values().forEach((d) => {
+		data.forEach((item) => {
 			const tmp = [];
-			d.values.forEach((d, i) => {
-				tmp[i] = d.key;
+			item.values.forEach((value) => {
+				tmp.push(value.key);
 			});
-			ret = union(tmp, ret);
+			ret = Array.from(new Set([...tmp, ...ret]));
 		});
 
 		return ret;
@@ -154,15 +166,26 @@ export default function dataTransform(data) {
 		}
 
 		let ret = {};
-		d3.map(data).values().forEach((d) => {
-			d.values.forEach((d) => {
-				const columnName = d.key;
-				ret[columnName] = (typeof(ret[columnName]) === "undefined" ? 0 : ret[columnName]);
-				ret[columnName] += d.value;
+		data.forEach((item) => {
+			item.values.forEach((value) => {
+				const columnName = value.key;
+				ret[columnName] = ret[columnName] || 0;
+				ret[columnName] += value.value;
 			});
 		});
 
 		return ret;
+	}();
+
+	/**
+	 * Column Totals Min
+	 *
+	 * @returns {Array}
+	 */
+	const columnTotalsMin = function() {
+		if (dataType === MULTI_SERIES) {
+			return d3.min(Object.values(columnTotals));
+		}
 	}();
 
 	/**
@@ -172,7 +195,7 @@ export default function dataTransform(data) {
 	 */
 	const columnTotalsMax = function() {
 		if (dataType === MULTI_SERIES) {
-			return d3.max(d3.values(columnTotals));
+			return d3.max(Object.values(columnTotals));
 		}
 	}();
 
@@ -187,9 +210,9 @@ export default function dataTransform(data) {
 		}
 
 		let ret;
-		d3.map(data).values().forEach((d) => {
-			d.values.forEach((d) => {
-				ret = (typeof(ret) === "undefined" ? d.value : d3.min([ret, +d.value]));
+		data.forEach((item) => {
+			item.values.forEach((value) => {
+				ret = (typeof (ret) === "undefined" ? value.value : Math.min(ret, +value.value));
 			});
 		});
 
@@ -201,21 +224,21 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {number}
 	 */
-	const valueMax = function() {
+	const valueMax = (function() {
 		let ret;
 
 		if (dataType === SINGLE_SERIES) {
-			ret = d3.max(data.values, (d) => +d.value);
+			ret = Math.max(...data.values.map((d) => +d.value));
 		} else {
-			d3.map(data).values().forEach((d) => {
-				d.values.forEach((d) => {
-					ret = (typeof ret !== "undefined" ? d3.max([ret, +d.value]) : +d.value);
+			data.forEach((item) => {
+				item.values.forEach((value) => {
+					ret = (typeof ret !== "undefined" ? Math.max(ret, +value.value) : +value.value);
 				});
 			});
 		}
 
 		return ret;
-	}();
+	})();
 
 	/**
 	 * Value Extent
@@ -227,58 +250,97 @@ export default function dataTransform(data) {
 	}();
 
 	/**
+	 * Value Extent Stacked
+	 *
+	 * @returns {Array}
+	 */
+	const valueExtentStacked = (function() {
+		let lowestNegativeSum = Infinity;
+		let highestPositiveSum = -Infinity;
+
+		if (dataType === MULTI_SERIES) {
+			data.forEach(row => {
+				const [negativeSum, positiveSum] = row.values.reduce(
+					(acc, column) => {
+						const value = column.value;
+						if (value < 0) {
+							acc[0] += value;
+						} else if (value > 0) {
+							acc[1] += value;
+						}
+						return acc;
+					},
+					[0, 0]
+				);
+
+				lowestNegativeSum = Math.min(lowestNegativeSum, negativeSum);
+				highestPositiveSum = Math.max(highestPositiveSum, positiveSum);
+			});
+		}
+		// Check if lowestNegativeSum is still Infinity (no negative values found), if so, set it to 0
+		const finalLowestNegativeSum = lowestNegativeSum === Infinity ? 0 : lowestNegativeSum;
+
+		// Check if highestPositiveSum is still -Infinity (no positive values found), if so, set it to 0
+		const finalHighestPositiveSum = highestPositiveSum === -Infinity ? 0 : highestPositiveSum;
+
+		// Return the final results as an array
+		return [finalLowestNegativeSum, finalHighestPositiveSum];
+	})();
+
+	/**
 	 * Coordinates Min
 	 *
 	 * @returns {Array}
 	 */
-	const coordinatesMin = function() {
+	const coordinatesMin = (function() {
 		let ret = {};
 
 		if (dataType === SINGLE_SERIES) {
 			coordinateKeys.forEach((key) => {
-				ret[key] = d3.min(data.values, (d) => +d[key]);
+				ret[key] = Math.min(...data.values.map((d) => +d[key]));
 			});
 			return ret;
 
 		} else {
-			d3.map(data).values().forEach((d) => {
-				d.values.forEach((d) => {
+			data.forEach((item) => {
+				item.values.forEach((value) => {
 					coordinateKeys.forEach((key) => {
-						ret[key] = (key in ret ? d3.min([ret[key], +d[key]]) : d[key]);
+						ret[key] = (key in ret ? Math.min(ret[key], +value[key]) : +value[key]);
 					});
 				});
 			});
 		}
 
 		return ret;
-	}();
+	})();
+
 
 	/**
 	 * Coordinates Max
 	 *
 	 * @returns {Array}
 	 */
-	const coordinatesMax = function() {
+	const coordinatesMax = (function() {
 		let ret = {};
 
 		if (dataType === SINGLE_SERIES) {
 			coordinateKeys.forEach((key) => {
-				ret[key] = d3.max(data.values, (d) => +d[key]);
+				ret[key] = Math.max(...data.values.map((d) => +d[key]));
 			});
 			return ret;
 
 		} else {
-			d3.map(data).values().forEach((d) => {
-				d.values.forEach((d) => {
+			data.forEach((item) => {
+				item.values.forEach((value) => {
 					coordinateKeys.forEach((key) => {
-						ret[key] = (key in ret ? d3.max([ret[key], +d[key]]) : d[key]);
+						ret[key] = (key in ret ? Math.max(ret[key], +value[key]) : +value[key]);
 					});
 				});
 			});
 		}
 
 		return ret;
-	}();
+	})();
 
 	/**
 	 * Coordinates Extent
@@ -322,20 +384,19 @@ export default function dataTransform(data) {
 	 *
 	 * @returns {number}
 	 */
-	const maxDecimalPlace = function() {
+	const maxDecimalPlace = (function() {
 		let ret = 0;
 		if (dataType === MULTI_SERIES) {
-			d3.map(data).values().forEach((d) => {
-				d.values.forEach((d) => {
-					ret = d3.max([ret, decimalPlaces(d.value)])
+			data.forEach((item) => {
+				item.values.forEach((value) => {
+					ret = Math.max(ret, decimalPlaces(value.value));
 				});
 			});
 		}
 
 		// toFixed must be between 0 and 20
 		return ret > 20 ? 20 : ret;
-	}();
-
+	})();
 
 	/**
 	 * Thresholds
@@ -344,7 +405,7 @@ export default function dataTransform(data) {
 	 */
 	const thresholds = function() {
 		const distance = valueMax - valueMin;
-		const bands = [0.15, 0.40, 0.55, 0.90];
+		const bands = [0.25, 0.50, 0.75, 1.00];
 
 		return bands.map((v) => Number((valueMin + (v * distance)).toFixed(maxDecimalPlace)));
 	}();
@@ -362,14 +423,17 @@ export default function dataTransform(data) {
 			rowTotal: rowTotal,
 			rowKeys: rowKeys,
 			rowTotals: rowTotals,
+			rowTotalsMin: rowTotalsMin,
 			rowTotalsMax: rowTotalsMax,
 			rowValuesKeys: rowValuesKeys,
 			columnKeys: columnKeys,
 			columnTotals: columnTotals,
+			columnTotalsMin: columnTotalsMin,
 			columnTotalsMax: columnTotalsMax,
 			valueMin: valueMin,
 			valueMax: valueMax,
 			valueExtent: valueExtent,
+			valueExtentStacked: valueExtentStacked,
 			coordinatesMin: coordinatesMin,
 			coordinatesMax: coordinatesMax,
 			coordinatesExtent: coordinatesExtent,

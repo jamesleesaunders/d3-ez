@@ -11,7 +11,7 @@ const date = new Date();
 const copyright = "Copyright (C) " + date.getFullYear() + " " + author;
 import { version, license } from "./package.json";
 
-import base from "./src/base";
+// import base from "./src/base";
 import chart from "./src/chart";
 import component from "./src/component";
 import palette from "./src/palette";
@@ -27,7 +27,7 @@ const ez = function() {
 		component: component,
 		palette: palette,
 		dataTransform: dataTransform,
-		base: base
+		//base: base
 	};
 }();
 

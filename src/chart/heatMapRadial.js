@@ -1,10 +1,10 @@
 import * as d3 from "d3";
-import palette from "../palette";
 import dataTransform from "../dataTransform";
 import component from "../component";
+import palette from "../palette";
 
 /**
- * Circular Heat Map (also called: Radial Heat Map)
+ * Radial Heat Map (aka: Circular Heat Map)
  *
  * @module
  * @see http://datavizproject.com/data-type/radial-heatmap/
@@ -12,72 +12,19 @@ import component from "../component";
 export default function() {
 
 	/* Default Properties */
-	let svg;
-	let chart;
 	let classed = "heatMapRadial";
-	let width = 400;
-	let height = 300;
+	let width = 700;
+	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	let transition = { ease: d3.easeBounce, duration: 500 };
-	let colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"];
+	let colors = palette.diverging(2).slice(0, 5);
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
-	/* Chart Dimensions */
-	let chartW;
-	let chartH;
-	let radius;
-	let innerRadius;
-
-	/* Scales */
-	let xScale;
-	let yScale;
-	let colorScale;
-
 	/* Other Customisation Options */
+	let opacity = 1;
 	let startAngle = 0;
 	let endAngle = 270;
 	let thresholds;
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		chartW = width - (margin.left + margin.right);
-		chartH = height - (margin.top + margin.bottom);
-
-		const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
-
-		if (typeof thresholds === "undefined") {
-			thresholds = tmpThresholds;
-		}
-
-		if (typeof radius === "undefined") {
-			radius = Math.min(chartW, chartH) / 2;
-		}
-
-		if (typeof innerRadius === "undefined") {
-			innerRadius = radius / 4;
-		}
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleThreshold()
-				.domain(thresholds)
-				.range(colors);
-		}
-
-		xScale = d3.scaleBand()
-			.domain(columnKeys)
-			.rangeRound([startAngle, endAngle])
-			.padding(0.1);
-
-		yScale = d3.scaleBand()
-			.domain(rowKeys)
-			.rangeRound([radius, innerRadius])
-			.padding(0.1);
-	}
 
 	/**
 	 * Constructor
@@ -87,9 +34,38 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		// Create SVG element (if it does not exist already)
-		if (!svg) {
-			svg = (function(selection) {
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
+			const radius = Math.min(chartW, chartH) / 2;
+			const innerRadius = radius / 4;
+
+			const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
+
+			if (typeof thresholds === "undefined") {
+				thresholds = tmpThresholds;
+			}
+
+			const colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
+
+			const xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.rangeRound([startAngle, endAngle])
+				.padding(0.1);
+
+			const yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.rangeRound([innerRadius, radius])
+				.padding(0.1);
+
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
 				const el = selection._groups[0][0];
 				if (!!el.ownerSVGElement || el.tagName === "svg") {
 					return selection;
@@ -102,70 +78,81 @@ export default function() {
 				.attr("width", width)
 				.attr("height", height);
 
-			chart = svg.append("g").classed("chart", true);
-		} else {
-			chart = selection.select(".chart");
-		}
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Update the chart dimensions and add layer groups
-		const layers = ["heatRingsGroups", "circularSectorLabels", "circularRingLabels"];
-		chart.classed(classed, true)
-			.attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
-			.attr("width", chartW)
-			.attr("height", chartH)
-			.selectAll("g")
-			.data(layers)
-			.enter()
-			.append("g")
-			.attr("class", (d) => d);
+			container.exit().remove();
 
-		selection.each(function(data) {
-			// Initialise Data
-			init(data);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			const layers = ["axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
 
 			// Heat Map Rings
 			const heatMapRing = component.heatMapRing()
-				.radius((d) => yScale(d.key))
-				.innerRadius((d) => yScale(d.key) + yScale.bandwidth())
-				.startAngle(startAngle)
-				.endAngle(endAngle)
 				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
-				.dispatch(dispatch)
-				.thresholds(thresholds);
-
-			// Create Series Group
-			const seriesGroup = chart.select(".heatRingsGroups")
-				.selectAll(".seriesGroup")
-				.data(data);
-
-			seriesGroup.enter()
-				.append("g")
-				.attr("class", "seriesGroup")
-				.merge(seriesGroup)
-				.call(heatMapRing);
-
-			seriesGroup.exit()
-				.remove();
+				.opacity(opacity)
+				.dispatch(dispatch);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
-				.radius(radius * 1.04)
+				.ringScale(yScale)
 				.radialScale(xScale)
 				.textAnchor("start");
-
-			chart.select(".circularSectorLabels")
-				.call(circularSectorLabels);
 
 			// Ring Labels
 			const circularRingLabels = component.circularRingLabels()
 				.radialScale(yScale)
 				.textAnchor("middle");
 
-			chart.select(".circularRingLabels")
+			// Create Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data((d) => d);
+
+			seriesGroup.enter()
+				.append("g")
+				.attr("class", "seriesGroup")
+				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.call(heatMapRing)
 				.call(circularRingLabels);
 
+			seriesGroup.exit()
+				.remove();
+
+			// Outer Ring Labels
+			containerEnter.select(".axis")
+				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.call(circularSectorLabels);
+
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.call(legend);
 		});
 	}
 
@@ -206,30 +193,6 @@ export default function() {
 	};
 
 	/**
-	 * Radius Getter / Setter
-	 *
-	 * @param {number} _v - Radius in px.
-	 * @returns {*}
-	 */
-	my.radius = function(_v) {
-		if (!arguments.length) return radius;
-		radius = _v;
-		return this;
-	};
-
-	/**
-	 * Inner Radius Getter / Setter
-	 *
-	 * @param {number} _v - Inner radius in px.
-	 * @returns {*}
-	 */
-	my.innerRadius = function(_v) {
-		if (!arguments.length) return innerRadius;
-		innerRadius = _v;
-		return this;
-	};
-
-	/**
 	 * Colors Getter / Setter
 	 *
 	 * @param {Array} _v - Array of colours used by color scale.
@@ -242,14 +205,26 @@ export default function() {
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Opacity Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {Number} _v - Opacity level.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
 		return this;
 	};
 
@@ -263,18 +238,6 @@ export default function() {
 		if (!arguments.length) return thresholds;
 		thresholds = _v;
 		return my;
-	};
-
-	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
 	};
 
 	/**
