@@ -1,6 +1,6 @@
-let test = require("tape");
-let d3Ez = require("../");
-let jsdom = require("jsdom");
+import jsdom from "jsdom";
+import test from "tape";
+import d3Ez from "../index.js";
 
 test("setup", function(t) {
 	let JSDOM = jsdom.JSDOM;

@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import palette from "../palette";
 
 /**
  * Reusable Polar Area Chart Component

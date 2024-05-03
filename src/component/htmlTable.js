@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import dataTransform from "../dataTransform";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Simple HTML Table

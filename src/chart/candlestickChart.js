@@ -1,5 +1,7 @@
 import * as d3 from "d3";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Candlestick Chart (aka: Japanese Candlestick; OHLC Chart; Box Plot)

@@ -1,7 +1,8 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
+
 
 /**
  * Rose Chart (aka: Coxcomb Chart; Circumplex Chart; Nightingale Chart)

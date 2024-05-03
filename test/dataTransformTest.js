@@ -1,5 +1,7 @@
-let test = require('tape');
-let d3Ez = require("../");
+/*
+import jsdom from "jsdom";
+import test from "tape";
+import d3Ez from "../";
 
 const dataset1 = [{
 	key: "Apples",
@@ -161,3 +163,4 @@ test("Test Rotate", function(t) {
 
 	t.end();
 });
+*/

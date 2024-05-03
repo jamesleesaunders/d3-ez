@@ -2,7 +2,7 @@
  * d3-ez
  *
  * @author James Saunders [james@saunders-family.net]
- * @copyright Copyright (C) 2020 James Saunders
+ * @copyright Copyright (C) 2024 James Saunders
  * @license GPLv2
  */
 
@@ -31,601 +31,92 @@
 
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
-	var version = "4.0.1";
-	var license = "GPL-2.0";
-
-	/**
-	 * Colour Palettes
-	 *
-	 * @module
-	 * @example
-	 * d3.ez.palette.categorical(1);
-	 * d3.ez.palette.diverging(1);
-	 * d3.ez.palette.sequential("#ff0000", 9);
-	 * d3.ez.palette.lumShift(d3.ez.palette.categorical(1), 0.2);
-	 */
-	var palette = {
-	  categorical: function categorical(index) {
-	    // Categorical colour palettes are the ones that are used to separate items into
-	    // distinct groups or categories.
-	    switch (index) {
-	      case 1:
-	        // Stephen Few - Show Me the Numbers Book
-	        //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
-	        return ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
-	      case 2:
-	        // Color Brewer - http://colorbrewer2.com/
-	        //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
-	        return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
-	      case 3:
-	        // Google Design - http://www.google.com/design/spec/style/color.html
-	        //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
-	        return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
-	    }
-	  },
-	  diverging: function diverging(index) {
-	    // Diverging colour palettes are used for quantitative data. Usually two different hues
-	    // that diverge from a light colour, for the critical midpoint, toward dark colours.
-	    switch (index) {
-	      case 1:
-	        // Color Brewer - Colourblind Safe
-	        return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
-	      case 2:
-	        // Color Brewer - RAG
-	        return ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850"];
-	      case 3:
-	        // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
-	        return ["#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000"];
-	    }
-	  },
-	  sequential: function sequential(origHex, count) {
-	    // Sequential colour palettes are primarily used to encode quantitative differences.
-	    // Quantitative values are arranged sequentially, from low to high.
-	    var lumStep = 0.1;
-	    var lumMax = lumStep * count / 2;
-	    var lumMin = 0 - lumMax;
-	    var lumScale = d3__namespace.scaleLinear().domain([1, count]).range([lumMin, lumMax]);
-	    var result = [];
-	    for (var i = 1; i <= count; i++) {
-	      var lum = lumScale(i);
-
-	      // Validate and normalise Hex value.
-	      origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
-	      if (origHex.length < 6) {
-	        origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
-	      }
-
-	      // Convert to decimal and change luminosity
-	      var newHex = "#";
-	      var c = void 0;
-	      for (var j = 0; j < 3; j++) {
-	        c = parseInt(origHex.substr(j * 2, 2), 16);
-	        c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-	        newHex += ("00" + c).substr(c.length);
-	      }
-	      result.push(newHex);
-	    }
-	    return result;
-	  },
-	  lumShift: function lumShift(colors, lum) {
-	    var result = [];
-	    colors.forEach(function addNumber(origHex, index) {
-	      origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
-	      if (origHex.length < 6) {
-	        origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
-	      }
-	      lum = lum || 0;
-
-	      // Convert to decimal and change luminosity
-	      var newHex = "#";
-	      for (var i = 0; i < 3; i++) {
-	        var c = parseInt(origHex.substr(i * 2, 2), 16);
-	        c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
-	        newHex += ("00" + c).substr(c.length);
-	      }
-	      result[index] = newHex;
-	    });
-	    return result;
-	  }
+	var name = "d3-ez";
+	var version$1 = "4.0.1";
+	var type = "module";
+	var description = "D3 Easy Reusable Chart Library";
+	var license$1 = "GPL-2.0";
+	var keywords = [
+		"d3",
+		"d3-module",
+		"visualization",
+		"chart",
+		"graph",
+		"data",
+		"svg",
+		"dataviz"
+	];
+	var homepage = "http://d3-ez.net";
+	var author$1 = "James Saunders (james@saunders-family.net)";
+	var repository = {
+		type: "git",
+		url: "https://github.com/jamesleesaunders/d3-ez.git"
 	};
-
-	function _iterableToArrayLimit(r, l) {
-	  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
-	  if (null != t) {
-	    var e,
-	      n,
-	      i,
-	      u,
-	      a = [],
-	      f = !0,
-	      o = !1;
-	    try {
-	      if (i = (t = t.call(r)).next, 0 === l) ; else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
-	    } catch (r) {
-	      o = !0, n = r;
-	    } finally {
-	      try {
-	        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
-	      } finally {
-	        if (o) throw n;
-	      }
-	    }
-	    return a;
-	  }
-	}
-	function _slicedToArray(arr, i) {
-	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-	}
-	function _toConsumableArray(arr) {
-	  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-	}
-	function _arrayWithoutHoles(arr) {
-	  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-	}
-	function _arrayWithHoles(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _iterableToArray(iter) {
-	  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-	}
-	function _unsupportedIterableToArray(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-	}
-	function _arrayLikeToArray(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-	  return arr2;
-	}
-	function _nonIterableSpread() {
-	  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-	function _nonIterableRest() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-
-	/**
-	 * Data Transform
-	 *
-	 * @module
-	 * @returns {Array}
-	 */
-	function dataTransform(data) {
-	  var SINGLE_SERIES = 1;
-	  var MULTI_SERIES = 2;
-	  var coordinateKeys = ['x', 'y', 'z'];
-
-	  /**
-	   * Data Type
-	   *
-	   * @type {Number}
-	   */
-	  var dataType = data.key !== undefined ? SINGLE_SERIES : MULTI_SERIES;
-
-	  /**
-	   * Row Key
-	   *
-	   * @returns {Array}
-	   */
-	  var rowKey = function () {
-	    if (dataType === SINGLE_SERIES) {
-	      return Object.values(data)[0];
-	    }
-	  }();
-
-	  /**
-	   * Row Total
-	   *
-	   * @returns {Array}
-	   */
-	  var rowTotal = function () {
-	    if (dataType === SINGLE_SERIES) {
-	      return d3__namespace.sum(data.values, function (d) {
-	        return d.value;
-	      });
-	    }
-	  }();
-
-	  /**
-	   * Row Keys
-	   *
-	   * @returns {Array}
-	   */
-	  var rowKeys = function () {
-	    if (dataType === MULTI_SERIES) {
-	      return data.map(function (d) {
-	        return d.key;
-	      });
-	    }
-	  }();
-
-	  /**
-	   * Row Totals
-	   *
-	   * @returns {Array}
-	   */
-	  var rowTotals = function () {
-	    if (dataType === MULTI_SERIES) {
-	      var ret = {};
-	      data.forEach(function (item) {
-	        var rowKey = item.key;
-	        item.values.forEach(function (value) {
-	          ret[rowKey] = ret[rowKey] || 0;
-	          ret[rowKey] += value.value;
-	        });
-	      });
-	      return ret;
-	    }
-	  }();
-
-	  /**
-	   * Row Totals Min
-	   *
-	   * @returns {number}
-	   */
-	  var rowTotalsMin = function () {
-	    if (dataType === MULTI_SERIES) {
-	      return d3__namespace.min(Object.values(rowTotals));
-	    }
-	  }();
-
-	  /**
-	   * Row Totals Max
-	   *
-	   * @returns {number}
-	   */
-	  var rowTotalsMax = function () {
-	    if (dataType === MULTI_SERIES) {
-	      return d3__namespace.max(Object.values(rowTotals));
-	    }
-	  }();
-
-	  /**
-	   * Row Value Keys
-	   *
-	   * @returns {Array}
-	   */
-	  var rowValuesKeys = function () {
-	    if (dataType === SINGLE_SERIES) {
-	      return Object.keys(data.values[0]);
-	    } else {
-	      return Object.keys(data[0].values[0]);
-	    }
-	  }();
-
-	  /**
-	   * Column Keys
-	   *
-	   * @returns {Array}
-	   */
-	  var columnKeys = function () {
-	    if (dataType === SINGLE_SERIES) {
-	      return data.values.map(function (d) {
-	        return d.key;
-	      });
-	    }
-	    var ret = [];
-	    data.forEach(function (item) {
-	      var tmp = [];
-	      item.values.forEach(function (value) {
-	        tmp.push(value.key);
-	      });
-	      ret = Array.from(new Set([].concat(tmp, _toConsumableArray(ret))));
-	    });
-	    return ret;
-	  }();
-
-	  /**
-	   * Column Totals
-	   *
-	   * @returns {Array}
-	   */
-	  var columnTotals = function () {
-	    if (dataType !== MULTI_SERIES) {
-	      return;
-	    }
-	    var ret = {};
-	    data.forEach(function (item) {
-	      item.values.forEach(function (value) {
-	        var columnName = value.key;
-	        ret[columnName] = ret[columnName] || 0;
-	        ret[columnName] += value.value;
-	      });
-	    });
-	    return ret;
-	  }();
-
-	  /**
-	   * Column Totals Min
-	   *
-	   * @returns {Array}
-	   */
-	  var columnTotalsMin = function () {
-	    if (dataType === MULTI_SERIES) {
-	      return d3__namespace.min(Object.values(columnTotals));
-	    }
-	  }();
-
-	  /**
-	   * Column Totals Max
-	   *
-	   * @returns {Array}
-	   */
-	  var columnTotalsMax = function () {
-	    if (dataType === MULTI_SERIES) {
-	      return d3__namespace.max(Object.values(columnTotals));
-	    }
-	  }();
-
-	  /**
-	   * Value Min
-	   *
-	   * @returns {number}
-	   */
-	  var valueMin = function () {
-	    if (dataType === SINGLE_SERIES) {
-	      return d3__namespace.min(data.values, function (d) {
-	        return +d.value;
-	      });
-	    }
-	    var ret;
-	    data.forEach(function (item) {
-	      item.values.forEach(function (value) {
-	        ret = typeof ret === "undefined" ? value.value : Math.min(ret, +value.value);
-	      });
-	    });
-	    return +ret;
-	  }();
-
-	  /**
-	   * Value Max
-	   *
-	   * @returns {number}
-	   */
-	  var valueMax = function () {
-	    var ret;
-	    if (dataType === SINGLE_SERIES) {
-	      ret = Math.max.apply(Math, _toConsumableArray(data.values.map(function (d) {
-	        return +d.value;
-	      })));
-	    } else {
-	      data.forEach(function (item) {
-	        item.values.forEach(function (value) {
-	          ret = typeof ret !== "undefined" ? Math.max(ret, +value.value) : +value.value;
-	        });
-	      });
-	    }
-	    return ret;
-	  }();
-
-	  /**
-	   * Value Extent
-	   *
-	   * @returns {Array}
-	   */
-	  var valueExtent = function () {
-	    return [valueMin, valueMax];
-	  }();
-
-	  /**
-	   * Value Extent Stacked
-	   *
-	   * @returns {Array}
-	   */
-	  var valueExtentStacked = function () {
-	    var lowestNegativeSum = Infinity;
-	    var highestPositiveSum = -Infinity;
-	    if (dataType === MULTI_SERIES) {
-	      data.forEach(function (row) {
-	        var _row$values$reduce = row.values.reduce(function (acc, column) {
-	            var value = column.value;
-	            if (value < 0) {
-	              acc[0] += value;
-	            } else if (value > 0) {
-	              acc[1] += value;
-	            }
-	            return acc;
-	          }, [0, 0]),
-	          _row$values$reduce2 = _slicedToArray(_row$values$reduce, 2),
-	          negativeSum = _row$values$reduce2[0],
-	          positiveSum = _row$values$reduce2[1];
-	        lowestNegativeSum = Math.min(lowestNegativeSum, negativeSum);
-	        highestPositiveSum = Math.max(highestPositiveSum, positiveSum);
-	      });
-	    }
-	    // Check if lowestNegativeSum is still Infinity (no negative values found), if so, set it to 0
-	    var finalLowestNegativeSum = lowestNegativeSum === Infinity ? 0 : lowestNegativeSum;
-
-	    // Check if highestPositiveSum is still -Infinity (no positive values found), if so, set it to 0
-	    var finalHighestPositiveSum = highestPositiveSum === -Infinity ? 0 : highestPositiveSum;
-
-	    // Return the final results as an array
-	    return [finalLowestNegativeSum, finalHighestPositiveSum];
-	  }();
-
-	  /**
-	   * Coordinates Min
-	   *
-	   * @returns {Array}
-	   */
-	  var coordinatesMin = function () {
-	    var ret = {};
-	    if (dataType === SINGLE_SERIES) {
-	      coordinateKeys.forEach(function (key) {
-	        ret[key] = Math.min.apply(Math, _toConsumableArray(data.values.map(function (d) {
-	          return +d[key];
-	        })));
-	      });
-	      return ret;
-	    } else {
-	      data.forEach(function (item) {
-	        item.values.forEach(function (value) {
-	          coordinateKeys.forEach(function (key) {
-	            ret[key] = key in ret ? Math.min(ret[key], +value[key]) : +value[key];
-	          });
-	        });
-	      });
-	    }
-	    return ret;
-	  }();
-
-	  /**
-	   * Coordinates Max
-	   *
-	   * @returns {Array}
-	   */
-	  var coordinatesMax = function () {
-	    var ret = {};
-	    if (dataType === SINGLE_SERIES) {
-	      coordinateKeys.forEach(function (key) {
-	        ret[key] = Math.max.apply(Math, _toConsumableArray(data.values.map(function (d) {
-	          return +d[key];
-	        })));
-	      });
-	      return ret;
-	    } else {
-	      data.forEach(function (item) {
-	        item.values.forEach(function (value) {
-	          coordinateKeys.forEach(function (key) {
-	            ret[key] = key in ret ? Math.max(ret[key], +value[key]) : +value[key];
-	          });
-	        });
-	      });
-	    }
-	    return ret;
-	  }();
-
-	  /**
-	   * Coordinates Extent
-	   *
-	   * @returns {Array}
-	   */
-	  var coordinatesExtent = function () {
-	    var ret = {};
-	    coordinateKeys.forEach(function (key) {
-	      ret[key] = [coordinatesMin[key], coordinatesMax[key]];
-	    });
-	    return ret;
-	  }();
-
-	  /**
-	   * How Many Decimal Places?
-	   *
-	   * @private
-	   * @param {number} num - Float.
-	   * @returns {number}
-	   */
-	  var decimalPlaces = function decimalPlaces(num) {
-	    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-	    if (!match) {
-	      return 0;
-	    }
-	    return Math.max(0,
-	    // Number of digits right of decimal point.
-	    (match[1] ? match[1].length : 0
-	    // Adjust for scientific notation.
-	    ) - (match[2] ? +match[2] : 0));
-	  };
-
-	  /**
-	   * Max Decimal Place
-	   *
-	   * @returns {number}
-	   */
-	  var maxDecimalPlace = function () {
-	    var ret = 0;
-	    if (dataType === MULTI_SERIES) {
-	      data.forEach(function (item) {
-	        item.values.forEach(function (value) {
-	          ret = Math.max(ret, decimalPlaces(value.value));
-	        });
-	      });
-	    }
-
-	    // toFixed must be between 0 and 20
-	    return ret > 20 ? 20 : ret;
-	  }();
-
-	  /**
-	   * Thresholds
-	   *
-	   * @returns {Array}
-	   */
-	  var thresholds = function () {
-	    var distance = valueMax - valueMin;
-	    var bands = [0.25, 0.50, 0.75, 1.00];
-	    return bands.map(function (v) {
-	      return Number((valueMin + v * distance).toFixed(maxDecimalPlace));
-	    });
-	  }();
-
-	  /**
-	   * Summary
-	   *
-	   * @returns {Array}
-	   */
-	  var summary = function summary() {
-	    return {
-	      dataType: dataType,
-	      rowKey: rowKey,
-	      rowTotal: rowTotal,
-	      rowKeys: rowKeys,
-	      rowTotals: rowTotals,
-	      rowTotalsMin: rowTotalsMin,
-	      rowTotalsMax: rowTotalsMax,
-	      rowValuesKeys: rowValuesKeys,
-	      columnKeys: columnKeys,
-	      columnTotals: columnTotals,
-	      columnTotalsMin: columnTotalsMin,
-	      columnTotalsMax: columnTotalsMax,
-	      valueMin: valueMin,
-	      valueMax: valueMax,
-	      valueExtent: valueExtent,
-	      valueExtentStacked: valueExtentStacked,
-	      coordinatesMin: coordinatesMin,
-	      coordinatesMax: coordinatesMax,
-	      coordinatesExtent: coordinatesExtent,
-	      maxDecimalPlace: maxDecimalPlace,
-	      thresholds: thresholds
-	    };
-	  };
-
-	  /**
-	   * Rotate Data
-	   *
-	   * @returns {Array}
-	   */
-	  var rotate = function rotate() {
-	    var columnKeys = data.map(function (d) {
-	      return d.key;
-	    });
-	    var rowKeys = data[0].values.map(function (d) {
-	      return d.key;
-	    });
-	    var rotated = rowKeys.map(function (rowKey, rowIndex) {
-	      var values = columnKeys.map(function (columnKey, columnIndex) {
-	        // Copy the values from the original object
-	        var values = Object.assign({}, data[columnIndex].values[rowIndex]);
-	        // Swap the key over
-	        values.key = columnKey;
-	        return values;
-	      });
-	      return {
-	        key: rowKey,
-	        values: values
-	      };
-	    });
-	    return rotated;
-	  };
-	  return {
-	    summary: summary,
-	    rotate: rotate
-	  };
-	}
+	var bugs = {
+		url: "https://github.com/jamesleesaunders/d3-ez/issues"
+	};
+	var module = "index.js";
+	var main = "index.js";
+	var jsdelivr = "dist/d3-x3d.min.js";
+	var unpkg = "dist/d3-x3d.min.js";
+	var exports$1 = {
+		umd: "./dist/d3-x3d.min.js",
+		"default": "./index.js"
+	};
+	var scripts = {
+		build: "make",
+		pretest: "make",
+		test: "tape 'test/**/*Test.js' | tap-arc",
+		"build:docs": "jsdoc -c config/jsdoc.conf.json",
+		"deploy:docs": "npm run build:docs && gh-pages -d docs"
+	};
+	var peerDependencies = {
+		d3: "^7.0.0"
+	};
+	var devDependencies = {
+		"@babel/core": "^7.24.4",
+		"@babel/plugin-external-helpers": "^7.24.1",
+		"@babel/plugin-transform-object-assign": "^7.24.1",
+		"@babel/plugin-syntax-import-attributes": "latest",
+		"@babel/preset-env": "^7.24.4",
+		"@rollup/plugin-babel": "latest",
+		"@rollup/plugin-json": "latest",
+		"@rollup/plugin-node-resolve": "latest",
+		eslint: "^6.8.0",
+		"gh-pages": "^6.1.1",
+		jsdoc: "^4.0.3",
+		jsdom: "^24.0.0",
+		rollup: "^4.17.1",
+		"tap-arc": "^1.2.2",
+		tape: "^5.7.5",
+		"toast-jsdoc": "^1.0.2",
+		"uglify-js": "^3.13.0",
+		vows: "^0.8.3"
+	};
+	var dependencies = {
+		d3: "^7.9.0"
+	};
+	var packageJson = {
+		name: name,
+		version: version$1,
+		type: type,
+		description: description,
+		license: license$1,
+		keywords: keywords,
+		homepage: homepage,
+		author: author$1,
+		repository: repository,
+		bugs: bugs,
+		module: module,
+		main: main,
+		jsdelivr: jsdelivr,
+		unpkg: unpkg,
+		exports: exports$1,
+		scripts: scripts,
+		peerDependencies: peerDependencies,
+		devDependencies: devDependencies,
+		dependencies: dependencies
+	};
 
 	/**
 	 * Reusable Circular Bar Chart Component
@@ -774,6 +265,65 @@
 	    return value === dispatch ? my : value;
 	  };
 	  return my;
+	}
+
+	function _iterableToArrayLimit(r, l) {
+	  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+	  if (null != t) {
+	    var e,
+	      n,
+	      i,
+	      u,
+	      a = [],
+	      f = !0,
+	      o = !1;
+	    try {
+	      if (i = (t = t.call(r)).next, 0 === l) ; else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
+	    } catch (r) {
+	      o = !0, n = r;
+	    } finally {
+	      try {
+	        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
+	      } finally {
+	        if (o) throw n;
+	      }
+	    }
+	    return a;
+	  }
+	}
+	function _slicedToArray(arr, i) {
+	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+	}
+	function _toConsumableArray(arr) {
+	  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+	}
+	function _arrayWithoutHoles(arr) {
+	  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+	}
+	function _arrayWithHoles(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+	function _iterableToArray(iter) {
+	  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+	}
+	function _unsupportedIterableToArray(o, minLen) {
+	  if (!o) return;
+	  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+	  var n = Object.prototype.toString.call(o).slice(8, -1);
+	  if (n === "Object" && o.constructor) n = o.constructor.name;
+	  if (n === "Map" || n === "Set") return Array.from(o);
+	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+	}
+	function _arrayLikeToArray(arr, len) {
+	  if (len == null || len > arr.length) len = arr.length;
+	  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+	  return arr2;
+	}
+	function _nonIterableSpread() {
+	  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	}
+	function _nonIterableRest() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 	}
 
 	/**
@@ -2637,6 +2187,445 @@
 	}
 
 	/**
+	 * Data Transform
+	 *
+	 * @module
+	 * @returns {Array}
+	 */
+	function dataTransform(data) {
+	  var SINGLE_SERIES = 1;
+	  var MULTI_SERIES = 2;
+	  var coordinateKeys = ['x', 'y', 'z'];
+
+	  /**
+	   * Data Type
+	   *
+	   * @type {Number}
+	   */
+	  var dataType = data.key !== undefined ? SINGLE_SERIES : MULTI_SERIES;
+
+	  /**
+	   * Row Key
+	   *
+	   * @returns {Array}
+	   */
+	  var rowKey = function () {
+	    if (dataType === SINGLE_SERIES) {
+	      return Object.values(data)[0];
+	    }
+	  }();
+
+	  /**
+	   * Row Total
+	   *
+	   * @returns {Array}
+	   */
+	  var rowTotal = function () {
+	    if (dataType === SINGLE_SERIES) {
+	      return d3__namespace.sum(data.values, function (d) {
+	        return d.value;
+	      });
+	    }
+	  }();
+
+	  /**
+	   * Row Keys
+	   *
+	   * @returns {Array}
+	   */
+	  var rowKeys = function () {
+	    if (dataType === MULTI_SERIES) {
+	      return data.map(function (d) {
+	        return d.key;
+	      });
+	    }
+	  }();
+
+	  /**
+	   * Row Totals
+	   *
+	   * @returns {Array}
+	   */
+	  var rowTotals = function () {
+	    if (dataType === MULTI_SERIES) {
+	      var ret = {};
+	      data.forEach(function (item) {
+	        var rowKey = item.key;
+	        item.values.forEach(function (value) {
+	          ret[rowKey] = ret[rowKey] || 0;
+	          ret[rowKey] += value.value;
+	        });
+	      });
+	      return ret;
+	    }
+	  }();
+
+	  /**
+	   * Row Totals Min
+	   *
+	   * @returns {number}
+	   */
+	  var rowTotalsMin = function () {
+	    if (dataType === MULTI_SERIES) {
+	      return d3__namespace.min(Object.values(rowTotals));
+	    }
+	  }();
+
+	  /**
+	   * Row Totals Max
+	   *
+	   * @returns {number}
+	   */
+	  var rowTotalsMax = function () {
+	    if (dataType === MULTI_SERIES) {
+	      return d3__namespace.max(Object.values(rowTotals));
+	    }
+	  }();
+
+	  /**
+	   * Row Value Keys
+	   *
+	   * @returns {Array}
+	   */
+	  var rowValuesKeys = function () {
+	    if (dataType === SINGLE_SERIES) {
+	      return Object.keys(data.values[0]);
+	    } else {
+	      return Object.keys(data[0].values[0]);
+	    }
+	  }();
+
+	  /**
+	   * Column Keys
+	   *
+	   * @returns {Array}
+	   */
+	  var columnKeys = function () {
+	    if (dataType === SINGLE_SERIES) {
+	      return data.values.map(function (d) {
+	        return d.key;
+	      });
+	    }
+	    var ret = [];
+	    data.forEach(function (item) {
+	      var tmp = [];
+	      item.values.forEach(function (value) {
+	        tmp.push(value.key);
+	      });
+	      ret = Array.from(new Set([].concat(tmp, _toConsumableArray(ret))));
+	    });
+	    return ret;
+	  }();
+
+	  /**
+	   * Column Totals
+	   *
+	   * @returns {Array}
+	   */
+	  var columnTotals = function () {
+	    if (dataType !== MULTI_SERIES) {
+	      return;
+	    }
+	    var ret = {};
+	    data.forEach(function (item) {
+	      item.values.forEach(function (value) {
+	        var columnName = value.key;
+	        ret[columnName] = ret[columnName] || 0;
+	        ret[columnName] += value.value;
+	      });
+	    });
+	    return ret;
+	  }();
+
+	  /**
+	   * Column Totals Min
+	   *
+	   * @returns {Array}
+	   */
+	  var columnTotalsMin = function () {
+	    if (dataType === MULTI_SERIES) {
+	      return d3__namespace.min(Object.values(columnTotals));
+	    }
+	  }();
+
+	  /**
+	   * Column Totals Max
+	   *
+	   * @returns {Array}
+	   */
+	  var columnTotalsMax = function () {
+	    if (dataType === MULTI_SERIES) {
+	      return d3__namespace.max(Object.values(columnTotals));
+	    }
+	  }();
+
+	  /**
+	   * Value Min
+	   *
+	   * @returns {number}
+	   */
+	  var valueMin = function () {
+	    if (dataType === SINGLE_SERIES) {
+	      return d3__namespace.min(data.values, function (d) {
+	        return +d.value;
+	      });
+	    }
+	    var ret;
+	    data.forEach(function (item) {
+	      item.values.forEach(function (value) {
+	        ret = typeof ret === "undefined" ? value.value : Math.min(ret, +value.value);
+	      });
+	    });
+	    return +ret;
+	  }();
+
+	  /**
+	   * Value Max
+	   *
+	   * @returns {number}
+	   */
+	  var valueMax = function () {
+	    var ret;
+	    if (dataType === SINGLE_SERIES) {
+	      ret = Math.max.apply(Math, _toConsumableArray(data.values.map(function (d) {
+	        return +d.value;
+	      })));
+	    } else {
+	      data.forEach(function (item) {
+	        item.values.forEach(function (value) {
+	          ret = typeof ret !== "undefined" ? Math.max(ret, +value.value) : +value.value;
+	        });
+	      });
+	    }
+	    return ret;
+	  }();
+
+	  /**
+	   * Value Extent
+	   *
+	   * @returns {Array}
+	   */
+	  var valueExtent = function () {
+	    return [valueMin, valueMax];
+	  }();
+
+	  /**
+	   * Value Extent Stacked
+	   *
+	   * @returns {Array}
+	   */
+	  var valueExtentStacked = function () {
+	    var lowestNegativeSum = Infinity;
+	    var highestPositiveSum = -Infinity;
+	    if (dataType === MULTI_SERIES) {
+	      data.forEach(function (row) {
+	        var _row$values$reduce = row.values.reduce(function (acc, column) {
+	            var value = column.value;
+	            if (value < 0) {
+	              acc[0] += value;
+	            } else if (value > 0) {
+	              acc[1] += value;
+	            }
+	            return acc;
+	          }, [0, 0]),
+	          _row$values$reduce2 = _slicedToArray(_row$values$reduce, 2),
+	          negativeSum = _row$values$reduce2[0],
+	          positiveSum = _row$values$reduce2[1];
+	        lowestNegativeSum = Math.min(lowestNegativeSum, negativeSum);
+	        highestPositiveSum = Math.max(highestPositiveSum, positiveSum);
+	      });
+	    }
+	    // Check if lowestNegativeSum is still Infinity (no negative values found), if so, set it to 0
+	    var finalLowestNegativeSum = lowestNegativeSum === Infinity ? 0 : lowestNegativeSum;
+
+	    // Check if highestPositiveSum is still -Infinity (no positive values found), if so, set it to 0
+	    var finalHighestPositiveSum = highestPositiveSum === -Infinity ? 0 : highestPositiveSum;
+
+	    // Return the final results as an array
+	    return [finalLowestNegativeSum, finalHighestPositiveSum];
+	  }();
+
+	  /**
+	   * Coordinates Min
+	   *
+	   * @returns {Array}
+	   */
+	  var coordinatesMin = function () {
+	    var ret = {};
+	    if (dataType === SINGLE_SERIES) {
+	      coordinateKeys.forEach(function (key) {
+	        ret[key] = Math.min.apply(Math, _toConsumableArray(data.values.map(function (d) {
+	          return +d[key];
+	        })));
+	      });
+	      return ret;
+	    } else {
+	      data.forEach(function (item) {
+	        item.values.forEach(function (value) {
+	          coordinateKeys.forEach(function (key) {
+	            ret[key] = key in ret ? Math.min(ret[key], +value[key]) : +value[key];
+	          });
+	        });
+	      });
+	    }
+	    return ret;
+	  }();
+
+	  /**
+	   * Coordinates Max
+	   *
+	   * @returns {Array}
+	   */
+	  var coordinatesMax = function () {
+	    var ret = {};
+	    if (dataType === SINGLE_SERIES) {
+	      coordinateKeys.forEach(function (key) {
+	        ret[key] = Math.max.apply(Math, _toConsumableArray(data.values.map(function (d) {
+	          return +d[key];
+	        })));
+	      });
+	      return ret;
+	    } else {
+	      data.forEach(function (item) {
+	        item.values.forEach(function (value) {
+	          coordinateKeys.forEach(function (key) {
+	            ret[key] = key in ret ? Math.max(ret[key], +value[key]) : +value[key];
+	          });
+	        });
+	      });
+	    }
+	    return ret;
+	  }();
+
+	  /**
+	   * Coordinates Extent
+	   *
+	   * @returns {Array}
+	   */
+	  var coordinatesExtent = function () {
+	    var ret = {};
+	    coordinateKeys.forEach(function (key) {
+	      ret[key] = [coordinatesMin[key], coordinatesMax[key]];
+	    });
+	    return ret;
+	  }();
+
+	  /**
+	   * How Many Decimal Places?
+	   *
+	   * @private
+	   * @param {number} num - Float.
+	   * @returns {number}
+	   */
+	  var decimalPlaces = function decimalPlaces(num) {
+	    var match = ("" + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+	    if (!match) {
+	      return 0;
+	    }
+	    return Math.max(0,
+	    // Number of digits right of decimal point.
+	    (match[1] ? match[1].length : 0
+	    // Adjust for scientific notation.
+	    ) - (match[2] ? +match[2] : 0));
+	  };
+
+	  /**
+	   * Max Decimal Place
+	   *
+	   * @returns {number}
+	   */
+	  var maxDecimalPlace = function () {
+	    var ret = 0;
+	    if (dataType === MULTI_SERIES) {
+	      data.forEach(function (item) {
+	        item.values.forEach(function (value) {
+	          ret = Math.max(ret, decimalPlaces(value.value));
+	        });
+	      });
+	    }
+
+	    // toFixed must be between 0 and 20
+	    return ret > 20 ? 20 : ret;
+	  }();
+
+	  /**
+	   * Thresholds
+	   *
+	   * @returns {Array}
+	   */
+	  var thresholds = function () {
+	    var distance = valueMax - valueMin;
+	    var bands = [0.25, 0.50, 0.75, 1.00];
+	    return bands.map(function (v) {
+	      return Number((valueMin + v * distance).toFixed(maxDecimalPlace));
+	    });
+	  }();
+
+	  /**
+	   * Summary
+	   *
+	   * @returns {Array}
+	   */
+	  var summary = function summary() {
+	    return {
+	      dataType: dataType,
+	      rowKey: rowKey,
+	      rowTotal: rowTotal,
+	      rowKeys: rowKeys,
+	      rowTotals: rowTotals,
+	      rowTotalsMin: rowTotalsMin,
+	      rowTotalsMax: rowTotalsMax,
+	      rowValuesKeys: rowValuesKeys,
+	      columnKeys: columnKeys,
+	      columnTotals: columnTotals,
+	      columnTotalsMin: columnTotalsMin,
+	      columnTotalsMax: columnTotalsMax,
+	      valueMin: valueMin,
+	      valueMax: valueMax,
+	      valueExtent: valueExtent,
+	      valueExtentStacked: valueExtentStacked,
+	      coordinatesMin: coordinatesMin,
+	      coordinatesMax: coordinatesMax,
+	      coordinatesExtent: coordinatesExtent,
+	      maxDecimalPlace: maxDecimalPlace,
+	      thresholds: thresholds
+	    };
+	  };
+
+	  /**
+	   * Rotate Data
+	   *
+	   * @returns {Array}
+	   */
+	  var rotate = function rotate() {
+	    var columnKeys = data.map(function (d) {
+	      return d.key;
+	    });
+	    var rowKeys = data[0].values.map(function (d) {
+	      return d.key;
+	    });
+	    var rotated = rowKeys.map(function (rowKey, rowIndex) {
+	      var values = columnKeys.map(function (columnKey, columnIndex) {
+	        // Copy the values from the original object
+	        var values = Object.assign({}, data[columnIndex].values[rowIndex]);
+	        // Swap the key over
+	        values.key = columnKey;
+	        return values;
+	      });
+	      return {
+	        key: rowKey,
+	        values: values
+	      };
+	    });
+	    return rotated;
+	  };
+	  return {
+	    summary: summary,
+	    rotate: rotate
+	  };
+	}
+
+	/**
 	 * Simple HTML Table
 	 *
 	 * @module
@@ -4434,6 +4423,101 @@
 	  roseChartSector: componentRoseChartSector,
 	  proportionalAreaCircles: componentProportionalAreaCircles,
 	  scatterPlot: componentScatterPlot
+	};
+
+	/**
+	 * Colour Palettes
+	 *
+	 * @module
+	 * @example
+	 * d3.ez.palette.categorical(1);
+	 * d3.ez.palette.diverging(1);
+	 * d3.ez.palette.sequential("#ff0000", 9);
+	 * d3.ez.palette.lumShift(d3.ez.palette.categorical(1), 0.2);
+	 */
+	var palette = {
+	  categorical: function categorical(index) {
+	    // Categorical colour palettes are the ones that are used to separate items into
+	    // distinct groups or categories.
+	    switch (index) {
+	      case 1:
+	        // Stephen Few - Show Me the Numbers Book
+	        //      Blue       Orange     Green      Pink       L Brown    Purple     D.Yellow   Red        Black
+	        return ["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"];
+	      case 2:
+	        // Color Brewer - http://colorbrewer2.com/
+	        //      Red        L.Blue     Green      Purple     Orange     Yellow     Brown      Pink       Grey
+	        return ["#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2"];
+	      case 3:
+	        // Google Design - http://www.google.com/design/spec/style/color.html
+	        //      D. Blue    Orange     L.Green    Purple     Yellow     L.Blue     Red        D.Green    Brown
+	        return ["#3f51b5", "#ff9800", "#8bc34a", "#9c27b0", "#ffeb3b", "#03a9f4", "#f44336", "#009688", "#795548"];
+	    }
+	  },
+	  diverging: function diverging(index) {
+	    // Diverging colour palettes are used for quantitative data. Usually two different hues
+	    // that diverge from a light colour, for the critical midpoint, toward dark colours.
+	    switch (index) {
+	      case 1:
+	        // Color Brewer - Colourblind Safe
+	        return ["#8c510a", "#bf812d", "#dfc27d", "#f6e8c3", "#f5f5f5", "#c7eae5", "#80cdc1", "#35978f", "#01665e"];
+	      case 2:
+	        // Color Brewer - RAG
+	        return ["#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850"];
+	      case 3:
+	        // Chroma.js - http://gka.github.io/palettes/#colors=Blue,Ivory,Red|steps=9|bez=0|coL=0
+	        return ["#0000ff", "#8052fe", "#b58bfb", "#ddc5f7", "#fffff0", "#ffcfb4", "#ff9e7a", "#ff6842", "#ff0000"];
+	    }
+	  },
+	  sequential: function sequential(origHex, count) {
+	    // Sequential colour palettes are primarily used to encode quantitative differences.
+	    // Quantitative values are arranged sequentially, from low to high.
+	    var lumStep = 0.1;
+	    var lumMax = lumStep * count / 2;
+	    var lumMin = 0 - lumMax;
+	    var lumScale = d3__namespace.scaleLinear().domain([1, count]).range([lumMin, lumMax]);
+	    var result = [];
+	    for (var i = 1; i <= count; i++) {
+	      var lum = lumScale(i);
+
+	      // Validate and normalise Hex value.
+	      origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
+	      if (origHex.length < 6) {
+	        origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
+	      }
+
+	      // Convert to decimal and change luminosity
+	      var newHex = "#";
+	      var c = void 0;
+	      for (var j = 0; j < 3; j++) {
+	        c = parseInt(origHex.substr(j * 2, 2), 16);
+	        c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+	        newHex += ("00" + c).substr(c.length);
+	      }
+	      result.push(newHex);
+	    }
+	    return result;
+	  },
+	  lumShift: function lumShift(colors, lum) {
+	    var result = [];
+	    colors.forEach(function addNumber(origHex, index) {
+	      origHex = String(origHex).replace(/[^0-9a-f]/gi, "");
+	      if (origHex.length < 6) {
+	        origHex = origHex[0] + origHex[0] + origHex[1] + origHex[1] + origHex[2] + origHex[2];
+	      }
+	      lum = lum || 0;
+
+	      // Convert to decimal and change luminosity
+	      var newHex = "#";
+	      for (var i = 0; i < 3; i++) {
+	        var c = parseInt(origHex.substr(i * 2, 2), 16);
+	        c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+	        newHex += ("00" + c).substr(c.length);
+	      }
+	      result[index] = newHex;
+	    });
+	    return result;
+	  }
 	};
 
 	/**
@@ -7191,21 +7275,22 @@
 	 */
 
 	var author = "James Saunders";
-	var date = new Date();
-	var copyright = "Copyright (C) " + date.getFullYear() + " " + author;
-	var d3Ez = function () {
-	  return {
-	    version: version,
-	    author: author,
-	    copyright: copyright,
-	    license: license,
-	    chart: chart,
-	    component: component,
-	    palette: palette,
-	    dataTransform: dataTransform
-	  };
-	}();
+	var year = new Date().getFullYear();
+	var copyright = "Copyright (C) ".concat(year, " ").concat(author);
+	//let [version, license] = ["4.0.1", "GPLv2"];
+	var version = packageJson.version;
+	var license = packageJson.license;
+	var index = {
+	  version: version,
+	  author: author,
+	  copyright: copyright,
+	  license: license,
+	  chart: chart,
+	  component: component,
+	  palette: palette,
+	  dataTransform: dataTransform
+	};
 
-	return d3Ez;
+	return index;
 
 }));

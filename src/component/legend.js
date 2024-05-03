@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import componentLegendSize from "./legendSize";
-import componentLegendCategorical from "./legendCategorical";
-import componentLegendThreshold from "./legendThreshold";
+import componentLegendSize from "./legendSize.js";
+import componentLegendCategorical from "./legendCategorical.js";
+import componentLegendThreshold from "./legendThreshold.js";
 
 /**
  * Reusable Legend Component

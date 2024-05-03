@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import dataTransform from "../dataTransform";
-import component from "../component";
-import palette from "../palette";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Radial Heat Map (aka: Circular Heat Map)

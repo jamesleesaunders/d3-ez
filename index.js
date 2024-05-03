@@ -7,17 +7,21 @@
  */
 
 const author = "James Saunders";
-const date = new Date();
-const copyright = "Copyright (C) " + date.getFullYear() + " " + author;
-import { version, license } from "./package.json";
+const year = new Date().getFullYear();
+const copyright = `Copyright (C) ${year} ${author}`;
 
-import chart from "./src/chart";
-import component from "./src/component";
-import palette from "./src/palette";
-import dataTransform from "./src/dataTransform";
+//import { version, license } from "./package.json";
+import {default as packageJson} from "./package.json" with { type: "json" };
+//let [version, license] = ["4.0.1", "GPLv2"];
+const version = packageJson.version;
+const license = packageJson.license;
 
-const d3Ez = function() {
-	return {
+import chart from "./src/chart.js";
+import component from "./src/component.js";
+import palette from "./src/palette.js";
+import dataTransform from "./src/dataTransform.js";
+
+export default {
 		version: version,
 		author: author,
 		copyright: copyright,
@@ -26,7 +30,4 @@ const d3Ez = function() {
 		component: component,
 		palette: palette,
 		dataTransform: dataTransform
-	};
-}();
-
-export default d3Ez;
+};

@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import componentLabeledNode from "./labeledNode";
+import componentLabeledNode from "./labeledNode.js";
 
 /**
  * Reusable Proportional Area Circles Component
