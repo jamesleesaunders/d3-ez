@@ -2,7 +2,7 @@
  * d3-ez
  *
  * @author James Saunders [james@saunders-family.net]
- * @copyright Copyright (C) 2018 James Saunders
+ * @copyright Copyright (C) 2024 James Saunders
  * @license GPLv2
  */
 
@@ -11,13 +11,12 @@ const date = new Date();
 const copyright = "Copyright (C) " + date.getFullYear() + " " + author;
 import { version, license } from "./package.json";
 
-// import base from "./src/base";
 import chart from "./src/chart";
 import component from "./src/component";
 import palette from "./src/palette";
 import dataTransform from "./src/dataTransform";
 
-const ez = function() {
+const d3Ez = function() {
 	return {
 		version: version,
 		author: author,
@@ -26,9 +25,8 @@ const ez = function() {
 		chart: chart,
 		component: component,
 		palette: palette,
-		dataTransform: dataTransform,
-		//base: base
+		dataTransform: dataTransform
 	};
 }();
 
-export default ez;
+export default d3Ez;

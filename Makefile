@@ -36,7 +36,7 @@ css: $(CSS_FILES)
 min:
 	@echo Minifying...
 	@rm -f dist/d3-ez.min.js
-	@./node_modules/uglify-es/bin/uglifyjs dist/d3-ez.js > dist/d3-ez.min.js
+	@./node_modules/uglify-js/bin/uglifyjs dist/d3-ez.js > dist/d3-ez.min.js
 
 zip: $(GENERATED_FILES)
 	@echo Zipping...

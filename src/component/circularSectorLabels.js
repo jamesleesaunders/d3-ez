@@ -87,9 +87,7 @@ export default function() {
 			def.enter()
 				.append("def")
 				.append("path")
-				.attr("id", () => {
-					return `${uId}-path`;
-				})
+				.attr("id", () => `${uId}-path`)
 				.attr("d", (d) => {
 					// Add a little padding
 					const r = d * 1.04;
@@ -100,9 +98,7 @@ export default function() {
 				.ease(transition.ease)
 				.duration(transition.duration)
 				.select("path")
-				.attr("id", () => {
-					return `${uId}-path`;
-				})
+				.attr("id", () => `${uId}-path`)
 				.attr("d", (d) => {
 					// Add a little padding
 					const r = d * 1.04;
@@ -118,19 +114,16 @@ export default function() {
 			text.enter()
 				.append("text")
 				.classed("label", true)
-				.attr("font-size", "0.8em")
+				.attr("font-size", "0.9em")
 				.attr("color", "currentColor")
 				.style("text-anchor", textAnchor)
 				.append("textPath")
-				.attr("xlink:href", () => {
-					return `#${uId}-path`;
-				})
+				.attr("xlink:href", () => `#${uId}-path`)
 				.text((d) => {
 					const text = d.value;
 					return capitalizeLabels ? text.toUpperCase() : text;
 				})
 				.attr("startOffset", (d) => d.offset + "%")
-				.attr("id", (d) => d.value)
 				.attr("fill", "currentColor")
 				.merge(text)
 				.transition()
@@ -141,9 +134,7 @@ export default function() {
 					const text = d.value;
 					return capitalizeLabels ? text.toUpperCase() : text;
 				})
-				.attr("xlink:href", () => {
-					return `#${uId}-path`;
-				})
+				.attr("xlink:href", () => `#${uId}-path`)
 				.attr("startOffset", (d) => d.offset + "%")
 				.attr("id", (d) => d.value);
 

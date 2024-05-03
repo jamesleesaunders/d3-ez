@@ -1,6 +1,6 @@
 {
 	"name": "d3-ez",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"description": "D3 Easy Reusable Chart Library",
 	"license": "GPL-2.0",
 	"keywords": [
@@ -27,12 +27,12 @@
 	"module": "index",
 	"scripts": {
 		"pretest": "make",
-		"test": "tape 'test/**/*Test.js' | tap-spec",
+		"test": "tape 'test/**/*Test.js' | tap-arc",
 		"build:docs": "jsdoc -c config/jsdoc.conf.json",
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	},
 	"peerDependencies": {
-		"d3": "^5.0.0"
+		"d3": "^7.0.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.24.4",
@@ -42,18 +42,17 @@
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-json": "^6.1.0",
 		"eslint": "^6.8.0",
-		"gh-pages": "^2.2.0",
-		"jsdoc": "^3.6.6",
-		"jsdom": "^15.2.1",
-		"minami": "^1.2.3",
+		"gh-pages": "^6.1.1",
+		"jsdoc": "^4.0.3",
+		"jsdom": "^24.0.0",
 		"rollup": "^4.17.1",
-		"tap-spec": "^5.0.0",
+		"tap-arc": "^1.2.2",
 		"tape": "^5.7.5",
 		"toast-jsdoc": "^1.0.2",
-		"uglify-es": "^3.3.10",
+		"uglify-js": "^3.13.0",
 		"vows": "^0.8.3"
 	},
 	"dependencies": {
-		"d3": "^5.0.0"
+		"d3": "^7.9.0"
 	}
 }

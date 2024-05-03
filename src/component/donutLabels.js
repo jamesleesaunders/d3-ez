@@ -72,7 +72,7 @@ export default function() {
 			labels.enter()
 				.append("text")
 				.attr("class", "label")
-				.attr("font-size", "0.8em")
+				.attr("font-size", "0.9em")
 				.attr("dy", ".35em")
 				.attr("fill", "currentColor")
 				.merge(labels)

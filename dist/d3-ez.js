@@ -31,7 +31,7 @@
 
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
-	var version = "4.0.0";
+	var version = "4.0.1";
 	var license = "GPL-2.0";
 
 	/**
@@ -1941,15 +1941,13 @@
 	      var text = labelsEnter.selectAll(".label").data(function (d) {
 	        return d;
 	      });
-	      text.enter().append("text").classed("label", true).attr("font-size", "0.8em").attr("color", "currentColor").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
+	      text.enter().append("text").classed("label", true).attr("font-size", "0.9em").attr("color", "currentColor").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
 	        return "#".concat(uId, "-path");
 	      }).text(function (d) {
 	        var text = d.value;
 	        return capitalizeLabels ? text.toUpperCase() : text;
 	      }).attr("startOffset", function (d) {
 	        return d.offset + "%";
-	      }).attr("id", function (d) {
-	        return d.value;
 	      }).attr("fill", "currentColor").merge(text).transition().ease(transition.ease).duration(transition.duration).select("textPath").text(function (d) {
 	        var text = d.value;
 	        return capitalizeLabels ? text.toUpperCase() : text;
@@ -2212,7 +2210,7 @@
 	      var labels = labelsGroupEnter.selectAll("text.label").data(function (d) {
 	        return pie(d.values);
 	      });
-	      labels.enter().append("text").attr("class", "label").attr("font-size", "0.8em").attr("dy", ".35em").attr("fill", "currentColor").merge(labels).transition().duration(transition.duration).text(function (d) {
+	      labels.enter().append("text").attr("class", "label").attr("font-size", "0.9em").attr("dy", ".35em").attr("fill", "currentColor").merge(labels).transition().duration(transition.duration).text(function (d) {
 	        return d.data.key;
 	      }).attrTween("transform", function (d) {
 	        this._current = this._current || d;
@@ -2663,7 +2661,7 @@
 	      var table = d3__namespace.select(this).selectAll("table").data(function (d) {
 	        return [d];
 	      });
-	      var tableEnter = table.enter().append("table").classed(classed, true).merge(table);
+	      var tableEnter = table.enter().append("table").classed("d3ez", true).classed(classed, true).attr("width", width).merge(table);
 	      tableEnter.append("thead");
 	      tableEnter.append("tfoot");
 	      tableEnter.append("tbody");
@@ -7188,14 +7186,14 @@
 	 * d3-ez
 	 *
 	 * @author James Saunders [james@saunders-family.net]
-	 * @copyright Copyright (C) 2018 James Saunders
+	 * @copyright Copyright (C) 2024 James Saunders
 	 * @license GPLv2
 	 */
 
 	var author = "James Saunders";
 	var date = new Date();
 	var copyright = "Copyright (C) " + date.getFullYear() + " " + author;
-	var ez = function () {
+	var d3Ez = function () {
 	  return {
 	    version: version,
 	    author: author,
@@ -7205,10 +7203,9 @@
 	    component: component,
 	    palette: palette,
 	    dataTransform: dataTransform
-	    //base: base
 	  };
 	}();
 
-	return ez;
+	return d3Ez;
 
 }));

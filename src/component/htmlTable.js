@@ -29,7 +29,9 @@ export default function() {
 
 			let tableEnter = table.enter()
 				.append("table")
+				.classed("d3ez", true)
 				.classed(classed, true)
+				.attr("width", width)
 				.merge(table);
 
 			tableEnter.append("thead");
