@@ -1,57 +1,85 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Bubble Test</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../../../dist/d3-ez.js"></script>
-</head>
+  <head>
+    <title>d3-ez : Bubbles Test</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../../../dist/d3-ez.js"></script>
+  </head>
 
-<body>
-  <div id="chartholder"></div>
+  <body>
+    <div id="chartholder"></div>
 
-  <script type="text/javascript">
-    var data = [
-      {key: "Europe", values: [
-        {key: "UK", value: "1.8", x: "3.7", y: "76.4", series: "Europe"},
-        {key: "France", value: "1.2", x: "3.1", y: "72.5", series: "Europe"},
-        {key: "Spain", value: "1.3", x: "4.2", y: "75.4", series: "Europe"},
-      ]},
-      {key: 'Africa', values: [
-        {key: "Kenya", value: "1.0", x: "2.0", y: "71.2", series: "Africa"},
-        {key: "Nigeria", value: "3.6", x: "4.1", y: "73.8", series: "Africa"},
-        {key: "Etheopia", value: "2.0", x: "4.9", y: "76.4", series: "Africa"},
-      ]},
-      {key: 'Asia', values: [
-        {key: "India", value: "2.6", x: "3.5", y: "70.2", series: "Asia"},
-        {key: "China", value: "0.9", x: "2.9", y: "75.8", series: "Asia"},
-        {key: "Japan", value: "1.8", x: "4.2", y: "72.1", series: "Asia"},
-      ]}
-    ];
+    <script type="text/javascript">
+      var myData = [
+        {
+          key: "Europe", values: [
+            { key: "UK", value: "1.8", x: "3.7", y: "76.4" },
+            { key: "France", value: "1.2", x: "3.1", y: "72.5" },
+            { key: "Spain", value: "1.3", x: "4.2", y: "75.4" }
+          ]
+        },
+        {
+          key: "Africa", values: [
+            { key: "Kenya", value: "1.0", x: "2.0", y: "71.2" },
+            { key: "Nigeria", value: "3.6", x: "4.1", y: "73.8" },
+            { key: "Etheopia", value: "2.0", x: "4.9", y: "76.4" }
+          ]
+        },
+        {
+          key: "Asia", values: [
+            { key: "India", value: "2.6", x: "3.5", y: "70.2" },
+            { key: "China", value: "0.9", x: "2.9", y: "75.8" },
+            { key: "Japan", value: "1.8", x: "4.2", y: "72.1" }
+          ]
+        }
+      ];
 
-    var height = 300;
-    var width = 300;
+      var height = 300;
+      var width = 300;
+      var minRadius = 3;
+      var maxRadius = 20;
 
-    // Configure chart components
-    var myChart = d3.ez.component.bubbles()
-      .width(width)
-      .height(height);
+      var columnKeys = ["Europe", "Africa", "Asia"];
+      var colors = ["#d34152", "#f4bc71", "#9bcf95"];
 
-    // Attach data and chart to 'chartholder' element
-    var svg = d3.select("#chartholder")
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height);
+      var xScale = d3.scaleLinear()
+        .domain([2.0, 4.9])
+        .range([0, width]);
 
-    var seriesGroup = svg.selectAll(".seriesGroup")
-      .data(data);
+      var yScale = d3.scaleLinear()
+        .domain([70.2, 76.4])
+        .range([height, 0]);
 
-    seriesGroup.enter()
-      .append("g")
-      .classed("seriesGroup", true)
-      .call(myChart);
+      var colorScale = d3.scaleOrdinal()
+        .domain(columnKeys)
+        .range(colors);
 
-  </script>
-</body>
+      var sizeScale = d3.scaleLinear()
+        .domain([0, 3.6])
+        .range([minRadius, maxRadius]);
+
+      // Configure chart component
+      var myChart = d3.ez.component.bubbles()
+        .xScale(xScale)
+        .yScale(yScale)
+        .colorScale(colorScale)
+        .sizeScale(sizeScale)
+        .opacity(0.5);
+
+      // Attach data and chart to 'chartholder' element
+      var svg = d3.select("#chartholder")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .selectAll(".seriesGroup")
+        .data(myData)
+        .enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .call(myChart);
+
+    </script>
+  </body>
 
 </html>

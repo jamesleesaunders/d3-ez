@@ -1,43 +1,96 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Vertical Bars Test</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../../../dist/d3-ez.js"></script>
-</head>
+  <head>
+    <title>d3-ez : Vertical Bars Test</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../../../dist/d3-ez.js"></script>
+  </head>
 
-<body>
-  <div id="chartholder"></div>
+  <body>
+    <div id="chartholder"></div>
 
-  <script type="text/javascript">
-    let data = {
-      key: "Fruit",
-      values: [
-        { key: "Apples", value: 9 },
-        { key: "Oranges", value: 3 },
-        { key: "Grapes", value: 5 },
-        { key: "Bananas", value: 7 }
-      ]
-    };
+    <script type="text/javascript">
+      var myData = [
+        {
+          key: "Europe", values: [
+            { key: "Apples", value: 9 },
+            { key: "Oranges", value: 3 },
+            { key: "Pears", value: 2 },
+            { key: "Bananas", value: 5 },
+            { key: "Kiwis", value: 7 }
+          ]
+        },
+        {
+          key: "Africa", values: [
+            { key: "Apples", value: 3 },
+            { key: "Oranges", value: 5 },
+            { key: "Pears", value: 8 },
+            { key: "Bananas", value: 2 },
+            { key: "Kiwis", value: 2 }
+          ]
+        },
+        {
+          key: "Asia", values: [
+            { key: "Apples", value: 5 },
+            { key: "Oranges", value: 8 },
+            { key: "Pears", value: 10 },
+            { key: "Bananas", value: 3 },
+            { key: "Kiwis", value: 1 }
+          ]
+        }
+      ];
 
-    var height = 300;
-    var width = 300;
+      var height = 300;
+      var width = 300;
 
-    // Configure chart components
-    var myChart = d3.ez.component.barsVertical()
-      .width(width)
-      .height(height);
+      var columnKeys = ["Europe", "Africa", "Asia"];
+      var rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
+      var colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
 
-    // Attach data and chart to 'chartholder' element
-    var chartHolder = d3.select("#chartholder");
-    chartHolder.append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .datum(data)
-      .call(myChart);
+      var xScale2 = d3.scaleBand()
+        .domain(columnKeys)
+        .range([0, width])
+        .padding(0.1);
 
-  </script>
-</body>
+      var xScale = d3.scaleBand()
+        .domain(rowKeys)
+        .range([0, xScale2.bandwidth()])
+        .padding(0.1);
+
+      var yScale = d3.scaleLinear()
+        .domain([0, 9])
+        .range([height, 0]);
+
+      var colorScale = d3.scaleOrdinal()
+        .domain(rowKeys)
+        .range(colors);
+
+      // Configure chart component
+      var myChart = d3.ez.component.barsVertical()
+        .xScale(xScale)
+        .yScale(yScale)
+        .colorScale(colorScale)
+        .opacity(0.5);
+
+      // Attach data and chart to 'chartholder' element
+      var chartHolder = d3.select("#chartholder");
+      chartHolder.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .selectAll(".seriesGroup")
+        .data(myData)
+        .enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", (d) => {
+          const x = xScale2(d.key);
+          const y = height - yScale(0);
+          return `translate(${x},${y})`
+        })
+        .call(myChart);
+
+    </script>
+  </body>
 
 </html>

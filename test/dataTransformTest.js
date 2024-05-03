@@ -1,7 +1,6 @@
-/*
 import jsdom from "jsdom";
 import test from "tape";
-import d3Ez from "../";
+import d3Ez from "../index.js";
 
 const dataset1 = [{
 	key: "Apples",
@@ -163,4 +162,3 @@ test("Test Rotate", function(t) {
 
 	t.end();
 });
-*/

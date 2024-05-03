@@ -418,7 +418,7 @@
 	        return yScale(d.y1);
 	      }).attr("width", width).attr("height", function (d) {
 	        var padding = 3;
-	        return d.value < 0 ? yScale(d.value + valueMax) - padding : height - yScale(d.value + valueMin) - padding;
+	        return (d.value < 0 ? yScale(d.value + valueMax) : height - yScale(d.value + valueMin)) - padding;
 	      }).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {

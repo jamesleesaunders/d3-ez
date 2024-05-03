@@ -104,7 +104,7 @@ export default function() {
 				.attr("width", width)
 				.attr("height", (d) => {
 					const padding = 3;
-					return d.value < 0 ? yScale(d.value + valueMax) - padding : height - yScale(d.value + valueMin) - padding;
+					return (d.value < 0 ? yScale(d.value + valueMax) : height - yScale(d.value + valueMin)) - padding;
 				})
 				.attr("fill", (d) => colorScale(d.key))
 				.attr("fill-opacity", opacity)

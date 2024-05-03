@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <title>d3-ez : Circular Bars Test</title>
+    <title>d3-ez : Donut Test</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../../../dist/d3-ez.js"></script>
   </head>
@@ -66,9 +66,9 @@
         .range(colors);
 
       // Configure chart component
-      var myChart = d3.ez.component.barsCircular()
+      var myChart = d3.ez.component.donut()
         .xScale(xScale)
-        .yScale(yScale)
+        //.yScale(yScale)
         .colorScale(colorScale)
         .opacity(0.5);
 
