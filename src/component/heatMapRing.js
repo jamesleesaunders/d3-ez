@@ -28,15 +28,14 @@ export default function() {
 		selection.each(function(data) {
 			const innerRadius = yScale(data.key);
 			const radius = yScale(data.key) + yScale.bandwidth();
+			const [startAngle, endAngle] = xScale.range();
 
 			// Pie Generator
-			const segStartAngle = d3.min(xScale.range());
-			const segEndAngle = d3.max(xScale.range());
 			const pie = d3.pie()
 				.value(1)
 				.sort(null)
-				.startAngle(segStartAngle * (Math.PI / 180))
-				.endAngle(segEndAngle * (Math.PI / 180))
+				.startAngle(startAngle * (Math.PI / 180))
+				.endAngle(endAngle * (Math.PI / 180))
 				.padAngle(0.015);
 
 			// Arc Generator

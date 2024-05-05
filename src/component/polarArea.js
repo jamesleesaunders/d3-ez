@@ -26,9 +26,7 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function() {
-
-			let startAngle = d3.min(xScale.range());
-			let endAngle = d3.max(xScale.range());
+			const [startAngle, endAngle] = xScale.range();
 
 			// Pie Generator
 			const pie = d3.pie()

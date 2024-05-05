@@ -63,10 +63,6 @@ export default function() {
 				d3.max(data.values, (d) => d.high)
 			];
 
-			const colorScale = d3.scaleOrdinal()
-				.domain([true, false])
-				.range(colors);
-
 			const xScale = d3.scaleTime()
 				.domain(dateDomain)
 				.range([0, chartW]);
@@ -75,6 +71,10 @@ export default function() {
 				.domain(yDomain)
 				.range([chartH, 0])
 				.nice();
+
+			const colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
 
 			// Create SVG element (if it does not exist already)
 			const svg = (function(selection) {

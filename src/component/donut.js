@@ -10,6 +10,7 @@ export default function() {
 	/* Default Properties */
 	let classed = "donut";
 	let xScale;
+	let yScale;
 	let colorScale;
 	let transition = { ease: d3.easeBounce, duration: 500 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -26,9 +27,12 @@ export default function() {
 	function my(selection) {
 		selection.each(function() {
 			const [innerRadius, radius] = xScale.range();
+			const [startAngle, endAngle] = yScale.range();
 
 			// Pie Generator
 			const pie = d3.pie()
+				.startAngle((startAngle * Math.PI) / 180)
+				.endAngle((endAngle * Math.PI) / 180)
 				.value((d) => d.value)
 				.sort(null)
 				.padAngle(0.015);
@@ -105,6 +109,18 @@ export default function() {
 	my.xScale = function(_v) {
 		if (!arguments.length) return xScale;
 		xScale = _v;
+		return my;
+	};
+
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.yScale = function(_v) {
+		if (!arguments.length) return yScale;
+		yScale = _v;
 		return my;
 	};
 

@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <title>d3-ez : Donut Test</title>
+    <title>d3-ez : Polar Area Test</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../../../dist/d3-ez.js"></script>
   </head>
@@ -49,24 +49,24 @@
       var endAngle = 360;
 
       var columnKeys = ["Europe", "Africa", "Asia"];
-      var rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
       var colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
 
       var xScale = d3.scaleBand()
-        .domain(rowKeys)
-        .range([innerRadius, radius])
-        .padding(0.1);
+        .domain(columnKeys)
+        .rangeRound([startAngle, endAngle])
+        .padding(0.15);
 
       var yScale = d3.scaleLinear()
         .domain([0, 10])
-        .range([startAngle, endAngle]);
+        .range([0, radius])
+        .nice();
 
       var colorScale = d3.scaleOrdinal()
-        .domain(rowKeys)
+        .domain(columnKeys)
         .range(colors);
 
       // Configure chart component
-      var myChart = d3.ez.component.donut()
+      var myChart = d3.ez.component.polarArea()
         .xScale(xScale)
         .yScale(yScale)
         .colorScale(colorScale)

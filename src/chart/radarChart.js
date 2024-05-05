@@ -45,10 +45,6 @@ export default function() {
 			const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
 			const valueExtent = [0, valueMax];
 
-			const colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-
 			const xScale = d3.scalePoint()
 				.domain(columnKeys)
 				.range([startAngle, endAngle]);
@@ -57,6 +53,10 @@ export default function() {
 				.domain(valueExtent)
 				.range([0, radius])
 				.nice();
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
 
 			// Create SVG element (if it does not exist already)
 			const svg = (function(selection) {

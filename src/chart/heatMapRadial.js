@@ -50,10 +50,6 @@ export default function() {
 				thresholds = tmpThresholds;
 			}
 
-			const colorScale = d3.scaleThreshold()
-				.domain(thresholds)
-				.range(colors);
-
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
 				.rangeRound([startAngle, endAngle])
@@ -63,6 +59,10 @@ export default function() {
 				.domain(rowKeys)
 				.rangeRound([innerRadius, radius])
 				.padding(0.1);
+
+			const colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
 
 			// Create SVG element (if it does not exist already)
 			const svg = (function(selection) {

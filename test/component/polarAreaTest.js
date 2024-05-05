@@ -49,7 +49,7 @@ test("setup", function(t) {
 	t.end();
 });
 
-test("componentDonutTest", function(t) {
+test("componentPolarAreaTest", function(t) {
 	let width = 300;
 	let height = 300;
 	let radius = Math.min(width, height) / 2;
@@ -57,23 +57,24 @@ test("componentDonutTest", function(t) {
 	let startAngle = 0;
 	let endAngle = 360;
 
-	let rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
+	let columnKeys = ["Europe", "Africa", "Asia"];
 	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
 
 	let xScale = d3.scaleBand()
-		.domain(rowKeys)
-		.range([innerRadius, radius])
-		.padding(0.1);
+		.domain(columnKeys)
+		.rangeRound([startAngle, endAngle])
+		.padding(0.15);
 
 	let yScale = d3.scaleLinear()
-		.domain([0, 9])
-		.range([startAngle, endAngle]);
+		.domain([0, 10])
+		.range([0, radius])
+		.nice();
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.range(colors);
 
-	let myChart = d3Ez.component.donut()
+	let myChart = d3Ez.component.polarArea()
 		.xScale(xScale)
 		.yScale(yScale)
 		.colorScale(colorScale)
@@ -90,7 +91,7 @@ test("componentDonutTest", function(t) {
 		.enter()
 		.append("g")
 		.classed("seriesGroup", true)
-		.attr("transform", (d) => {
+		.attr("transform", () => {
 			const x = width / 2;
 			const y = height / 2;
 			return `translate(${x},${y})`
@@ -99,7 +100,7 @@ test("componentDonutTest", function(t) {
 
 	// Populate 'expected' svg from file
 	let expectDiv = document.createElement("div");
-	readSvgFile("./test/component/svg/donut.svg", expectDiv);
+	readSvgFile("./test/component/svg/polarArea.svg", expectDiv);
 
 	// Wait for transitions to complete
 	setTimeout(function() {

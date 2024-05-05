@@ -23,6 +23,8 @@ export default function() {
 
 	/* Other Customisation Options */
 	let opacity = 1;
+	let startAngle = 0;
+	let endAngle = 360;
 
 	/**
 	 * Constructor
@@ -42,11 +44,15 @@ export default function() {
 			const radius = (Math.min(chartW, chartH) / data.length) / 2;
 			const innerRadius = radius / 2;
 
-			const { columnKeys } = dataTransform(data).summary();
+			const { columnKeys, valueExtent } = dataTransform(data).summary();
 
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
 				.range([innerRadius, radius]);
+
+			const yScale = d3.scaleLinear()
+				.domain(valueExtent)
+				.range([startAngle, endAngle]);
 
 			let colorScale = d3.scaleOrdinal()
 				.domain(columnKeys)
@@ -115,13 +121,15 @@ export default function() {
 			// Donut Slice Component
 			const donut = component.donut()
 				.xScale(xScale)
+				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
 				.dispatch(dispatch);
 
 			// Donut Label Component
 			const donutLabels = component.donutLabels()
-				.xScale(xScale);
+				.xScale(xScale)
+				.yScale(yScale);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")

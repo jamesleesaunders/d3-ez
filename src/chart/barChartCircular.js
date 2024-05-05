@@ -46,10 +46,6 @@ export default function() {
 			const { columnKeys, valueMax } = dataTransform(data).summary();
 			const valueExtent = [0, valueMax];
 
-			const colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
-
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
 				.rangeRound([innerRadius, radius])
@@ -58,6 +54,10 @@ export default function() {
 			const yScale = d3.scaleLinear()
 				.domain(valueExtent)
 				.range([startAngle, endAngle]);
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
 
 			function generateLayout(cellCount, width, height) {
 				const layout = [];
