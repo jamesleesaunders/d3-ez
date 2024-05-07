@@ -126,18 +126,10 @@ export default function() {
 				.style("stroke", (d) => colorScale(d.key))
 				.merge(seriesGroup)
 				.call(radarArea)
-				.attr("transform", () => {
-					const x = chartW / 2;
-					const y = chartH / 2;
-					return `translate(${x},${y})`
-				});
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`);
 
 			containerEnter.select(".axis")
-				.attr("transform", () => {
-					const x = chartW / 2;
-					const y = chartH / 2;
-					return `translate(${x},${y})`
-				})
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(circularSectorLabels)
 				.call(circularAxis);
 
@@ -150,7 +142,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

@@ -60,12 +60,12 @@ export default function() {
 
 			path.enter()
 				.append("path")
-				.on('mouseover', function() {
+				.on("mouseover", function() {
 					d3.select(this)
 						.transition().duration(200)
 						.style("fill-opacity", opacity);
 				})
-				.on('mouseout', function() {
+				.on("mouseout", function() {
 					d3.select(this)
 						.transition().duration(200)
 						.style("fill-opacity", opacity / 2);

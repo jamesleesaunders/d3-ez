@@ -90,7 +90,7 @@ test("componentDonutTest", function(t) {
 		.enter()
 		.append("g")
 		.classed("seriesGroup", true)
-		.attr("transform", (d) => {
+		.attr("transform", () => {
 			const x = width / 2;
 			const y = height / 2;
 			return `translate(${x},${y})`

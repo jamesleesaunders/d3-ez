@@ -81,7 +81,7 @@ export default function() {
 		// Legend Title
 		legendBoxEnter.append("g")
 			.classed("legendTitle", true)
-			.attr("transform", "translate(10, 10)")
+			.attr("transform", "translate(10,10)")
 			.append("text")
 			.style("font-weight", "bold")
 			.attr("dominant-baseline", "hanging")
@@ -96,7 +96,7 @@ export default function() {
 		// Legend Items
 		legendBoxEnter.append("g")
 			.classed("legendBox", true)
-			.attr("transform", `translate(${margin.left}, ${margin.top})`)
+			.attr("transform", `translate(${margin.left},${margin.top})`)
 			.call(legend);
 
 		legendBox.selectAll(".legendBox")

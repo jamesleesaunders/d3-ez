@@ -91,7 +91,7 @@ export default function() {
 						const d2 = interpolate(t);
 						const pos = outerArc.centroid(d2);
 						pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
-						return "translate(" + pos + ")";
+						return `translate(${pos})`;
 					};
 				})
 				.styleTween("text-anchor", function(d) {

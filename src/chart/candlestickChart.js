@@ -145,7 +145,7 @@ export default function() {
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
 			containerEnter.select(".xAxis")
-				.attr("transform", "translate(0," + chartH + ")")
+				.attr("transform", `translate(0,${chartH})`)
 				.call(xAxis)
 				.selectAll("text")
 				.style("text-anchor", "end")
@@ -177,7 +177,7 @@ export default function() {
 				.text((d) => d);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Experimental Brush
 			const brush = d3.brushX()
@@ -205,7 +205,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

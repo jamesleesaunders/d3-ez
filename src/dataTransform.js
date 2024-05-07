@@ -10,7 +10,7 @@ export default function dataTransform(data) {
 
 	const SINGLE_SERIES = 1;
 	const MULTI_SERIES = 2;
-	const coordinateKeys = ['x', 'y', 'z'];
+	const coordinateKeys = ["x", "y", "z"];
 
 	/**
 	 * Data Type

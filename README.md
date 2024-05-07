@@ -13,7 +13,7 @@ are still learning JavaScript or D3 to quickly produce data visualisations with 
 * [Examples](#examples)
 * [Getting Started](#getting-started)
 * [API Reference](https://jamesleesaunders.github.io/d3-ez/)
-* [Charts and Components](#components-and-charts)
+* [Charts Types](#chart-types)
 * [Data Structures](#data-structures)
 * [Download from GitHub](https://github.com/jamesleesaunders/d3-ez)
 * [Download from NPM](https://www.npmjs.com/package/d3-ez)

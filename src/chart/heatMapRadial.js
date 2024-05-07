@@ -131,7 +131,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(heatMapRing)
 				.call(circularRingLabels);
 
@@ -140,7 +140,7 @@ export default function() {
 
 			// Outer Ring Labels
 			containerEnter.select(".axis")
-				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(circularSectorLabels);
 
 			// Legend
@@ -151,7 +151,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

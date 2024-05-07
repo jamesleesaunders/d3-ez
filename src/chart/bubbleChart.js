@@ -130,7 +130,7 @@ export default function() {
 			const xAxis = d3.axisBottom(xScale);
 
 			containerEnter.select(".xAxis")
-				.attr("transform", "translate(0," + chartH + ")")
+				.attr("transform", `translate(0,${chartH})`)
 				.call(xAxis)
 				.selectAll("text")
 				.style("text-anchor", "end")
@@ -145,7 +145,7 @@ export default function() {
 				.call(yAxis);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -155,7 +155,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

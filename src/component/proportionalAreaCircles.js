@@ -79,7 +79,11 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d) => "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + (cellHeight / 2) + ")")
+				.attr("transform", (d) => {
+					const x = cellWidth / 2 + xScale(d.key);
+					const y = cellHeight / 2;
+					return `translate(${x},${y})`;
+				})
 				.call(spot);
 
 			spots.exit()

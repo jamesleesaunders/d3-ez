@@ -118,7 +118,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d) => "translate(0, " + yScale(d.key) + ")")
+				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
 				.call(heatMapRow);
 
 			seriesGroup.exit()
@@ -145,7 +145,7 @@ export default function() {
 				.call(yAxis);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -155,7 +155,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

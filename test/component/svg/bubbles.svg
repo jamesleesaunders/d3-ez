@@ -39,8 +39,7 @@
 			</g>
 			<g class="bubble labeledNode" transform="translate(93.10344827586205,29.032258064516537)">
 				<circle r="7.25" fill-opacity="0.5" style="stroke: rgb(155, 207, 149); stroke-width: 1; fill: rgb(155, 207, 149);"></circle>
-				<text dx="-7.25" dy="-7.25" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">China
-				</text>
+				<text dx="-7.25" dy="-7.25" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">China</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(227.58620689655172,208.0645161290327)">
 				<circle r="11.5" fill-opacity="0.5" style="stroke: rgb(155, 207, 149); stroke-width: 1; fill: rgb(155, 207, 149);"></circle>

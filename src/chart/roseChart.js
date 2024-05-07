@@ -133,11 +133,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", () => {
-					const x = chartW / 2;
-					const y = chartH / 2;
-					return `translate(${x},${y})`
-				})
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.each(function() {
 					d3.select(this).call(roseChartSector);
 				});
@@ -147,7 +143,7 @@ export default function() {
 
 			// Outer Ring Labels
 			containerEnter.select(".axis")
-				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(circularSectorLabels)
 				.call(circularAxis);
 
@@ -160,7 +156,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

@@ -60,8 +60,8 @@ export default function() {
 		const colors = legendContainerEnter.selectAll("rect")
 			.data(thresholdScale.range().map((color) => {
 				const d = thresholdScale.invertExtent(color);
-				if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
-				if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
+				if (typeof d[0] === "undefined") d[0] = x.domain()[0];
+				if (typeof d[1] === "undefined") d[1] = x.domain()[1];
 				return d;
 			}));
 

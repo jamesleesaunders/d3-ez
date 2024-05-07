@@ -10,9 +10,7 @@ const author = "James Saunders";
 const year = new Date().getFullYear();
 const copyright = `Copyright (C) ${year} ${author}`;
 
-//import { version, license } from "./package.json";
 import {default as packageJson} from "./package.json" with { type: "json" };
-//let [version, license] = ["4.0.1", "GPLv2"];
 const version = packageJson.version;
 const license = packageJson.license;
 

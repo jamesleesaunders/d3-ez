@@ -128,11 +128,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d) => {
-					const x = xScale2(d.key);
-					const y = chartH - yScale(valueMin);
-					return `translate(${x},${y})`
-				})
+				.attr("transform", (d) => `translate(${xScale2(d.key)},${chartH - yScale(valueMin)})`)
 				.call(bars);
 
 			seriesGroup.exit()
@@ -170,7 +166,7 @@ export default function() {
 				.text((d) => d);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -181,7 +177,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

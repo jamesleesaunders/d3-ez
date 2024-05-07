@@ -155,11 +155,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d, i) => {
-					const x = layout[i].x;
-					const y = layout[i].y;
-					return `translate(${x},${y})`
-				})
+				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(circularAxis)
 				.call(barsCircular)
 				.call(circularSectorLabels)
@@ -180,7 +176,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}

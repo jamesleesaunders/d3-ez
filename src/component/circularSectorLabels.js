@@ -72,10 +72,7 @@ export default function() {
 				.append("g")
 				.classed(classed, true)
 				.attr("transform", () => {
-					let offset = 0;
-					if (typeof radialScale.ticks !== "function") {
-						offset = radialScale.bandwidth() / 2;
-					}
+					const offset = typeof radialScale.ticks !== "function" ? radialScale.bandwidth() / 2 : 0;
 					return `rotate(${offset})`;
 				})
 				.merge(labels);

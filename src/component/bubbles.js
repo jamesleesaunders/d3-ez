@@ -73,7 +73,7 @@ export default function() {
 					dispatch.call("customValueClick", this, e, d);
 				})
 				.merge(bubbles)
-				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")")
+				.attr("transform", (d) => `translate(${xScale(d.x)},${yScale(d.y)})`)
 				.call(bubble);
 
 			bubbles.exit()

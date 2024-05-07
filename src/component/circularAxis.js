@@ -152,7 +152,7 @@ export default function() {
 				.attr("stroke-dasharray", "2,2")
 				.attr("opacity", 0.5)
 				.merge(spokes)
-				.attr("transform", (d) => "rotate(" + d.rotate + ")")
+				.attr("transform", (d) => `rotate(${d.rotate})`)
 				.attr("y2", -radius);
 
 			spokes.exit()

@@ -72,7 +72,7 @@ export default function() {
 		const itemsEnter = items.enter()
 			.append("g")
 			.classed("legendItem", true)
-			.attr("transform", (d) => "translate(0," + d.y + ")");
+			.attr("transform", (d) => `translate(0,${d.y})`);
 
 		items.exit()
 			.remove();
@@ -95,7 +95,7 @@ export default function() {
 		let itemsTrans = items.transition()
 			.ease(transition.ease)
 			.duration(transition.duration)
-			.attr("transform", (d) => "translate(0," + d.y + ")");
+			.attr("transform", (d) => `translate(0,${d.y})`);
 
 		itemsTrans.select("text")
 			.text((d) => d.text);
