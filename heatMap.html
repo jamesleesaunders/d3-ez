@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: roseChartSector</title>
+    <title>JSDoc: Class: heatMap</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: roseChartSector</h1>
+    <h1 class="page-title">Class: heatMap</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>roseChartSector<span class="signature">(selection)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>heatMap<span class="signature">(selection)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -41,7 +41,7 @@
     
 
     
-    <h4 class="name" id="roseChartSector"><span class="type-signature"></span>new roseChartSector<span class="signature">(selection)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="heatMap"><span class="type-signature"></span>new heatMap<span class="signature">(selection)</span><span class="type-signature"></span></h4>
     
 
     
@@ -142,7 +142,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line28">line 28</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -198,7 +198,7 @@
     
 
     
-    <h4 class="name" id=".colorScale"><span class="type-signature">(static) </span>colorScale<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id=".colors"><span class="type-signature">(static) </span>colors<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -206,7 +206,7 @@
 
 
 <div class="description">
-    <p>Color Scale Getter / Setter</p>
+    <p>Colors Getter / Setter</p>
 </div>
 
 
@@ -248,7 +248,7 @@
             <td class="type">
             
                 
-<span class="param-type">d3.scale</span>
+<span class="param-type">Array</span>
 
 
             
@@ -258,7 +258,7 @@
 
             
 
-            <td class="description last"><p>D3 color scale.</p></td>
+            <td class="description last"><p>Array of colours used by color scale.</p></td>
         </tr>
 
     
@@ -299,7 +299,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line138">line 138</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line205">line 205</a>
     </li></ul></dd>
     
 
@@ -454,7 +454,317 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line174">line 174</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line265">line 265</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".height"><span class="type-signature">(static) </span>height<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Height Getter / Setter</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>_v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Height in px.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line181">line 181</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".margin"><span class="type-signature">(static) </span>margin<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Margin Getter / Setter</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>_v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Margin in px.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line193">line 193</a>
     </li></ul></dd>
     
 
@@ -560,7 +870,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line185">line 185</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line276">line 276</a>
     </li></ul></dd>
     
 
@@ -715,7 +1025,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line162">line 162</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line217">line 217</a>
     </li></ul></dd>
     
 
@@ -769,7 +1079,7 @@
     
 
     
-    <h4 class="name" id=".stacked"><span class="type-signature">(static) </span>stacked<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id=".showAxis"><span class="type-signature">(static) </span>showAxis<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -777,7 +1087,7 @@
 
 
 <div class="description">
-    <p>Stacked Getter / Setter</p>
+    <p>Show Axis Getter / Setter</p>
 </div>
 
 
@@ -819,7 +1129,7 @@
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">Boolean</span>
 
 
             
@@ -829,7 +1139,7 @@
 
             
 
-            <td class="description last"><p>Stacked bars or grouped?</p></td>
+            <td class="description last"><p>Show axis true / false.</p></td>
         </tr>
 
     
@@ -870,7 +1180,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line150">line 150</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -924,7 +1234,7 @@
     
 
     
-    <h4 class="name" id=".xScale"><span class="type-signature">(static) </span>xScale<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id=".thresholds"><span class="type-signature">(static) </span>thresholds<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -932,7 +1242,7 @@
 
 
 <div class="description">
-    <p>X Scale Getter / Setter</p>
+    <p>Thresholds Getter / Setter</p>
 </div>
 
 
@@ -974,7 +1284,7 @@
             <td class="type">
             
                 
-<span class="param-type">d3.scale</span>
+<span class="param-type">Array</span>
 
 
             
@@ -984,7 +1294,7 @@
 
             
 
-            <td class="description last"><p>D3 scale.</p></td>
+            <td class="description last"><p>Array of thresholds.</p></td>
         </tr>
 
     
@@ -1025,7 +1335,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line114">line 114</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line241">line 241</a>
     </li></ul></dd>
     
 
@@ -1079,7 +1389,7 @@
     
 
     
-    <h4 class="name" id=".yScale"><span class="type-signature">(static) </span>yScale<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id=".transition"><span class="type-signature">(static) </span>transition<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
     
 
     
@@ -1087,7 +1397,7 @@
 
 
 <div class="description">
-    <p>Y Scale Getter / Setter</p>
+    <p>Transition Getter / Setter</p>
 </div>
 
 
@@ -1129,7 +1439,7 @@
             <td class="type">
             
                 
-<span class="param-type">d3.scale</span>
+<span class="param-type">d3.transition</span>
 
 
             
@@ -1139,7 +1449,7 @@
 
             
 
-            <td class="description last"><p>D3 scale.</p></td>
+            <td class="description last"><p>D3 transition style.</p></td>
         </tr>
 
     
@@ -1180,7 +1490,162 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_roseChartSector.js.html">component/roseChartSector.js</a>, <a href="component_roseChartSector.js.html#line126">line 126</a>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line229">line 229</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".width"><span class="type-signature">(static) </span>width<span class="signature">(_v)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Width Getter / Setter</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>_v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Width in px.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chart_heatMap.js.html">chart/heatMap.js</a>, <a href="chart_heatMap.js.html#line169">line 169</a>
     </li></ul></dd>
     
 

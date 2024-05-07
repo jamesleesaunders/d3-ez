@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: component/legend.js</title>
+    <title>JSDoc: Source: chart/heatMap.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: component/legend.js</h1>
+    <h1 class="page-title">Source: chart/heatMap.js</h1>
 
     
 
@@ -27,130 +27,165 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import * as d3 from "d3";
-import componentLegendSize from "./legendSize.js";
-import componentLegendCategorical from "./legendCategorical.js";
-import componentLegendThreshold from "./legendThreshold.js";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
- * Reusable Legend Component
+ * Heat Map (aka: Heat Table; Density Table; Heat Map)
  *
  * @module
+ * @see http://datavizproject.com/data-type/heat-map/
+ * @see https://www.atlassian.com/data/charts/heatmap-complete-guide
  */
 export default function() {
 
 	/* Default Properties */
-	let width = 100;
-	let height = 150;
-	let margin = { top: 35, right: 10, bottom: 10, left: 10 };
-	let sizeScale;
-	let colorScale;
-	let title = "Key";
-	let legend;
-	let opacity = 1;
+	let classed = "heatMap";
+	let width = 700;
+	let height = 400;
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let colors = palette.diverging(2).slice(0, 5);
 	let transition = { ease: d3.easeBounce, duration: 0 };
-	let itemType = "rect";
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+	/* Other Customisation Options */
+	let opacity = 1;
+	let showAxis = true;
+	let thresholds;
 
 	/**
 	 * Constructor
 	 *
 	 * @constructor
-	 * @alias legend
+	 * @alias heatMap
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		height = (height ? height : this.attr("height"));
-		width = (width ? width : this.attr("width"));
+		selection.each(function(data) {
+			// Set up margins and dimensions for the chart
+			const legendW = 120;
+			const legendPad = 15;
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendH = Math.max(chartH / 2, 100);
 
-		// Size Legend
-		if (typeof sizeScale !== "undefined") {
-			legend = componentLegendSize()
-				.sizeScale(sizeScale)
-				.itemCount(4);
-		}
+			const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
-		// Thereshold or Categorical Legend
-		if (typeof colorScale !== "undefined") {
-			if (scaleType(colorScale) === "threshold") {
-				legend = componentLegendThreshold()
-					.thresholdScale(colorScale);
-			} else {
-				legend = componentLegendCategorical()
-					.colorScale(colorScale)
-					.itemType(itemType);
+			if (typeof thresholds === "undefined") {
+				thresholds = tmpThresholds;
 			}
-		}
 
-		legend.opacity(opacity).transition(transition);
+			const xScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, chartW])
+				.padding(0.15);
 
-		// Legend Box
-		const legendBox = selection.selectAll(".legendBox")
-			.data([0]);
+			const yScale = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, chartH])
+				.padding(0.15);
 
-		const legendBoxEnter = legendBox.enter()
-			.append("g")
-			.attr("class", "legendBox");
+			const colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
 
-		// Border Box
-		legendBoxEnter.append("rect")
-			.classed("legendBorder", true)
-			.attr("width", width)
-			.attr("height", height)
-			.attr("fill-opacity", 0)
-			.attr("stroke-width", 1)
-			.attr("stroke", "currentcolor");
+			// Create SVG element (if it does not exist already)
+			const svg = (function(selection) {
+				const el = selection._groups[0][0];
+				if (!!el.ownerSVGElement || el.tagName === "svg") {
+					return selection;
+				} else {
+					return selection.append("svg");
+				}
+			})(selection);
 
-		legendBox.transition()
-			.ease(transition.ease)
-			.duration(transition.duration)
-			.selectAll(".legendBorder")
-			.attr("width", width)
-			.attr("height", height);
+			svg.classed("d3ez", true)
+				.attr("width", width)
+				.attr("height", height);
 
-		// Legend Title
-		legendBoxEnter.append("g")
-			.classed("legendTitle", true)
-			.attr("transform", "translate(10,10)")
-			.append("text")
-			.style("font-weight", "bold")
-			.attr("dominant-baseline", "hanging")
-			.attr("fill", "currentColor")
-			.text(title);
+			// Update the chart dimensions and container and layer groups
+			const container = svg.selectAll(".container")
+				.data([data]);
 
-		// Legend Component
-		legend
-			.width(width - (margin.left + margin.right))
-			.height(height - (margin.top + margin.bottom));
+			container.exit().remove();
 
-		// Legend Items
-		legendBoxEnter.append("g")
-			.classed("legendBox", true)
-			.attr("transform", `translate(${margin.left},${margin.top})`)
-			.call(legend);
+			const containerEnter = container.enter()
+				.append("g")
+				.classed("container", true)
+				.classed(classed, true)
+				.merge(container)
+				.attr("transform", `translate(${margin.left},${margin.top})`)
+				.attr("width", chartW)
+				.attr("height", chartH);
 
-		legendBox.selectAll(".legendBox")
-			.call(legend);
-	}
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+			containerEnter.selectAll("g")
+				.data(layers)
+				.enter()
+				.append("g")
+				.attr("class", (d) => d);
 
-	/**
-	 * Detect Scale Type
-	 *
-	 * @param {d3.scale} scale - Scale type.
-	 *
-	 * @returns {string}
-	 */
-	function scaleType(scale) {
-		const s = scale.copy();
-		if (s.domain([1, 2]).range([1, 2])(1.5) === 1) {
-			return "ordinal";
-		} else if (typeof s.invert !== "function") {
-			return "threshold";
-		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) === 1.5) {
-			return "linear";
-		} else if (s.domain([1, 2]).range([1, 2]).invert(1.5) instanceof Date) {
-			return "time";
-		} else {
-			return "not supported";
-		}
+			// Heat Map Row Component
+			const heatMapRow = component.heatMapRow()
+				.xScale(xScale)
+				.yScale(yScale)
+				.colorScale(colorScale)
+				.opacity(opacity)
+				.dispatch(dispatch);
+
+			// Series Group
+			const seriesGroup = containerEnter.select(".chart")
+				.selectAll(".seriesGroup")
+				.data(data);
+
+			seriesGroup.enter()
+				.append("g")
+				.attr("class", "seriesGroup")
+				.merge(seriesGroup)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
+				.call(heatMapRow);
+
+			seriesGroup.exit()
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.remove();
+
+			// X-Axis
+			const xAxis = d3.axisTop(xScale);
+
+			containerEnter.select(".xAxis")
+				.call(xAxis)
+				.selectAll("text")
+				.attr("y", 0)
+				.attr("x", -8)
+				.attr("transform", "rotate(60)")
+				.style("text-anchor", "end");
+
+			// Y-Axis
+			const yAxis = d3.axisLeft(yScale);
+
+			containerEnter.select(".yAxis")
+				.call(yAxis);
+
+			containerEnter.selectAll(".axis")
+				.attr("opacity", showAxis ? 1 : 0);
+
+			// Legend
+			const legend = component.legend()
+				.colorScale(colorScale)
+				.height(legendH)
+				.width(legendW)
+				.opacity(opacity);
+
+			containerEnter.select(".legend")
+				.attr("transform", `translate(${chartW + legendPad},0)`)
+				.call(legend);
+		});
 	}
 
 	/**
@@ -162,7 +197,7 @@ export default function() {
 	my.width = function(_v) {
 		if (!arguments.length) return width;
 		width = _v;
-		return my;
+		return this;
 	};
 
 	/**
@@ -174,61 +209,37 @@ export default function() {
 	my.height = function(_v) {
 		if (!arguments.length) return height;
 		height = _v;
-		return my;
+		return this;
 	};
 
 	/**
-	 * Size Scale Getter / Setter
+	 * Margin Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {number} _v - Margin in px.
 	 * @returns {*}
 	 */
-	my.sizeScale = function(_v) {
-		if (!arguments.length) return sizeScale;
-		sizeScale = _v;
-		return my;
+	my.margin = function(_v) {
+		if (!arguments.length) return margin;
+		margin = _v;
+		return this;
 	};
 
 	/**
-	 * Color Scale Getter / Setter
+	 * Colors Getter / Setter
 	 *
-	 * @param {d3.scale} _v - D3 color scale.
+	 * @param {Array} _v - Array of colours used by color scale.
 	 * @returns {*}
 	 */
-	my.colorScale = function(_v) {
-		if (!arguments.length) return colorScale;
-		colorScale = _v;
-		return my;
-	};
-
-	/**
-	 * Title Getter / Setter
-	 *
-	 * @param {string} _v - Title text.
-	 * @returns {*}
-	 */
-	my.title = function(_v) {
-		if (!arguments.length) return title;
-		title = _v;
-		return my;
-	};
-
-	/**
-	 * Item Type Getter / Setter
-	 *
-	 * @param {number} _v - Rect or Line
-	 * @returns {*}
-	 */
-	my.itemType = function(_v) {
-		if (!arguments.length) return itemType;
-		itemType = _v;
+	my.colors = function(_v) {
+		if (!arguments.length) return colors;
+		colors = _v;
 		return this;
 	};
 
 	/**
 	 * Opacity Getter / Setter
 	 *
-	 * @param {number} _v - Opacity 0 -1.
+	 * @param {Number} _v - Opacity level.
 	 * @returns {*}
 	 */
 	my.opacity = function(_v) {
@@ -240,13 +251,59 @@ export default function() {
 	/**
 	 * Transition Getter / Setter
 	 *
-	 * @param {d3.transition} _v - Transition.
+	 * @param {d3.transition} _v - D3 transition style.
 	 * @returns {*}
 	 */
 	my.transition = function(_v) {
 		if (!arguments.length) return transition;
 		transition = _v;
 		return this;
+	};
+
+	/**
+	 * Thresholds Getter / Setter
+	 *
+	 * @param {Array} _v - Array of thresholds.
+	 * @returns {*}
+	 */
+	my.thresholds = function(_v) {
+		if (!arguments.length) return thresholds;
+		thresholds = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
+		return this;
+	};
+
+	/**
+	 * Dispatch Getter / Setter
+	 *
+	 * @param {d3.dispatch} _v - Dispatch event handler.
+	 * @returns {*}
+	 */
+	my.dispatch = function(_v) {
+		if (!arguments.length) return dispatch();
+		dispatch = _v;
+		return this;
+	};
+
+	/**
+	 * Dispatch On Getter
+	 *
+	 * @returns {*}
+	 */
+	my.on = function() {
+		let value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
 	};
 
 	return my;
