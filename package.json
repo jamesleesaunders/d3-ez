@@ -38,30 +38,30 @@
 		"build:docs": "jsdoc -c config/jsdoc.conf.json",
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	},
-	"peerDependencies": {
-		"d3": "^7.0.0"
-	},
 	"devDependencies": {
-		"@babel/core": "^7.24.4",
+		"@babel/core": "^7.24.5",
 		"@babel/plugin-external-helpers": "^7.24.1",
 		"@babel/plugin-transform-object-assign": "^7.24.1",
-		"@babel/plugin-syntax-import-attributes": "latest",
-		"@babel/preset-env": "^7.24.4",
-		"@rollup/plugin-babel": "latest",
-		"@rollup/plugin-json": "latest",
-		"@rollup/plugin-node-resolve": "latest",
-		"eslint": "^6.8.0",
+		"@babel/plugin-syntax-import-attributes": "^7.24.1",
+		"@babel/preset-env": "^7.24.5",
+		"@rollup/plugin-babel": "^6.0.4",
+		"@rollup/plugin-json": "^6.1.0",
+		"@rollup/plugin-node-resolve": "^15.2.3",
+		"eslint": "^9.2.0",
 		"gh-pages": "^6.1.1",
 		"jsdoc": "^4.0.3",
 		"jsdom": "^24.0.0",
-		"rollup": "^4.17.1",
+		"rollup": "^4.17.2",
 		"tap-arc": "^1.2.2",
 		"tape": "^5.7.5",
 		"toast-jsdoc": "^1.0.2",
-		"uglify-js": "^3.13.0",
+		"uglify-js": "^3.17.4",
 		"vows": "^0.8.3"
 	},
 	"dependencies": {
+		"d3": "^7.9.0"
+	},
+	"peerDependencies": {
 		"d3": "^7.9.0"
 	}
 }
