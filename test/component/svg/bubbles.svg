@@ -2,15 +2,15 @@
 	<g class="seriesGroup">
 		<g class="bubbles">
 			<g class="bubble labeledNode" transform="translate(175.86206896551724,0)">
-				<circle r="10.333333333333332" fill-opacity="0.8" style="stroke: rgb(211, 65, 82); stroke-width: 1; fill: rgb(211, 65, 82);"></circle>
+				<circle r="10.333333333333332" fill-opacity="0.8" style="stroke: rgb(93, 165, 218); stroke-width: 1; fill: rgb(93, 165, 218);"></circle>
 				<text dx="-10.333333333333332" dy="-10.333333333333332" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">UK</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(113.79310344827586,188.70967741935502)">
-				<circle r="5.444444444444444" fill-opacity="0.8" style="stroke: rgb(211, 65, 82); stroke-width: 1; fill: rgb(211, 65, 82);"></circle>
+				<circle r="5.444444444444444" fill-opacity="0.8" style="stroke: rgb(93, 165, 218); stroke-width: 1; fill: rgb(93, 165, 218);"></circle>
 				<text dx="-5.444444444444444" dy="-5.444444444444444" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">France</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(227.58620689655172,48.38709677419354)">
-				<circle r="6.259259259259259" fill-opacity="0.8" style="stroke: rgb(211, 65, 82); stroke-width: 1; fill: rgb(211, 65, 82);"></circle>
+				<circle r="6.259259259259259" fill-opacity="0.8" style="stroke: rgb(93, 165, 218); stroke-width: 1; fill: rgb(93, 165, 218);"></circle>
 				<text dx="-6.259259259259259" dy="-6.259259259259259" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">Spain</text>
 			</g>
 		</g>
@@ -18,15 +18,15 @@
 	<g class="seriesGroup">
 		<g class="bubbles">
 			<g class="bubble labeledNode" transform="translate(0,251.6129032258065)">
-				<circle r="3.814814814814815" fill-opacity="0.8" style="stroke: rgb(244, 188, 113); stroke-width: 1; fill: rgb(244, 188, 113);"></circle>
+				<circle r="3.814814814814815" fill-opacity="0.8" style="stroke: rgb(250, 164, 58); stroke-width: 1; fill: rgb(250, 164, 58);"></circle>
 				<text dx="-3.814814814814815" dy="-3.814814814814815" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">Kenya</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(217.24137931034477,125.80645161290359)">
-				<circle r="25" fill-opacity="0.8" style="stroke: rgb(244, 188, 113); stroke-width: 1; fill: rgb(244, 188, 113);"></circle>
+				<circle r="25" fill-opacity="0.8" style="stroke: rgb(250, 164, 58); stroke-width: 1; fill: rgb(250, 164, 58);"></circle>
 				<text dx="-25" dy="-25" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">Nigeria</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(300,0)">
-				<circle r="11.962962962962965" fill-opacity="0.8" style="stroke: rgb(244, 188, 113); stroke-width: 1; fill: rgb(244, 188, 113);"></circle>
+				<circle r="11.962962962962965" fill-opacity="0.8" style="stroke: rgb(250, 164, 58); stroke-width: 1; fill: rgb(250, 164, 58);"></circle>
 				<text dx="-11.962962962962965" dy="-11.962962962962965" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">Etheopia</text>
 			</g>
 		</g>
@@ -34,15 +34,15 @@
 	<g class="seriesGroup">
 		<g class="bubbles">
 			<g class="bubble labeledNode" transform="translate(155.17241379310343,300)">
-				<circle r="16.85185185185185" fill-opacity="0.8" style="stroke: rgb(155, 207, 149); stroke-width: 1; fill: rgb(155, 207, 149);"></circle>
+				<circle r="16.85185185185185" fill-opacity="0.8" style="stroke: rgb(96, 189, 104); stroke-width: 1; fill: rgb(96, 189, 104);"></circle>
 				<text dx="-16.85185185185185" dy="-16.85185185185185" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">India</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(93.10344827586205,29.032258064516537)">
-				<circle r="3" fill-opacity="0.8" style="stroke: rgb(155, 207, 149); stroke-width: 1; fill: rgb(155, 207, 149);"></circle>
+				<circle r="3" fill-opacity="0.8" style="stroke: rgb(96, 189, 104); stroke-width: 1; fill: rgb(96, 189, 104);"></circle>
 				<text dx="-3" dy="-3" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">China</text>
 			</g>
 			<g class="bubble labeledNode" transform="translate(227.58620689655172,208.0645161290327)">
-				<circle r="10.333333333333332" fill-opacity="0.8" style="stroke: rgb(155, 207, 149); stroke-width: 1; fill: rgb(155, 207, 149);"></circle>
+				<circle r="10.333333333333332" fill-opacity="0.8" style="stroke: rgb(96, 189, 104); stroke-width: 1; fill: rgb(96, 189, 104);"></circle>
 				<text dx="-10.333333333333332" dy="-10.333333333333332" style="display: none; font-size: 10px; text-anchor: end;" fill="currentColor" alignment-baseline="middle">Japan</text>
 			</g>
 		</g>

@@ -1,29 +1,26 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
-	<g class="seriesGroup" transform="translate(9.677419354838719,-33.33333333333337)">
+	<g class="seriesGroup" transform="translate(9.677419354838719,0)">
 		<g class="bars">
-			<rect class="bar" x="0.8623442989460202" y="33.33333333333335" width="16.38454167997445" height="300" fill="rgb(211, 65, 82)" fill-opacity="0.8" stroke="rgb(211, 65, 82)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="18.109230277866494" y="233.33333333333334" width="16.38454167997445" height="99.99999999999997" fill="rgb(244, 188, 113)" fill-opacity="0.8" stroke="rgb(244, 188, 113)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="35.35611625678697" y="266.66666666666663" width="16.38454167997445" height="66.66666666666666" fill="rgb(251, 246, 196)" fill-opacity="0.8" stroke="rgb(251, 246, 196)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="52.60300223570744" y="166.66666666666669" width="16.38454167997445" height="166.66666666666669" fill="rgb(155, 207, 149)" fill-opacity="0.8" stroke="rgb(155, 207, 149)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="69.84988821462792" y="100.00000000000001" width="16.38454167997445" height="233.33333333333334" fill="rgb(57, 138, 187)" fill-opacity="0.8" stroke="rgb(57, 138, 187)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="1.0752688172043037" y="52.941176470588246" width="20.430107526881716" height="158.8235294117647" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="22.580645161290324" y="158.8235294117647" width="20.430107526881716" height="52.94117647058826" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="44.086021505376344" y="123.52941176470587" width="20.430107526881716" height="88.23529411764707" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="65.59139784946237" y="88.23529411764704" width="20.430107526881716" height="123.52941176470588" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)" stroke-width="1px" rx="2" ry="2"></rect>
 		</g>
 	</g>
-	<g class="seriesGroup" transform="translate(106.45161290322581,-33.33333333333337)">
+	<g class="seriesGroup" transform="translate(106.45161290322581,0)">
 		<g class="bars">
-			<rect class="bar" x="0.8623442989460202" y="233.33333333333334" width="16.38454167997445" height="99.99999999999997" fill="rgb(211, 65, 82)" fill-opacity="0.8" stroke="rgb(211, 65, 82)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="18.109230277866494" y="166.66666666666669" width="16.38454167997445" height="166.66666666666669" fill="rgb(244, 188, 113)" fill-opacity="0.8" stroke="rgb(244, 188, 113)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="35.35611625678697" y="66.66666666666666" width="16.38454167997445" height="266.66666666666663" fill="rgb(251, 246, 196)" fill-opacity="0.8" stroke="rgb(251, 246, 196)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="52.60300223570744" y="266.66666666666663" width="16.38454167997445" height="66.66666666666666" fill="rgb(155, 207, 149)" fill-opacity="0.8" stroke="rgb(155, 207, 149)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="69.84988821462792" y="266.66666666666663" width="16.38454167997445" height="66.66666666666666" fill="rgb(57, 138, 187)" fill-opacity="0.8" stroke="rgb(57, 138, 187)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="1.0752688172043037" y="176.47058823529412" width="20.430107526881716" height="35.29411764705884" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="22.580645161290324" y="35.29411764705883" width="20.430107526881716" height="176.47058823529414" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="44.086021505376344" y="211.76470588235293" width="20.430107526881716" height="0" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="65.59139784946237" y="0" width="20.430107526881716" height="211.76470588235296" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)" stroke-width="1px" rx="2" ry="2"></rect>
 		</g>
 	</g>
-	<g class="seriesGroup" transform="translate(203.2258064516129,-33.33333333333337)">
+	<g class="seriesGroup" transform="translate(203.2258064516129,0)">
 		<g class="bars">
-			<rect class="bar" x="0.8623442989460202" y="166.66666666666669" width="16.38454167997445" height="166.66666666666669" fill="rgb(211, 65, 82)" fill-opacity="0.8" stroke="rgb(211, 65, 82)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="18.109230277866494" y="66.66666666666666" width="16.38454167997445" height="266.66666666666663" fill="rgb(244, 188, 113)" fill-opacity="0.8" stroke="rgb(244, 188, 113)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="35.35611625678697" y="0" width="16.38454167997445" height="333.33333333333337" fill="rgb(251, 246, 196)" fill-opacity="0.8" stroke="rgb(251, 246, 196)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="52.60300223570744" y="233.33333333333334" width="16.38454167997445" height="99.99999999999997" fill="rgb(155, 207, 149)" fill-opacity="0.8" stroke="rgb(155, 207, 149)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="69.84988821462792" y="300" width="16.38454167997445" height="33.33333333333337" fill="rgb(57, 138, 187)" fill-opacity="0.8" stroke="rgb(57, 138, 187)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="1.0752688172043037" y="211.76470588235293" width="20.430107526881716" height="88.23529411764704" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="22.580645161290324" y="158.8235294117647" width="20.430107526881716" height="52.94117647058826" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="44.086021505376344" y="158.8235294117647" width="20.430107526881716" height="52.94117647058826" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" x="65.59139784946237" y="52.941176470588246" width="20.430107526881716" height="158.8235294117647" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)" stroke-width="1px" rx="2" ry="2"></rect>
 		</g>
 	</g>
 </svg>

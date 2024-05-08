@@ -3,30 +3,7 @@ import jsdom from "jsdom";
 import test from "tape";
 import d3Ez from "../../index.js";
 import { readFileSync } from "fs";
-
-let myData = [
-	{
-		key: "Europe", values: [
-			{ key: "UK", value: "1.8", x: "3.7", y: "76.4" },
-			{ key: "France", value: "1.2", x: "3.1", y: "72.5" },
-			{ key: "Spain", value: "1.3", x: "4.2", y: "75.4" }
-		]
-	},
-	{
-		key: "Africa", values: [
-			{ key: "Kenya", value: "1.0", x: "2.0", y: "71.2" },
-			{ key: "Nigeria", value: "3.6", x: "4.1", y: "73.8" },
-			{ key: "Etheopia", value: "2.0", x: "4.9", y: "76.4" }
-		]
-	},
-	{
-		key: "Asia", values: [
-			{ key: "India", value: "2.6", x: "3.5", y: "70.2" },
-			{ key: "China", value: "0.9", x: "2.9", y: "75.8" },
-			{ key: "Japan", value: "1.8", x: "4.2", y: "72.1" }
-		]
-	}
-];
+import { dataset4 as myData } from "../exampleData.js";
 
 function readSvgFile(file, element) {
 	let str = readFileSync(file)
@@ -49,7 +26,7 @@ test("componentBubblesTest", function(t) {
 	let minRadius = 3;
 	let maxRadius = 25;
 
-	let colors = ["#d34152", "#f4bc71", "#9bcf95"];
+	let colors = d3Ez.palette.categorical(1);
 	let { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = d3Ez.dataTransform(myData).summary();
 
 	let xScale = d3.scaleLinear()

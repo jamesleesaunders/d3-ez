@@ -10,36 +10,8 @@
   <body>
     <div id="chartholder"></div>
 
-    <script type="text/javascript">
-      var myData = [
-        {
-          key: "Europe", values: [
-            { key: "Apples", value: 9 },
-            { key: "Oranges", value: 3 },
-            { key: "Pears", value: 2 },
-            { key: "Bananas", value: 5 },
-            { key: "Kiwis", value: 7 }
-          ]
-        },
-        {
-          key: "Africa", values: [
-            { key: "Apples", value: 3 },
-            { key: "Oranges", value: 5 },
-            { key: "Pears", value: 8 },
-            { key: "Bananas", value: 2 },
-            { key: "Kiwis", value: 2 }
-          ]
-        },
-        {
-          key: "Asia", values: [
-            { key: "Apples", value: 5 },
-            { key: "Oranges", value: 8 },
-            { key: "Pears", value: 10 },
-            { key: "Bananas", value: 3 },
-            { key: "Kiwis", value: 1 }
-          ]
-        }
-      ];
+    <script type="module">
+      import { dataset2 as myData } from "../../exampleData.js";
 
       var height = 300;
       var width = 300;
@@ -48,7 +20,7 @@
       var startAngle = 0;
       var endAngle = 360;
 
-      var colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+      var colors = d3.ez.palette.categorical(1);
       var { rowKeys, columnKeys, valueExtentStacked } = d3.ez.dataTransform(myData).summary();
 
       var xScale = d3.scaleBand()
@@ -82,8 +54,8 @@
         .append("g")
         .classed("seriesGroup", true)
         .attr("transform", (d) => {
-          const x = width / 2;
-          const y = height / 2;
+          var x = width / 2;
+          var y = height / 2;
           return `translate(${x},${y})`
         })
         .call(myChart);

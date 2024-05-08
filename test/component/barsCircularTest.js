@@ -3,36 +3,7 @@ import jsdom from "jsdom";
 import test from "tape";
 import d3Ez from "../../index.js";
 import { readFileSync } from "fs";
-
-let myData = [
-	{
-		key: "Europe", values: [
-			{ key: "Apples", value: 9 },
-			{ key: "Oranges", value: 3 },
-			{ key: "Pears", value: 2 },
-			{ key: "Bananas", value: 5 },
-			{ key: "Kiwis", value: 7 }
-		]
-	},
-	{
-		key: "Africa", values: [
-			{ key: "Apples", value: 3 },
-			{ key: "Oranges", value: 5 },
-			{ key: "Pears", value: 8 },
-			{ key: "Bananas", value: 2 },
-			{ key: "Kiwis", value: 2 }
-		]
-	},
-	{
-		key: "Asia", values: [
-			{ key: "Apples", value: 5 },
-			{ key: "Oranges", value: 8 },
-			{ key: "Pears", value: 10 },
-			{ key: "Bananas", value: 3 },
-			{ key: "Kiwis", value: 1 }
-		]
-	}
-];
+import { dataset2 as myData } from "../exampleData.js";
 
 function readSvgFile(file, element) {
 	let str = readFileSync(file)
@@ -57,7 +28,7 @@ test("componentBarsCircularTest", function(t) {
 	let startAngle = 0;
 	let endAngle = 270;
 
-	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+	let colors = d3Ez.palette.categorical(1);
 	let { columnKeys, valueMax } = d3Ez.dataTransform(myData).summary();
 	let valueExtent = [0, valueMax];
 
@@ -87,7 +58,7 @@ test("componentBarsCircularTest", function(t) {
 		.attr("width", width)
 		.attr("height", height)
 		.selectAll(".seriesGroup")
-		.data([myData[0]])
+		.data([myData[2]])
 		.enter()
 		.append("g")
 		.classed("seriesGroup", true)

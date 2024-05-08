@@ -3,36 +3,7 @@ import jsdom from "jsdom";
 import test from "tape";
 import d3Ez from "../../index.js";
 import { readFileSync } from "fs";
-
-let myData = [
-	{
-		key: "Europe", values: [
-			{ key: "Apples", value: 9 },
-			{ key: "Oranges", value: 3 },
-			{ key: "Pears", value: 2 },
-			{ key: "Bananas", value: 5 },
-			{ key: "Kiwis", value: 7 }
-		]
-	},
-	{
-		key: "Africa", values: [
-			{ key: "Apples", value: 3 },
-			{ key: "Oranges", value: 5 },
-			{ key: "Pears", value: 8 },
-			{ key: "Bananas", value: 2 },
-			{ key: "Kiwis", value: 2 }
-		]
-	},
-	{
-		key: "Asia", values: [
-			{ key: "Apples", value: 5 },
-			{ key: "Oranges", value: 8 },
-			{ key: "Pears", value: 10 },
-			{ key: "Bananas", value: 3 },
-			{ key: "Kiwis", value: 1 }
-		]
-	}
-];
+import { dataset2 as myData } from "../exampleData.js";
 
 function readSvgFile(file, element) {
 	let str = readFileSync(file)
@@ -53,23 +24,23 @@ test("componentPolarAreaTest", function(t) {
 	let width = 300;
 	let height = 300;
 	let radius = Math.min(width, height) / 2;
-	let innerRadius = radius / 4;
+	let innerRadius = 0;
 	let startAngle = 0;
 	let endAngle = 360;
 
-	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
-	let { rowKeys, valueExtent } = d3Ez.dataTransform(myData).summary();
+	let colors = d3Ez.palette.categorical(1);
+	let { columnKeys, valueExtent } = d3Ez.dataTransform(myData).summary();
 
 	let xScale = d3.scaleBand()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.rangeRound([startAngle, endAngle]);
 
 	let yScale = d3.scaleLinear()
 		.domain(valueExtent)
-		.range([0, radius]);
+		.range([innerRadius, radius]);
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.range(colors);
 
 	let myChart = d3Ez.component.polarArea()
