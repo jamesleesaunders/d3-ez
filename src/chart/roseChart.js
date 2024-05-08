@@ -3,7 +3,6 @@ import component from "../component.js";
 import palette from "../palette.js";
 import dataTransform from "../dataTransform.js";
 
-
 /**
  * Rose Chart (aka: Coxcomb Chart; Circumplex Chart; Nightingale Chart)
  *
@@ -40,15 +39,13 @@ export default function() {
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
-			const radius = Math.min(chartW, chartH) / 2.5;
+			const radius = Math.min(chartW, chartH) / 2;
 			const innerRadius = 0;
 
-			const { rowKeys, columnKeys, valueExtent, valueExtentStacked } = dataTransform(data).summary();
-			let [valueMin, valueMax] = valueExtent;
-			if (stacked) {
-				[valueMin, valueMax] = valueExtentStacked;
-			}
+			let { rowKeys, columnKeys, valueMin, valueMax, valueExtentStacked } = dataTransform(data).summary();
+			valueMax = stacked ? valueExtentStacked[1] : valueMax;
 			valueMin = 0;
+
 			const yDomain = [valueMin, valueMax];
 
 			const xScale = d3.scaleBand()

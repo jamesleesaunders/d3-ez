@@ -7094,21 +7094,15 @@
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
-	      var radius = Math.min(chartW, chartH) / 2.5;
+	      var radius = Math.min(chartW, chartH) / 2;
 	      var innerRadius = 0;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
-	        valueExtent = _dataTransform$summar.valueExtent,
+	        valueMin = _dataTransform$summar.valueMin,
+	        valueMax = _dataTransform$summar.valueMax,
 	        valueExtentStacked = _dataTransform$summar.valueExtentStacked;
-	      var _valueExtent = _slicedToArray(valueExtent, 2),
-	        valueMin = _valueExtent[0],
-	        valueMax = _valueExtent[1];
-	      if (stacked) {
-	        var _valueExtentStacked = _slicedToArray(valueExtentStacked, 2);
-	        valueMin = _valueExtentStacked[0];
-	        valueMax = _valueExtentStacked[1];
-	      }
+	      valueMax = stacked ? valueExtentStacked[1] : valueMax;
 	      valueMin = 0;
 	      var yDomain = [valueMin, valueMax];
 	      var xScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([0, 360]);

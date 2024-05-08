@@ -3,7 +3,7 @@
 
   <head>
     <title>d3-ez : Punch Card Example</title>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../dist/d3-ez.js"></script>
     <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css"/>
   </head>
@@ -18,25 +18,17 @@
         // Netflix Speed ISP Speed Index Source: https://ispspeedindex.netflix.com/country/uk/
 
         // Convert json to d3-ez data format
-        var data = d3.nest().key(function(d) {
-          return d.ISP;
-        }).entries(json.Data).map(function(obj) {
-          obj.values = obj.values.map(function(values) {
-            return {
-              key: values.Month,
-              value: values.Value
-            };
-          });
-          return obj;
-        });
+        var data = Array.from(d3.group(json.Data, d => d.ISP), ([key, values]) => ({
+          key: key,
+          values: values.map(d => ({ key: d.Month, value: d.Value }))
+        }));
 
         // Create chart base
         var myChart = d3.ez.chart.punchCard()
           .width(1000)
           .height(600)
           .on("customValueMouseOver", function(e, d) {
-            console.log(d)
-            d3.select("#message").text(d);
+            d3.select("#message").text(d.value);
           })
           .on("customSeriesClick", function(e, d) {
             console.log(d);

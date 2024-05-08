@@ -3,7 +3,7 @@
 
   <head>
     <title>d3-ez : Line Chart (Multi Series) Example</title>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../dist/d3-ez.js"></script>
     <link rel="stylesheet" type="text/css" href="../dist/d3-ez.css"/>
   </head>
@@ -24,44 +24,28 @@
           .colors(colors)
           .yAxisLabel("Rate")
           .on("customValueMouseOver", function(e, d) {
-            d3.select("#message").text(d);
+            d3.select("#message").text(d.value);
           })
           .on("customSeriesClick", function(e, d) {
             console.log(d);
           });
 
-        // Convert csv to d3-ez data format
-        dateConvert = function(dateYMD) {
-          parser = d3.timeParse('%d-%b-%y');
-          var dateISO = parser(dateYMD).toISOString();
-          var dateUnix = new Date(dateISO) / 1000;
-          return dateUnix;
+        // Function to convert date to Unix timestamp
+        var dateConvert = function(dateYMD) {
+          const parser = d3.timeParse('%d-%b-%y');
+          const dateISO = parser(dateYMD).toISOString();
+          return new Date(dateISO) / 1000;
         }
 
-        var data = [{
-          key: "USD",
-          values: []
-        }, {
-          key: "EUR",
-          values: []
-        }, {
-          key: "AUD",
-          values: []
-        }];
-        d3.map(csv).values().forEach(function(d) {
-          data[0].values.push({
+        // Convert csv to d3-ez data format
+        const currencies = ["USD", "EUR", "AUD"];
+        const data = currencies.map(currency => ({
+          key: currency,
+          values: csv.map(d => ({
             key: dateConvert(d.Date),
-            value: d['USD']
-          });
-          data[1].values.push({
-            key: dateConvert(d.Date),
-            value: d['EUR']
-          });
-          data[2].values.push({
-            key: dateConvert(d.Date),
-            value: d['AUD']
-          });
-        });
+            value: d[currency]
+          }))
+        }));
 
         d3.select('#chartholder')
           .datum(data)
