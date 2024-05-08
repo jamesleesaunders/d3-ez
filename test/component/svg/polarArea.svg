@@ -1,11 +1,11 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
 	<g class="seriesGroup" transform="translate(150,150)">
 		<g class="polarArea">
-			<path class="segment" style="fill: rgb(155, 207, 149);" fill-opacity="0.5" stroke="rgb(155, 207, 149)" stroke-width="1px" d="M0,-132.985A2,2,0,0,1,2.03,-134.985A135,135,0,0,1,127.751,-43.643A2,2,0,0,1,126.476,-41.095L0,0Z"></path>
-			<path class="segment" style="fill: rgb(57, 138, 187);" fill-opacity="0.5" stroke="rgb(57, 138, 187)" stroke-width="1px" d="M40.851,-13.273A2,2,0,0,1,43.398,-11.9A45,45,0,0,1,28.115,35.136A2,2,0,0,1,25.247,34.75L0,0Z"></path>
-			<path class="segment" style="fill: rgb(211, 65, 82);" fill-opacity="0.5" stroke="rgb(211, 65, 82)" stroke-width="1px" d="M16.416,22.595A2,2,0,0,1,15.855,25.468A30,30,0,0,1,-15.855,25.468A2,2,0,0,1,-16.416,22.595L0,0Z"></path>
-			<path class="segment" style="fill: rgb(244, 188, 113);" fill-opacity="0.5" stroke="rgb(244, 188, 113)" stroke-width="1px" d="M-42.892,59.036A2,2,0,0,1,-45.73,59.446A75,75,0,0,1,-71.937,-21.213A2,2,0,0,1,-69.401,-22.55L0,0Z"></path>
-			<path class="segment" style="fill: rgb(251, 246, 196);" fill-opacity="0.5" stroke="rgb(251, 246, 196)" stroke-width="1px" d="M-97.94,-31.823A2,2,0,0,1,-99.212,-34.38A105,105,0,0,1,-2.039,-104.98A2,2,0,0,1,0,-102.981L0,0Z"></path>
+			<path class="segment" style="fill: rgb(155, 207, 149);" fill-opacity="0.8" stroke="rgb(155, 207, 149)" stroke-width="1px" d="M0,-131.318A2,2,0,0,1,2.03,-133.318A133.333,133.333,0,0,1,126.165,-43.129A2,2,0,0,1,124.891,-40.58L0,0Z"></path>
+			<path class="segment" style="fill: rgb(57, 138, 187);" fill-opacity="0.8" stroke="rgb(57, 138, 187)" stroke-width="1px" d="M29.739,-9.663A2,2,0,0,1,32.295,-8.256A33.333,33.333,0,0,1,21.274,25.662A2,2,0,0,1,18.38,25.298L0,0Z"></path>
+			<path class="segment" style="fill: rgb(211, 65, 82);" fill-opacity="0.8" stroke="rgb(211, 65, 82)" stroke-width="1px" d="M8.54,11.755A2,2,0,0,1,7.866,14.694A16.667,16.667,0,0,1,-7.866,14.694A2,2,0,0,1,-8.54,11.755L0,0Z"></path>
+			<path class="segment" style="fill: rgb(244, 188, 113);" fill-opacity="0.8" stroke="rgb(244, 188, 113)" stroke-width="1px" d="M-37.992,52.291A2,2,0,0,1,-40.835,52.697A66.667,66.667,0,0,1,-64.011,-18.63A2,2,0,0,1,-61.472,-19.974L0,0Z"></path>
+			<path class="segment" style="fill: rgb(251, 246, 196);" fill-opacity="0.8" stroke="rgb(251, 246, 196)" stroke-width="1px" d="M-93.184,-30.277A2,2,0,0,1,-94.455,-32.836A100,100,0,0,1,-2.041,-99.979A2,2,0,0,1,0,-97.98L0,0Z"></path>
 		</g>
 	</g>
 </svg>

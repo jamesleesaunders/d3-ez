@@ -58,7 +58,7 @@ export default function() {
 			const xScale2 = d3.scaleBand()
 				.domain(rowKeys)
 				.range([0, chartW])
-				.padding(0.2);
+				.padding(0.1);
 
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)

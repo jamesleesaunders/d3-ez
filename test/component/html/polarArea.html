@@ -48,21 +48,19 @@
       var startAngle = 0;
       var endAngle = 360;
 
-      var columnKeys = ["Europe", "Africa", "Asia"];
       var colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+      var { rowKeys, valueExtent } = d3.ez.dataTransform(myData).summary();
 
       var xScale = d3.scaleBand()
-        .domain(columnKeys)
-        .rangeRound([startAngle, endAngle])
-        .padding(0.15);
+        .domain(rowKeys)
+        .rangeRound([startAngle, endAngle]);
 
       var yScale = d3.scaleLinear()
-        .domain([0, 10])
-        .range([0, radius])
-        .nice();
+        .domain(valueExtent)
+        .range([0, radius]);
 
       var colorScale = d3.scaleOrdinal()
-        .domain(columnKeys)
+        .domain(rowKeys)
         .range(colors);
 
       // Configure chart component
@@ -70,7 +68,7 @@
         .xScale(xScale)
         .yScale(yScale)
         .colorScale(colorScale)
-        .opacity(0.5);
+        .opacity(0.8);
 
       // Attach data and chart to 'chartholder' element
       var chartHolder = d3.select("#chartholder");

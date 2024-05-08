@@ -38,25 +38,30 @@
       var height = 300;
       var width = 300;
       var minRadius = 3;
-      var maxRadius = 20;
+      var maxRadius = 25;
 
-      var columnKeys = ["Europe", "Africa", "Asia"];
       var colors = ["#d34152", "#f4bc71", "#9bcf95"];
+      var {
+        rowKeys,
+        coordinatesExtent: { x: xExtent, y: yExtent },
+        valueExtent
+      } = d3.ez.dataTransform(myData).summary();
 
       var xScale = d3.scaleLinear()
-        .domain([2.0, 4.9])
+        .domain(xExtent)
         .range([0, width]);
 
       var yScale = d3.scaleLinear()
-        .domain([70.2, 76.4])
+        .domain(yExtent)
         .range([height, 0]);
 
       var colorScale = d3.scaleOrdinal()
-        .domain(columnKeys)
+        .domain(rowKeys)
         .range(colors);
 
+      console.log(valueExtent);
       var sizeScale = d3.scaleLinear()
-        .domain([0, 3.6])
+        .domain(valueExtent)
         .range([minRadius, maxRadius]);
 
       // Configure chart component
@@ -65,7 +70,7 @@
         .yScale(yScale)
         .colorScale(colorScale)
         .sizeScale(sizeScale)
-        .opacity(0.5);
+        .opacity(0.8);
 
       // Attach data and chart to 'chartholder' element
       var svg = d3.select("#chartholder")

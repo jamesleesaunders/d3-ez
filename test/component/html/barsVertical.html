@@ -44,26 +44,25 @@
       var height = 300;
       var width = 300;
 
-      var columnKeys = ["Europe", "Africa", "Asia"];
-      var rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
       var colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+      var { rowKeys, columnKeys, valueExtent } = d3.ez.dataTransform(myData).summary();
 
       var xScale2 = d3.scaleBand()
-        .domain(columnKeys)
+        .domain(rowKeys)
         .range([0, width])
         .padding(0.1);
 
       var xScale = d3.scaleBand()
-        .domain(rowKeys)
+        .domain(columnKeys)
         .range([0, xScale2.bandwidth()])
-        .padding(0.1);
+        .padding(0.05);
 
       var yScale = d3.scaleLinear()
-        .domain([0, 9])
+        .domain(valueExtent)
         .range([height, 0]);
 
       var colorScale = d3.scaleOrdinal()
-        .domain(rowKeys)
+        .domain(columnKeys)
         .range(colors);
 
       // Configure chart component
@@ -71,7 +70,7 @@
         .xScale(xScale)
         .yScale(yScale)
         .colorScale(colorScale)
-        .opacity(0.5);
+        .opacity(0.8);
 
       // Attach data and chart to 'chartholder' element
       var chartHolder = d3.select("#chartholder");

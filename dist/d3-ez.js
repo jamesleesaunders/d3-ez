@@ -4845,7 +4845,7 @@
 	        valueMin = valueMin > 0 ? 0 : valueMin;
 	      }
 	      var yDomain = [valueMin, valueMax];
-	      var xScale2 = d3__namespace.scaleBand().domain(rowKeys).range([0, chartW]).padding(0.2);
+	      var xScale2 = d3__namespace.scaleBand().domain(rowKeys).range([0, chartW]).padding(0.1);
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([0, xScale2.bandwidth()]).padding(0.05);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([chartH, 0]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
@@ -6439,7 +6439,7 @@
 	        columnKeys = _dataTransform$summar.columnKeys,
 	        valueMax = _dataTransform$summar.valueMax;
 	      var valueExtent = [0, valueMax];
-	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.15);
+	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([0, radius]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
 	      function generateLayout(cellCount, width, height) {

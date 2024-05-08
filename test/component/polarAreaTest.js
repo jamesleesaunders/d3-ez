@@ -57,28 +57,26 @@ test("componentPolarAreaTest", function(t) {
 	let startAngle = 0;
 	let endAngle = 360;
 
-	let columnKeys = ["Europe", "Africa", "Asia"];
 	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+	let { rowKeys, valueExtent } = d3Ez.dataTransform(myData).summary();
 
 	let xScale = d3.scaleBand()
-		.domain(columnKeys)
-		.rangeRound([startAngle, endAngle])
-		.padding(0.15);
+		.domain(rowKeys)
+		.rangeRound([startAngle, endAngle]);
 
 	let yScale = d3.scaleLinear()
-		.domain([0, 10])
-		.range([0, radius])
-		.nice();
+		.domain(valueExtent)
+		.range([0, radius]);
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(columnKeys)
+		.domain(rowKeys)
 		.range(colors);
 
 	let myChart = d3Ez.component.polarArea()
 		.xScale(xScale)
 		.yScale(yScale)
 		.colorScale(colorScale)
-		.opacity(0.5);
+		.opacity(0.8);
 
 	// Populate 'actual' svg using d3-ez component
 	let actualDiv = document.createElement("div");

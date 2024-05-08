@@ -47,25 +47,25 @@ test("componentBubblesTest", function(t) {
 	let width = 300;
 	let height = 300;
 	let minRadius = 3;
-	let maxRadius = 20;
+	let maxRadius = 25;
 
-	let columnKeys = ["Europe", "Africa", "Asia"];
 	let colors = ["#d34152", "#f4bc71", "#9bcf95"];
+	let { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = d3Ez.dataTransform(myData).summary();
 
 	let xScale = d3.scaleLinear()
-		.domain([2.0, 4.9])
+		.domain(xExtent)
 		.range([0, width]);
 
 	let yScale = d3.scaleLinear()
-		.domain([70.2, 76.4])
+		.domain(yExtent)
 		.range([height, 0]);
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(columnKeys)
+		.domain(rowKeys)
 		.range(colors);
 
 	let sizeScale = d3.scaleLinear()
-		.domain([0, 3.6])
+		.domain(valueExtent)
 		.range([minRadius, maxRadius]);
 
 	let myChart = d3Ez.component.bubbles()
@@ -73,7 +73,7 @@ test("componentBubblesTest", function(t) {
 		.yScale(yScale)
 		.colorScale(colorScale)
 		.sizeScale(sizeScale)
-		.opacity(0.5);
+		.opacity(0.8);
 
 	// Populate 'actual' svg using d3-ez component
 	let actualDiv = document.createElement("div");

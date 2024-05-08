@@ -57,20 +57,19 @@ test("componentRoseChartSectorTest", function(t) {
 	let startAngle = 0;
 	let endAngle = 360;
 
-	let columnKeys = ["Europe", "Africa", "Asia"];
-	let rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
 	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+	let { rowKeys, columnKeys, valueExtentStacked } = d3Ez.dataTransform(myData).summary();
 
 	let xScale = d3.scaleBand()
-		.domain(columnKeys)
+		.domain(rowKeys)
 		.rangeRound([startAngle, endAngle]);
 
-	const yScale = d3.scaleLinear()
-		.domain([0, 27])
+	let yScale = d3.scaleLinear()
+		.domain(valueExtentStacked)
 		.range([innerRadius, radius]);
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.range(colors);
 
 	let myChart = d3Ez.component.roseChartSector()
@@ -78,7 +77,7 @@ test("componentRoseChartSectorTest", function(t) {
 		.yScale(yScale)
 		.colorScale(colorScale)
 		.stacked(true)
-		.opacity(0.5);
+		.opacity(0.8);
 
 	// Populate 'actual' svg using d3-ez component
 	let actualDiv = document.createElement("div");

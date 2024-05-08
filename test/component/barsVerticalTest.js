@@ -53,33 +53,32 @@ test("componentBarsVerticalTest", function(t) {
 	let width = 300;
 	let height = 300;
 
-	let columnKeys = ["Europe", "Africa", "Asia"];
-	let rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
 	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+	let { rowKeys, columnKeys, valueExtent } = d3Ez.dataTransform(myData).summary();
 
 	let xScale2 = d3.scaleBand()
-		.domain(columnKeys)
+		.domain(rowKeys)
 		.range([0, width])
 		.padding(0.1);
 
 	let xScale = d3.scaleBand()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.range([0, xScale2.bandwidth()])
-		.padding(0.1);
+		.padding(0.05);
 
 	let yScale = d3.scaleLinear()
-		.domain([0, 9])
+		.domain(valueExtent)
 		.range([height, 0]);
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.range(colors);
 
 	let myChart = d3Ez.component.barsVertical()
 		.xScale(xScale)
 		.yScale(yScale)
 		.colorScale(colorScale)
-		.opacity(0.5);
+		.opacity(0.8);
 
 	// Populate 'actual' svg using d3-ez component
 	let actualDiv = document.createElement("div");

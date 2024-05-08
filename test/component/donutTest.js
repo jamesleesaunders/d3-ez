@@ -57,27 +57,26 @@ test("componentDonutTest", function(t) {
 	let startAngle = 0;
 	let endAngle = 360;
 
-	let rowKeys = ["Apples", "Oranges", "Pears", "Bananas", "Kiwis"];
 	let colors = ["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"];
+	let { columnKeys, valueExtent } = d3Ez.dataTransform(myData).summary();
 
 	let xScale = d3.scaleBand()
-		.domain(rowKeys)
-		.range([innerRadius, radius])
-		.padding(0.1);
+		.domain(columnKeys)
+		.range([innerRadius, radius]);
 
 	let yScale = d3.scaleLinear()
-		.domain([0, 9])
+		.domain(valueExtent)
 		.range([startAngle, endAngle]);
 
 	let colorScale = d3.scaleOrdinal()
-		.domain(rowKeys)
+		.domain(columnKeys)
 		.range(colors);
 
 	let myChart = d3Ez.component.donut()
 		.xScale(xScale)
 		.yScale(yScale)
 		.colorScale(colorScale)
-		.opacity(0.5);
+		.opacity(0.8);
 
 	// Populate 'actual' svg using d3-ez component
 	let actualDiv = document.createElement("div");

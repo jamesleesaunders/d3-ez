@@ -47,8 +47,7 @@ export default function() {
 
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
-				.rangeRound([startAngle, endAngle])
-				.padding(0.15);
+				.rangeRound([startAngle, endAngle]);
 
 			const yScale = d3.scaleLinear()
 				.domain(valueExtent)

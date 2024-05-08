@@ -32,14 +32,17 @@
       // Configure legend components
       var legendColor = d3.ez.component.legendColor()
         .colorScale(colorScale)
-        .itemType("rect");
+        .itemType("rect")
+        .opacity(0.8);
 
       var legendSize = d3.ez.component.legendSize()
         .sizeScale(sizeScale)
-        .itemCount(4);
+        .itemCount(4)
+        .opacity(0.8);
 
       var legendThreshold = d3.ez.component.legendThreshold()
-        .thresholdScale(thresholdScale);
+        .thresholdScale(thresholdScale)
+        .opacity(0.8);
 
       svg.append("g")
         .attr("id", "legendColor")
