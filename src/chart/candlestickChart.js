@@ -179,23 +179,6 @@ export default function() {
 			containerEnter.selectAll(".axis")
 				.attr("opacity", showAxis ? 1 : 0);
 
-			// Experimental Brush
-			const brush = d3.brushX()
-				.extent([[0, 0], [chartW, chartH]])
-				.on("brush start", brushStart)
-				.on("brush end", brushEnd);
-
-			containerEnter.select(".zoomArea")
-				.call(brush);
-
-			function brushStart() {
-				// console.log(this);
-			}
-
-			function brushEnd() {
-				// console.log(this);
-			}
-
 			// Legend
 			const legend = component.legend()
 				.colorScale(colorScale)
@@ -207,6 +190,23 @@ export default function() {
 			containerEnter.select(".legend")
 				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
+
+			// Experimental Brush
+			const brush = d3.brushX()
+				.extent([[0, 0], [chartW, chartH]])
+				.on("brush start", brushStart)
+				.on("brush end", brushEnd);
+
+			containerEnter.select(".zoomArea")
+				.call(brush);
+
+			function brushStart(e) {
+				console.log(e);
+			}
+
+			function brushEnd(e) {
+				console.log(e);
+			}
 		});
 	}
 

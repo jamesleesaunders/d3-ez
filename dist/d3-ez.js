@@ -5108,7 +5108,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5120,7 +5120,7 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(bubbles);
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(bubbles);
 	      seriesGroup.exit().remove();
 
 	      // X-Axis
@@ -5135,6 +5135,25 @@
 	      // Legend
 	      var legend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
 	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+
+	      // Zoom Clip Path
+	      var clipPath = containerEnter.select(".clipArea").selectAll("defs").data([0]);
+	      clipPath.enter().append("defs").append("clipPath").attr("id", "plotAreaClip").append("rect").attr("width", chartW).attr("height", chartH).merge(clipPath).select("clipPath").select("rect").attr("width", chartW).attr("height", chartH);
+
+	      // Zoom Event Area
+	      var zoom = d3__namespace.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 8]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
+	      function zoomed(e) {
+	        var xScaleZoomed = e.transform.rescaleX(xScale);
+	        var yScaleZoomed = e.transform.rescaleY(yScale);
+	        xAxis.scale(xScaleZoomed);
+	        containerEnter.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+	        yAxis.scale(yScaleZoomed);
+	        containerEnter.select(".yAxis").call(yAxis);
+	        bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
+	        containerEnter.select(".chart").selectAll(".seriesGroup").call(bubbles);
+	      }
+	      var zoomArea = containerEnter.select(".zoomArea").selectAll("rect").data([0]);
+	      zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
 	    });
 	  }
 
@@ -5374,19 +5393,19 @@
 	      });
 	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
 
-	      // Experimental Brush
-	      var brush = d3__namespace.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
-	      containerEnter.select(".zoomArea").call(brush);
-	      function brushStart() {
-	        // console.log(this);
-	      }
-	      function brushEnd() {
-	        // console.log(this);
-	      }
-
 	      // Legend
 	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
 	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+
+	      // Experimental Brush
+	      var brush = d3__namespace.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
+	      containerEnter.select(".zoomArea").call(brush);
+	      function brushStart(e) {
+	        console.log(e);
+	      }
+	      function brushEnd(e) {
+	        console.log(e);
+	      }
 	    });
 	  }
 
@@ -6214,6 +6233,18 @@
 	      valueMin = valueMin > 0 ? 0 : valueMin;
 	      var valueExtent = [valueMin, valueMax];
 	      var xScale = d3__namespace.scalePoint().domain(columnKeys).range([0, chartW]);
+	      {
+	        // TODO: Use dataTransform() to calculate date domains?
+	        data.forEach(function (d, i) {
+	          d.values.forEach(function (b, j) {
+	            data[i].values[j].key = new Date(b.key);
+	          });
+	        });
+	        var dateExtent = d3__namespace.extent(data[0].values, function (d) {
+	          return d.key;
+	        });
+	        xScale = d3__namespace.scaleTime().domain(dateExtent).range([0, chartW]);
+	      }
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
 
@@ -6232,7 +6263,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -6247,7 +6278,7 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(lineChart).call(scatterPlot);
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(lineChart).call(scatterPlot);
 	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
 
 	      // X-Axis
@@ -6267,6 +6298,23 @@
 	      // Legend
 	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
 	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+
+	      // Zoom Clip Path
+	      var clipPath = containerEnter.select(".clipArea").selectAll("defs").data([0]);
+	      clipPath.enter().append("defs").append("clipPath").attr("id", "plotAreaClip").append("rect").attr("width", chartW).attr("height", chartH).merge(clipPath).select("clipPath").select("rect").attr("width", chartW).attr("height", chartH);
+
+	      // Zoom Event Area
+	      var zoom = d3__namespace.zoom().extent([[0, 0], [chartW, chartH]]).scaleExtent([1, 8]).translateExtent([[0, 0], [chartW, chartH]]).on("zoom", zoomed);
+	      function zoomed(e) {
+	        var xScaleZoomed = e.transform.rescaleX(xScale);
+	        xAxis.scale(xScaleZoomed);
+	        containerEnter.select(".xAxis").call(xAxis);
+	        lineChart.xScale(xScaleZoomed);
+	        scatterPlot.xScale(xScaleZoomed);
+	        containerEnter.select(".chart").selectAll(".seriesGroup").call(lineChart).call(scatterPlot);
+	      }
+	      var zoomArea = containerEnter.select(".zoomArea").selectAll(".rect").data([0]);
+	      zoomArea.enter().append("rect").classed("zoomArea", true).attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
 	    });
 	  }
 

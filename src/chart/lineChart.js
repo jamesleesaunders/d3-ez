@@ -42,13 +42,14 @@ export default function() {
 			const chartH = Math.max((height - margin.top - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
 
-			const isTimeSeries = false;
-
 			// Create Scales and Axis
 			let { rowKeys, columnKeys, valueMin, valueMax } = dataTransform(data).summary();
 			// Set min to zero if min is more than zero
 			valueMin = valueMin > 0 ? 0 : valueMin;
 			const valueExtent = [valueMin, valueMax];
+
+			// Zoom does not work with non-time series (scalePoint)
+			const isTimeSeries = true;
 
 			let xScale = d3.scalePoint()
 				.domain(columnKeys)
@@ -106,7 +107,7 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
@@ -137,6 +138,7 @@ export default function() {
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
+				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(seriesGroup)
 				.transition()
 				.ease(transition.ease)
@@ -192,6 +194,60 @@ export default function() {
 			containerEnter.select(".legend")
 				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
+
+			// Zoom Clip Path
+			const clipPath = containerEnter.select(".clipArea")
+				.selectAll("defs")
+				.data([0]);
+
+			clipPath.enter()
+				.append("defs")
+				.append("clipPath")
+				.attr("id", "plotAreaClip")
+				.append("rect")
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.merge(clipPath)
+				.select("clipPath")
+				.select("rect")
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			// Zoom Event Area
+			const zoom = d3.zoom()
+				.extent([[0, 0], [chartW, chartH]])
+				.scaleExtent([1, 8])
+				.translateExtent([[0, 0], [chartW, chartH]])
+				.on("zoom", zoomed);
+
+			function zoomed(e) {
+				const xScaleZoomed = e.transform.rescaleX(xScale);
+
+				xAxis.scale(xScaleZoomed);
+				containerEnter.select(".xAxis")
+					.call(xAxis);
+
+				lineChart.xScale(xScaleZoomed);
+				scatterPlot.xScale(xScaleZoomed);
+				containerEnter.select(".chart")
+					.selectAll(".seriesGroup")
+					.call(lineChart)
+					.call(scatterPlot);
+			}
+
+			const zoomArea = containerEnter.select(".zoomArea")
+				.selectAll(".rect")
+				.data([0]);
+
+			zoomArea.enter()
+				.append("rect")
+				.classed("zoomArea", true)
+				.attr("fill", "none")
+				.attr("pointer-events", "all")
+				.merge(zoomArea)
+				.call(zoom)
+				.attr("width", chartW)
+				.attr("height", chartH);
 		});
 	}
 

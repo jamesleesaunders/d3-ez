@@ -93,7 +93,7 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
@@ -117,6 +117,7 @@ export default function() {
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
+				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(seriesGroup)
 				.transition()
 				.ease(transition.ease)
@@ -157,6 +158,67 @@ export default function() {
 			containerEnter.select(".legend")
 				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
+
+			// Zoom Clip Path
+			const clipPath = containerEnter.select(".clipArea")
+				.selectAll("defs")
+				.data([0]);
+
+			clipPath.enter()
+				.append("defs")
+				.append("clipPath")
+				.attr("id", "plotAreaClip")
+				.append("rect")
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.merge(clipPath)
+				.select("clipPath")
+				.select("rect")
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			// Zoom Event Area
+			const zoom = d3.zoom()
+				.extent([[0, 0], [chartW, chartH]])
+				.scaleExtent([1, 8])
+				.translateExtent([[0, 0], [chartW, chartH]])
+				.on("zoom", zoomed);
+
+			function zoomed(e) {
+				const xScaleZoomed = e.transform.rescaleX(xScale);
+				const yScaleZoomed = e.transform.rescaleY(yScale);
+
+				xAxis.scale(xScaleZoomed);
+				containerEnter.select(".xAxis")
+					.call(xAxis)
+					.selectAll("text")
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)");
+
+				yAxis.scale(yScaleZoomed);
+				containerEnter.select(".yAxis")
+					.call(yAxis);
+
+				bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
+				containerEnter.select(".chart")
+					.selectAll(".seriesGroup")
+					.call(bubbles);
+			}
+
+			const zoomArea = containerEnter.select(".zoomArea")
+				.selectAll("rect")
+				.data([0]);
+
+			zoomArea.enter()
+				.append("rect")
+				.attr("fill", "none")
+				.attr("pointer-events", "all")
+				.merge(zoomArea)
+				.call(zoom)
+				.attr("width", chartW)
+				.attr("height", chartH);
 		});
 	}
 
