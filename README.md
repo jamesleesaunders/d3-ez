@@ -54,12 +54,12 @@ Include d3.js and d3-ez.js and css files in the `<head>` section of your page:
 </head>
 ```
 
-Add a chartholder `<svg>` and `<script>` tags to your page `<body>`:
+Add a chartholder `<div>` and `<script>` tags to your page `<body>`:
 
 ```html
 
 <body>
-	 <svg id="chartholder"></svg>
+	 <div id="chartholder"></div>
 	 <script></script>
 </body>
 ```

@@ -36,6 +36,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = 120;
@@ -63,16 +74,6 @@ export default function() {
 			const sizeScale = d3.scaleLinear()
 				.domain(valueExtent)
 				.range([minRadius, maxRadius]);
-
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
 
 			svg.classed("d3ez", true)
 				.attr("width", width)

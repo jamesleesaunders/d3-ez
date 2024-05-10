@@ -4594,6 +4594,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -4635,16 +4647,6 @@
 	        return layout;
 	      }
 	      var layout = generateLayout(data.length, chartW, chartH);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -4818,6 +4820,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -4849,16 +4863,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([0, xScale2.bandwidth()]).padding(0.05);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([chartH, 0]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -5075,6 +5079,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -5092,16 +5108,6 @@
 	      var yScale = d3__namespace.scaleLinear().domain(yExtent).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
 	      var sizeScale = d3__namespace.scaleLinear().domain(valueExtent).range([minRadius, maxRadius]);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -5315,6 +5321,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      var legendW = 120;
 	      var legendPad = 15;
@@ -5346,16 +5364,6 @@
 	      var xScale = d3__namespace.scaleTime().domain(dateDomain).range([0, chartW]);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain([true, false]).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -5567,6 +5575,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -5607,16 +5627,6 @@
 	        return layout;
 	      }
 	      var layout = generateLayout(data.length, chartW, chartH);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -5783,6 +5793,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -5802,16 +5824,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.1);
 	      var yScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([innerRadius, radius]).padding(0.1);
 	      var colorScale = d3__namespace.scaleThreshold().domain(thresholds).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -5994,6 +6006,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -6011,16 +6035,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([0, chartW]).padding(0.15);
 	      var yScale = d3__namespace.scaleBand().domain(rowKeys).range([0, chartH]).padding(0.15);
 	      var colorScale = d3__namespace.scaleThreshold().domain(thresholds).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -6215,6 +6229,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -6247,16 +6273,6 @@
 	      }
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -6475,6 +6491,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -6515,16 +6543,6 @@
 	        return layout;
 	      }
 	      var layout = generateLayout(data.length, chartW, chartH);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -6695,6 +6713,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -6713,16 +6743,6 @@
 	        return d.value;
 	      })];
 	      var sizeScale = d3__namespace.scaleLinear().domain(sizeExtent).range([minRadius, maxRadius]);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -6940,6 +6960,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -6956,16 +6988,6 @@
 	      var xScale = d3__namespace.scalePoint().domain(columnKeys).range([startAngle, endAngle]);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([0, radius]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
@@ -7135,6 +7157,18 @@
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = 120;
@@ -7156,16 +7190,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([0, 360]);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([innerRadius, radius]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-
-	      // Create SVG element (if it does not exist already)
-	      var svg = function (selection) {
-	        var el = selection._groups[0][0];
-	        if (!!el.ownerSVGElement || el.tagName === "svg") {
-	          return selection;
-	        } else {
-	          return selection.append("svg");
-	        }
-	      }(selection);
 	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
 	      // Update the chart dimensions and container and layer groups
