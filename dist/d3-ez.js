@@ -244,6 +244,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -256,7 +268,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -338,8 +350,8 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 200
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -410,11 +422,11 @@
 	      var bars = componentGroup.selectAll(".bar").data(function (d) {
 	        return stacker(d.values);
 	      });
-	      bars.enter().append("rect").classed("bar", true).on("mouseover", function (e, d) {
+	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
+	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
 	        return yScale(d.y1);
 	      }).attr("width", width).attr("height", function (d) {
 	        var padding = 3;
@@ -423,7 +435,7 @@
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
-	      }).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius);
+	      });
 	      bars.exit().transition().style("opacity", 0).remove();
 	    });
 	  }
@@ -477,6 +489,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -489,7 +513,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -512,8 +536,8 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 200
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -551,11 +575,13 @@
 	      var bars = componentGroup.selectAll(".bar").data(function (d) {
 	        return d.values;
 	      });
-	      bars.enter().append("rect").classed("bar", true).on("mouseover", function (e, d) {
+	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).attr("stroke-width", "1px").on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", function (d) {
+	        return xScale(d.key);
+	      }).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("y", function (d) {
 	        return d.value < 0 ? yScale(0) : yScale(d.value);
@@ -565,7 +591,7 @@
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
-	      }).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius);
+	      });
 	      bars.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
 	    });
 	  }
@@ -619,6 +645,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -631,7 +669,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -658,6 +696,10 @@
 	  var label;
 	  var display = "block";
 	  var fontSize = 10;
+	  var transition = {
+	    ease: d3__namespace.easeBounce,
+	    duration: 0
+	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
 	  /**
@@ -675,11 +717,11 @@
 	    selection.each(function (data) {
 	      var r = sizeAccessor(data);
 	      var circle = d3__namespace.select(this).classed(classed, true).selectAll("circle").data([data]);
-	      circle.enter().append("circle").merge(circle).transition().attr("r", function (d) {
+	      circle.enter().append("circle").merge(circle).transition().ease(transition.ease).duration(transition.duration).attr("r", function (d) {
 	        return sizeAccessor(d);
 	      }).attr("fill-opacity", opacity).style("stroke", color).style("stroke-width", strokeWidth).style("fill", color);
 	      var text = d3__namespace.select(this).classed(classed, true).selectAll("text").data([data]);
-	      text.enter().append("text").merge(text).transition().text(label).attr("dx", -r).attr("dy", -r).style("display", display).style("font-size", fontSize + "px").attr("fill", "currentColor").attr("alignment-baseline", "middle").style("text-anchor", "end");
+	      text.enter().append("text").merge(text).attr("fill", "currentColor").attr("alignment-baseline", "middle").style("text-anchor", "end").transition().ease(transition.ease).duration(transition.duration).text(label).attr("dx", -r).attr("dy", -r).style("display", display).style("font-size", fontSize + "px");
 	    });
 	  }
 
@@ -770,6 +812,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -782,7 +836,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -806,8 +860,8 @@
 	  var colorScale;
 	  var sizeScale;
 	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 200
+	    ease: d3__namespace.easeBounce,
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -821,6 +875,8 @@
 	   */
 	  function my(selection) {
 	    selection.each(function (data) {
+	      d3__namespace.max(yScale.range());
+
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
 	        dispatch.call("customSeriesMouseOver", this, e, d);
@@ -838,7 +894,7 @@
 	        return sizeScale(d.value);
 	      }).color(colorScale(data.key)).label(function (d) {
 	        return d.key;
-	      }).display("none").opacity(opacity).stroke(1, "white").dispatch(dispatch);
+	      }).display("none").opacity(opacity).stroke(1, "white").transition(transition).dispatch(dispatch);
 	      var bubbles = componentGroup.selectAll(".bubble").data(function (d) {
 	        return d.values;
 	      });
@@ -849,7 +905,11 @@
 	        d3__namespace.select(this).select("text").style("display", "none");
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(bubbles).attr("transform", function (d) {
+	      })
+	      //.attr("transform", (d) => `translate(${xScale(d.x)},${height})`)
+	      .attr("transform", function (d) {
+	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
+	      }).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
 	      }).call(bubble);
 	      bubbles.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
@@ -917,6 +977,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -929,7 +1001,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -956,7 +1028,7 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var candleWidth = 4;
+	  var candleWidth = 8;
 	  var opacity = 1;
 	  var cornerRadius = 2;
 
@@ -1003,13 +1075,20 @@
 	        var rect = candle.selectAll(".open-close-bar").data(function (d) {
 	          return [d];
 	        });
-	        rect.enter().append("rect").classed("open-close-bar", true).merge(rect).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
-	          return xScale(d.date) - candleWidth;
+	        rect.enter().append("rect").classed("open-close-bar", true).attr("x", function (d) {
+	          return xScale(d.date) - candleWidth / 2;
+	        }).attr("y", function (d) {
+	          var isUp = isUpDay(d);
+	          var base = isUp ? yScale(d.close) : yScale(d.open);
+	          var difference = isUp ? yScale(d.open) - yScale(d.close) : 0;
+	          return base + difference;
+	        }).attr("width", candleWidth).attr("rx", cornerRadius).attr("ry", cornerRadius).merge(rect).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	          return xScale(d.date) - candleWidth / 2;
 	        }).attr("y", function (d) {
 	          return isUpDay(d) ? yScale(d.close) : yScale(d.open);
-	        }).attr("width", candleWidth * 2).attr("height", function (d) {
+	        }).attr("width", candleWidth).attr("height", function (d) {
 	          return isUpDay(d) ? yScale(d.open) - yScale(d.close) : yScale(d.close) - yScale(d.open);
-	        }).attr("rx", cornerRadius).attr("ry", cornerRadius);
+	        });
 	        return candle;
 	      };
 
@@ -1111,6 +1190,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -1123,7 +1214,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -1289,6 +1380,18 @@
 	    showAxis = _v;
 	    return my;
 	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
 	  return my;
 	}
 
@@ -1395,6 +1498,18 @@
 	    textAnchor = _v;
 	    return this;
 	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
 	  return my;
 	}
 
@@ -1424,7 +1539,7 @@
 	   */
 	  function my(selection) {
 	    selection.each(function () {
-	      textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with middle.
+	      textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with 'middle'.
 
 	      var _ringScale$range = ringScale.range(),
 	        _ringScale$range2 = _slicedToArray(_ringScale$range, 2);
@@ -1556,6 +1671,18 @@
 	    textAnchor = _v;
 	    return this;
 	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
 	  return my;
 	}
 
@@ -1571,8 +1698,8 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 500
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -1606,10 +1733,10 @@
 
 	      // Arc Tween
 	      var arcTween = function arcTween(d) {
-	        var i = d3__namespace.interpolate(this._current, d);
-	        this._current = i(0);
+	        var i = d3__namespace.interpolate(d.startAngle, d.endAngle);
 	        return function (t) {
-	          return arc(i(t));
+	          d.endAngle = i(t);
+	          return arc(d);
 	        };
 	      };
 
@@ -1633,11 +1760,11 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("fill", function (d) {
+	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.key);
-	      }).attr("stroke-width", "1px").attr("d", arc).attrTween("d", arcTween);
+	      }).attr("stroke-width", "1px");
 	      slices.exit().remove();
 	    });
 	  }
@@ -1691,6 +1818,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -1703,7 +1842,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -1726,7 +1865,7 @@
 	  var yScale;
 	  var transition = {
 	    ease: d3__namespace.easeBounce,
-	    duration: 500
+	    duration: 0
 	  };
 
 	  /**
@@ -1847,6 +1986,18 @@
 	    if (!arguments.length) return yScale;
 	    yScale = _v;
 	    return my;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
 	  };
 	  return my;
 	}
@@ -1975,6 +2126,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -1987,7 +2150,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -2116,6 +2279,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch Event Handler.
@@ -2128,7 +2303,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -2208,7 +2383,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -2758,7 +2933,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -2782,7 +2957,7 @@
 	  var colorScale;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeLinear,
+	    ease: d3__namespace.easeBounce,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -2797,15 +2972,15 @@
 	  function my(selection) {
 	    selection.each(function () {
 	      // Line animation tween
-	      var pathTween = function pathTween(data) {
-	        var line = d3__namespace.line().curve(d3__namespace.curveCardinal).x(function (d) {
-	          return xScale(d.key);
-	        }).y(function (d) {
-	          return yScale(d.value);
-	        });
-	        var interpolate = d3__namespace.scaleQuantile().domain([0, 1]).range(d3__namespace.range(1, data.length + 1));
+	      var line = d3__namespace.line().curve(d3__namespace.curveCardinal).x(function (d) {
+	        return xScale(d.key);
+	      }).y(function (d) {
+	        return yScale(d.value);
+	      });
+	      var pathTween = function pathTween(d) {
+	        var i = d3__namespace.interpolate(1, d.length + 1);
 	        return function (t) {
-	          return line(data.slice(0, interpolate(t)));
+	          return line(d.slice(0, i(t)));
 	        };
 	      };
 
@@ -2822,15 +2997,17 @@
 	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
 
 	      // Add lines to series group
-	      var line = componentGroup.selectAll(".line").data(function (d) {
+	      var path = componentGroup.selectAll(".line").data(function (d) {
 	        return [d];
 	      });
-	      line.enter().append("path").attr("class", "line").attr("stroke-width", 1.5).attr("fill", "none").merge(line).transition().duration(transition.duration).attr("stroke", function (d) {
-	        return colorScale(d.key);
-	      }).attrTween("d", function (d) {
+	      path.enter().append("path").attr("class", "line").attr("stroke-width", 1.5).attr("fill", "none").attr("d", function (d) {
+	        return line(d.values);
+	      }).merge(path).transition().duration(transition.duration).attrTween("d", function (d) {
 	        return pathTween(d.values);
+	      }).attr("stroke", function (d) {
+	        return colorScale(d.key);
 	      }).attr("opacity", opacity);
-	      line.exit().transition().style("opacity", 0).remove();
+	      path.exit().transition().style("opacity", 0).remove();
 	    });
 	  }
 
@@ -2883,6 +3060,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -2895,7 +3084,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3017,6 +3206,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -3029,7 +3230,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3081,6 +3282,15 @@
 	        return yScale(d.data.value);
 	      }).innerRadius(0).cornerRadius(cornerRadius);
 
+	      // Arc Tween
+	      var arcTween = function arcTween(d) {
+	        var i = d3__namespace.interpolate(0, d.data.value);
+	        return function (t) {
+	          d.data.value = i(t);
+	          return arc(d);
+	        };
+	      };
+
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
 	        dispatch.call("customSeriesMouseOver", this, e, d);
@@ -3101,11 +3311,11 @@
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).style("fill", function (d) {
+	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.key);
-	      }).attr("stroke-width", "1px").attr("d", arc);
+	      }).attr("stroke-width", "1px");
 	      segments.exit().transition().style("opacity", 0).remove();
 	    });
 	  }
@@ -3159,6 +3369,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -3171,7 +3393,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3304,6 +3526,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -3316,7 +3550,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3459,6 +3693,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -3471,7 +3717,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3495,7 +3741,7 @@
 	  var colorScale;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeLinear,
+	    ease: d3__namespace.easeBounce,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3509,6 +3755,8 @@
 	   */
 	  function my(selection) {
 	    selection.each(function () {
+	      d3__namespace.max(yScale.range());
+
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
 	        dispatch.call("customSeriesMouseOver", this, e, d);
@@ -3525,7 +3773,9 @@
 	      }).selectAll(".dot").data(function (d) {
 	        return d.values;
 	      });
-	      dots.enter().append("circle").attr("class", "dot").attr("r", 3).on("mouseover", function (e, d) {
+	      dots.enter().append("circle").attr("class", "dot").attr("r", 3).attr("cx", 0).attr("cy", function (d) {
+	        return yScale(d.value);
+	      }).on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
@@ -3587,6 +3837,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -3599,7 +3861,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3667,6 +3929,15 @@
 	        return d.outerRadius;
 	      }).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).cornerRadius(cornerRadius);
 
+	      // Arc Tween
+	      var arcTween = function arcTween(d) {
+	        var i = d3__namespace.interpolate(d.innerRadius, d.outerRadius);
+	        return function (t) {
+	          d.outerRadius = i(t);
+	          return arc(d);
+	        };
+	      };
+
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
 	        dispatch.call("customSeriesMouseOver", this, e, d);
@@ -3683,15 +3954,15 @@
 	      var arcs = componentGroup.selectAll(".arc").data(function (d) {
 	        return stacker(d.values);
 	      });
-	      arcs.enter().append("path").classed("arc", true).attr("fill", function (d) {
-	        return colorScale(d.key);
-	      }).attr("stroke", function (d) {
-	        return colorScale(d.key);
-	      }).attr("stroke-width", "1px").on("mouseover", function (e, d) {
+	      arcs.enter().append("path").classed("arc", true).attr("stroke-width", "1px").on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("fill-opacity", opacity).attr("d", arc);
+	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).attr("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).attr("fill-opacity", opacity);
 	      arcs.exit().transition().style("opacity", 0).remove();
 	    });
 	  }
@@ -3757,6 +4028,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -3769,7 +4052,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -3793,7 +4076,7 @@
 	  var itemCount = 4;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeLinear,
+	    ease: d3__namespace.easeBounce,
 	    duration: 0
 	  };
 
@@ -3952,7 +4235,7 @@
 	  var itemType = "rect";
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeLinear,
+	    ease: d3__namespace.easeBounce,
 	    duration: 0
 	  };
 	  var cornerRadius = 2;
@@ -4137,7 +4420,7 @@
 	  var thresholdScale;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeLinear,
+	    ease: d3__namespace.easeBounce,
 	    duration: 0
 	  };
 
@@ -4217,6 +4500,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {number} _v - Opacity 0 -1.
@@ -4229,7 +4524,7 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter XX
+	   * Transition Getter / Setter
 	   *
 	   * @param {d3.transition} _v - Transition.
 	   * @returns {*}
@@ -4658,11 +4953,11 @@
 	        return d;
 	      });
 
+	      // Radial Bars
+	      var barsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).opacity(opacity).yScale(yScale).dispatch(dispatch).transition(transition);
+
 	      // Circular Axis
 	      var circularAxis = component.circularAxis().radialScale(yScale).ringScale(xScale);
-
-	      // Radial Bars
-	      var barsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).opacity(opacity).yScale(yScale).dispatch(dispatch);
 
 	      // Outer Labels
 	      var circularSectorLabels = component.circularSectorLabels().ringScale(xScale).radialScale(yScale).textAnchor("middle");
@@ -4674,10 +4969,10 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d, i) {
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
 	      }).call(circularAxis).call(barsCircular).call(circularSectorLabels).call(circularRingLabels);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.exit().remove();
 
 	      // Legend
 	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
@@ -4770,7 +5065,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -4801,8 +5096,8 @@
 	  };
 	  var colors = palette.categorical(1);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -4876,16 +5171,16 @@
 
 	      // Bars Component
 	      var bars = stacked ? component.barsStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
-	      bars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch);
+	      bars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d) {
 	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin), ")");
 	      }).call(bars);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.exit().remove();
 
 	      // X-Axis
 	      var xAxis = d3__namespace.axisBottom(xScale2);
@@ -4968,18 +5263,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Stacked Getter / Setter
 	   *
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
@@ -5016,6 +5299,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -5028,7 +5323,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -5059,8 +5354,8 @@
 	  };
 	  var colors = palette.categorical(1);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5120,13 +5415,13 @@
 	      });
 
 	      // Bubble Component
-	      var bubbles = component.bubbles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch);
+	      var bubbles = component.bubbles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(bubbles);
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).call(bubbles);
 	      seriesGroup.exit().remove();
 
 	      // X-Axis
@@ -5155,7 +5450,10 @@
 	        containerEnter.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 	        yAxis.scale(yScaleZoomed);
 	        containerEnter.select(".yAxis").call(yAxis);
-	        bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed);
+	        bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed).transition({
+	          ease: d3__namespace.easeBounce,
+	          duration: 0
+	        });
 	        containerEnter.select(".chart").selectAll(".seriesGroup").call(bubbles);
 	      }
 	      var zoomArea = containerEnter.select(".zoomArea").selectAll("rect").data([0]);
@@ -5224,18 +5522,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Y Axis Label Getter / Setter
 	   *
 	   * @param {string} _v - Label text.
@@ -5260,6 +5546,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -5272,7 +5570,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -5303,8 +5601,8 @@
 	  };
 	  var colors = ["green", "red"];
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 500
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5376,15 +5674,15 @@
 	      });
 
 	      // Candle Stick Component
-	      var candleSticks = component.candleSticks().xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch).opacity(opacity);
+	      var candleSticks = component.candleSticks().xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch).opacity(opacity).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return [d];
 	      }); // FIXME: Convert input data to support multi-series.
 
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(candleSticks);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(candleSticks);
+	      seriesGroup.exit().remove();
 
 	      // X Axis
 	      var xAxis = d3__namespace.axisBottom(xScale).tickFormat(d3__namespace.timeFormat("%d-%b-%y"));
@@ -5394,9 +5692,8 @@
 	      var yAxis = d3__namespace.axisLeft(yScale);
 	      containerEnter.select(".yAxis").call(yAxis);
 
-	      // Y-Axis Labels
-	      var yLabel = container.select(".yAxis").selectAll(".yAxisLabel").data([data.key]);
-	      yLabel.enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).transition().text(function (d) {
+	      // Y-Axis Label
+	      container.select(".yAxis").selectAll(".yAxisLabel").data([data.key]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).text(function (d) {
 	        return d;
 	      });
 	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
@@ -5478,18 +5775,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Show Axis Getter / Setter
 	   *
 	   * @param {Boolean} _v - Show axis true / false.
@@ -5514,6 +5799,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -5526,7 +5823,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -5557,8 +5854,8 @@
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
-	    ease: d3__namespace.easeCubic,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5639,19 +5936,19 @@
 	      });
 
 	      // Donut Slice Component
-	      var donut = component.donut().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch);
+	      var donut = component.donut().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Donut Label Component
-	      var donutLabels = component.donutLabels().xScale(xScale).yScale(yScale);
+	      var donutLabels = component.donutLabels().xScale(xScale).yScale(yScale).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d, i) {
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
 	      }).call(donut).call(donutLabels);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.exit().remove();
 
 	      // Legend
 	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
@@ -5744,7 +6041,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -5836,7 +6133,7 @@
 	      });
 
 	      // Heat Map Rings
-	      var heatMapRing = component.heatMapRing().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch);
+	      var heatMapRing = component.heatMapRing().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Labels
 	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("start");
@@ -5848,7 +6145,7 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(heatMapRing).call(circularRingLabels);
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(heatMapRing).call(circularRingLabels);
 	      seriesGroup.exit().remove();
 
 	      // Outer Ring Labels
@@ -5921,18 +6218,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Thresholds Getter / Setter
 	   *
 	   * @param {Array} _v - Array of thresholds.
@@ -5942,6 +6227,18 @@
 	    if (!arguments.length) return thresholds;
 	    thresholds = _v;
 	    return my;
+	  };
+
+	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
 	  };
 
 	  /**
@@ -5957,7 +6254,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -6047,14 +6344,14 @@
 	      });
 
 	      // Heat Map Row Component
-	      var heatMapRow = component.heatMapRow().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch);
+	      var heatMapRow = component.heatMapRow().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(heatMapRow);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.exit().remove();
 
 	      // X-Axis
 	      var xAxis = d3__namespace.axisTop(xScale);
@@ -6132,18 +6429,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Thresholds Getter / Setter
 	   *
 	   * @param {Array} _v - Array of thresholds.
@@ -6168,6 +6453,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -6180,7 +6477,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -6212,7 +6509,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6285,17 +6582,17 @@
 	      });
 
 	      // Line Chart Component
-	      var lineChart = component.lineChart().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch);
+	      var lineChart = component.lineChart().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
-	      // Scatter Plot Component
-	      var scatterPlot = component.scatterPlot().colorScale(colorScale).yScale(yScale).xScale(xScale).opacity(opacity).dispatch(dispatch);
+	      // Line Dots Component
+	      var scatterPlot = component.scatterPlot().colorScale(colorScale).yScale(yScale).xScale(xScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).call(lineChart).call(scatterPlot);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).call(lineChart).call(scatterPlot);
+	      seriesGroup.exit().remove();
 
 	      // X-Axis
 	      var xAxis = d3__namespace.axisBottom(xScale);
@@ -6306,7 +6603,7 @@
 	      containerEnter.select(".yAxis").call(yAxis);
 
 	      // Y-Axis Label
-	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
+	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").text(function (d) {
 	        return d;
 	      });
 	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
@@ -6395,18 +6692,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Show Axis Getter / Setter
 	   *
 	   * @param {Boolean} _v - Show axis true / false.
@@ -6431,6 +6716,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -6443,7 +6740,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -6455,7 +6752,7 @@
 	}
 
 	/**
-	 * Polar Area Chart (aks: Coxcomb Chart; Rose Chart)
+	 * Polar Area Chart (aka: Coxcomb Chart; Rose Chart)
 	 *
 	 * @module
 	 * @see http://datavizproject.com/data-type/polar-area-chart/
@@ -6473,8 +6770,8 @@
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6554,11 +6851,11 @@
 	        return d;
 	      });
 
+	      // Radial Bar Chart
+	      var polarArea = component.polarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
+
 	      // Circular Axis
 	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
-
-	      // Radial Bar Chart
-	      var polarArea = component.polarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch);
 
 	      // Circular Labels
 	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle");
@@ -6567,10 +6864,10 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d, i) {
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
 	      }).call(circularAxis).call(circularSectorLabels).call(polarArea);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.exit().remove();
 
 	      // Legend
 	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
@@ -6663,7 +6960,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -6754,15 +7051,15 @@
 	        return d;
 	      });
 
-	      // Proportional Area Circle Component
-	      var proportionalAreaCircles = component.proportionalAreaCircles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch);
+	      // Proportional Area Circles
+	      var proportionalAreaCircles = component.proportionalAreaCircles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(proportionalAreaCircles);
-	      seriesGroup.exit().transition().ease(transition.ease).duration(transition.duration).remove();
+	      seriesGroup.exit().remove();
 
 	      // X-Axis
 	      var xAxis = d3__namespace.axisTop(xScale);
@@ -6840,18 +7137,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Min Radius Getter / Setter
 	   *
 	   * @param {number} _v - Min radius in px.
@@ -6900,6 +7185,18 @@
 	  };
 
 	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Dispatch Getter / Setter
 	   *
 	   * @param {d3.dispatch} _v - Dispatch event handler.
@@ -6912,7 +7209,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -6943,7 +7240,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeBounce,
-	    duration: 500
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7001,11 +7298,13 @@
 	        return d;
 	      });
 
-	      // Create Circular Axis
-	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).showAxis(false);
-	      var radarArea = component.radarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch);
+	      // Radar Component
+	      var radarArea = component.radarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
-	      // Adding Circular Labels on Page
+	      // Circular Axis
+	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).showAxis(false);
+
+	      // Circular Labels
 	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle");
 
 	      // Create Radars
@@ -7110,7 +7409,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */
@@ -7140,8 +7439,8 @@
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7204,7 +7503,7 @@
 	      });
 
 	      // Rose Sectors
-	      var roseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch);
+	      var roseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
 	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
@@ -7216,7 +7515,7 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).transition().ease(transition.ease).duration(transition.duration).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
 	        d3__namespace.select(this).call(roseChartSector);
 	      });
 	      seriesGroup.exit().remove();
@@ -7291,18 +7590,6 @@
 	  };
 
 	  /**
-	   * Transition Getter / Setter
-	   *
-	   * @param {d3.transition} _v - D3 transition style.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
 	   * Stacked Getter / Setter
 	   *
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
@@ -7311,6 +7598,18 @@
 	  my.stacked = function (_v) {
 	    if (!arguments.length) return stacked;
 	    stacked = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
 	    return this;
 	  };
 
@@ -7327,7 +7626,7 @@
 	  };
 
 	  /**
-	   * Dispatch On Getter
+	   * On Event Getter
 	   *
 	   * @returns {*}
 	   */

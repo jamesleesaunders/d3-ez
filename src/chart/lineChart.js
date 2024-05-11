@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = palette.categorical(1);
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -97,7 +97,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -121,15 +122,17 @@ export default function() {
 				.xScale(xScale)
 				.yScale(yScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
-			// Scatter Plot Component
+			// Line Dots Component
 			const scatterPlot = component.scatterPlot()
 				.colorScale(colorScale)
 				.yScale(yScale)
 				.xScale(xScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -141,16 +144,10 @@ export default function() {
 				.attr("class", "seriesGroup")
 				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.call(lineChart)
 				.call(scatterPlot);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// X-Axis
@@ -178,7 +175,6 @@ export default function() {
 				.attr("dy", ".71em")
 				.attr("fill", "currentColor")
 				.style("text-anchor", "end")
-				.transition()
 				.text((d) => d);
 
 			containerEnter.selectAll(".axis")
@@ -313,18 +309,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Show Axis Getter / Setter
 	 *
 	 * @param {Boolean} _v - Show axis true / false.
@@ -349,6 +333,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -361,7 +357,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

@@ -17,7 +17,7 @@
       d3.json("data/nightingale_rose.json").then(function(json) {
         // Florence Nightingale Data Source: https://pointedanalytics.wordpress.com/2013/07/14/plotting-coxcombs-using-ggplot2/
 
-        var colors = ["#599ad3", "#727272", "#f1595f"];
+
 
         var monthNames = [
           "January", "February", "March",
@@ -46,6 +46,7 @@
         }).filter(d => d.datetime < new Date("1855-04-01T07:00:00.000Z"));
 
         // Create chart base
+        var colors = ["#599AD3", "#727272", "#F1595F"];
         var myChart = d3.ez.chart.roseChart()
           .width(1000)
           .height(600)

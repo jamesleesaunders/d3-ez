@@ -13,7 +13,7 @@ export default function() {
 	let yScale;
 	let colorScale;
 	let opacity = 1;
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/**
@@ -25,6 +25,8 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function() {
+			const height = d3.max(yScale.range());
+
 			// Update series group
 			const seriesGroup = d3.select(this)
 				.on("mouseover", function(e, d) {
@@ -52,6 +54,8 @@ export default function() {
 				.append("circle")
 				.attr("class", "dot")
 				.attr("r", 3)
+				.attr("cx", 0)
+				.attr("cy", (d) => yScale(d.value))
 				.on("mouseover", function(e, d) {
 					dispatch.call("customValueMouseOver", this, e, d);
 				})
@@ -122,6 +126,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -134,7 +150,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

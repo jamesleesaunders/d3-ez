@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <div id="chartholder"></svg>
+    <div id="chartholder"></div>
     <br/>
     <div>Value: <span id="message"></span></div>
 
@@ -17,13 +17,13 @@
       d3.json("data/world_temperatures.json").then(function(json) {
         // World Temperature Data Source: http://www.holiday-weather.com/london/averages/
 
-        var colors = ["#D34152", "#f4bc71", "#FBF6C4", "#9bcf95", "#398abb"].reverse();
-
         // Create chart base
+        var colors = ["#D34152", "#F4BC71", "#FBF6C4", "#9BCf95", "#398ABB"].reverse();
         var myChart = d3.ez.chart.heatMap()
           .width(1000)
           .height(600)
           .colors(colors)
+          .transition({ ease: d3.easeBounce, duration: 500 })
           .on("customValueMouseOver", function(e, d) {
             // Show Tooltip
             div.transition()

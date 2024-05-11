@@ -57,6 +57,15 @@ export default function() {
 				.endAngle(endAngle * (Math.PI / 180))
 				.cornerRadius(cornerRadius);
 
+			// Arc Tween
+			const arcTween = function(d) {
+				const i = d3.interpolate(d.innerRadius, d.outerRadius);
+				return function(t) {
+					d.outerRadius = i(t);
+					return arc(d);
+				};
+			};
+
 			// Update series group
 			const seriesGroup = d3.select(this)
 				.on("mouseover", function(e, d) {
@@ -82,8 +91,6 @@ export default function() {
 			arcs.enter()
 				.append("path")
 				.classed("arc", true)
-				.attr("fill", (d) => colorScale(d.key))
-				.attr("stroke", (d) => colorScale(d.key))
 				.attr("stroke-width", "1px")
 				.on("mouseover", function(e, d) {
 					dispatch.call("customValueMouseOver", this, e, d);
@@ -95,8 +102,11 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("fill-opacity", opacity)
-				.attr("d", arc);
+				.attr("d", arc)
+				.attrTween("d", arcTween)
+				.attr("fill", (d) => colorScale(d.key))
+				.attr("stroke", (d) => colorScale(d.key))
+				.attr("fill-opacity", opacity);
 
 			arcs.exit()
 				.transition()
@@ -166,6 +176,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -178,7 +200,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

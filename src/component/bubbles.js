@@ -14,7 +14,7 @@ export default function() {
 	let yScale;
 	let colorScale;
 	let sizeScale;
-	let transition = { ease: d3.easeLinear, duration: 200 };
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let opacity = 1;
 
@@ -27,6 +27,7 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function(data) {
+			const height = d3.max(yScale.range());
 
 			// Update series group
 			const seriesGroup = d3.select(this)
@@ -54,6 +55,7 @@ export default function() {
 				.display("none")
 				.opacity(opacity)
 				.stroke(1, "white")
+				.transition(transition)
 				.dispatch(dispatch);
 
 			const bubbles = componentGroup.selectAll(".bubble")
@@ -72,7 +74,12 @@ export default function() {
 				.on("click", function(e, d) {
 					dispatch.call("customValueClick", this, e, d);
 				})
+				//.attr("transform", (d) => `translate(${xScale(d.x)},${height})`)
+				.attr("transform", (d) => `translate(${xScale(d.x)},${yScale(d.y)})`)
 				.merge(bubbles)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.attr("transform", (d) => `translate(${xScale(d.x)},${yScale(d.y)})`)
 				.call(bubble);
 
@@ -146,6 +153,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -158,7 +177,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

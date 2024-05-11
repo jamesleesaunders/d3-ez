@@ -102,7 +102,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -120,18 +121,19 @@ export default function() {
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(yScale)
-				.ringScale(xScale);
-
 			// Radial Bars
 			const barsCircular = component.barsCircular()
 				.colorScale(colorScale)
 				.xScale(xScale)
 				.opacity(opacity)
 				.yScale(yScale)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
+
+			// Circular Axis
+			const circularAxis = component.circularAxis()
+				.radialScale(yScale)
+				.ringScale(xScale);
 
 			// Outer Labels
 			const circularSectorLabels = component.circularSectorLabels()
@@ -153,9 +155,7 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
+
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(circularAxis)
 				.call(barsCircular)
@@ -163,9 +163,6 @@ export default function() {
 				.call(circularRingLabels);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// Legend
@@ -267,7 +264,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

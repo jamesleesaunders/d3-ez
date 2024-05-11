@@ -17,7 +17,8 @@
       d3.csv("data/exchange_rates.csv").then(function(csv) {
         // Historical Exchange Rates Source: https://www.ofx.com/en-gb/forex-news/historical-exchange-rates/
 
-        var colors = d3.ez.palette.categorical(3);
+        // Create chart base
+        var colors = ["#CC0000", "#3366CC", "#FF9900", "#FFCC00", "#03CC14", "#FF18C0"];
         var chart = d3.ez.chart.lineChart()
           .width(1000)
           .height(600)

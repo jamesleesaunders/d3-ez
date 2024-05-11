@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeCubic, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -101,7 +101,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -125,12 +126,14 @@ export default function() {
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Donut Label Component
 			const donutLabels = component.donutLabels()
 				.xScale(xScale)
-				.yScale(yScale);
+				.yScale(yScale)
+				.transition(transition);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -141,17 +144,11 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(donut)
 				.call(donutLabels);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// Legend
@@ -253,7 +250,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

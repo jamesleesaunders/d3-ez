@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -79,7 +79,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -105,7 +106,8 @@ export default function() {
 				.colorScale(colorScale)
 				.stacked(stacked)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Circular Axis
 			const circularAxis = component.circularAxis()
@@ -128,9 +130,6 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.each(function() {
 					d3.select(this).call(roseChartSector);
@@ -220,18 +219,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Stacked Getter / Setter
 	 *
 	 * @param {Boolean} _v - Stacked or grouped bar chart.
@@ -240,6 +227,18 @@ export default function() {
 	my.stacked = function(_v) {
 		if (!arguments.length) return stacked;
 		stacked = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
 		return this;
 	};
 
@@ -256,7 +255,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

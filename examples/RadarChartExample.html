@@ -42,13 +42,13 @@
           ]
         }];
 
-      var colors = d3.ez.palette.categorical(1);
-
       // Create chart base
+      var colors = d3.ez.palette.categorical(1);
       var myChart = d3.ez.chart.radarChart()
         .width(1000)
         .height(600)
         .colors(colors)
+        .transition({ ease: d3.easeBounce, duration: 500 })
         .on("customValueMouseOver", function(e, d) {
           d3.select("#message").text(d.value);
         })

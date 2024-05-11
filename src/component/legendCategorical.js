@@ -14,7 +14,7 @@ export default function() {
 	let itemCount;
 	let itemType = "rect";
 	let opacity = 1;
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let cornerRadius = 2;
 
 	/**

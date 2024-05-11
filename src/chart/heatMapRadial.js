@@ -83,7 +83,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -107,7 +108,8 @@ export default function() {
 				.xScale(xScale)
 				.yScale(yScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
@@ -129,9 +131,6 @@ export default function() {
 				.append("g")
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(heatMapRing)
 				.call(circularRingLabels);
@@ -218,18 +217,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Thresholds Getter / Setter
 	 *
 	 * @param {Array} _v - Array of thresholds.
@@ -239,6 +226,18 @@ export default function() {
 		if (!arguments.length) return thresholds;
 		thresholds = _v;
 		return my;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
 	};
 
 	/**
@@ -254,7 +253,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

@@ -145,5 +145,17 @@ export default function() {
 		return this;
 	};
 
+	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
 	return my;
 }

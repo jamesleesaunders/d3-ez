@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <div id="chartholder"></di>
+    <div id="chartholder"></div>
     <br/>
     <div>Value: <span id="message"></span></div>
 
@@ -17,7 +17,8 @@
       d3.json("data/uk_elections.json").then(function(data) {
         // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
-        var colors = ["#c00", "#36c", "#f90", "#fc0"];
+        // Create chart base
+        var colors = ["#CC0000", "#3366CC", "#FF9900", "#FFCC00", "#03CC14", "#FF18C0"];
         var chart = d3.ez.chart.barChart()
           .width(1000)
           .height(600)

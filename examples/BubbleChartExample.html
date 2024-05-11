@@ -17,7 +17,7 @@
       d3.csv("data/hans_rosling_2007.csv").then(function(csv) {
         // Hans Rosling Data Source: https://plot.ly/~LeoDKFZ/0.embed
 
-        var colors = [d3.rgb(31, 119, 180), d3.rgb(255, 127, 14), d3.rgb(44, 160, 44), d3.rgb(214, 39, 40), d3.rgb(148, 103, 189)];
+
 
         // Convert csv to d3-ez data format
         // Rename keys
@@ -34,6 +34,7 @@
         var data = Array.from(d3.group(tmp, d => d.series), ([key, value]) => ({ key, values: value }));
 
         // Create chart base
+        var colors = [d3.rgb(31, 119, 180), d3.rgb(255, 127, 14), d3.rgb(44, 160, 44), d3.rgb(214, 39, 40), d3.rgb(148, 103, 189)];
         var myChart = d3.ez.chart.bubbleChart()
           .width(1000)
           .height(600)

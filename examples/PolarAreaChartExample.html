@@ -15,9 +15,9 @@
     <div>Value: <span id="message"></span></div>
 
     <script type="text/javascript">
-      var colors = d3.ez.palette.categorical(1);
 
       // Create chart base
+      var colors = ["#CC0000", "#3366CC", "#FF9900", "#FFCC00", "#03CC14", "#FF18C0"];
       var myChart = d3.ez.chart.polarAreaChart()
         .width(1000)
         .height(600)

@@ -42,6 +42,15 @@ export default function() {
 				.innerRadius(0)
 				.cornerRadius(cornerRadius);
 
+			// Arc Tween
+			const arcTween = function(d) {
+				const i = d3.interpolate(0, d.data.value);
+				return function(t) {
+					d.data.value = i(t);
+					return arc(d);
+				};
+			};
+
 			// Update series group
 			const seriesGroup = d3.select(this)
 				.on("mouseover", function(e, d) {
@@ -77,11 +86,12 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("d", arc)
+				.attrTween("d", arcTween)
 				.style("fill", (d) => colorScale(d.data.key))
 				.attr("fill-opacity", opacity)
 				.attr("stroke", (d) => colorScale(d.data.key))
-				.attr("stroke-width", "1px")
-				.attr("d", arc);
+				.attr("stroke-width", "1px");
 
 			segments.exit()
 				.transition()
@@ -139,6 +149,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -151,7 +173,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

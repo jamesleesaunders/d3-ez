@@ -1,26 +1,26 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
 	<g class="seriesGroup" transform="translate(9.677419354838719,0)">
 		<g class="bars">
-			<rect class="bar" x="0" y="155.17241379310343" width="87.09677419354838" height="90.10344827586206" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="124.13793103448278" width="87.09677419354838" height="28.034482758620697" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="72.41379310344828" width="87.09677419354838" height="48.72413793103448" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="0" width="87.09677419354838" height="69.41379310344828" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="90.10344827586206" width="87.09677419354838" x="0" y="155.17241379310343" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="28.034482758620697" width="87.09677419354838" x="0" y="124.13793103448278" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="48.72413793103448" width="87.09677419354838" x="0" y="72.41379310344828" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="69.41379310344828" width="87.09677419354838" x="0" y="0" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)"></rect>
 		</g>
 	</g>
 	<g class="seriesGroup" transform="translate(106.45161290322581,0)">
 		<g class="bars">
-			<rect class="bar" x="0" y="227.58620689655172" width="87.09677419354838" height="17.68965517241378" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="124.13793103448278" width="87.09677419354838" height="100.44827586206898" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="124.13793103448278" width="87.09677419354838" height="-3" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="0" width="87.09677419354838" height="121.13793103448273" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="17.68965517241378" width="87.09677419354838" x="0" y="227.58620689655172" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="100.44827586206898" width="87.09677419354838" x="0" y="124.13793103448278" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="-3" width="87.09677419354838" x="0" y="124.13793103448278" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="121.13793103448273" width="87.09677419354838" x="0" y="0" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)"></rect>
 		</g>
 	</g>
 	<g class="seriesGroup" transform="translate(203.2258064516129,0)">
 		<g class="bars">
-			<rect class="bar" x="0" y="248.27586206896552" width="87.09677419354838" height="48.724137931034484" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="217.24137931034483" width="87.09677419354838" height="28.034482758620697" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="186.20689655172416" width="87.09677419354838" height="28.034482758620697" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)" stroke-width="1px" rx="2" ry="2"></rect>
-			<rect class="bar" x="0" y="93.10344827586205" width="87.09677419354838" height="90.10344827586206" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)" stroke-width="1px" rx="2" ry="2"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="48.724137931034484" width="87.09677419354838" x="0" y="248.27586206896552" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="28.034482758620697" width="87.09677419354838" x="0" y="217.24137931034483" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="28.034482758620697" width="87.09677419354838" x="0" y="186.20689655172416" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="90.10344827586206" width="87.09677419354838" x="0" y="93.10344827586205" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)"></rect>
 		</g>
 	</g>
 </svg>

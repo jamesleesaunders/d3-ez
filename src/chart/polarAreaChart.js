@@ -4,7 +4,7 @@ import palette from "../palette.js";
 import dataTransform from "../dataTransform.js";
 
 /**
- * Polar Area Chart (aks: Coxcomb Chart; Rose Chart)
+ * Polar Area Chart (aka: Coxcomb Chart; Rose Chart)
  *
  * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -100,7 +100,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -118,18 +119,19 @@ export default function() {
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(xScale)
-				.ringScale(yScale);
-
 			// Radial Bar Chart
 			const polarArea = component.polarArea()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
+
+			// Circular Axis
+			const circularAxis = component.circularAxis()
+				.radialScale(xScale)
+				.ringScale(yScale);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
@@ -146,18 +148,12 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(circularAxis)
 				.call(circularSectorLabels)
 				.call(polarArea);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// Legend
@@ -259,7 +255,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

@@ -17,13 +17,13 @@
       d3.json("data/uk_elections.json").then(function(data) {
         // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
-        var colors = ["#cc0000", "#3366cc", "#ff9900", "#ffcc00", "#03cc14", "#ff18c0"];
-
         // Create chart base
+        var colors = ["#CC0000", "#3366CC", "#FF9900", "#FFCC00", "#03CC14", "#FF18C0"];
         var myChart = d3.ez.chart.barChartCircular()
           .width(1000)
           .height(600)
           .colors(colors)
+          .transition({ ease: d3.easeBounce, duration: 500 })
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           })

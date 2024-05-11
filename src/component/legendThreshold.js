@@ -13,7 +13,7 @@ export default function() {
 	let height = 150;
 	let thresholdScale;
 	let opacity = 1;
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeBounce, duration: 0 };
 
 	/**
 	 * Constructor
@@ -117,6 +117,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {number} _v - Opacity 0 -1.
@@ -129,7 +141,7 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter XX
+	 * Transition Getter / Setter
 	 *
 	 * @param {d3.transition} _v - Transition.
 	 * @returns {*}

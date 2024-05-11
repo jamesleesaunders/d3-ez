@@ -81,7 +81,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -105,7 +106,8 @@ export default function() {
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -116,16 +118,10 @@ export default function() {
 				.append("g")
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
 				.call(heatMapRow);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// X-Axis
@@ -222,18 +218,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Thresholds Getter / Setter
 	 *
 	 * @param {Array} _v - Array of thresholds.
@@ -258,6 +242,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -270,7 +266,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

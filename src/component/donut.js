@@ -12,7 +12,7 @@ export default function() {
 	let xScale;
 	let yScale;
 	let colorScale;
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let opacity = 1;
 	let cornerRadius = 2;
@@ -45,10 +45,10 @@ export default function() {
 
 			// Arc Tween
 			const arcTween = function(d) {
-				const i = d3.interpolate(this._current, d);
-				this._current = i(0);
+				const i = d3.interpolate(d.startAngle, d.endAngle);
 				return function(t) {
-					return arc(i(t));
+					d.endAngle = i(t);
+					return arc(d);
 				};
 			};
 
@@ -88,12 +88,12 @@ export default function() {
 				.transition()
 				.duration(transition.duration)
 				.ease(transition.ease)
+				.attr("d", arc)
+				.attrTween("d", arcTween)
 				.attr("fill", (d) => colorScale(d.data.key))
 				.attr("fill-opacity", opacity)
 				.attr("stroke", (d) => colorScale(d.data.key))
-				.attr("stroke-width", "1px")
-				.attr("d", arc)
-				.attrTween("d", arcTween);
+				.attr("stroke-width", "1px");
 
 			slices.exit()
 				.remove();
@@ -149,6 +149,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -161,7 +173,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

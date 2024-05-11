@@ -24,7 +24,7 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function() {
-			textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with middle.
+			textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with 'middle'.
 
 			const [innerRadius, radius] = ringScale.range();
 
@@ -185,6 +185,18 @@ export default function() {
 	my.textAnchor = function(_v) {
 		if (!arguments.length) return textAnchor;
 		textAnchor = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
 		return this;
 	};
 

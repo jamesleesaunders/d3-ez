@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let transition = { ease: d3.easeBounce, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -77,7 +77,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -96,20 +97,22 @@ export default function() {
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Create Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(xScale)
-				.ringScale(yScale)
-				.showAxis(false);
-
+			// Radar Component
 			const radarArea = component.radarArea()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
-			// Adding Circular Labels on Page
+			// Circular Axis
+			const circularAxis = component.circularAxis()
+				.radialScale(xScale)
+				.ringScale(yScale)
+				.showAxis(false);
+
+			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
 				.ringScale(yScale)
 				.radialScale(xScale)
@@ -233,7 +236,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */
