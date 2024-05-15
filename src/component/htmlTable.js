@@ -77,12 +77,8 @@ export default function() {
 			const bodyEnter = body.enter()
 				.append("tr")
 				.attr("class", (d) => d.key)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				})
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); })
 				.merge(body);
 
 			// Add the main data values
@@ -99,12 +95,8 @@ export default function() {
 
 			td.enter()
 				.append("td")
-				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(td)
 				.html((d) => d.value);
 		});

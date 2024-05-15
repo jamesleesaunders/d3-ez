@@ -47,12 +47,8 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -70,12 +66,8 @@ export default function() {
 			bars.enter()
 				.append("path")
 				.classed("bar", true)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("mouseover", function(e, d) {dispatch.call("customValueMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(bars)
 				.transition()
 				.ease(transition.ease)

@@ -34,9 +34,7 @@ export default function() {
 			const axis = axisSelect.enter()
 				.append("g")
 				.classed(classed, true)
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(axisSelect);
 
 			// Outer circle

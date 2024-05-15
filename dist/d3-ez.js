@@ -1088,9 +1088,7 @@
 	        d3__namespace.select(this).select("text").style("display", "none");
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      })
-	      //.attr("transform", (d) => `translate(${xScale(d.x)},${height})`)
-	      .attr("transform", function (d) {
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
 	      }).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
