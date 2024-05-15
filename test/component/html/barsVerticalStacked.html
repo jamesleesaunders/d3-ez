@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <title>d3-ez : Stacked Bars Test</title>
+    <title>d3-ez : Vertical Stacked Bars Test</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../../../dist/d3-ez.js"></script>
   </head>
@@ -33,7 +33,7 @@
         .range(colors);
 
       // Configure chart component
-      var myChart = d3.ez.component.barsStacked()
+      var myChart = d3.ez.component.barsVerticalStacked()
         .xScale(xScale)
         .yScale(yScale)
         .colorScale(colorScale)

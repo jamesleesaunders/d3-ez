@@ -283,6 +283,189 @@
 	  return my;
 	}
 
+	/**
+	 * Reusable Horizontal Bar Chart Component
+	 *
+	 * @module
+	 */
+	function componentBarsHorizontal () {
+	  /* Default Properties */
+	  var classed = "bars";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var opacity = 1;
+	  var cornerRadius = 2;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias barsHorizontal
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add bars to series
+	      var bars = componentGroup.selectAll(".bar").data(function (d) {
+	        return d.values;
+	      });
+	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
+	      }).attr("x", 0).attr("y", function (d) {
+	        return yScale(d.key);
+	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).attr("width", yScale.bandwidth()).attr("y", function (d) {
+	        return yScale(d.key);
+	      }).attr("height", yScale.bandwidth()).attr("width", function (d) {
+	        return xScale(d.value);
+	      });
+	      bars.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * Width Getter / Setter
+	   *
+	   * @param {number} _v - Width in px.
+	   * @returns {*}
+	   */
+	  my.width = function (_v) {
+	    if (!arguments.length) return width;
+	    width = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Height Getter / Setter
+	   *
+	   * @param {number} _v - Height in px.
+	   * @returns {*}
+	   */
+	  my.height = function (_v) {
+	    if (!arguments.length) return height;
+	    height = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Colors Getter / Setter
+	   *
+	   * @param {Array} _v - Array of colours used by color scale.
+	   * @returns {*}
+	   */
+	  my.colors = function (_v) {
+	    if (!arguments.length) return colors;
+	    colors = _v;
+	    return my;
+	  };
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
 	function _iterableToArrayLimit(r, l) {
 	  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
 	  if (null != t) {
@@ -340,192 +523,6 @@
 	}
 	function _nonIterableRest() {
 	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-
-	/**
-	 * Reusable Stacked Bar Chart Component
-	 *
-	 * @module
-	 */
-	function componentBarsStacked () {
-	  /* Default Properties */
-	  var classed = "bars";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var opacity = 1;
-	  var cornerRadius = 2;
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias barsStacked
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function () {
-	      var height = d3__namespace.max(yScale.range());
-	      var width = xScale.bandwidth();
-	      var _d3$extent = d3__namespace.extent(yScale.domain()),
-	        _d3$extent2 = _slicedToArray(_d3$extent, 2),
-	        valueMin = _d3$extent2[0],
-	        valueMax = _d3$extent2[1];
-
-	      // Stack Generator
-	      var stacker = function stacker(data) {
-	        var series = [];
-	        var y0 = 0;
-	        var y1 = 0;
-	        var yn0 = 0;
-	        var yn1 = 0;
-	        data.forEach(function (d, i) {
-	          if (d.value < 0) {
-	            // It's a negative bar - we want it to go down.
-	            yn1 = yn1 + d.value;
-	            series[i] = {
-	              key: d.key,
-	              value: d.value,
-	              y1: yn0,
-	              y0: yn1
-	            };
-	            yn0 += d.value;
-	          } else {
-	            // It's a positive bar - we want it to go up.
-	            y1 = y0 + d.value;
-	            series[i] = {
-	              key: d.key,
-	              value: d.value,
-	              y0: y0,
-	              y1: y1
-	            };
-	            y0 += d.value;
-	          }
-	        });
-	        return series;
-	      };
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add bars to series group
-	      var bars = componentGroup.selectAll(".bar").data(function (d) {
-	        return stacker(d.values);
-	      });
-	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, e, d);
-	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
-	        return yScale(d.y1);
-	      }).attr("width", width).attr("height", function (d) {
-	        var padding = 3;
-	        return (d.value < 0 ? yScale(d.value + valueMax) : height - yScale(d.value + valueMin)) - padding;
-	      }).attr("fill", function (d) {
-	        return colorScale(d.key);
-	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
-	        return colorScale(d.key);
-	      });
-	      bars.exit().transition().style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {number} _v - Opacity 0 -1.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
 	}
 
 	/**
@@ -685,11 +682,11 @@
 	}
 
 	/**
-	 * Reusable Horizontal Bar Chart Component
+	 * Reusable Vertical Stacked Bar Chart Component
 	 *
 	 * @module
 	 */
-	function componentBarsHorizontal () {
+	function componentBarsVerticalStacked () {
 	  /* Default Properties */
 	  var classed = "bars";
 	  var xScale;
@@ -707,11 +704,51 @@
 	   * Constructor
 	   *
 	   * @constructor
-	   * @alias barsHorizontal
+	   * @alias barsVerticalStacked
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
 	    selection.each(function () {
+	      var height = d3__namespace.max(yScale.range());
+	      var width = xScale.bandwidth();
+	      var _d3$extent = d3__namespace.extent(yScale.domain()),
+	        _d3$extent2 = _slicedToArray(_d3$extent, 2),
+	        valueMin = _d3$extent2[0],
+	        valueMax = _d3$extent2[1];
+
+	      // Stack Generator
+	      var stacker = function stacker(data) {
+	        var series = [];
+	        var y0 = 0;
+	        var y1 = 0;
+	        var yn0 = 0;
+	        var yn1 = 0;
+	        data.forEach(function (d, i) {
+	          if (d.value < 0) {
+	            // It's a negative bar - we want it to go down.
+	            yn1 = yn1 + d.value;
+	            series[i] = {
+	              key: d.key,
+	              value: d.value,
+	              y1: yn0,
+	              y0: yn1
+	            };
+	            yn0 += d.value;
+	          } else {
+	            // It's a positive bar - we want it to go up.
+	            y1 = y0 + d.value;
+	            series[i] = {
+	              key: d.key,
+	              value: d.value,
+	              y0: y0,
+	              y1: y1
+	            };
+	            y0 += d.value;
+	          }
+	        });
+	        return series;
+	      };
+
 	      // Update series group
 	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
 	        dispatch.call("customSeriesMouseOver", this, e, d);
@@ -724,76 +761,27 @@
 	        return [d];
 	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
 
-	      // Add bars to series
+	      // Add bars to series group
 	      var bars = componentGroup.selectAll(".bar").data(function (d) {
-	        return d.values;
+	        return stacker(d.values);
 	      });
 	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).attr("x", 0).attr("y", function (d) {
-	        return yScale(d.key);
-	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("fill", function (d) {
+	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
+	        return yScale(d.y1);
+	      }).attr("width", width).attr("height", function (d) {
+	        var padding = 3;
+	        return (d.value < 0 ? yScale(d.value + valueMax) : height - yScale(d.value + valueMin)) - padding;
+	      }).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
-	      }).attr("width", yScale.bandwidth()).attr("y", function (d) {
-	        return yScale(d.key);
-	      }).attr("height", yScale.bandwidth()).attr("width", function (d) {
-	        return xScale(d.value);
 	      });
-	      bars.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
+	      bars.exit().transition().style("opacity", 0).remove();
 	    });
 	  }
-
-	  /**
-	   * Width Getter / Setter
-	   *
-	   * @param {number} _v - Width in px.
-	   * @returns {*}
-	   */
-	  my.width = function (_v) {
-	    if (!arguments.length) return width;
-	    width = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Height Getter / Setter
-	   *
-	   * @param {number} _v - Height in px.
-	   * @returns {*}
-	   */
-	  my.height = function (_v) {
-	    if (!arguments.length) return height;
-	    height = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Colors Getter / Setter
-	   *
-	   * @param {Array} _v - Array of colours used by color scale.
-	   * @returns {*}
-	   */
-	  my.colors = function (_v) {
-	    if (!arguments.length) return colors;
-	    colors = _v;
-	    return my;
-	  };
 
 	  /**
 	   * X Scale Getter / Setter
@@ -816,6 +804,18 @@
 	  my.yScale = function (_v) {
 	    if (!arguments.length) return yScale;
 	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
 	    return my;
 	  };
 
@@ -3132,1133 +3132,6 @@
 	}
 
 	/**
-	 * Reusable Line Chart Component
-	 *
-	 * @module
-	 */
-	function componentLineChart () {
-	  /* Default Properties */
-	  var classed = "lineChart";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var opacity = 1;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias lineChart
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function () {
-	      // Line animation tween
-	      var line = d3__namespace.line().curve(d3__namespace.curveCardinal).x(function (d) {
-	        return xScale(d.key);
-	      }).y(function (d) {
-	        return yScale(d.value);
-	      });
-	      var pathTween = function pathTween(d) {
-	        var i = d3__namespace.interpolate(1, d.length + 1);
-	        return function (t) {
-	          return line(d.slice(0, i(t)));
-	        };
-	      };
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add lines to series group
-	      var path = componentGroup.selectAll(".line").data(function (d) {
-	        return [d];
-	      });
-	      path.enter().append("path").attr("class", "line").attr("stroke-width", 1.5).attr("fill", "none").attr("d", function (d) {
-	        return line(d.values);
-	      }).merge(path).transition().duration(transition.duration).attrTween("d", function (d) {
-	        return pathTween(d.values);
-	      }).attr("stroke", function (d) {
-	        return colorScale(d.key);
-	      }).attr("opacity", opacity);
-	      path.exit().transition().style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {number} _v - Opacity 0 -1.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
-	 * Reusable Number Row Component
-	 *
-	 * @module
-	 */
-	function componentNumberCard () {
-	  /* Default Properties */
-	  var classed = "numberCard";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var opacity = 1;
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias numberCard
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function () {
-	      // Calculate cell sizes
-	      var cellHeight = yScale.bandwidth();
-	      var cellWidth = xScale.bandwidth();
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add numbers to series
-	      var numbers = componentGroup.selectAll(".number").data(function (d) {
-	        return d.values;
-	      });
-	      numbers.enter().append("text").attr("class", "number").attr("text-anchor", "middle").attr("dominant-baseline", "central").on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).text(function (d) {
-	        return d["value"];
-	      }).attr("fill", function (d) {
-	        return colorScale(d.value);
-	      }).attr("x", function (d) {
-	        return xScale(d.key) + cellWidth / 2;
-	      }).attr("y", cellHeight / 2);
-	      numbers.exit().transition().style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {number} _v - Opacity 0 -1.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
-	 * Reusable Polar Area Chart Component
-	 *
-	 * @module
-	 */
-	function componentPolarArea () {
-	  /* Default Properties */
-	  var classed = "polarArea";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var opacity = 1;
-	  var cornerRadius = 2;
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias polarArea
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function () {
-	      var _xScale$range = xScale.range(),
-	        _xScale$range2 = _slicedToArray(_xScale$range, 2),
-	        startAngle = _xScale$range2[0],
-	        endAngle = _xScale$range2[1];
-
-	      // Pie Generator
-	      var pie = d3__namespace.pie().value(1).sort(null).startAngle(startAngle * Math.PI / 180).endAngle(endAngle * Math.PI / 180).padAngle(0);
-
-	      // Arc Generator
-	      var arc = d3__namespace.arc().outerRadius(function (d) {
-	        return yScale(d.data.value);
-	      }).innerRadius(0).cornerRadius(cornerRadius);
-
-	      // Arc Tween
-	      var arcTween = function arcTween(d) {
-	        var i = d3__namespace.interpolate(0, d.data.value);
-	        return function (t) {
-	          d.data.value = i(t);
-	          return arc(d);
-	        };
-	      };
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add segments to series
-	      var segments = componentGroup.selectAll(".segment").data(function (d) {
-	        return pie(d.values);
-	      });
-	      segments.enter().append("path").classed("segment", true).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, e, d.data);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
-	        return colorScale(d.data.key);
-	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
-	        return colorScale(d.data.key);
-	      }).attr("stroke-width", "1px");
-	      segments.exit().transition().style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {Number} _v - Opacity level.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
-	 * Reusable Radar Area Component
-	 *
-	 * @module
-	 */
-	function componentRadarArea () {
-	  /* Default Properties */
-	  var classed = "radarArea";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var opacity = 1;
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias radarArea
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function (data) {
-	      // Slice calculation on circle
-	      var angleSlice = Math.PI * 2 / data.values.length;
-
-	      // Function to generate radar line points
-	      var radarLine = d3__namespace.lineRadial().radius(function (d) {
-	        return yScale(d.value);
-	      }).angle(function (d, i) {
-	        return i * angleSlice;
-	      }).curve(d3__namespace.curveBasis).curve(d3__namespace.curveCardinalClosed);
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add radar path line
-	      var path = componentGroup.selectAll("path").data(function (d) {
-	        return [d];
-	      });
-	      path.enter().append("path").on("mouseover", function () {
-	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity);
-	      }).on("mouseout", function () {
-	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity / 2);
-	      }).merge(path).transition().ease(transition.ease).duration(transition.duration).style("fill-opacity", opacity / 2).attr("d", function (d) {
-	        return radarLine(d.values);
-	      });
-
-	      // Add radar points
-	      var dots = componentGroup.selectAll("circle").data(function (d) {
-	        return d.values;
-	      });
-	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots)
-	      //.transition()
-	      //.ease(transition.ease)
-	      //.duration(transition.duration)
-	      .attr("cx", function (d, i) {
-	        return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
-	      }).attr("cy", function (d, i) {
-	        return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
-	      });
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {number} _v - Opacity 0 -1.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
-	 * Reusable Proportional Area Circles Component
-	 *
-	 * @module
-	 */
-	function componentProportionalAreaCircles () {
-	  /* Default Properties */
-	  var classed = "proportionalAreaCircles";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var sizeScale;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var opacity = 1;
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias proportionalAreaCircles
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function () {
-	      // Calculate cell sizes
-	      var cellHeight = yScale.bandwidth();
-	      var cellWidth = xScale.bandwidth();
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add spots to series
-	      var spot = componentLabeledNode().radius(function (d) {
-	        return sizeScale(d.value);
-	      }).color(function (d) {
-	        return colorScale(d.value);
-	      }).label(function (d) {
-	        return d.value;
-	      }).display("none").opacity(opacity).stroke(1, "currentColor").dispatch(dispatch).transition(transition);
-	      var spots = componentGroup.selectAll(".punchSpot").data(function (d) {
-	        return d.values;
-	      });
-	      spots.enter().append("g").classed("punchSpot", true).on("mouseover", function (e, d) {
-	        d3__namespace.select(this).select("text").style("display", "block");
-	        dispatch.call("customValueMouseOver", this, e, d);
-	      }).on("mouseout", function () {
-	        d3__namespace.select(this).select("text").style("display", "none");
-	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, e, d);
-	      }).attr("transform", function (d) {
-	        var x = cellWidth / 2 + xScale(d.key);
-	        var y = cellHeight / 2;
-	        return "translate(".concat(x, ",").concat(y, ")");
-	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
-	        var x = cellWidth / 2 + xScale(d.key);
-	        var y = cellHeight / 2;
-	        return "translate(".concat(x, ",").concat(y, ")");
-	      }).call(spot);
-	      spots.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Size Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.sizeScale = function (_v) {
-	    if (!arguments.length) return sizeScale;
-	    sizeScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {number} _v - Opacity 0 -1.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
-	 * Reusable Scatter Plot Component
-	 *
-	 * @module
-	 */
-	function componentScatterPlot () {
-	  /* Default Properties */
-	  var classed = "scatterPlot";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var opacity = 1;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias scatterPlot
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function () {
-	      d3__namespace.max(yScale.range());
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-	      var dots = componentGroup.attr("fill", function (d) {
-	        return colorScale(d.key);
-	      }).selectAll(".dot").data(function (d) {
-	        return d.values;
-	      });
-	      dots.enter().append("circle").attr("class", "dot").attr("r", 3).attr("cx", 0).attr("cy", function (d) {
-	        return yScale(d.value);
-	      }).on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
-	        return xScale(d.key);
-	      }).attr("cy", function (d) {
-	        return yScale(d.value);
-	      }).attr("opacity", opacity);
-	      dots.exit().transition().style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {number} _v - Opacity 0 -1.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
-	 * Reusable Rose Chart Sector
-	 *
-	 * @module
-	 */
-	function componentRoseChartSector () {
-	  /* Default Properties */
-	  var classed = "roseChartSector";
-	  var xScale;
-	  var yScale;
-	  var colorScale;
-	  var transition = {
-	    ease: d3__namespace.easeLinear,
-	    duration: 0
-	  };
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var stacked = false;
-	  var opacity = 1;
-	  var cornerRadius = 2;
-
-	  /**
-	   * Constructor
-	   *
-	   * @constructor
-	   * @alias roseChartSector
-	   * @param {d3.selection} selection - The chart holder D3 selection.
-	   */
-	  function my(selection) {
-	    selection.each(function (data) {
-	      // Stack Generator
-	      var stacker = function stacker(data) {
-	        // Calculate inner and outer radius values
-	        var series = [];
-	        var innerRadius = 0;
-	        var outerRadius = 0;
-	        data.forEach(function (d, i) {
-	          outerRadius = innerRadius + d.value;
-	          series[i] = {
-	            key: d.key,
-	            value: d.value,
-	            innerRadius: yScale(innerRadius),
-	            outerRadius: yScale(outerRadius)
-	          };
-	          innerRadius += stacked ? d.value : 0;
-	        });
-	        return series;
-	      };
-
-	      // Arc Generator
-	      var startAngle = xScale(data.key);
-	      var endAngle = xScale(data.key) + xScale.bandwidth();
-	      var arc = d3__namespace.arc().innerRadius(function (d) {
-	        return d.innerRadius;
-	      }).outerRadius(function (d) {
-	        return d.outerRadius;
-	      }).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).cornerRadius(cornerRadius);
-
-	      // Arc Tween
-	      var arcTween = function arcTween(d) {
-	        var i = d3__namespace.interpolate(d.innerRadius, d.outerRadius);
-	        return function (t) {
-	          d.outerRadius = i(t);
-	          return arc(d);
-	        };
-	      };
-
-	      // Update series group
-	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
-	        dispatch.call("customSeriesMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customSeriesClick", this, e, d);
-	      });
-
-	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
-	        return [d];
-	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
-
-	      // Add arcs to series group
-	      var arcs = componentGroup.selectAll(".arc").data(function (d) {
-	        return stacker(d.values);
-	      });
-	      arcs.enter().append("path").classed("arc", true).attr("stroke-width", "1px").on("mouseover", function (e, d) {
-	        dispatch.call("customValueMouseOver", this, e, d);
-	      }).on("click", function (e, d) {
-	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
-	        return colorScale(d.key);
-	      }).attr("stroke", function (d) {
-	        return colorScale(d.key);
-	      }).attr("fill-opacity", opacity);
-	      arcs.exit().transition().style("opacity", 0).remove();
-	    });
-	  }
-
-	  /**
-	   * X Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.xScale = function (_v) {
-	    if (!arguments.length) return xScale;
-	    xScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Y Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 scale.
-	   * @returns {*}
-	   */
-	  my.yScale = function (_v) {
-	    if (!arguments.length) return yScale;
-	    yScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Color Scale Getter / Setter
-	   *
-	   * @param {d3.scale} _v - D3 color scale.
-	   * @returns {*}
-	   */
-	  my.colorScale = function (_v) {
-	    if (!arguments.length) return colorScale;
-	    colorScale = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Stacked Getter / Setter
-	   *
-	   * @param {boolean} _v - Stacked bars or grouped?
-	   * @returns {*}
-	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
-	    return my;
-	  };
-
-	  /**
-	   * Opacity Getter / Setter
-	   *
-	   * @param {Number} _v - Opacity level.
-	   * @returns {*}
-	   */
-	  my.opacity = function (_v) {
-	    if (!arguments.length) return opacity;
-	    opacity = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Transition Getter / Setter XX
-	   *
-	   * @param {d3.transition} _v - Transition.
-	   * @returns {*}
-	   */
-	  my.transition = function (_v) {
-	    if (!arguments.length) return transition;
-	    transition = _v;
-	    return this;
-	  };
-
-	  /**
-	   * Dispatch Getter / Setter
-	   *
-	   * @param {d3.dispatch} _v - Dispatch event handler.
-	   * @returns {*}
-	   */
-	  my.dispatch = function (_v) {
-	    if (!arguments.length) return dispatch();
-	    dispatch = _v;
-	    return this;
-	  };
-
-	  /**
-	   * On Event Getter
-	   *
-	   * @returns {*}
-	   */
-	  my.on = function () {
-	    var value = dispatch.on.apply(dispatch, arguments);
-	    return value === dispatch ? my : value;
-	  };
-	  return my;
-	}
-
-	/**
 	 * Reusable Size Legend Component
 	 *
 	 * @module
@@ -4923,11 +3796,1138 @@
 	  return my;
 	}
 
+	/**
+	 * Reusable Line Chart Component
+	 *
+	 * @module
+	 */
+	function componentLineChart () {
+	  /* Default Properties */
+	  var classed = "lineChart";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var opacity = 1;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias lineChart
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      // Line animation tween
+	      var line = d3__namespace.line().curve(d3__namespace.curveCardinal).x(function (d) {
+	        return xScale(d.key);
+	      }).y(function (d) {
+	        return yScale(d.value);
+	      });
+	      var pathTween = function pathTween(d) {
+	        var i = d3__namespace.interpolate(1, d.length + 1);
+	        return function (t) {
+	          return line(d.slice(0, i(t)));
+	        };
+	      };
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add lines to series group
+	      var path = componentGroup.selectAll(".line").data(function (d) {
+	        return [d];
+	      });
+	      path.enter().append("path").attr("class", "line").attr("stroke-width", 1.5).attr("fill", "none").attr("d", function (d) {
+	        return line(d.values);
+	      }).merge(path).transition().duration(transition.duration).attrTween("d", function (d) {
+	        return pathTween(d.values);
+	      }).attr("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).attr("opacity", opacity);
+	      path.exit().transition().style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Reusable Number Row Component
+	 *
+	 * @module
+	 */
+	function componentNumberCard () {
+	  /* Default Properties */
+	  var classed = "numberCard";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var opacity = 1;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias numberCard
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      // Calculate cell sizes
+	      var cellHeight = yScale.bandwidth();
+	      var cellWidth = xScale.bandwidth();
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add numbers to series
+	      var numbers = componentGroup.selectAll(".number").data(function (d) {
+	        return d.values;
+	      });
+	      numbers.enter().append("text").attr("class", "number").attr("text-anchor", "middle").attr("dominant-baseline", "central").on("mouseover", function (e, d) {
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
+	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).text(function (d) {
+	        return d["value"];
+	      }).attr("fill", function (d) {
+	        return colorScale(d.value);
+	      }).attr("x", function (d) {
+	        return xScale(d.key) + cellWidth / 2;
+	      }).attr("y", cellHeight / 2);
+	      numbers.exit().transition().style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Reusable Polar Area Chart Component
+	 *
+	 * @module
+	 */
+	function componentPolarArea () {
+	  /* Default Properties */
+	  var classed = "polarArea";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var opacity = 1;
+	  var cornerRadius = 2;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias polarArea
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      var _xScale$range = xScale.range(),
+	        _xScale$range2 = _slicedToArray(_xScale$range, 2),
+	        startAngle = _xScale$range2[0],
+	        endAngle = _xScale$range2[1];
+
+	      // Pie Generator
+	      var pie = d3__namespace.pie().value(1).sort(null).startAngle(startAngle * Math.PI / 180).endAngle(endAngle * Math.PI / 180).padAngle(0);
+
+	      // Arc Generator
+	      var arc = d3__namespace.arc().outerRadius(function (d) {
+	        return yScale(d.data.value);
+	      }).innerRadius(0).cornerRadius(cornerRadius);
+
+	      // Arc Tween
+	      var arcTween = function arcTween(d) {
+	        var i = d3__namespace.interpolate(0, d.data.value);
+	        return function (t) {
+	          d.data.value = i(t);
+	          return arc(d);
+	        };
+	      };
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add segments to series
+	      var segments = componentGroup.selectAll(".segment").data(function (d) {
+	        return pie(d.values);
+	      });
+	      segments.enter().append("path").classed("segment", true).on("mouseover", function (e, d) {
+	        dispatch.call("customValueMouseOver", this, e, d.data);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d.data);
+	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
+	        return colorScale(d.data.key);
+	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
+	        return colorScale(d.data.key);
+	      }).attr("stroke-width", "1px");
+	      segments.exit().transition().style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {Number} _v - Opacity level.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Reusable Proportional Area Circles Component
+	 *
+	 * @module
+	 */
+	function componentProportionalAreaCircles () {
+	  /* Default Properties */
+	  var classed = "proportionalAreaCircles";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var sizeScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var opacity = 1;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias proportionalAreaCircles
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      // Calculate cell sizes
+	      var cellHeight = yScale.bandwidth();
+	      var cellWidth = xScale.bandwidth();
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add spots to series
+	      var spot = componentLabeledNode().radius(function (d) {
+	        return sizeScale(d.value);
+	      }).color(function (d) {
+	        return colorScale(d.value);
+	      }).label(function (d) {
+	        return d.value;
+	      }).display("none").opacity(opacity).stroke(1, "currentColor").dispatch(dispatch).transition(transition);
+	      var spots = componentGroup.selectAll(".punchSpot").data(function (d) {
+	        return d.values;
+	      });
+	      spots.enter().append("g").classed("punchSpot", true).on("mouseover", function (e, d) {
+	        d3__namespace.select(this).select("text").style("display", "block");
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("mouseout", function () {
+	        d3__namespace.select(this).select("text").style("display", "none");
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
+	      }).attr("transform", function (d) {
+	        var x = cellWidth / 2 + xScale(d.key);
+	        var y = cellHeight / 2;
+	        return "translate(".concat(x, ",").concat(y, ")");
+	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	        var x = cellWidth / 2 + xScale(d.key);
+	        var y = cellHeight / 2;
+	        return "translate(".concat(x, ",").concat(y, ")");
+	      }).call(spot);
+	      spots.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Size Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.sizeScale = function (_v) {
+	    if (!arguments.length) return sizeScale;
+	    sizeScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Reusable Radar Area Component
+	 *
+	 * @module
+	 */
+	function componentRadarArea () {
+	  /* Default Properties */
+	  var classed = "radarArea";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var opacity = 1;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias radarArea
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function (data) {
+	      // Slice calculation on circle
+	      var angleSlice = Math.PI * 2 / data.values.length;
+
+	      // Function to generate radar line points
+	      var radarLine = d3__namespace.lineRadial().radius(function (d) {
+	        return yScale(d.value);
+	      }).angle(function (d, i) {
+	        return i * angleSlice;
+	      }).curve(d3__namespace.curveBasis).curve(d3__namespace.curveCardinalClosed);
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add radar path line
+	      var path = componentGroup.selectAll("path").data(function (d) {
+	        return [d];
+	      });
+	      path.enter().append("path").on("mouseover", function () {
+	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity);
+	      }).on("mouseout", function () {
+	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity / 2);
+	      }).merge(path).transition().ease(transition.ease).duration(transition.duration).style("fill-opacity", opacity / 2).attr("d", function (d) {
+	        return radarLine(d.values);
+	      });
+
+	      // Add radar points
+	      var dots = componentGroup.selectAll("circle").data(function (d) {
+	        return d.values;
+	      });
+	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots)
+	      //.transition()
+	      //.ease(transition.ease)
+	      //.duration(transition.duration)
+	      .attr("cx", function (d, i) {
+	        return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
+	      }).attr("cy", function (d, i) {
+	        return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
+	      });
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Reusable Rose Chart Sector
+	 *
+	 * @module
+	 */
+	function componentRoseChartSector () {
+	  /* Default Properties */
+	  var classed = "roseChartSector";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var stacked = false;
+	  var opacity = 1;
+	  var cornerRadius = 2;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias roseChartSector
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function (data) {
+	      // Stack Generator
+	      var stacker = function stacker(data) {
+	        // Calculate inner and outer radius values
+	        var series = [];
+	        var innerRadius = 0;
+	        var outerRadius = 0;
+	        data.forEach(function (d, i) {
+	          outerRadius = innerRadius + d.value;
+	          series[i] = {
+	            key: d.key,
+	            value: d.value,
+	            innerRadius: yScale(innerRadius),
+	            outerRadius: yScale(outerRadius)
+	          };
+	          innerRadius += stacked ? d.value : 0;
+	        });
+	        return series;
+	      };
+
+	      // Arc Generator
+	      var startAngle = xScale(data.key);
+	      var endAngle = xScale(data.key) + xScale.bandwidth();
+	      var arc = d3__namespace.arc().innerRadius(function (d) {
+	        return d.innerRadius;
+	      }).outerRadius(function (d) {
+	        return d.outerRadius;
+	      }).startAngle(startAngle * (Math.PI / 180)).endAngle(endAngle * (Math.PI / 180)).cornerRadius(cornerRadius);
+
+	      // Arc Tween
+	      var arcTween = function arcTween(d) {
+	        var i = d3__namespace.interpolate(d.innerRadius, d.outerRadius);
+	        return function (t) {
+	          d.outerRadius = i(t);
+	          return arc(d);
+	        };
+	      };
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add arcs to series group
+	      var arcs = componentGroup.selectAll(".arc").data(function (d) {
+	        return stacker(d.values);
+	      });
+	      arcs.enter().append("path").classed("arc", true).attr("stroke-width", "1px").on("mouseover", function (e, d) {
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
+	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).attr("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).attr("fill-opacity", opacity);
+	      arcs.exit().transition().style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Stacked Getter / Setter
+	   *
+	   * @param {boolean} _v - Stacked bars or grouped?
+	   * @returns {*}
+	   */
+	  my.stacked = function (_v) {
+	    if (!arguments.length) return stacked;
+	    stacked = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {Number} _v - Opacity level.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Reusable Scatter Plot Component
+	 *
+	 * @module
+	 */
+	function componentScatterPlot () {
+	  /* Default Properties */
+	  var classed = "scatterPlot";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var opacity = 1;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias scatterPlot
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      d3__namespace.max(yScale.range());
+
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+	      var dots = componentGroup.attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).selectAll(".dot").data(function (d) {
+	        return d.values;
+	      });
+	      dots.enter().append("circle").attr("class", "dot").attr("r", 3).attr("cx", 0).attr("cy", function (d) {
+	        return yScale(d.value);
+	      }).on("mouseover", function (e, d) {
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
+	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
+	        return xScale(d.key);
+	      }).attr("cy", function (d) {
+	        return yScale(d.value);
+	      }).attr("opacity", opacity);
+	      dots.exit().transition().style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
 	var component = {
 	  barsCircular: componentBarsCircular,
-	  barsStacked: componentBarsStacked,
-	  barsVertical: componentBarsVertical,
 	  barsHorizontal: componentBarsHorizontal,
+	  barsVertical: componentBarsVertical,
+	  barsVerticalStacked: componentBarsVerticalStacked,
 	  bubbles: componentBubbles,
 	  candleSticks: componentCandleSticks,
 	  circularAxis: componentCircularAxis,
@@ -4947,9 +4947,9 @@
 	  lineChart: componentLineChart,
 	  numberCard: componentNumberCard,
 	  polarArea: componentPolarArea,
+	  proportionalAreaCircles: componentProportionalAreaCircles,
 	  radarArea: componentRadarArea,
 	  roseChartSector: componentRoseChartSector,
-	  proportionalAreaCircles: componentProportionalAreaCircles,
 	  scatterPlot: componentScatterPlot
 	};
 
@@ -5068,7 +5068,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5279,7 +5279,7 @@
 	 * @see http://datavizproject.com/data-type/bar-chart/
 	 * @see https://www.atlassian.com/data/charts/stacked-bar-chart-complete-guide
 	 */
-	function chartBarChart () {
+	function chartBarChartVertical () {
 	  /* Default Properties */
 	  var classed = "barChart";
 	  var width = 700;
@@ -5293,7 +5293,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5366,7 +5366,7 @@
 	      });
 
 	      // Bars Component
-	      var bars = stacked ? component.barsStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
+	      var bars = stacked ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
 	      bars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
@@ -5551,7 +5551,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5803,7 +5803,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6050,7 +6050,7 @@
 	  var colors = ["green", "red"];
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6141,7 +6141,7 @@
 	      containerEnter.select(".yAxis").call(yAxis);
 
 	      // Y-Axis Label
-	      container.select(".yAxis").selectAll(".yAxisLabel").data([data.key]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "#000000").style("text-anchor", "end").merge(yLabel).text(function (d) {
+	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
 	        return d;
 	      });
 	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
@@ -6303,7 +6303,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6520,7 +6520,7 @@
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6734,7 +6734,7 @@
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6957,7 +6957,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7225,7 +7225,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7445,7 +7445,7 @@
 	  var colors = [d3__namespace.rgb("steelblue").brighter(), d3__namespace.rgb("steelblue").darker()];
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7694,7 +7694,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7894,7 +7894,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8093,13 +8093,13 @@
 
 	var chart = {
 	  barChartCircular: chartBarChartCircular,
-	  barChart: chartBarChart,
 	  barChartHorizontal: chartBarChartHorizontal,
+	  barChartVertical: chartBarChartVertical,
 	  bubbleChart: chartBubbleChart,
 	  candlestickChart: chartCandlestickChart,
 	  donutChart: chartDonutChart,
-	  heatMapRadial: chartHeatMapRadial,
 	  heatMap: chartHeatMap,
+	  heatMapRadial: chartHeatMapRadial,
 	  lineChart: chartLineChart,
 	  polarAreaChart: chartPolarAreaChart,
 	  punchCard: chartPunchCard,

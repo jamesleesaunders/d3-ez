@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 /**
- * Reusable Stacked Bar Chart Component
+ * Reusable Vertical Stacked Bar Chart Component
  *
  * @module
  */
@@ -21,7 +21,7 @@ export default function() {
 	 * Constructor
 	 *
 	 * @constructor
-	 * @alias barsStacked
+	 * @alias barsVerticalStacked
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {

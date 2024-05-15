@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = ["green", "red"];
-	let transition = { ease: d3.easeLinear, duration: 300 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -156,18 +156,18 @@ export default function() {
 				.call(yAxis);
 
 			// Y-Axis Label
-			container.select(".yAxis")
+			containerEnter.select(".yAxis")
 				.selectAll(".yAxisLabel")
-				.data([data.key])
+				.data([yAxisLabel])
 				.enter()
 				.append("text")
 				.classed("yAxisLabel", true)
 				.attr("transform", "rotate(-90)")
 				.attr("y", -40)
 				.attr("dy", ".71em")
-				.attr("fill", "#000000")
+				.attr("fill", "currentColor")
 				.style("text-anchor", "end")
-				.merge(yLabel)
+				.transition()
 				.text((d) => d);
 
 			containerEnter.selectAll(".axis")

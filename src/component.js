@@ -1,7 +1,7 @@
 import componentBarsCircular from "./component/barsCircular.js";
-import componentBarsStacked from "./component/barsStacked.js";
-import componentBarsVertical from "./component/barsVertical.js";
 import componentBarsHorizontal from "./component/barsHorizontal.js";
+import componentBarsVertical from "./component/barsVertical.js";
+import componentBarsVerticalStacked from "./component/barsVerticalStacked.js";
 import componentBubbles from "./component/bubbles.js";
 import componentCandleSticks from "./component/candleSticks.js";
 import componentCircularAxis from "./component/circularAxis.js";
@@ -13,24 +13,24 @@ import componentHeatMapRing from "./component/heatMapRing.js";
 import componentHeatMapRow from "./component/heatMapRow.js";
 import componentHtmlList from "./component/htmlList.js";
 import componentHtmlTable from "./component/htmlTable.js";
+import componentLabeledNode from "./component/labeledNode.js";
+import componentLegend from "./component/legend.js";
+import componentLegendCategorical from "./component/legendCategorical.js";
+import componentLegendSize from "./component/legendSize.js";
+import componentLegendThreshold from "./component/legendThreshold.js";
 import componentLineChart from "./component/lineChart.js";
 import componentNumberCard from "./component/numberCard.js";
 import componentPolarArea from "./component/polarArea.js";
-import componentRadarArea from "./component/radarArea.js";
 import componentProportionalAreaCircles from "./component/proportionalAreaCircles.js";
-import componentScatterPlot from "./component/scatterPlot.js";
+import componentRadarArea from "./component/radarArea.js";
 import componentRoseChartSector from "./component/roseChartSector.js";
-import componentLabeledNode from "./component/labeledNode.js";
-import componentLegend from "./component/legend.js";
-import componentLegendSize from "./component/legendSize.js";
-import componentLegendCategorical from "./component/legendCategorical.js";
-import componentLegendThreshold from "./component/legendThreshold.js";
+import componentScatterPlot from "./component/scatterPlot.js";
 
 export default {
 	barsCircular: componentBarsCircular,
-	barsStacked: componentBarsStacked,
-	barsVertical: componentBarsVertical,
 	barsHorizontal: componentBarsHorizontal,
+	barsVertical: componentBarsVertical,
+	barsVerticalStacked: componentBarsVerticalStacked,
 	bubbles: componentBubbles,
 	candleSticks: componentCandleSticks,
 	circularAxis: componentCircularAxis,
@@ -50,8 +50,8 @@ export default {
 	lineChart: componentLineChart,
 	numberCard: componentNumberCard,
 	polarArea: componentPolarArea,
+	proportionalAreaCircles: componentProportionalAreaCircles,
 	radarArea: componentRadarArea,
 	roseChartSector: componentRoseChartSector,
-	proportionalAreaCircles: componentProportionalAreaCircles,
 	scatterPlot: componentScatterPlot
 };

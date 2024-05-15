@@ -1,5 +1,5 @@
 import chartBarChartCircular from "./chart/barChartCircular.js";
-import chartBarChart from "./chart/barChart.js";
+import chartBarChartVertical from "./chart/barChartVertical.js";
 import chartBarChartHorizontal from "./chart/barChartHorizontal.js";
 import chartBubbleChart from "./chart/bubbleChart.js";
 import chartCandlestickChart from "./chart/candlestickChart.js";
@@ -14,13 +14,13 @@ import chartRoseChart from "./chart/roseChart.js";
 
 export default {
 	barChartCircular: chartBarChartCircular,
-	barChart: chartBarChart,
 	barChartHorizontal: chartBarChartHorizontal,
+	barChartVertical: chartBarChartVertical,
 	bubbleChart: chartBubbleChart,
 	candlestickChart: chartCandlestickChart,
 	donutChart: chartDonutChart,
-	heatMapRadial: chartHeatMapRadial,
 	heatMap: chartHeatMap,
+	heatMapRadial: chartHeatMapRadial,
 	lineChart: chartLineChart,
 	polarAreaChart: chartPolarAreaChart,
 	punchCard: chartPunchCard,

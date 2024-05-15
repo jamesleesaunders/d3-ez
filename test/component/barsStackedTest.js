@@ -20,7 +20,7 @@ test("setup", function(t) {
 	t.end();
 });
 
-test("componentBarsStackedTest", function(t) {
+test("componentBarsVerticalStackedTest", function(t) {
 	let width = 300;
 	let height = 300;
 
@@ -40,7 +40,7 @@ test("componentBarsStackedTest", function(t) {
 		.domain(columnKeys)
 		.range(colors);
 
-	let myChart = d3Ez.component.barsStacked()
+	let myChart = d3Ez.component.barsVerticalStacked()
 		.xScale(xScale)
 		.yScale(yScale)
 		.colorScale(colorScale)
@@ -66,7 +66,7 @@ test("componentBarsStackedTest", function(t) {
 
 	// Populate 'expected' svg from file
 	let expectDiv = document.createElement("div");
-	readSvgFile("./test/component/svg/barsStacked.svg", expectDiv);
+	readSvgFile("./test/component/svg/barsVerticalStacked.svg", expectDiv);
 
 	// Wait for transitions to complete
 	setTimeout(function() {
