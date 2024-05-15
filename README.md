@@ -126,8 +126,9 @@ let d3Ez = require("d3-ez");
 
 The following charts are currently supported:
 
-- barChart()
 - barChartCircular()
+- barChartHorizontal()
+- barChartVertical()
 - bubbleChart()
 - candlestickChart()
 - donutChart()
@@ -197,13 +198,12 @@ the [Data Viz Project](http://datavizproject.com/) or [Data Viz Catalogue](https
 
 For reference, here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:
 
-- [Britecharts](http://eventbrite.github.io/britecharts/)
+- [Britecharts](https://britecharts.github.io/britecharts/)
 - [NVD3](http://nvd3.org)
-- [D4](http://visible.io/index.html)
 - [C3](http://c3js.org)
 - [D3 Plus](http://d3plus.org)
 - [ReD3](https://github.com/bugzin/reD3)
-- [Miso d3.chart](http://misoproject.com/d3-chart/)
+- [Miso d3.chart](https://github.com/misoproject/d3.chart)
 - [d3fc](https://d3fc.io)
 
 ### Credits
@@ -212,5 +212,5 @@ For reference, here are a few other alternative D3 chart libraries which also fo
 * Virgin Media <http://www.virginmedia.co.uk/> For support in development of the Tabular Heat Map.
 * Data Viz Project <http://datavizproject.com/> For helping me while deciding on naming of chart types.
 * Dip Parmar <https://github.com/DipParmar> For contributing to zooming, radar and horizontal bar charts.
-* You may also be interested in the sister project [d3-x3dom](https://github.com/jamesleesaunders/d3-x3dom) D3 X3DOM
+* You may also be interested in the sister project [d3-x3d](https://github.com/jamesleesaunders/d3-x3d) D3 X3D
 	Data Visualisation Library.
