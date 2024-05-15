@@ -12,7 +12,7 @@ export default function() {
 	let xScale;
 	let yScale;
 	let colorScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let opacity = 1;
 	let cornerRadius = 2;

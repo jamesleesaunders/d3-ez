@@ -10,7 +10,7 @@ export default function() {
 	/* Default Properties */
 	let classed = "circularRingLabels";
 	let radialScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let capitalizeLabels = false;
 	let textAnchor = "middle";
 

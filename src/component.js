@@ -1,6 +1,7 @@
 import componentBarsCircular from "./component/barsCircular.js";
 import componentBarsStacked from "./component/barsStacked.js";
 import componentBarsVertical from "./component/barsVertical.js";
+import componentBarsHorizontal from "./component/barsHorizontal.js";
 import componentBubbles from "./component/bubbles.js";
 import componentCandleSticks from "./component/candleSticks.js";
 import componentCircularAxis from "./component/circularAxis.js";
@@ -29,6 +30,7 @@ export default {
 	barsCircular: componentBarsCircular,
 	barsStacked: componentBarsStacked,
 	barsVertical: componentBarsVertical,
+	barsHorizontal: componentBarsHorizontal,
 	bubbles: componentBubbles,
 	candleSticks: componentCandleSticks,
 	circularAxis: componentCircularAxis,

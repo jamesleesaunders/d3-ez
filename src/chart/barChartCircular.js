@@ -155,7 +155,6 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(circularAxis)
 				.call(barsCircular)

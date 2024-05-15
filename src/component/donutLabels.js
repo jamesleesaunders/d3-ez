@@ -11,7 +11,7 @@ export default function() {
 	let classed = "donutLabels";
 	let xScale;
 	let yScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 
 	/**
 	 * Constructor

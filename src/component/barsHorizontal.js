@@ -1,6 +1,4 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
 
 /**
  * Reusable Horizontal Bar Chart Component
@@ -10,46 +8,14 @@ import dataTransform from "../dataTransform";
 export default function() {
 
 	/* Default Properties */
-	let width = 400;
-	let height = 500;
-	let transition = { ease: d3.easeBounce, duration: 0 };
-	let colors = palette.categorical(3);
-	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let classed = "bars";
 	let xScale;
 	let yScale;
 	let colorScale;
-	let classed = "barsHorizontal";
-
-	/**
-	 * Initialise Data and Scales
-	 *
-	 * @private
-	 * @param {Array} data - Chart data.
-	 */
-	function init(data) {
-		const { columnKeys, valueMax } = dataTransform(data).summary();
-		const valueExtent = [0, valueMax];
-
-		if (typeof colorScale === "undefined") {
-			colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
-		}
-
-		if (typeof xScale === "undefined") {
-			xScale = d3.scaleLinear()
-				.domain(valueExtent)
-				.range([0, height])
-				.nice();
-		}
-
-		if (typeof yScale === "undefined") {
-			yScale = d3.scaleBand()
-				.domain(columnKeys)
-				.rangeRound([0, width])
-				.padding(0.15);
-		}
-	}
+	let transition = { ease: d3.easeLinear, duration: 0 };
+	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	let opacity = 1;
+	let cornerRadius = 2;
 
 	/**
 	 * Constructor
@@ -59,39 +25,56 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
-		init(selection.data());
 		selection.each(function() {
-
 			// Update series group
-			const seriesGroup = d3.select(this);
-			seriesGroup.classed(classed, true)
-				.attr("id", (d) => d.key)
-				.on("mouseover", function(d) { dispatch.call("customSeriesMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customSeriesClick", this, d); });
+			const seriesGroup = d3.select(this)
+				.on("mouseover", function(e, d) {
+					dispatch.call("customSeriesMouseOver", this, e, d);
+				})
+				.on("click", function(e, d) {
+					dispatch.call("customSeriesClick", this, e, d);
+				});
+
+			// Add Component Level Group
+			let componentGroup = seriesGroup
+				.selectAll(`g.${classed}`)
+				.data((d) => [d])
+				.enter()
+				.append("g")
+				.classed(classed, true)
+				.merge(seriesGroup);
 
 			// Add bars to series
-			const bars = seriesGroup
-				.selectAll(".bar")
+			const bars = componentGroup.selectAll(".bar")
 				.data((d) => d.values);
 
 			bars.enter()
 				.append("rect")
 				.classed("bar", true)
-				.attr("fill", (d) => colorScale(d.key))
-				.attr("width", yScale.bandwidth())
+				.attr("stroke-width", "1px")
+				.attr("rx", cornerRadius)
+				.attr("ry", cornerRadius)
+				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
+				.attr("x", 0)
 				.attr("y", (d) => yScale(d.key))
 				.attr("height", yScale.bandwidth())
-				.on("mouseover", function(d) { dispatch.call("customValueMouseOver", this, d); })
-				.on("click", function(d) { dispatch.call("customValueClick", this, d); })
 				.merge(bars)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("x", 0)
+				.attr("fill", (d) => colorScale(d.key))
+				.attr("fill-opacity", opacity)
+				.attr("stroke", (d) => colorScale(d.key))
+				.attr("width", yScale.bandwidth())
+				.attr("y", (d) => yScale(d.key))
+				.attr("height", yScale.bandwidth())
 				.attr("width", (d) => xScale(d.value));
 
 			bars.exit()
 				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.style("opacity", 0)
 				.remove();
 		});
@@ -167,6 +150,18 @@ export default function() {
 		if (!arguments.length) return yScale;
 		yScale = _v;
 		return my;
+	};
+
+	/**
+	 * Opacity Getter / Setter
+	 *
+	 * @param {number} _v - Opacity 0 -1.
+	 * @returns {*}
+	 */
+	my.opacity = function(_v) {
+		if (!arguments.length) return opacity;
+		opacity = _v;
+		return this;
 	};
 
 	/**

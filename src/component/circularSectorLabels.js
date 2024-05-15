@@ -11,7 +11,7 @@ export default function() {
 	let classed = "circularSectorLabels";
 	let radialScale;
 	let ringScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let capitalizeLabels = false;
 	let textAnchor = "middle";
 

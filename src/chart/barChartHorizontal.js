@@ -66,19 +66,19 @@ export default function() {
 			}
 			const yDomain = [valueMin, valueMax];
 
-			const xScale2 = d3.scaleBand()
-				.domain(rowKeys)
-				.range([0, chartW])
-				.padding(0.05);
-
-			const xScale = d3.scaleBand()
-				.domain(columnKeys)
-				.range([0, xScale2.bandwidth()])
-				.padding(0.05);
-
-			const yScale = d3.scaleLinear()
+			const xScale = d3.scaleLinear()
 				.domain(yDomain)
-				.range([chartH, 0]);
+				.range([0, chartW]);
+
+			const yScale2 = d3.scaleBand()
+				.domain(rowKeys)
+				.range([0, chartH])
+				.padding(0.1);
+
+			const yScale = d3.scaleBand()
+				.domain(columnKeys)
+				.range([0, yScale2.bandwidth()])
+				.padding(0.15);
 
 			const colorScale = d3.scaleOrdinal()
 				.domain(columnKeys)
@@ -112,8 +112,9 @@ export default function() {
 				.attr("class", (d) => d);
 
 			// Bars Component
-			const bars = stacked ? component.barsStacked().xScale(xScale2) : component.barsVertical().xScale(xScale)
-			bars.colorScale(colorScale)
+			const bars = component.barsHorizontal()
+				.xScale(xScale)
+				.colorScale(colorScale)
 				.yScale(yScale)
 				.opacity(opacity)
 				.dispatch(dispatch)
@@ -128,39 +129,24 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.attr("transform", (d) => `translate(${xScale2(d.key)},${chartH - yScale(valueMin)})`)
+				.attr("transform", (d) => `translate(${xScale(valueMin)},${yScale2(d.key)})`)
 				.call(bars);
 
 			seriesGroup.exit()
 				.remove();
 
 			// X-Axis
-			const xAxis = d3.axisBottom(xScale2);
+			const xAxis = d3.axisBottom(xScale);
 
 			containerEnter.select(".xAxis")
 				.attr("transform", `translate(0,${chartH})`)
 				.call(xAxis);
 
 			// Y-Axis
-			const yAxis = d3.axisLeft(yScale);
+			const yAxis = d3.axisLeft(yScale2);
 
 			containerEnter.select(".yAxis")
 				.call(yAxis);
-
-			// Y Axis Label
-			containerEnter.select(".yAxis")
-				.selectAll(".yAxisLabel")
-				.data([yAxisLabel])
-				.enter()
-				.append("text")
-				.classed("yAxisLabel", true)
-				.attr("transform", "rotate(-90)")
-				.attr("y", -40)
-				.attr("dy", ".71em")
-				.attr("fill", "currentColor")
-				.style("text-anchor", "end")
-				.transition()
-				.text((d) => d);
 
 			containerEnter.selectAll(".axis")
 				.attr("opacity", showAxis ? 1 : 0);

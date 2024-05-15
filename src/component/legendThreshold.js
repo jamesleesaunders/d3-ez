@@ -13,7 +13,7 @@ export default function() {
 	let height = 150;
 	let thresholdScale;
 	let opacity = 1;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 
 	/**
 	 * Constructor

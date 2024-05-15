@@ -130,7 +130,7 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -351,7 +351,7 @@
 	  var colorScale;
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -537,7 +537,7 @@
 	  var colorScale;
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -575,7 +575,7 @@
 	      var bars = componentGroup.selectAll(".bar").data(function (d) {
 	        return d.values;
 	      });
-	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).attr("stroke-width", "1px").on("mouseover", function (e, d) {
+	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
@@ -681,6 +681,189 @@
 	}
 
 	/**
+	 * Reusable Horizontal Bar Chart Component
+	 *
+	 * @module
+	 */
+	function componentBarsHorizontal () {
+	  /* Default Properties */
+	  var classed = "bars";
+	  var xScale;
+	  var yScale;
+	  var colorScale;
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 0
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+	  var opacity = 1;
+	  var cornerRadius = 2;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias barsHorizontal
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.each(function () {
+	      // Update series group
+	      var seriesGroup = d3__namespace.select(this).on("mouseover", function (e, d) {
+	        dispatch.call("customSeriesMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customSeriesClick", this, e, d);
+	      });
+
+	      // Add Component Level Group
+	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	        return [d];
+	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
+
+	      // Add bars to series
+	      var bars = componentGroup.selectAll(".bar").data(function (d) {
+	        return d.values;
+	      });
+	      bars.enter().append("rect").classed("bar", true).attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
+	        dispatch.call("customValueMouseOver", this, e, d);
+	      }).on("click", function (e, d) {
+	        dispatch.call("customValueClick", this, e, d);
+	      }).attr("x", 0).attr("y", function (d) {
+	        return yScale(d.key);
+	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).attr("width", yScale.bandwidth()).attr("y", function (d) {
+	        return yScale(d.key);
+	      }).attr("height", yScale.bandwidth()).attr("width", function (d) {
+	        return xScale(d.value);
+	      });
+	      bars.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
+	    });
+	  }
+
+	  /**
+	   * Width Getter / Setter
+	   *
+	   * @param {number} _v - Width in px.
+	   * @returns {*}
+	   */
+	  my.width = function (_v) {
+	    if (!arguments.length) return width;
+	    width = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Height Getter / Setter
+	   *
+	   * @param {number} _v - Height in px.
+	   * @returns {*}
+	   */
+	  my.height = function (_v) {
+	    if (!arguments.length) return height;
+	    height = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Color Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 color scale.
+	   * @returns {*}
+	   */
+	  my.colorScale = function (_v) {
+	    if (!arguments.length) return colorScale;
+	    colorScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Colors Getter / Setter
+	   *
+	   * @param {Array} _v - Array of colours used by color scale.
+	   * @returns {*}
+	   */
+	  my.colors = function (_v) {
+	    if (!arguments.length) return colors;
+	    colors = _v;
+	    return my;
+	  };
+
+	  /**
+	   * X Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.xScale = function (_v) {
+	    if (!arguments.length) return xScale;
+	    xScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Y Scale Getter / Setter
+	   *
+	   * @param {d3.scale} _v - D3 scale.
+	   * @returns {*}
+	   */
+	  my.yScale = function (_v) {
+	    if (!arguments.length) return yScale;
+	    yScale = _v;
+	    return my;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {number} _v - Opacity 0 -1.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter XX
+	   *
+	   * @param {d3.transition} _v - Transition.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
 	 * Reusable Labeled Node Component
 	 *
 	 * @module
@@ -697,7 +880,7 @@
 	  var display = "block";
 	  var fontSize = 10;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
@@ -860,7 +1043,7 @@
 	  var colorScale;
 	  var sizeScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -1024,7 +1207,7 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -1236,7 +1419,7 @@
 	  var radialScale;
 	  var ringScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -1405,7 +1588,7 @@
 	  var classed = "circularRingLabels";
 	  var radialScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var capitalizeLabels = false;
@@ -1524,7 +1707,7 @@
 	  var radialScale;
 	  var ringScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var capitalizeLabels = false;
@@ -1699,7 +1882,7 @@
 	  var colorScale;
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 300
+	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
@@ -1864,7 +2047,7 @@
 	  var xScale;
 	  var yScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 
@@ -2013,11 +2196,11 @@
 	  var colorScale;
 	  var xScale;
 	  var yScale;
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
 	  var cornerRadius = 2;
 
@@ -2173,7 +2356,7 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -2957,7 +3140,7 @@
 	  var colorScale;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3107,7 +3290,7 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3253,7 +3436,7 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3415,11 +3598,11 @@
 	  var xScale;
 	  var yScale;
 	  var colorScale;
-	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	  var opacity = 1;
 
 	  /**
@@ -3574,7 +3757,7 @@
 	  var colorScale;
 	  var sizeScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3741,7 +3924,7 @@
 	  var colorScale;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -3884,7 +4067,7 @@
 	  var yScale;
 	  var colorScale;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -4076,7 +4259,7 @@
 	  var itemCount = 4;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 
@@ -4235,7 +4418,7 @@
 	  var itemType = "rect";
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var cornerRadius = 2;
@@ -4420,7 +4603,7 @@
 	  var thresholdScale;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 
@@ -4558,7 +4741,7 @@
 	  var legend;
 	  var opacity = 1;
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
+	    ease: d3__namespace.easeLinear,
 	    duration: 0
 	  };
 	  var itemType = "rect";
@@ -4732,6 +4915,7 @@
 	  barsCircular: componentBarsCircular,
 	  barsStacked: componentBarsStacked,
 	  barsVertical: componentBarsVertical,
+	  barsHorizontal: componentBarsHorizontal,
 	  bubbles: componentBubbles,
 	  candleSticks: componentCandleSticks,
 	  circularAxis: componentCircularAxis,
@@ -5154,7 +5338,7 @@
 	        valueMin = valueMin > 0 ? 0 : valueMin;
 	      }
 	      var yDomain = [valueMin, valueMax];
-	      var xScale2 = d3__namespace.scaleBand().domain(rowKeys).range([0, chartW]).padding(0.1);
+	      var xScale2 = d3__namespace.scaleBand().domain(rowKeys).range([0, chartW]).padding(0.05);
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([0, xScale2.bandwidth()]).padding(0.05);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([chartH, 0]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
@@ -5194,6 +5378,258 @@
 	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
 	        return d;
 	      });
+	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+
+	      // Legend
+	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	    });
+	  }
+
+	  /**
+	   * Width Getter / Setter
+	   *
+	   * @param {number} _v - Width in px.
+	   * @returns {*}
+	   */
+	  my.width = function (_v) {
+	    if (!arguments.length) return width;
+	    width = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Height Getter / Setter
+	   *
+	   * @param {number} _v - Height in px.
+	   * @returns {*}
+	   */
+	  my.height = function (_v) {
+	    if (!arguments.length) return height;
+	    height = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Margin Getter / Setter
+	   *
+	   * @param {number} _v - Margin in px.
+	   * @returns {*}
+	   */
+	  my.margin = function (_v) {
+	    if (!arguments.length) return margin;
+	    margin = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Colors Getter / Setter
+	   *
+	   * @param {Array} _v - Array of colours used by color scale.
+	   * @returns {*}
+	   */
+	  my.colors = function (_v) {
+	    if (!arguments.length) return colors;
+	    colors = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Opacity Getter / Setter
+	   *
+	   * @param {Number} _v - Opacity level.
+	   * @returns {*}
+	   */
+	  my.opacity = function (_v) {
+	    if (!arguments.length) return opacity;
+	    opacity = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Stacked Getter / Setter
+	   *
+	   * @param {Boolean} _v - Stacked or grouped bar chart.
+	   * @returns {*}
+	   */
+	  my.stacked = function (_v) {
+	    if (!arguments.length) return stacked;
+	    stacked = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Show Axis Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show axis true / false.
+	   * @returns {*}
+	   */
+	  my.showAxis = function (_v) {
+	    if (!arguments.length) return showAxis;
+	    showAxis = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Y Axix Label Getter / Setter
+	   *
+	   * @param {number} _v - Label text.
+	   * @returns {*}
+	   */
+	  my.yAxisLabel = function (_v) {
+	    if (!arguments.length) return yAxisLabel;
+	    yAxisLabel = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Transition Getter / Setter
+	   *
+	   * @param {d3.transition} _v - D3 transition style.
+	   * @returns {*}
+	   */
+	  my.transition = function (_v) {
+	    if (!arguments.length) return transition;
+	    transition = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Dispatch Getter / Setter
+	   *
+	   * @param {d3.dispatch} _v - Dispatch event handler.
+	   * @returns {*}
+	   */
+	  my.dispatch = function (_v) {
+	    if (!arguments.length) return dispatch();
+	    dispatch = _v;
+	    return this;
+	  };
+
+	  /**
+	   * On Event Getter
+	   *
+	   * @returns {*}
+	   */
+	  my.on = function () {
+	    var value = dispatch.on.apply(dispatch, arguments);
+	    return value === dispatch ? my : value;
+	  };
+	  return my;
+	}
+
+	/**
+	 * Bar Chart (Vertical) (aka: Bar Chart; Bar Graph)
+	 *
+	 * @module
+	 * @see http://datavizproject.com/data-type/bar-chart/
+	 * @see https://www.atlassian.com/data/charts/stacked-bar-chart-complete-guide
+	 */
+	function chartBarChartHorizontal () {
+	  /* Default Properties */
+	  var classed = "barChart";
+	  var width = 700;
+	  var height = 400;
+	  var margin = {
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
+	  };
+	  var colors = palette.categorical(1);
+	  var transition = {
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
+	  };
+	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
+
+	  /* Other Customisation Options */
+	  var opacity = 1;
+	  var showAxis = true;
+	  var yAxisLabel = null;
+	  var stacked = false;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias barChartVertical
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    // Create SVG element (if it does not exist already)
+	    var svg = function (selection) {
+	      var el = selection._groups[0][0];
+	      if (!!el.ownerSVGElement || el.tagName === "svg") {
+	        return selection;
+	      } else {
+	        var svgSelection = selection.selectAll("svg").data(function (d) {
+	          return [d];
+	        });
+	        return svgSelection.enter().append("svg").merge(svgSelection);
+	      }
+	    }(selection);
+	    selection.each(function (data) {
+	      // Set up margins and dimensions for the chart
+	      var legendW = 120;
+	      var legendPad = 15;
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
+	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendH = Math.max(chartH / 2, 100);
+
+	      // Create Scales and Axis
+	      var _dataTransform$summar = dataTransform(data).summary(),
+	        rowKeys = _dataTransform$summar.rowKeys,
+	        columnKeys = _dataTransform$summar.columnKeys,
+	        valueExtent = _dataTransform$summar.valueExtent,
+	        valueExtentStacked = _dataTransform$summar.valueExtentStacked;
+	      var _valueExtent = _slicedToArray(valueExtent, 2),
+	        valueMin = _valueExtent[0],
+	        valueMax = _valueExtent[1];
+	      if (stacked) {
+	        // Sum negative stacked bars
+	        var _valueExtentStacked = _slicedToArray(valueExtentStacked, 2);
+	        valueMin = _valueExtentStacked[0];
+	        valueMax = _valueExtentStacked[1];
+	      } else {
+	        // Set min to zero if min is more than zero
+	        valueMin = valueMin > 0 ? 0 : valueMin;
+	      }
+	      var yDomain = [valueMin, valueMax];
+	      var xScale = d3__namespace.scaleLinear().domain(yDomain).range([0, chartW]);
+	      var yScale2 = d3__namespace.scaleBand().domain(rowKeys).range([0, chartH]).padding(0.1);
+	      var yScale = d3__namespace.scaleBand().domain(columnKeys).range([0, yScale2.bandwidth()]).padding(0.15);
+	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
+
+	      // Update the chart dimensions and container and layer groups
+	      var container = svg.selectAll(".container").data([data]);
+	      container.exit().remove();
+	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+
+	      // Bars Component
+	      var bars = component.barsHorizontal().xScale(xScale).colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
+
+	      // Series Group
+	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
+	        return d;
+	      });
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d) {
+	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key), ")");
+	      }).call(bars);
+	      seriesGroup.exit().remove();
+
+	      // X-Axis
+	      var xAxis = d3__namespace.axisBottom(xScale);
+	      containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
+
+	      // Y-Axis
+	      var yAxis = d3__namespace.axisLeft(yScale2);
+	      containerEnter.select(".yAxis").call(yAxis);
 	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
 
 	      // Legend
@@ -7640,6 +8076,7 @@
 	var chart = {
 	  barChartCircular: chartBarChartCircular,
 	  barChart: chartBarChart,
+	  barChartHorizontal: chartBarChartHorizontal,
 	  bubbleChart: chartBubbleChart,
 	  candlestickChart: chartCandlestickChart,
 	  donutChart: chartDonutChart,
