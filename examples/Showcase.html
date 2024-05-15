@@ -50,6 +50,7 @@
           .xScale(xScale)
           .yScale(yScale)
           .colorScale(colorScale)
+          .transition({ ease: d3.easeBounce, duration: 500 })
           .on("customValueClick", function(e, d) {
             console.log(d);
           });

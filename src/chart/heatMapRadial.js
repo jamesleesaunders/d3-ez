@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import dataTransform from "../dataTransform";
-import component from "../component";
-import palette from "../palette";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Radial Heat Map (aka: Circular Heat Map)
@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.diverging(2).slice(0, 5);
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -34,6 +34,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = 120;
@@ -50,10 +61,6 @@ export default function() {
 				thresholds = tmpThresholds;
 			}
 
-			const colorScale = d3.scaleThreshold()
-				.domain(thresholds)
-				.range(colors);
-
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
 				.rangeRound([startAngle, endAngle])
@@ -64,15 +71,9 @@ export default function() {
 				.rangeRound([innerRadius, radius])
 				.padding(0.1);
 
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
+			const colorScale = d3.scaleThreshold()
+				.domain(thresholds)
+				.range(colors);
 
 			svg.classed("d3ez", true)
 				.attr("width", width)
@@ -82,7 +83,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -106,7 +108,8 @@ export default function() {
 				.xScale(xScale)
 				.yScale(yScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
@@ -128,10 +131,7 @@ export default function() {
 				.append("g")
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
-				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(heatMapRing)
 				.call(circularRingLabels);
 
@@ -140,7 +140,7 @@ export default function() {
 
 			// Outer Ring Labels
 			containerEnter.select(".axis")
-				.attr("transform", "translate(" + (chartW / 2) + "," + (chartH / 2) + ")")
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(circularSectorLabels);
 
 			// Legend
@@ -151,7 +151,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}
@@ -217,18 +217,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Thresholds Getter / Setter
 	 *
 	 * @param {Array} _v - Array of thresholds.
@@ -238,6 +226,18 @@ export default function() {
 		if (!arguments.length) return thresholds;
 		thresholds = _v;
 		return my;
+	};
+
+	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
 	};
 
 	/**
@@ -253,7 +253,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

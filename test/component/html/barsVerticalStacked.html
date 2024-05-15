@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>d3-ez : Vertical Stacked Bars Test</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../../../dist/d3-ez.js"></script>
+  </head>
+
+  <body>
+    <div id="chartholder"></div>
+
+    <script type="module">
+      import { dataset2 as myData } from "../../exampleData.js";
+
+      var height = 300;
+      var width = 300;
+
+      var colors = d3.ez.palette.categorical(1);
+      var { rowKeys, columnKeys, valueMin, valueExtentStacked } = d3.ez.dataTransform(myData).summary();
+
+      var xScale = d3.scaleBand()
+        .domain(rowKeys)
+        .range([0, width])
+        .padding(0.1);
+
+      var yScale = d3.scaleLinear()
+        .domain(valueExtentStacked)
+        .range([height, 0]);
+
+      var colorScale = d3.scaleOrdinal()
+        .domain(columnKeys)
+        .range(colors);
+
+      // Configure chart component
+      var myChart = d3.ez.component.barsVerticalStacked()
+        .xScale(xScale)
+        .yScale(yScale)
+        .colorScale(colorScale)
+        .opacity(0.8);
+
+      // Attach data and chart to 'chartholder' element
+      var chartHolder = d3.select("#chartholder");
+      chartHolder.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .selectAll(".seriesGroup")
+        .data(myData)
+        .enter()
+        .append("g")
+        .classed("seriesGroup", true)
+        .attr("transform", (d) => {
+          var x = xScale(d.key);
+          var y = height - yScale(valueMin);
+          return `translate(${x},${y})`
+        })
+        .call(myChart);
+
+    </script>
+  </body>
+
+</html>

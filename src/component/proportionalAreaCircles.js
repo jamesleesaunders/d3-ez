@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import componentLabeledNode from "./labeledNode";
+import componentLabeledNode from "./labeledNode.js";
 
 /**
  * Reusable Proportional Area Circles Component
@@ -14,7 +14,7 @@ export default function() {
 	let yScale;
 	let colorScale;
 	let sizeScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let opacity = 1;
 
@@ -33,12 +33,8 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -57,7 +53,8 @@ export default function() {
 				.display("none")
 				.opacity(opacity)
 				.stroke(1, "currentColor")
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			const spots = componentGroup.selectAll(".punchSpot")
 				.data((d) => d.values);
@@ -72,14 +69,21 @@ export default function() {
 				.on("mouseout", function() {
 					d3.select(this).select("text").style("display", "none");
 				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
+				.attr("transform", (d) => {
+					const x = cellWidth / 2 + xScale(d.key);
+					const y = cellHeight / 2;
+					return `translate(${x},${y})`;
 				})
 				.merge(spots)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
-				.attr("transform", (d) => "translate(" + (cellWidth / 2 + xScale(d.key)) + "," + (cellHeight / 2) + ")")
+				.attr("transform", (d) => {
+					const x = cellWidth / 2 + xScale(d.key);
+					const y = cellHeight / 2;
+					return `translate(${x},${y})`;
+				})
 				.call(spot);
 
 			spots.exit()
@@ -152,6 +156,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -164,7 +180,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Line Chart (aks: Line Graph; Spline Chart)
@@ -34,6 +34,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = 120;
@@ -42,13 +53,14 @@ export default function() {
 			const chartH = Math.max((height - margin.top - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
 
-			const isTimeSeries = false;
-
 			// Create Scales and Axis
 			let { rowKeys, columnKeys, valueMin, valueMax } = dataTransform(data).summary();
 			// Set min to zero if min is more than zero
 			valueMin = valueMin > 0 ? 0 : valueMin;
 			const valueExtent = [valueMin, valueMax];
+
+			// Zoom does not work with non-time series (scalePoint)
+			const isTimeSeries = true;
 
 			let xScale = d3.scalePoint()
 				.domain(columnKeys)
@@ -77,16 +89,6 @@ export default function() {
 				.domain(rowKeys)
 				.range(colors);
 
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
-
 			svg.classed("d3ez", true)
 				.attr("width", width)
 				.attr("height", height);
@@ -95,7 +97,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -106,7 +109,7 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
@@ -119,15 +122,17 @@ export default function() {
 				.xScale(xScale)
 				.yScale(yScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
-			// Scatter Plot Component
+			// Line Dots Component
 			const scatterPlot = component.scatterPlot()
 				.colorScale(colorScale)
 				.yScale(yScale)
 				.xScale(xScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -137,24 +142,19 @@ export default function() {
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
+				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.call(lineChart)
 				.call(scatterPlot);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// X-Axis
 			const xAxis = d3.axisBottom(xScale);
 
 			containerEnter.select(".xAxis")
-				.attr("transform", "translate(0," + chartH + ")")
+				.attr("transform", `translate(0,${chartH})`)
 				.call(xAxis);
 
 			// Y-Axis
@@ -175,11 +175,10 @@ export default function() {
 				.attr("dy", ".71em")
 				.attr("fill", "currentColor")
 				.style("text-anchor", "end")
-				.transition()
 				.text((d) => d);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -190,8 +189,68 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
+
+			// Zoom Clip Path
+			const clipPath = containerEnter.select(".clipArea")
+				.selectAll("defs")
+				.data([0]);
+
+			clipPath.enter()
+				.append("defs")
+				.append("clipPath")
+				.attr("id", "plotAreaClip")
+				.append("rect")
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.merge(clipPath)
+				.select("clipPath")
+				.select("rect")
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			// Zoom Event Area
+			const zoom = d3.zoom()
+				.extent([[0, 0], [chartW, chartH]])
+				.scaleExtent([1, 8])
+				.translateExtent([[0, 0], [chartW, chartH]])
+				.on("zoom", zoomed);
+
+			function zoomed(e) {
+				const xScaleZoomed = e.transform.rescaleX(xScale);
+
+				xAxis.scale(xScaleZoomed);
+				containerEnter.select(".xAxis")
+					.call(xAxis);
+
+				lineChart
+					.xScale(xScaleZoomed)
+					.transition({ ease: d3.easeLinear, duration: 0 });
+
+				scatterPlot
+					.xScale(xScaleZoomed)
+					.transition({ ease: d3.easeLinear, duration: 0 });
+
+				containerEnter.select(".chart")
+					.selectAll(".seriesGroup")
+					.call(lineChart)
+					.call(scatterPlot);
+			}
+
+			const zoomArea = containerEnter.select(".zoomArea")
+				.selectAll(".rect")
+				.data([0]);
+
+			zoomArea.enter()
+				.append("rect")
+				.classed("zoomArea", true)
+				.attr("fill", "none")
+				.attr("pointer-events", "all")
+				.merge(zoomArea)
+				.call(zoom)
+				.attr("width", chartW)
+				.attr("height", chartH);
 		});
 	}
 
@@ -256,18 +315,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Show Axis Getter / Setter
 	 *
 	 * @param {Boolean} _v - Show axis true / false.
@@ -292,6 +339,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -304,7 +363,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

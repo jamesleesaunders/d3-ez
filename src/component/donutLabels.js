@@ -10,7 +10,8 @@ export default function() {
 	/* Default Properties */
 	let classed = "donutLabels";
 	let xScale;
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let yScale;
+	let transition = { ease: d3.easeLinear, duration: 0 };
 
 	/**
 	 * Constructor
@@ -22,9 +23,12 @@ export default function() {
 	function my(selection) {
 		selection.each(function() {
 			const [innerRadius, radius] = xScale.range();
+			const [startAngle, endAngle] = yScale.range();
 
 			// Pie Generator
 			const pie = d3.pie()
+				.startAngle((startAngle * Math.PI) / 180)
+				.endAngle((endAngle * Math.PI) / 180)
 				.value((d) => d.value)
 				.sort(null)
 				.padAngle(0.015);
@@ -72,7 +76,7 @@ export default function() {
 			labels.enter()
 				.append("text")
 				.attr("class", "label")
-				.attr("font-size", "0.8em")
+				.attr("font-size", "0.9em")
 				.attr("dy", ".35em")
 				.attr("fill", "currentColor")
 				.merge(labels)
@@ -87,7 +91,7 @@ export default function() {
 						const d2 = interpolate(t);
 						const pos = outerArc.centroid(d2);
 						pos[0] = radius * (midAngle(d2) < Math.PI ? 1.2 : -1.2);
-						return "translate(" + pos + ")";
+						return `translate(${pos})`;
 					};
 				})
 				.styleTween("text-anchor", function(d) {
@@ -151,6 +155,30 @@ export default function() {
 		if (!arguments.length) return xScale;
 		xScale = _v;
 		return my;
+	};
+
+	/**
+	 * Y Scale Getter / Setter
+	 *
+	 * @param {d3.scale} _v - D3 scale.
+	 * @returns {*}
+	 */
+	my.yScale = function(_v) {
+		if (!arguments.length) return yScale;
+		yScale = _v;
+		return my;
+	};
+
+	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
 	};
 
 	return my;

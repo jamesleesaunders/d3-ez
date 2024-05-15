@@ -1,63 +1,65 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>d3-ez : Legend Test</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="../../../dist/d3-ez.js"></script>
-</head>
+  <head>
+    <title>d3-ez : Legend Test</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../../../dist/d3-ez.js"></script>
+  </head>
 
-<body>
-  <div id="chartholder"></div>
+  <body>
+    <div id="chartholder"></div>
 
-  <script type="text/javascript">
+    <script type="text/javascript">
+      var sizeScale = d3.scaleLinear()
+        .domain([3, 9])
+        .range([5, 25]);
 
-    let sizeScale = d3.scaleLinear()
-      .domain([3, 9])
-      .range([5, 25]);
+      var colorScale = d3.scaleOrdinal()
+        .domain(["Apples", "Oranges", "Pears", "Bananas", "Kiwis"])
+        .range(["#d34152", "#f4bc71", "#fbf6C4", "#9bcf95", "#398abb"]);
 
-    let colorScale = d3.scaleOrdinal()
-      .domain(['Apples', 'Oranges', 'Grapes', 'Bananas'])
-      .range(["#5da5da", "#faa43a", "#60bd68", "#f17cb0", "#b2912f", "#b276b2", "#decf3f", "#f15854", "#4d4d4d"]);
+      var thresholdScale = d3.scaleThreshold()
+        .domain([-13, -3, 18, 32])
+        .range([d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65), d3.rgb(0, 0, 0)]);
 
-    let thresholdScale = d3.scaleThreshold()
-      .domain([-13, -3, 18, 32])
-      .range([d3.rgb(214, 245, 0), d3.rgb(255, 166, 0), d3.rgb(255, 97, 0), d3.rgb(200, 65, 65), d3.rgb(0, 0, 0)]);
+      // Create chart and svg holder
+      var chartHolder = d3.select("#chartholder");
+      var svg = chartHolder.append("svg")
+        .attr("width", 600)
+        .attr("height", 200);
 
-    // Create chart and svg holder
-    var chartHolder = d3.select("#chartholder");
-    var svg = chartHolder.append("svg")
-      .attr("width", 600)
-      .attr("height", 200);
+      // Configure legend components
+      var legendColor = d3.ez.component.legendColor()
+        .colorScale(colorScale)
+        .itemType("rect")
+        .opacity(0.8);
 
-    // Configure legend components
-    var legendColor = d3.ez.component.legendColor()
-      .colorScale(colorScale)
-      .itemType("rect");
+      var legendSize = d3.ez.component.legendSize()
+        .sizeScale(sizeScale)
+        .itemCount(4)
+        .opacity(0.8);
 
-    var legendSize = d3.ez.component.legendSize()
-      .sizeScale(sizeScale)
-      .itemCount(4);
+      var legendThreshold = d3.ez.component.legendThreshold()
+        .thresholdScale(thresholdScale)
+        .opacity(0.8);
 
-    var legendThreshold = d3.ez.component.legendThreshold()
-      .thresholdScale(thresholdScale);
+      svg.append("g")
+        .attr("id", "legendColor")
+        .attr("transform", "translate(0,0)")
+        .call(legendColor);
 
-    svg.append("g")
-      .attr("id", "legendColor")
-      .attr("transform", "translate(0,0)")
-      .call(legendColor);
+      svg.append("g")
+        .attr("id", "legendSize")
+        .attr("transform", "translate(200,0)")
+        .call(legendSize);
 
-    svg.append("g")
-      .attr("id", "legendSize")
-      .attr("transform", "translate(200,0)")
-      .call(legendSize);
+      svg.append("g")
+        .attr("id", "legendThreshold")
+        .attr("transform", "translate(400,0)")
+        .call(legendThreshold);
 
-    svg.append("g")
-      .attr("id", "legendThreshold")
-      .attr("transform", "translate(400,0)")
-      .call(legendThreshold);
-
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

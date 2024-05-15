@@ -12,8 +12,8 @@ export default function() {
 	let colorScale;
 	let xScale;
 	let yScale;
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let transition = { ease: d3.easeBounce, duration: 0 };
 	let opacity = 1;
 	let cornerRadius = 2;
 
@@ -28,15 +28,14 @@ export default function() {
 		selection.each(function(data) {
 			const innerRadius = yScale(data.key);
 			const radius = yScale(data.key) + yScale.bandwidth();
+			const [startAngle, endAngle] = xScale.range();
 
 			// Pie Generator
-			const segStartAngle = d3.min(xScale.range());
-			const segEndAngle = d3.max(xScale.range());
 			const pie = d3.pie()
 				.value(1)
 				.sort(null)
-				.startAngle(segStartAngle * (Math.PI / 180))
-				.endAngle(segEndAngle * (Math.PI / 180))
+				.startAngle(startAngle * (Math.PI / 180))
+				.endAngle(endAngle * (Math.PI / 180))
 				.padAngle(0.015);
 
 			// Arc Generator
@@ -47,12 +46,8 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -77,26 +72,23 @@ export default function() {
 
 			segments.enter()
 				.append("path")
-				.attr("d", arc)
 				.classed("segment", true)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, e, d.data);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d.data);
-				})
+				.attr("d", arc)
+				.attr("stroke-width", "1px")
+				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d.data); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d.data); })
 				.merge(segments)
 				.transition()
 				.duration(transition.duration)
 				.attr("fill", (d) => colorScale(d.data.value))
 				.attr("fill-opacity", opacity)
 				.attr("stroke", (d) => colorScale(d.data.value))
-				.attr("stroke-width", "1px")
-
 				.attr("d", arc);
 
 			segments.exit()
 				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.style("opacity", 0)
 				.remove();
 		});
@@ -151,6 +143,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -163,7 +167,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

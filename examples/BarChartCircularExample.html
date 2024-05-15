@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <svg id="chartholder"></svg>
+    <div id="chartholder"></div>
     <br />
     <div>Value: <span id="message"></span></div>
 
@@ -17,9 +17,8 @@
       d3.json("data/uk_elections.json").then(function(data) {
         // UK Election Results Source: http://www.ukpolitical.info/2015.htm
 
-        var colors = ["#cc0000", "#3366cc", "#ff9900", "#ffcc00", "#03cc14", "#ff18c0"];
-
         // Create chart base
+        var colors = ["#CC0000", "#3366CC", "#FF9900", "#FFCC00", "#03CC14", "#FF18C0"];
         var myChart = d3.ez.chart.barChartCircular()
           .width(1000)
           .height(600)
@@ -33,7 +32,7 @@
 
         // Add to page
         function update() {
-          var i = Math.round(Math.random() * 2) + 1;
+          var i = Math.floor(Math.random() * 4);
           d3.select("#chartholder")
             .datum([data[i]])  // TODO: Convert to support multi-series
             .call(myChart);

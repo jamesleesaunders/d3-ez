@@ -11,7 +11,7 @@ export default function() {
 	let classed = "circularSectorLabels";
 	let radialScale;
 	let ringScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let capitalizeLabels = false;
 	let textAnchor = "middle";
 
@@ -24,7 +24,7 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function() {
-			textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with middle.
+			textAnchor = "start"; // FIXME: Temporarily forcing labels to start as they get chopped off with 'middle'.
 
 			const [innerRadius, radius] = ringScale.range();
 
@@ -72,10 +72,7 @@ export default function() {
 				.append("g")
 				.classed(classed, true)
 				.attr("transform", () => {
-					let offset = 0;
-					if (typeof radialScale.ticks !== "function") {
-						offset = radialScale.bandwidth() / 2;
-					}
+					const offset = typeof radialScale.ticks !== "function" ? radialScale.bandwidth() / 2 : 0;
 					return `rotate(${offset})`;
 				})
 				.merge(labels);
@@ -87,9 +84,7 @@ export default function() {
 			def.enter()
 				.append("def")
 				.append("path")
-				.attr("id", () => {
-					return `${uId}-path`;
-				})
+				.attr("id", () => `${uId}-path`)
 				.attr("d", (d) => {
 					// Add a little padding
 					const r = d * 1.04;
@@ -100,9 +95,7 @@ export default function() {
 				.ease(transition.ease)
 				.duration(transition.duration)
 				.select("path")
-				.attr("id", () => {
-					return `${uId}-path`;
-				})
+				.attr("id", () => `${uId}-path`)
 				.attr("d", (d) => {
 					// Add a little padding
 					const r = d * 1.04;
@@ -118,19 +111,16 @@ export default function() {
 			text.enter()
 				.append("text")
 				.classed("label", true)
-				.attr("font-size", "0.8em")
+				.attr("font-size", "0.9em")
 				.attr("color", "currentColor")
 				.style("text-anchor", textAnchor)
 				.append("textPath")
-				.attr("xlink:href", () => {
-					return `#${uId}-path`;
-				})
+				.attr("xlink:href", () => `#${uId}-path`)
 				.text((d) => {
 					const text = d.value;
 					return capitalizeLabels ? text.toUpperCase() : text;
 				})
 				.attr("startOffset", (d) => d.offset + "%")
-				.attr("id", (d) => d.value)
 				.attr("fill", "currentColor")
 				.merge(text)
 				.transition()
@@ -141,9 +131,7 @@ export default function() {
 					const text = d.value;
 					return capitalizeLabels ? text.toUpperCase() : text;
 				})
-				.attr("xlink:href", () => {
-					return `#${uId}-path`;
-				})
+				.attr("xlink:href", () => `#${uId}-path`)
 				.attr("startOffset", (d) => d.offset + "%")
 				.attr("id", (d) => d.value);
 
@@ -197,6 +185,18 @@ export default function() {
 	my.textAnchor = function(_v) {
 		if (!arguments.length) return textAnchor;
 		textAnchor = _v;
+		return this;
+	};
+
+	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
 		return this;
 	};
 

@@ -12,9 +12,9 @@ export default function() {
 	let xScale;
 	let yScale;
 	let colorScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let candleWidth = 4;
+	let candleWidth = 8;
 	let opacity = 1;
 	let cornerRadius = 2;
 
@@ -67,24 +67,24 @@ export default function() {
 				rect.enter()
 					.append("rect")
 					.classed("open-close-bar", true)
+					.attr("x", (d) => xScale(d.date) - (candleWidth / 2))
+					.attr("y", (d) => {
+						const isUp = isUpDay(d);
+						const base = isUp ? yScale(d.close) : yScale(d.open);
+						const difference = isUp ? yScale(d.open) - yScale(d.close) : 0;
+						return base + difference;
+					})
+					.attr("width", candleWidth)
+					.attr("rx", cornerRadius)
+					.attr("ry", cornerRadius)
 					.merge(rect)
 					.transition()
 					.ease(transition.ease)
 					.duration(transition.duration)
-					.attr("x", (d) => xScale(d.date) - candleWidth)
-					.attr("y", (d) => {
-						return isUpDay(d) ?
-							yScale(d.close) :
-							yScale(d.open);
-					})
-					.attr("width", candleWidth * 2)
-					.attr("height", (d) => {
-						return isUpDay(d) ?
-							yScale(d.open) - yScale(d.close) :
-							yScale(d.close) - yScale(d.open);
-					})
-					.attr("rx", cornerRadius)
-					.attr("ry", cornerRadius);
+					.attr("x", (d) => xScale(d.date) - (candleWidth / 2))
+					.attr("y", (d) => (isUpDay(d) ? yScale(d.close) : yScale(d.open)))
+					.attr("width", candleWidth)
+					.attr("height", (d) => (isUpDay(d) ? yScale(d.open) - yScale(d.close) : yScale(d.close) - yScale(d.open)));
 
 				return candle;
 			};
@@ -105,7 +105,7 @@ export default function() {
 					.ease(transition.ease)
 					.duration(transition.duration)
 					.attr("d", (d) => line([
-							{ x: xScale(d.date) - candleWidth, y: yScale(d.open) },
+							{ x: xScale(d.date) - (candleWidth / 2), y: yScale(d.open) },
 							{ x: xScale(d.date), y: yScale(d.open) }
 						])
 					);
@@ -119,7 +119,7 @@ export default function() {
 					.duration(transition.duration)
 					.attr("d", (d) => line([
 							{ x: xScale(d.date), y: yScale(d.close) },
-							{ x: xScale(d.date) + candleWidth, y: yScale(d.close) }
+							{ x: xScale(d.date) + (candleWidth / 2), y: yScale(d.close) }
 						])
 					);
 
@@ -128,12 +128,8 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -151,12 +147,8 @@ export default function() {
 			candles.enter()
 				.append("g")
 				.classed("candle", true)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(candles)
 				.attr("fill", (d) => colorScale(isUpDay(d)))
 				.attr("stroke", (d) => colorScale(isUpDay(d)))
@@ -236,6 +228,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -248,7 +252,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

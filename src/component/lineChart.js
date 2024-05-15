@@ -26,27 +26,20 @@ export default function() {
 	function my(selection) {
 		selection.each(function() {
 			// Line animation tween
-			const pathTween = function(data) {
-				const line = d3.line()
-					.curve(d3.curveCardinal)
-					.x((d) => xScale(d.key))
-					.y((d) => yScale(d.value));
+			const line = d3.line()
+				.curve(d3.curveCardinal)
+				.x((d) => xScale(d.key))
+				.y((d) => yScale(d.value));
 
-				const interpolate = d3.scaleQuantile()
-					.domain([0, 1])
-					.range(d3.range(1, data.length + 1));
-
-				return (t) => line(data.slice(0, interpolate(t)));
+			const pathTween = function(d) {
+				const i = d3.interpolate(1, d.length + 1);
+				return (t) => line(d.slice(0, i(t)));
 			};
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -58,22 +51,23 @@ export default function() {
 				.merge(seriesGroup);
 
 			// Add lines to series group
-			const line = componentGroup.selectAll(".line")
+			const path = componentGroup.selectAll(".line")
 				.data((d) => [d]);
 
-			line.enter()
+			path.enter()
 				.append("path")
 				.attr("class", "line")
 				.attr("stroke-width", 1.5)
 				.attr("fill", "none")
-				.merge(line)
+				.attr("d", (d) => line(d.values))
+				.merge(path)
 				.transition()
 				.duration(transition.duration)
-				.attr("stroke", (d) => colorScale(d.key))
 				.attrTween("d", (d) => pathTween(d.values))
+				.attr("stroke", (d) => colorScale(d.key))
 				.attr("opacity", opacity);
 
-			line.exit()
+			path.exit()
 				.transition()
 				.style("opacity", 0)
 				.remove();
@@ -129,6 +123,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -141,7 +147,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

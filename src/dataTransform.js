@@ -10,7 +10,7 @@ export default function dataTransform(data) {
 
 	const SINGLE_SERIES = 1;
 	const MULTI_SERIES = 2;
-	const coordinateKeys = ['x', 'y', 'z'];
+	const coordinateKeys = ["x", "y", "z"];
 
 	/**
 	 * Data Type
@@ -212,7 +212,7 @@ export default function dataTransform(data) {
 		let ret;
 		data.forEach((item) => {
 			item.values.forEach((value) => {
-				ret = (typeof (ret) === "undefined" ? value.value : Math.min(ret, +value.value));
+				ret = (typeof(ret) === "undefined" ? value.value : Math.min(ret, +value.value));
 			});
 		});
 
@@ -259,7 +259,7 @@ export default function dataTransform(data) {
 		let highestPositiveSum = -Infinity;
 
 		if (dataType === MULTI_SERIES) {
-			data.forEach(row => {
+			data.forEach((row) => {
 				const [negativeSum, positiveSum] = row.values.reduce(
 					(acc, column) => {
 						const value = column.value;

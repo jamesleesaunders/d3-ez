@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <svg id="chartholder"></svg>
+    <div id="chartholder"></div>
 
     <script type="text/javascript">
       var data = [
@@ -42,9 +42,8 @@
           ]
         }];
 
-      var colors = d3.ez.palette.categorical(1);
-
       // Create chart base
+      var colors = d3.ez.palette.categorical(1);
       var myChart = d3.ez.chart.radarChart()
         .width(1000)
         .height(600)

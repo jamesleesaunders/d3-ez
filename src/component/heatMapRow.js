@@ -12,7 +12,7 @@ export default function() {
 	let xScale;
 	let yScale;
 	let colorScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let opacity = 1;
 	let cornerRadius = 2;
@@ -32,12 +32,8 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -64,26 +60,25 @@ export default function() {
 			cells.enter()
 				.append("rect")
 				.attr("class", "cell")
-				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.attr("stroke-width", "1px")
+				.attr("rx", cornerRadius)
+				.attr("ry", cornerRadius)
+				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
+				.attr("x", (d) => xScale(d.key))
+				.attr("y", 0)
+				.attr("width", cellWidth)
+				.attr("height", cellHeight)
 				.merge(cells)
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
 				.attr("x", (d) => xScale(d.key))
-				.attr("y", 0)
-				.attr("rx", cornerRadius)
-				.attr("ry", cornerRadius)
 				.attr("width", cellWidth)
 				.attr("height", cellHeight)
 				.attr("fill", (d) => colorScale(d.value))
-				.style("fill-opacity", opacity)
-				.attr("stroke", (d) => colorScale(d.value))
-				.attr("stroke-width", "1px");
+				.attr("fill-opacity", opacity)
+				.attr("stroke", (d) => colorScale(d.value));
 
 			cells.exit()
 				.transition()
@@ -143,6 +138,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch Event Handler.
@@ -155,7 +162,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

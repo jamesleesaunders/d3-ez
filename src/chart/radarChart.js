@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Radar Chart (aka: Spider Chart; Web Chart; Star Plot)
@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -33,6 +33,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = 120;
@@ -45,10 +56,6 @@ export default function() {
 			const { rowKeys, columnKeys, valueMax } = dataTransform(data).summary();
 			const valueExtent = [0, valueMax];
 
-			const colorScale = d3.scaleOrdinal()
-				.domain(rowKeys)
-				.range(colors);
-
 			const xScale = d3.scalePoint()
 				.domain(columnKeys)
 				.range([startAngle, endAngle]);
@@ -58,15 +65,9 @@ export default function() {
 				.range([0, radius])
 				.nice();
 
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
+			const colorScale = d3.scaleOrdinal()
+				.domain(rowKeys)
+				.range(colors);
 
 			svg.classed("d3ez", true)
 				.attr("width", width)
@@ -76,7 +77,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -95,20 +97,22 @@ export default function() {
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Create Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(xScale)
-				.ringScale(yScale)
-				.showAxis(false);
-
+			// Radar Component
 			const radarArea = component.radarArea()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
-			// Adding Circular Labels on Page
+			// Circular Axis
+			const circularAxis = component.circularAxis()
+				.radialScale(xScale)
+				.ringScale(yScale)
+				.showAxis(false);
+
+			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
 				.ringScale(yScale)
 				.radialScale(xScale)
@@ -126,18 +130,10 @@ export default function() {
 				.style("stroke", (d) => colorScale(d.key))
 				.merge(seriesGroup)
 				.call(radarArea)
-				.attr("transform", () => {
-					const x = chartW / 2;
-					const y = chartH / 2;
-					return `translate(${x},${y})`
-				});
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`);
 
 			containerEnter.select(".axis")
-				.attr("transform", () => {
-					const x = chartW / 2;
-					const y = chartH / 2;
-					return `translate(${x},${y})`
-				})
+				.attr("transform", `translate(${chartW / 2},${chartH / 2})`)
 				.call(circularSectorLabels)
 				.call(circularAxis);
 
@@ -150,7 +146,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}
@@ -240,7 +236,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

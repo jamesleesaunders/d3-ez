@@ -12,8 +12,8 @@ export default function() {
 	let xScale;
 	let yScale;
 	let colorScale;
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let transition = { ease: d3.easeBounce, duration: 0 };
 	let opacity = 1;
 
 	/**
@@ -38,12 +38,8 @@ export default function() {
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -60,12 +56,12 @@ export default function() {
 
 			path.enter()
 				.append("path")
-				.on('mouseover', function() {
+				.on("mouseover", function() {
 					d3.select(this)
 						.transition().duration(200)
 						.style("fill-opacity", opacity);
 				})
-				.on('mouseout', function() {
+				.on("mouseout", function() {
 					d3.select(this)
 						.transition().duration(200)
 						.style("fill-opacity", opacity / 2);
@@ -87,9 +83,9 @@ export default function() {
 				.attr("r", 4)
 				.style("fill-opacity", 0.8)
 				.merge(dots)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
+				//.transition()
+				//.ease(transition.ease)
+				//.duration(transition.duration)
 				.attr("cx", (d, i) => yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
 				.attr("cy", (d, i) => yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2));
 		});
@@ -144,6 +140,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -156,7 +164,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

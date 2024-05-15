@@ -13,7 +13,7 @@ are still learning JavaScript or D3 to quickly produce data visualisations with 
 * [Examples](#examples)
 * [Getting Started](#getting-started)
 * [API Reference](https://jamesleesaunders.github.io/d3-ez/)
-* [Charts and Components](#components-and-charts)
+* [Charts Types](#chart-types)
 * [Data Structures](#data-structures)
 * [Download from GitHub](https://github.com/jamesleesaunders/d3-ez)
 * [Download from NPM](https://www.npmjs.com/package/d3-ez)
@@ -54,12 +54,12 @@ Include d3.js and d3-ez.js and css files in the `<head>` section of your page:
 </head>
 ```
 
-Add a chartholder `<svg>` and `<script>` tags to your page `<body>`:
+Add a chartholder `<div>` and `<script>` tags to your page `<body>`:
 
 ```html
 
 <body>
-	 <svg id="chartholder"></svg>
+	 <div id="chartholder"></div>
 	 <script></script>
 </body>
 ```

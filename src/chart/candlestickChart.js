@@ -1,5 +1,7 @@
 import * as d3 from "d3";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Candlestick Chart (aka: Japanese Candlestick; OHLC Chart; Box Plot)
@@ -16,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = ["green", "red"];
-	let transition = { ease: d3.easeBounce, duration: 500 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -32,6 +34,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			const legendW = 120;
 			const legendPad = 15;
@@ -61,10 +74,6 @@ export default function() {
 				d3.max(data.values, (d) => d.high)
 			];
 
-			const colorScale = d3.scaleOrdinal()
-				.domain([true, false])
-				.range(colors);
-
 			const xScale = d3.scaleTime()
 				.domain(dateDomain)
 				.range([0, chartW]);
@@ -74,15 +83,9 @@ export default function() {
 				.range([chartH, 0])
 				.nice();
 
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
+			const colorScale = d3.scaleOrdinal()
+				.domain([true, false])
+				.range(colors);
 
 			svg.classed("d3ez", true)
 				.attr("width", width)
@@ -116,7 +119,8 @@ export default function() {
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.dispatch(dispatch)
-				.opacity(opacity);
+				.opacity(opacity)
+				.transition(transition);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -127,15 +131,9 @@ export default function() {
 				.append("g")
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.call(candleSticks);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// X Axis
@@ -143,7 +141,7 @@ export default function() {
 				.tickFormat(d3.timeFormat("%d-%b-%y"));
 
 			containerEnter.select(".xAxis")
-				.attr("transform", "translate(0," + chartH + ")")
+				.attr("transform", `translate(0,${chartH})`)
 				.call(xAxis)
 				.selectAll("text")
 				.style("text-anchor", "end")
@@ -157,42 +155,23 @@ export default function() {
 			containerEnter.select(".yAxis")
 				.call(yAxis);
 
-			// Y-Axis Labels
-			const yLabel = container.select(".yAxis")
+			// Y-Axis Label
+			containerEnter.select(".yAxis")
 				.selectAll(".yAxisLabel")
-				.data([data.key]);
-
-			yLabel.enter()
+				.data([yAxisLabel])
+				.enter()
 				.append("text")
 				.classed("yAxisLabel", true)
 				.attr("transform", "rotate(-90)")
 				.attr("y", -40)
 				.attr("dy", ".71em")
-				.attr("fill", "#000000")
+				.attr("fill", "currentColor")
 				.style("text-anchor", "end")
-				.merge(yLabel)
 				.transition()
 				.text((d) => d);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
-
-			// Experimental Brush
-			const brush = d3.brushX()
-				.extent([[0, 0], [chartW, chartH]])
-				.on("brush start", brushStart)
-				.on("brush end", brushEnd);
-
-			containerEnter.select(".zoomArea")
-				.call(brush);
-
-			function brushStart() {
-				// console.log(this);
-			}
-
-			function brushEnd() {
-				// console.log(this);
-			}
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -203,8 +182,25 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
+
+			// Experimental Brush
+			const brush = d3.brushX()
+				.extent([[0, 0], [chartW, chartH]])
+				.on("brush start", brushStart)
+				.on("brush end", brushEnd);
+
+			containerEnter.select(".zoomArea")
+				.call(brush);
+
+			function brushStart(e) {
+				console.log(e);
+			}
+
+			function brushEnd(e) {
+				console.log(e);
+			}
 		});
 	}
 
@@ -269,18 +265,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Show Axis Getter / Setter
 	 *
 	 * @param {Boolean} _v - Show axis true / false.
@@ -305,6 +289,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -317,7 +313,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

@@ -60,8 +60,8 @@ export default function() {
 		const colors = legendContainerEnter.selectAll("rect")
 			.data(thresholdScale.range().map((color) => {
 				const d = thresholdScale.invertExtent(color);
-				if (typeof d[0] === 'undefined') d[0] = x.domain()[0];
-				if (typeof d[1] === 'undefined') d[1] = x.domain()[1];
+				if (typeof d[0] === "undefined") d[0] = x.domain()[0];
+				if (typeof d[1] === "undefined") d[1] = x.domain()[1];
 				return d;
 			}));
 
@@ -117,6 +117,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {number} _v - Opacity 0 -1.
@@ -129,7 +141,7 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter XX
+	 * Transition Getter / Setter
 	 *
 	 * @param {d3.transition} _v - Transition.
 	 * @returns {*}

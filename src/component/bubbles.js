@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import componentLabeledNode from "./labeledNode";
+import componentLabeledNode from "./labeledNode.js";
 
 /**
  * Reusable Bubble Plot Component
@@ -14,7 +14,7 @@ export default function() {
 	let yScale;
 	let colorScale;
 	let sizeScale;
-	let transition = { ease: d3.easeLinear, duration: 200 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let opacity = 1;
 
@@ -27,15 +27,12 @@ export default function() {
 	 */
 	function my(selection) {
 		selection.each(function(data) {
+			const height = d3.max(yScale.range());
 
 			// Update series group
 			const seriesGroup = d3.select(this)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				});
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); });
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
@@ -54,6 +51,7 @@ export default function() {
 				.display("none")
 				.opacity(opacity)
 				.stroke(1, "white")
+				.transition(transition)
 				.dispatch(dispatch);
 
 			const bubbles = componentGroup.selectAll(".bubble")
@@ -69,11 +67,13 @@ export default function() {
 				.on("mouseout", function() {
 					d3.select(this).select("text").style("display", "none");
 				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
+				.attr("transform", (d) => `translate(${xScale(d.x)},${yScale(d.y)})`)
 				.merge(bubbles)
-				.attr("transform", (d) => "translate(" + xScale(d.x) + "," + yScale(d.y) + ")")
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("transform", (d) => `translate(${xScale(d.x)},${yScale(d.y)})`)
 				.call(bubble);
 
 			bubbles.exit()
@@ -146,6 +146,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -158,7 +170,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

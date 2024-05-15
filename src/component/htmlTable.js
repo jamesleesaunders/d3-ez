@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import dataTransform from "../dataTransform";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Simple HTML Table
@@ -29,7 +29,9 @@ export default function() {
 
 			let tableEnter = table.enter()
 				.append("table")
+				.classed("d3ez", true)
 				.classed(classed, true)
+				.attr("width", width)
 				.merge(table);
 
 			tableEnter.append("thead");
@@ -75,12 +77,8 @@ export default function() {
 			const bodyEnter = body.enter()
 				.append("tr")
 				.attr("class", (d) => d.key)
-				.on("mouseover", function(e, d) {
-					dispatch.call("customSeriesMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customSeriesClick", this, e, d);
-				})
+				.on("mouseover", function(e, d) { dispatch.call("customSeriesMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customSeriesClick", this, e, d); })
 				.merge(body);
 
 			// Add the main data values
@@ -97,12 +95,8 @@ export default function() {
 
 			td.enter()
 				.append("td")
-				.on("mouseover", function(e, d) {
-					dispatch.call("customValueMouseOver", this, e, d);
-				})
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d); })
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(td)
 				.html((d) => d.value);
 		});
@@ -133,7 +127,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

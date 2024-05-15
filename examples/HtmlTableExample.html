@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <div id="tableholder"></div>
+    <div id="chartholder"></div>
     <br />
     <div>Value: <span id="message"></span></div>
 
@@ -31,7 +31,7 @@
         });
 
       // Add to page
-      d3.select("#tableholder")
+      d3.select("#chartholder")
         .datum(data)
         .call(myTable);
     </script>

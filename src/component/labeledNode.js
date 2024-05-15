@@ -17,6 +17,7 @@ export default function() {
 	let label;
 	let display = "block";
 	let fontSize = 10;
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick");
 
 	/**
@@ -45,6 +46,8 @@ export default function() {
 				.append("circle")
 				.merge(circle)
 				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.attr("r", (d) => sizeAccessor(d))
 				.attr("fill-opacity", opacity)
 				.style("stroke", color)
@@ -59,15 +62,17 @@ export default function() {
 			text.enter()
 				.append("text")
 				.merge(text)
+				.attr("fill", "currentColor")
+				.attr("alignment-baseline", "middle")
+				.style("text-anchor", "end")
 				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.text(label)
 				.attr("dx", -r)
 				.attr("dy", -r)
 				.style("display", display)
-				.style("font-size", fontSize + "px")
-				.attr("fill", "currentColor")
-				.attr("alignment-baseline", "middle")
-				.style("text-anchor", "end");
+				.style("font-size", fontSize + "px");
 		});
 	}
 
@@ -158,6 +163,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -170,7 +187,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

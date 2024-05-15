@@ -1,6 +1,0 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100" height="300" class="barsStacked" id="Fruit">
-	<rect class="bar" width="300" x="0" y="187.5" rx="0" ry="0" height="112.5" fill="#3f51b5"></rect>
-	<rect class="bar" width="300" x="0" y="150" rx="0" ry="0" height="37.5" fill="#ff9800"></rect>
-	<rect class="bar" width="300" x="0" y="87.5" rx="0" ry="0" height="62.5" fill="#8bc34a"></rect>
-	<rect class="bar" width="300" x="0" y="0" rx="0" ry="0" height="87.5" fill="#9c27b0"></rect>
-</svg>

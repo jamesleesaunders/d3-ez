@@ -1,10 +1,10 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
- * Polar Area Chart (aks: Coxcomb Chart; Rose Chart)
+ * Polar Area Chart (aka: Coxcomb Chart; Rose Chart)
  *
  * @module
  * @see http://datavizproject.com/data-type/polar-area-chart/
@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -33,6 +33,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = 120;
@@ -45,19 +56,17 @@ export default function() {
 			const { columnKeys, valueMax } = dataTransform(data).summary();
 			const valueExtent = [0, valueMax];
 
-			const colorScale = d3.scaleOrdinal()
-				.domain(columnKeys)
-				.range(colors);
-
 			const xScale = d3.scaleBand()
 				.domain(columnKeys)
-				.rangeRound([startAngle, endAngle])
-				.padding(0.15);
+				.rangeRound([startAngle, endAngle]);
 
 			const yScale = d3.scaleLinear()
 				.domain(valueExtent)
-				.range([0, radius])
-				.nice();
+				.range([0, radius]);
+
+			const colorScale = d3.scaleOrdinal()
+				.domain(columnKeys)
+				.range(colors);
 
 			function generateLayout(cellCount, width, height) {
 				const layout = [];
@@ -83,16 +92,6 @@ export default function() {
 
 			const layout = generateLayout(data.length, chartW, chartH);
 
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
-
 			svg.classed("d3ez", true)
 				.attr("width", width)
 				.attr("height", height);
@@ -101,7 +100,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -119,18 +119,19 @@ export default function() {
 				.append("g")
 				.attr("class", (d) => d);
 
-			// Circular Axis
-			const circularAxis = component.circularAxis()
-				.radialScale(xScale)
-				.ringScale(yScale);
-
 			// Radial Bar Chart
 			const polarArea = component.polarArea()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
+
+			// Circular Axis
+			const circularAxis = component.circularAxis()
+				.radialScale(xScale)
+				.ringScale(yScale);
 
 			// Circular Labels
 			const circularSectorLabels = component.circularSectorLabels()
@@ -147,22 +148,12 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
-				.attr("transform", (d, i) => {
-					const x = layout[i].x;
-					const y = layout[i].y;
-					return `translate(${x},${y})`
-				})
+				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(circularAxis)
 				.call(circularSectorLabels)
 				.call(polarArea);
 
 			seriesGroup.exit()
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.remove();
 
 			// Legend
@@ -174,7 +165,7 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
 		});
 	}
@@ -264,7 +255,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

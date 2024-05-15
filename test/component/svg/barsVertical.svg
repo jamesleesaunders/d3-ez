@@ -1,6 +1,26 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300" class="barsVertical" id="Fruit">
-	<rect class="bar" width="61" x="11" y="0" rx="0" ry="0" height="300" fill="#3f51b5"></rect>
-	<rect class="bar" width="61" x="83" y="200" rx="0" ry="0" height="100" fill="#ff9800"></rect>
-	<rect class="bar" width="61" x="155" y="133.33333333333331" rx="0" ry="0" height="166.66666666666669" fill="#8bc34a"></rect>
-	<rect class="bar" width="61" x="227" y="66.66666666666666" rx="0" ry="0" height="233.33333333333334" fill="#9c27b0"></rect>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="300">
+	<g class="seriesGroup" transform="translate(9.677419354838719,0)">
+		<g class="bars">
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="158.8235294117647" width="20.430107526881716" x="1.0752688172043037" y="52.941176470588246" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="52.94117647058826" width="20.430107526881716" x="22.580645161290324" y="158.8235294117647" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="88.23529411764707" width="20.430107526881716" x="44.086021505376344" y="123.52941176470587" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="123.52941176470588" width="20.430107526881716" x="65.59139784946237" y="88.23529411764704" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)"></rect>
+		</g>
+	</g>
+	<g class="seriesGroup" transform="translate(106.45161290322581,0)">
+		<g class="bars">
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="35.29411764705884" width="20.430107526881716" x="1.0752688172043037" y="176.47058823529412" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="176.47058823529414" width="20.430107526881716" x="22.580645161290324" y="35.29411764705883" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="0" width="20.430107526881716" x="44.086021505376344" y="211.76470588235293" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="211.76470588235296" width="20.430107526881716" x="65.59139784946237" y="0" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)"></rect>
+		</g>
+	</g>
+	<g class="seriesGroup" transform="translate(203.2258064516129,0)">
+		<g class="bars">
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="88.23529411764704" width="20.430107526881716" x="1.0752688172043037" y="211.76470588235293" fill="rgb(93, 165, 218)" fill-opacity="0.8" stroke="rgb(93, 165, 218)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="52.94117647058826" width="20.430107526881716" x="22.580645161290324" y="158.8235294117647" fill="rgb(250, 164, 58)" fill-opacity="0.8" stroke="rgb(250, 164, 58)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="52.94117647058826" width="20.430107526881716" x="44.086021505376344" y="158.8235294117647" fill="rgb(96, 189, 104)" fill-opacity="0.8" stroke="rgb(96, 189, 104)"></rect>
+			<rect class="bar" stroke-width="1px" rx="2" ry="2" height="158.8235294117647" width="20.430107526881716" x="65.59139784946237" y="52.941176470588246" fill="rgb(241, 124, 176)" fill-opacity="0.8" stroke="rgb(241, 124, 176)"></rect>
+		</g>
+	</g>
 </svg>

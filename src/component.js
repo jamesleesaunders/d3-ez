@@ -1,34 +1,36 @@
-import componentBarsCircular from "./component/barsCircular";
-import componentBarsStacked from "./component/barsStacked";
-import componentBarsVertical from "./component/barsVertical";
-import componentBubbles from "./component/bubbles";
-import componentCandleSticks from "./component/candleSticks";
-import componentCircularAxis from "./component/circularAxis";
-import componentCircularRingLabels from "./component/circularRingLabels";
-import componentCircularSectorLabels from "./component/circularSectorLabels";
-import componentDonut from "./component/donut";
-import componentDonutLabels from "./component/donutLabels";
-import componentHeatMapRing from "./component/heatMapRing";
-import componentHeatMapRow from "./component/heatMapRow";
-import componentHtmlList from "./component/htmlList";
-import componentHtmlTable from "./component/htmlTable";
-import componentLineChart from "./component/lineChart";
-import componentNumberCard from "./component/numberCard";
-import componentPolarArea from "./component/polarArea";
-import componentRadarArea from "./component/radarArea";
-import componentProportionalAreaCircles from "./component/proportionalAreaCircles";
-import componentScatterPlot from "./component/scatterPlot";
-import componentRoseChartSector from "./component/roseChartSector";
-import componentLabeledNode from "./component/labeledNode";
-import componentLegend from "./component/legend";
-import componentLegendSize from "./component/legendSize";
-import componentLegendCategorical from "./component/legendCategorical";
-import componentLegendThreshold from "./component/legendThreshold";
+import componentBarsCircular from "./component/barsCircular.js";
+import componentBarsHorizontal from "./component/barsHorizontal.js";
+import componentBarsVertical from "./component/barsVertical.js";
+import componentBarsVerticalStacked from "./component/barsVerticalStacked.js";
+import componentBubbles from "./component/bubbles.js";
+import componentCandleSticks from "./component/candleSticks.js";
+import componentCircularAxis from "./component/circularAxis.js";
+import componentCircularRingLabels from "./component/circularRingLabels.js";
+import componentCircularSectorLabels from "./component/circularSectorLabels.js";
+import componentDonut from "./component/donut.js";
+import componentDonutLabels from "./component/donutLabels.js";
+import componentHeatMapRing from "./component/heatMapRing.js";
+import componentHeatMapRow from "./component/heatMapRow.js";
+import componentHtmlList from "./component/htmlList.js";
+import componentHtmlTable from "./component/htmlTable.js";
+import componentLabeledNode from "./component/labeledNode.js";
+import componentLegend from "./component/legend.js";
+import componentLegendCategorical from "./component/legendCategorical.js";
+import componentLegendSize from "./component/legendSize.js";
+import componentLegendThreshold from "./component/legendThreshold.js";
+import componentLineChart from "./component/lineChart.js";
+import componentNumberCard from "./component/numberCard.js";
+import componentPolarArea from "./component/polarArea.js";
+import componentProportionalAreaCircles from "./component/proportionalAreaCircles.js";
+import componentRadarArea from "./component/radarArea.js";
+import componentRoseChartSector from "./component/roseChartSector.js";
+import componentScatterPlot from "./component/scatterPlot.js";
 
 export default {
 	barsCircular: componentBarsCircular,
-	barsStacked: componentBarsStacked,
+	barsHorizontal: componentBarsHorizontal,
 	barsVertical: componentBarsVertical,
+	barsVerticalStacked: componentBarsVerticalStacked,
 	bubbles: componentBubbles,
 	candleSticks: componentCandleSticks,
 	circularAxis: componentCircularAxis,
@@ -48,8 +50,8 @@ export default {
 	lineChart: componentLineChart,
 	numberCard: componentNumberCard,
 	polarArea: componentPolarArea,
+	proportionalAreaCircles: componentProportionalAreaCircles,
 	radarArea: componentRadarArea,
 	roseChartSector: componentRoseChartSector,
-	proportionalAreaCircles: componentProportionalAreaCircles,
 	scatterPlot: componentScatterPlot
 };

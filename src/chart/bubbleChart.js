@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import palette from "../palette";
-import dataTransform from "../dataTransform";
-import component from "../component";
+import component from "../component.js";
+import palette from "../palette.js";
+import dataTransform from "../dataTransform.js";
 
 /**
  * Bubble Chart (aka: Bubble Plot)
@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = palette.categorical(1);
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -36,6 +36,17 @@ export default function() {
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
+		// Create SVG element (if it does not exist already)
+		const svg = (function(selection) {
+			const el = selection._groups[0][0];
+			if (!!el.ownerSVGElement || el.tagName === "svg") {
+				return selection;
+			} else {
+				let svgSelection = selection.selectAll("svg").data((d) => [d]);
+				return svgSelection.enter().append("svg").merge(svgSelection);
+			}
+		})(selection);
+
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = 120;
@@ -64,16 +75,6 @@ export default function() {
 				.domain(valueExtent)
 				.range([minRadius, maxRadius]);
 
-			// Create SVG element (if it does not exist already)
-			const svg = (function(selection) {
-				const el = selection._groups[0][0];
-				if (!!el.ownerSVGElement || el.tagName === "svg") {
-					return selection;
-				} else {
-					return selection.append("svg");
-				}
-			})(selection);
-
 			svg.classed("d3ez", true)
 				.attr("width", width)
 				.attr("height", height);
@@ -82,7 +83,8 @@ export default function() {
 			const container = svg.selectAll(".container")
 				.data([data]);
 
-			container.exit().remove();
+			container.exit()
+				.remove();
 
 			const containerEnter = container.enter()
 				.append("g")
@@ -93,7 +95,7 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
@@ -107,7 +109,8 @@ export default function() {
 				.colorScale(colorScale)
 				.sizeScale(sizeScale)
 				.opacity(opacity)
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
@@ -117,10 +120,8 @@ export default function() {
 			seriesGroup.enter()
 				.append("g")
 				.attr("class", "seriesGroup")
+				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(seriesGroup)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
 				.call(bubbles);
 
 			seriesGroup.exit()
@@ -130,7 +131,7 @@ export default function() {
 			const xAxis = d3.axisBottom(xScale);
 
 			containerEnter.select(".xAxis")
-				.attr("transform", "translate(0," + chartH + ")")
+				.attr("transform", `translate(0,${chartH})`)
 				.call(xAxis)
 				.selectAll("text")
 				.style("text-anchor", "end")
@@ -145,7 +146,7 @@ export default function() {
 				.call(yAxis);
 
 			containerEnter.selectAll(".axis")
-				.attr('opacity', showAxis ? 1 : 0);
+				.attr("opacity", showAxis ? 1 : 0);
 
 			// Legend
 			const legend = component.legend()
@@ -155,8 +156,73 @@ export default function() {
 				.opacity(opacity);
 
 			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad}, 0)`)
+				.attr("transform", `translate(${chartW + legendPad},0)`)
 				.call(legend);
+
+			// Zoom Clip Path
+			const clipPath = containerEnter.select(".clipArea")
+				.selectAll("defs")
+				.data([0]);
+
+			clipPath.enter()
+				.append("defs")
+				.append("clipPath")
+				.attr("id", "plotAreaClip")
+				.append("rect")
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.merge(clipPath)
+				.select("clipPath")
+				.select("rect")
+				.attr("width", chartW)
+				.attr("height", chartH);
+
+			// Zoom Event Area
+			const zoom = d3.zoom()
+				.extent([[0, 0], [chartW, chartH]])
+				.scaleExtent([1, 8])
+				.translateExtent([[0, 0], [chartW, chartH]])
+				.on("zoom", zoomed);
+
+			function zoomed(e) {
+				const xScaleZoomed = e.transform.rescaleX(xScale);
+				const yScaleZoomed = e.transform.rescaleY(yScale);
+
+				xAxis.scale(xScaleZoomed);
+				containerEnter.select(".xAxis")
+					.call(xAxis)
+					.selectAll("text")
+					.style("text-anchor", "end")
+					.attr("dx", "-.8em")
+					.attr("dy", ".15em")
+					.attr("transform", "rotate(-65)");
+
+				yAxis.scale(yScaleZoomed);
+				containerEnter.select(".yAxis")
+					.call(yAxis);
+
+				bubbles
+					.xScale(xScaleZoomed)
+					.yScale(yScaleZoomed)
+					.transition({ ease: d3.easeLinear, duration: 0 });
+
+				containerEnter.select(".chart")
+					.selectAll(".seriesGroup")
+					.call(bubbles);
+			}
+
+			const zoomArea = containerEnter.select(".zoomArea")
+				.selectAll("rect")
+				.data([0]);
+
+			zoomArea.enter()
+				.append("rect")
+				.attr("fill", "none")
+				.attr("pointer-events", "all")
+				.merge(zoomArea)
+				.call(zoom)
+				.attr("width", chartW)
+				.attr("height", chartH);
 		});
 	}
 
@@ -221,18 +287,6 @@ export default function() {
 	};
 
 	/**
-	 * Transition Getter / Setter
-	 *
-	 * @param {d3.transition} _v - D3 transition style.
-	 * @returns {*}
-	 */
-	my.transition = function(_v) {
-		if (!arguments.length) return transition;
-		transition = _v;
-		return this;
-	};
-
-	/**
 	 * Y Axis Label Getter / Setter
 	 *
 	 * @param {string} _v - Label text.
@@ -257,6 +311,18 @@ export default function() {
 	};
 
 	/**
+	 * Transition Getter / Setter
+	 *
+	 * @param {d3.transition} _v - D3 transition style.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
+	};
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -269,7 +335,7 @@ export default function() {
 	};
 
 	/**
-	 * Dispatch On Getter
+	 * On Event Getter
 	 *
 	 * @returns {*}
 	 */

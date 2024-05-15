@@ -1,7 +1,7 @@
 import * as d3 from "d3";
-import componentLegendSize from "./legendSize";
-import componentLegendCategorical from "./legendCategorical";
-import componentLegendThreshold from "./legendThreshold";
+import componentLegendSize from "./legendSize.js";
+import componentLegendCategorical from "./legendCategorical.js";
+import componentLegendThreshold from "./legendThreshold.js";
 
 /**
  * Reusable Legend Component
@@ -19,7 +19,7 @@ export default function() {
 	let title = "Key";
 	let legend;
 	let opacity = 1;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let itemType = "rect";
 
 	/**
@@ -81,7 +81,7 @@ export default function() {
 		// Legend Title
 		legendBoxEnter.append("g")
 			.classed("legendTitle", true)
-			.attr("transform", "translate(10, 10)")
+			.attr("transform", "translate(10,10)")
 			.append("text")
 			.style("font-weight", "bold")
 			.attr("dominant-baseline", "hanging")
@@ -96,7 +96,7 @@ export default function() {
 		// Legend Items
 		legendBoxEnter.append("g")
 			.classed("legendBox", true)
-			.attr("transform", `translate(${margin.left}, ${margin.top})`)
+			.attr("transform", `translate(${margin.left},${margin.top})`)
 			.call(legend);
 
 		legendBox.selectAll(".legendBox")

@@ -11,7 +11,7 @@ export default function() {
 	let classed = "circularAxis";
 	let radialScale;
 	let ringScale;
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 	let showAxis = false;
 
@@ -34,9 +34,7 @@ export default function() {
 			const axis = axisSelect.enter()
 				.append("g")
 				.classed(classed, true)
-				.on("click", function(e, d) {
-					dispatch.call("customValueClick", this, e, d);
-				})
+				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(axisSelect);
 
 			// Outer circle
@@ -152,7 +150,7 @@ export default function() {
 				.attr("stroke-dasharray", "2,2")
 				.attr("opacity", 0.5)
 				.merge(spokes)
-				.attr("transform", (d) => "rotate(" + d.rotate + ")")
+				.attr("transform", (d) => `rotate(${d.rotate})`)
 				.attr("y2", -radius);
 
 			spokes.exit()
@@ -200,6 +198,18 @@ export default function() {
 		if (!arguments.length) return showAxis;
 		showAxis = _v;
 		return my;
+	};
+
+	/**
+	 * Transition Getter / Setter XX
+	 *
+	 * @param {d3.transition} _v - Transition.
+	 * @returns {*}
+	 */
+	my.transition = function(_v) {
+		if (!arguments.length) return transition;
+		transition = _v;
+		return this;
 	};
 
 	return my;
