@@ -201,9 +201,10 @@ export default function() {
 				containerEnter.select(".yAxis")
 					.call(yAxis);
 
-				bubbles.xScale(xScaleZoomed)
+				bubbles
+					.xScale(xScaleZoomed)
 					.yScale(yScaleZoomed)
-					.transition({ ease: d3.easeBounce, duration: 0 });
+					.transition({ ease: d3.easeLinear, duration: 0 });
 
 				containerEnter.select(".chart")
 					.selectAll(".seriesGroup")

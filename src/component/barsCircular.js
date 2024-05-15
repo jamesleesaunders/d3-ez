@@ -38,7 +38,8 @@ export default function() {
 				.cornerRadius(cornerRadius);
 
 			// Arc Tween
-			const arcTween = function(d) {
+			const arcTween = function(d, j) {
+				this._current ||= { key: d.key, value: 0 };
 				const i = d3.interpolate(this._current, d);
 				this._current = i(0);
 

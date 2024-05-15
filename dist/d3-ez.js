@@ -158,7 +158,11 @@
 	      }).cornerRadius(cornerRadius);
 
 	      // Arc Tween
-	      var arcTween = function arcTween(d) {
+	      var arcTween = function arcTween(d, j) {
+	        this._current || (this._current = {
+	          key: d.key,
+	          value: 0
+	        });
 	        var i = d3__namespace.interpolate(this._current, d);
 	        this._current = i(0);
 	        return function (t) {
@@ -2245,7 +2249,7 @@
 	        });
 	        return data;
 	      });
-	      segments.enter().append("path").attr("d", arc).classed("segment", true).on("mouseover", function (e, d) {
+	      segments.enter().append("path").classed("segment", true).attr("d", arc).attr("stroke-width", "1px").on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
@@ -2253,8 +2257,8 @@
 	        return colorScale(d.data.value);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.value);
-	      }).attr("stroke-width", "1px").attr("d", arc);
-	      segments.exit().transition().style("opacity", 0).remove();
+	      }).attr("d", arc);
+	      segments.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
 	    });
 	  }
 
@@ -2396,17 +2400,19 @@
 	          return o;
 	        });
 	      });
-	      cells.enter().append("rect").attr("class", "cell").on("mouseover", function (e, d) {
+	      cells.enter().append("rect").attr("class", "cell").attr("stroke-width", "1px").attr("rx", cornerRadius).attr("ry", cornerRadius).on("mouseover", function (e, d) {
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	      }).attr("x", function (d) {
 	        return xScale(d.key);
-	      }).attr("y", 0).attr("rx", cornerRadius).attr("ry", cornerRadius).attr("width", cellWidth).attr("height", cellHeight).attr("fill", function (d) {
+	      }).attr("y", 0).attr("width", cellWidth).attr("height", cellHeight).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	        return xScale(d.key);
+	      }).attr("width", cellWidth).attr("height", cellHeight).attr("fill", function (d) {
 	        return colorScale(d.value);
-	      }).style("fill-opacity", opacity).attr("stroke", function (d) {
+	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.value);
-	      }).attr("stroke-width", "1px");
+	      });
 	      cells.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
 	    });
 	  }
@@ -3650,7 +3656,11 @@
 	      var dots = componentGroup.selectAll("circle").data(function (d) {
 	        return d.values;
 	      });
-	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d, i) {
+	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots)
+	      //.transition()
+	      //.ease(transition.ease)
+	      //.duration(transition.duration)
+	      .attr("cx", function (d, i) {
 	        return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
 	      }).attr("cy", function (d, i) {
 	        return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
@@ -3793,7 +3803,7 @@
 	        return colorScale(d.value);
 	      }).label(function (d) {
 	        return d.value;
-	      }).display("none").opacity(opacity).stroke(1, "currentColor").dispatch(dispatch);
+	      }).display("none").opacity(opacity).stroke(1, "currentColor").dispatch(dispatch).transition(transition);
 	      var spots = componentGroup.selectAll(".punchSpot").data(function (d) {
 	        return d.values;
 	      });
@@ -3804,6 +3814,10 @@
 	        d3__namespace.select(this).select("text").style("display", "none");
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
+	      }).attr("transform", function (d) {
+	        var x = cellWidth / 2 + xScale(d.key);
+	        var y = cellHeight / 2;
+	        return "translate(".concat(x, ",").concat(y, ")");
 	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
 	        var x = cellWidth / 2 + xScale(d.key);
 	        var y = cellHeight / 2;
@@ -5053,8 +5067,8 @@
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5885,7 +5899,7 @@
 	        yAxis.scale(yScaleZoomed);
 	        containerEnter.select(".yAxis").call(yAxis);
 	        bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed).transition({
-	          ease: d3__namespace.easeBounce,
+	          ease: d3__namespace.easeLinear,
 	          duration: 0
 	        });
 	        containerEnter.select(".chart").selectAll(".seriesGroup").call(bubbles);
@@ -6505,8 +6519,8 @@
 	  };
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6719,8 +6733,8 @@
 	  };
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7056,8 +7070,14 @@
 	        var xScaleZoomed = e.transform.rescaleX(xScale);
 	        xAxis.scale(xScaleZoomed);
 	        containerEnter.select(".xAxis").call(xAxis);
-	        lineChart.xScale(xScaleZoomed);
-	        scatterPlot.xScale(xScaleZoomed);
+	        lineChart.xScale(xScaleZoomed).transition({
+	          ease: d3__namespace.easeLinear,
+	          duration: 0
+	        });
+	        scatterPlot.xScale(xScaleZoomed).transition({
+	          ease: d3__namespace.easeLinear,
+	          duration: 0
+	        });
 	        containerEnter.select(".chart").selectAll(".seriesGroup").call(lineChart).call(scatterPlot);
 	      }
 	      var zoomArea = containerEnter.select(".zoomArea").selectAll(".rect").data([0]);
@@ -7424,8 +7444,8 @@
 	  };
 	  var colors = [d3__namespace.rgb("steelblue").brighter(), d3__namespace.rgb("steelblue").darker()];
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7490,7 +7510,7 @@
 
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).transition().attr("transform", function (d) {
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(proportionalAreaCircles);
 	      seriesGroup.exit().remove();
@@ -7673,8 +7693,8 @@
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
-	    ease: d3__namespace.easeBounce,
-	    duration: 0
+	    ease: d3__namespace.easeLinear,
+	    duration: 300
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 

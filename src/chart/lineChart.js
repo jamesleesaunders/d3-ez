@@ -224,8 +224,14 @@ export default function() {
 				containerEnter.select(".xAxis")
 					.call(xAxis);
 
-				lineChart.xScale(xScaleZoomed);
-				scatterPlot.xScale(xScaleZoomed);
+				lineChart
+					.xScale(xScaleZoomed)
+					.transition({ ease: d3.easeLinear, duration: 0 });
+
+				scatterPlot
+					.xScale(xScaleZoomed)
+					.transition({ ease: d3.easeLinear, duration: 0 });
+
 				containerEnter.select(".chart")
 					.selectAll(".seriesGroup")
 					.call(lineChart)

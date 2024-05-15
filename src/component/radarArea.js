@@ -83,9 +83,9 @@ export default function() {
 				.attr("r", 4)
 				.style("fill-opacity", 0.8)
 				.merge(dots)
-				.transition()
-				.ease(transition.ease)
-				.duration(transition.duration)
+				//.transition()
+				//.ease(transition.ease)
+				//.duration(transition.duration)
 				.attr("cx", (d, i) => yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
 				.attr("cy", (d, i) => yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2));
 		});

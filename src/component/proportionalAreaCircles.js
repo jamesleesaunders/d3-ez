@@ -53,7 +53,8 @@ export default function() {
 				.display("none")
 				.opacity(opacity)
 				.stroke(1, "currentColor")
-				.dispatch(dispatch);
+				.dispatch(dispatch)
+				.transition(transition);
 
 			const spots = componentGroup.selectAll(".punchSpot")
 				.data((d) => d.values);
@@ -69,6 +70,11 @@ export default function() {
 					d3.select(this).select("text").style("display", "none");
 				})
 				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
+				.attr("transform", (d) => {
+					const x = cellWidth / 2 + xScale(d.key);
+					const y = cellHeight / 2;
+					return `translate(${x},${y})`;
+				})
 				.merge(spots)
 				.transition()
 				.ease(transition.ease)

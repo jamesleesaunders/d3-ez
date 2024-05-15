@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
 	let colors = palette.diverging(2).slice(0, 5);
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */

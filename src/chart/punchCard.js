@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = [d3.rgb("steelblue").brighter(), d3.rgb("steelblue").darker()];
-	let transition = { ease: d3.easeBounce, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 300 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -122,7 +122,6 @@ export default function() {
 				.append("g")
 				.attr("class", "seriesGroup")
 				.merge(seriesGroup)
-				.transition()
 				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
 				.call(proportionalAreaCircles);
 

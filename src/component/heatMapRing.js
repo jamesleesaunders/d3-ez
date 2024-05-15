@@ -72,8 +72,9 @@ export default function() {
 
 			segments.enter()
 				.append("path")
-				.attr("d", arc)
 				.classed("segment", true)
+				.attr("d", arc)
+				.attr("stroke-width", "1px")
 				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d.data); })
 				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d.data); })
 				.merge(segments)
@@ -82,12 +83,12 @@ export default function() {
 				.attr("fill", (d) => colorScale(d.data.value))
 				.attr("fill-opacity", opacity)
 				.attr("stroke", (d) => colorScale(d.data.value))
-				.attr("stroke-width", "1px")
-
 				.attr("d", arc);
 
 			segments.exit()
 				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
 				.style("opacity", 0)
 				.remove();
 		});

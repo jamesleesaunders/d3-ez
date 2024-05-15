@@ -23,7 +23,6 @@
           .width(1000)
           .height(600)
           .colors(colors)
-          .transition({ ease: d3.easeBounce, duration: 500 })
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           })
@@ -33,7 +32,7 @@
 
         // Add to page
         function update() {
-          var i = Math.round(Math.random() * 2) + 1;
+          var i = Math.floor(Math.random() * 4);
           d3.select("#chartholder")
             .datum([data[i]])  // TODO: Convert to support multi-series
             .call(myChart);
