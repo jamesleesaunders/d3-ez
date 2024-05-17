@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.1";
+	var version$1 = "4.0.2";
 	var type = "module";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
@@ -55,8 +55,8 @@
 	var bugs = {
 		url: "https://github.com/jamesleesaunders/d3-ez/issues"
 	};
-	var module = "index.js";
-	var main = "index.js";
+	var module = "index";
+	var main = "dist/d3-ez.js";
 	var jsdelivr = "dist/d3-x3d.min.js";
 	var unpkg = "dist/d3-x3d.min.js";
 	var exports$1 = {
