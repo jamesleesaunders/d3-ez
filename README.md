@@ -84,7 +84,7 @@ Create chart component:
 var myChart = d3.ez.chart.barChartVertical()
 	.width(750)
 	.height(400)
-	.colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
+	.colors(["#00C41d", "#FFA500", "#800080", "#FFE714"]);
 ```
 
 Attach chart and data to the chartholder:

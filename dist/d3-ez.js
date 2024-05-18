@@ -32,8 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.2";
-	var type = "module";
+	var version$1 = "4.0.3";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -55,12 +54,17 @@
 	var bugs = {
 		url: "https://github.com/jamesleesaunders/d3-ez/issues"
 	};
+	var type = "module";
+	var files = [
+		"dist/**/*.js",
+		"src/**/*.js"
+	];
 	var module = "src/index.js";
 	var main = "src/index.js";
-	var jsdelivr = "dist/d3-x3d.min.js";
-	var unpkg = "dist/d3-x3d.min.js";
+	var jsdelivr = "dist/d3-ez.min.js";
+	var unpkg = "dist/d3-ez.min.js";
 	var exports$1 = {
-		umd: "./dist/d3-x3d.min.js",
+		umd: "./dist/d3-ez.min.js",
 		"default": "./src/index.js"
 	};
 	var scripts = {
@@ -99,7 +103,6 @@
 	var packageJson = {
 		name: name,
 		version: version$1,
-		type: type,
 		description: description,
 		license: license$1,
 		keywords: keywords,
@@ -107,6 +110,8 @@
 		author: author$1,
 		repository: repository,
 		bugs: bugs,
+		type: type,
+		files: files,
 		module: module,
 		main: main,
 		jsdelivr: jsdelivr,
