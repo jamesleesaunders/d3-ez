@@ -11,7 +11,7 @@ let banner = `/**
 `;
 
 export default {
-	input: "index.js",
+	input: "src/index.js",
 	output: {
 		file: "dist/d3-ez.js",
 		format: "umd",

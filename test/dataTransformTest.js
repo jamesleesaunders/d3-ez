@@ -1,5 +1,5 @@
 import test from "tape";
-import d3Ez from "../index.js";
+import d3Ez from "../src/index.js";
 import { dataset1, dataset2, dataset3 } from "./exampleData.js";
 
 test("Test Summary 1", function(t) {

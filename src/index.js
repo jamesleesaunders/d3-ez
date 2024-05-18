@@ -10,14 +10,14 @@ const author = "James Saunders";
 const year = new Date().getFullYear();
 const copyright = `Copyright (C) ${year} ${author}`;
 
-import {default as packageJson} from "./package.json" with { type: "json" };
+import {default as packageJson} from "../package.json" with { type: "json" };
 const version = packageJson.version;
 const license = packageJson.license;
 
-import chart from "./src/chart.js";
-import component from "./src/component.js";
-import palette from "./src/palette.js";
-import dataTransform from "./src/dataTransform.js";
+import chart from "./chart.js";
+import component from "./component.js";
+import palette from "./palette.js";
+import dataTransform from "./dataTransform.js";
 
 export default {
 		version: version,

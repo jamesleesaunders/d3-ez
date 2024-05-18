@@ -55,13 +55,13 @@
 	var bugs = {
 		url: "https://github.com/jamesleesaunders/d3-ez/issues"
 	};
-	var module = "index";
-	var main = "dist/d3-ez.js";
+	var module = "src/index.js";
+	var main = "src/index.js";
 	var jsdelivr = "dist/d3-x3d.min.js";
 	var unpkg = "dist/d3-x3d.min.js";
 	var exports$1 = {
 		umd: "./dist/d3-x3d.min.js",
-		"default": "./index.js"
+		"default": "./src/index.js"
 	};
 	var scripts = {
 		build: "make",
@@ -79,7 +79,7 @@
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
-		eslint: "^9.2.0",
+		eslint: "^9.3.0",
 		"gh-pages": "^6.1.1",
 		jsdoc: "^4.0.3",
 		jsdom: "^24.0.0",
