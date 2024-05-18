@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import jsdom from "jsdom";
 import test from "tape";
-import d3Ez from "../../index.js";
+import d3Ez from "../../src/index.js";
 import { readFileSync } from "fs";
 import { dataset4 as myData } from "../exampleData.js";
 

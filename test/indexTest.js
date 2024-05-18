@@ -1,6 +1,6 @@
 import jsdom from "jsdom";
 import test from "tape";
-import d3Ez from "../index.js";
+import d3Ez from "../src/index.js";
 
 test("setup", function(t) {
 	let JSDOM = jsdom.JSDOM;

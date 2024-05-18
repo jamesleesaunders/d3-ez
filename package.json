@@ -1,6 +1,6 @@
 {
 	"name": "d3-ez",
-	"version": "4.0.1",
+	"version": "4.0.2",
 	"type": "module",
 	"description": "D3 Easy Reusable Chart Library",
 	"license": "GPL-2.0",
@@ -23,13 +23,13 @@
 	"bugs": {
 		"url": "https://github.com/jamesleesaunders/d3-ez/issues"
 	},
-	"module": "index.js",
-	"main": "index.js",
+	"module": "src/index.js",
+	"main": "src/index.js",
 	"jsdelivr": "dist/d3-x3d.min.js",
 	"unpkg": "dist/d3-x3d.min.js",
 	"exports": {
 		"umd": "./dist/d3-x3d.min.js",
-		"default": "./index.js"
+		"default": "./src/index.js"
 	},
 	"scripts": {
 		"build": "make",
@@ -47,7 +47,7 @@
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
-		"eslint": "^9.2.0",
+		"eslint": "^9.3.0",
 		"gh-pages": "^6.1.1",
 		"jsdoc": "^4.0.3",
 		"jsdom": "^24.0.0",
