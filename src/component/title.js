@@ -32,14 +32,16 @@ export default function() {
 			.enter()
 			.append("text")
 			.classed("title", true)
-			.text((d) => d);
+			.text((d) => d)
+			.attr("fill", "currentColor");
 		const title = titleGroup.select(".title").text(mainText);
 
 		titleGroup.selectAll(".subTitle").data([subText])
 			.enter()
 			.append("text")
 			.classed("subTitle", true)
-			.text((d) => d);
+			.text((d) => d)
+			.attr("fill", "currentColor");
 		const subTitle = titleGroup.select(".subTitle").text(subText);
 
 		// Centre Text

@@ -22,7 +22,10 @@ export default function() {
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
+	let title = null;
+	let subTitle = null;
 	let opacity = 1;
+	let showLegend = false;
 	let showAxis = true;
 	let yAxisLabel = null;
 	let stacked = false;
@@ -48,10 +51,11 @@ export default function() {
 
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
-			const legendW = 120;
-			const legendPad = 15;
-			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
-			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendW = showLegend ? 120 : 0;
+			const legendPad = showLegend ? 15 : 0;
+			const titleH = title ? 40 : 0;
+			const chartW = Math.max((width - margin.left - legendW - margin.right - legendPad), 100);
+			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
 
 			// Create Scales and Axis
@@ -104,7 +108,7 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+			const layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
@@ -129,39 +133,57 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.attr("transform", (d) => `translate(${xScale(valueMin)},${yScale2(d.key)})`)
+				.attr("transform", (d) => `translate(${xScale(valueMin)},${yScale2(d.key) + titleH})`)
 				.call(bars);
 
 			seriesGroup.exit()
 				.remove();
 
-			// X-Axis
-			const xAxis = d3.axisBottom(xScale);
+			// Axis
+			if (showAxis) {
+				// X-Axis
+				const xAxis = d3.axisBottom(xScale);
+				containerEnter.select(".xAxis")
+					.attr("transform", `translate(0,${chartH + titleH})`)
+					.call(xAxis);
 
-			containerEnter.select(".xAxis")
-				.attr("transform", `translate(0,${chartH})`)
-				.call(xAxis);
+				// Y-Axis
+				const yAxis = d3.axisLeft(yScale2);
+				containerEnter.select(".yAxis")
+					.attr("transform", `translate(0,${titleH})`)
+					.call(yAxis);
+			} else {
+				containerEnter.selectAll(".axis").selectAll('*').remove();
+			}
 
-			// Y-Axis
-			const yAxis = d3.axisLeft(yScale2);
+			// Title
+			if (title) {
+				const titleComponent = component.title()
+					.mainText(title)
+					.subText(subTitle);
 
-			containerEnter.select(".yAxis")
-				.call(yAxis);
-
-			containerEnter.selectAll(".axis")
-				.attr("opacity", showAxis ? 1 : 0);
+				containerEnter.select(".title")
+					.attr("transform", "translate(" + chartW / 2 + "," + 0 + ")")
+					.call(titleComponent);
+			} else {
+				containerEnter.selectAll(".title").selectAll('*').remove();
+			}
 
 			// Legend
-			const legend = component.legend()
-				.colorScale(colorScale)
-				.height(legendH)
-				.width(legendW)
-				.itemType("rect")
-				.opacity(opacity);
+			if (showLegend) {
+				const legend = component.legend()
+					.colorScale(colorScale)
+					.height(legendH)
+					.width(legendW)
+					.itemType("rect")
+					.opacity(opacity);
 
-			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad},0)`)
-				.call(legend);
+				containerEnter.select(".legend")
+					.attr("transform", `translate(${chartW + legendPad},0)`)
+					.call(legend);
+			} else {
+				containerEnter.select(".legend").selectAll('*').remove();
+			}
 		});
 	}
 
@@ -214,6 +236,43 @@ export default function() {
 	};
 
 	/**
+	 * Show Legend Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show legend true / false.
+	 * @returns {*}
+	 */
+	my.showLegend = function(_v) {
+		if (!arguments.length) return showLegend;
+		showLegend = _v;
+		return this;
+	};
+
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _v - Title text.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
+		if (!arguments.length) return title;
+		title = _v;
+		return this;
+	};
+
+	/**
+	 * SubTitle Getter / Setter
+	 *
+	 * @param {string} _v - SubTitle text.
+	 * @returns {*}
+	 */
+	my.subTitle = function(_v) {
+		if (!arguments.length) return subTitle;
+		subTitle = _v;
+		return this;
+	};
+
+
+	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {Number} _v - Opacity level.
@@ -250,7 +309,7 @@ export default function() {
 	};
 
 	/**
-	 * Y Axix Label Getter / Setter
+	 * Y-Axis Label Getter / Setter
 	 *
 	 * @param {number} _v - Label text.
 	 * @returns {*}

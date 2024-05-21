@@ -4928,6 +4928,94 @@
 	  return my;
 	}
 
+	/**
+	 * Reusable Title Component
+	 *
+	 * @module
+	 */
+	function componentTitle () {
+	  /* Default Properties */
+	  var mainText = "Title";
+	  var subText = "Sub Title";
+	  var height = 40;
+	  var width = 200;
+
+	  /**
+	   * Constructor
+	   *
+	   * @constructor
+	   * @alias title
+	   * @param {d3.selection} selection - The chart holder D3 selection.
+	   */
+	  function my(selection) {
+	    selection.selectAll("#titleGroup").data([0]).enter().append("g").attr("id", "titleGroup");
+	    var titleGroup = selection.select("#titleGroup");
+	    titleGroup.selectAll(".title").data([mainText]).enter().append("text").classed("title", true).text(function (d) {
+	      return d;
+	    }).attr("fill", "currentColor");
+	    var title = titleGroup.select(".title").text(mainText);
+	    titleGroup.selectAll(".subTitle").data([subText]).enter().append("text").classed("subTitle", true).text(function (d) {
+	      return d;
+	    }).attr("fill", "currentColor");
+	    var subTitle = titleGroup.select(".subTitle").text(subText);
+
+	    // Centre Text
+	    // const titleOffset = 0 - (title.node().getBBox().width / 2);
+	    title.style("text-anchor", "middle").attr("transform", "translate(0, 15)");
+	    // const subTitleOffset = 0 - (subTitle.node().getBBox().width / 2);
+	    subTitle.style("text-anchor", "middle").attr("transform", "translate(0, 30)");
+	  }
+
+	  /**
+	   * Width Getter / Setter
+	   *
+	   * @param {number} _v - Width in px.
+	   * @returns {*}
+	   */
+	  my.width = function (_v) {
+	    if (!arguments.length) return width;
+	    width = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Height Getter / Setter
+	   *
+	   * @param {number} _v - Height in px.
+	   * @returns {*}
+	   */
+	  my.height = function (_v) {
+	    if (!arguments.length) return height;
+	    height = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Main Text Getter / Setter
+	   *
+	   * @param {string} _v - Main text title.
+	   * @returns {*}
+	   */
+	  my.mainText = function (_v) {
+	    if (!arguments.length) return mainText;
+	    mainText = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Sub Text Getter / Setter
+	   *
+	   * @param {string} _v - Sub text description.
+	   * @returns {*}
+	   */
+	  my.subText = function (_v) {
+	    if (!arguments.length) return subText;
+	    subText = _v;
+	    return this;
+	  };
+	  return my;
+	}
+
 	var component = {
 	  barsCircular: componentBarsCircular,
 	  barsHorizontal: componentBarsHorizontal,
@@ -4955,7 +5043,8 @@
 	  proportionalAreaCircles: componentProportionalAreaCircles,
 	  radarArea: componentRadarArea,
 	  roseChartSector: componentRoseChartSector,
-	  scatterPlot: componentScatterPlot
+	  scatterPlot: componentScatterPlot,
+	  title: componentTitle
 	};
 
 	/**
@@ -5078,7 +5167,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var startAngle = 0;
 	  var endAngle = 270;
 
@@ -5104,10 +5196,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 	      var radius = Math.min(chartW, chartH) / data.length / 2;
 	      var innerRadius = radius / 4;
@@ -5149,7 +5242,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["chart", "legend"];
+	      var layers = ["chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5171,13 +5264,25 @@
 	        return d;
 	      });
 	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y + titleH, ")");
 	      }).call(circularAxis).call(barsCircular).call(circularSectorLabels).call(circularRingLabels);
 	      seriesGroup.exit().remove();
 
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -5226,6 +5331,42 @@
 	  my.colors = function (_v) {
 	    if (!arguments.length) return colors;
 	    colors = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
 	    return this;
 	  };
 
@@ -5303,7 +5444,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
 	  var stacked = false;
@@ -5330,10 +5474,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
@@ -5365,7 +5510,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5379,27 +5524,51 @@
 	        return d;
 	      });
 	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin), ")");
+	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin) + titleH, ")");
 	      }).call(bars);
 	      seriesGroup.exit().remove();
 
-	      // X-Axis
-	      var xAxis = d3__namespace.axisBottom(xScale2);
-	      containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
+	      // Axis
+	      if (showAxis) {
+	        // X-Axis
+	        var xAxis = d3__namespace.axisBottom(xScale2);
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis);
 
-	      // Y-Axis
-	      var yAxis = d3__namespace.axisLeft(yScale);
-	      containerEnter.select(".yAxis").call(yAxis);
+	        // Y-Axis
+	        var yAxis = d3__namespace.axisLeft(yScale);
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
 
-	      // Y Axis Label
-	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
-	        return d;
-	      });
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        // Y-Axis Label
+	        containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
+	          return d;
+	        });
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var _titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(_titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -5488,7 +5657,43 @@
 	  };
 
 	  /**
-	   * Y Axix Label Getter / Setter
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Y-Axis Label Getter / Setter
 	   *
 	   * @param {number} _v - Label text.
 	   * @returns {*}
@@ -5561,7 +5766,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
 	  var stacked = false;
@@ -5588,10 +5796,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
@@ -5623,7 +5832,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5636,22 +5845,38 @@
 	        return d;
 	      });
 	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key), ")");
+	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key) + titleH, ")");
 	      }).call(bars);
 	      seriesGroup.exit().remove();
 
-	      // X-Axis
-	      var xAxis = d3__namespace.axisBottom(xScale);
-	      containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
+	      // Axis
+	      if (showAxis) {
+	        // X-Axis
+	        var xAxis = d3__namespace.axisBottom(xScale);
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis);
 
-	      // Y-Axis
-	      var yAxis = d3__namespace.axisLeft(yScale2);
-	      containerEnter.select(".yAxis").call(yAxis);
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        // Y-Axis
+	        var yAxis = d3__namespace.axisLeft(yScale2);
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -5702,6 +5927,41 @@
 	    colors = _v;
 	    return this;
 	  };
+	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
+	    return this;
+	  };
 
 	  /**
 	   * Opacity Getter / Setter
@@ -5740,7 +6000,7 @@
 	  };
 
 	  /**
-	   * Y Axix Label Getter / Setter
+	   * Y-Axis Label Getter / Setter
 	   *
 	   * @param {number} _v - Label text.
 	   * @returns {*}
@@ -5813,7 +6073,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
 	  var minRadius = 3;
@@ -5841,10 +6104,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
@@ -5862,7 +6126,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend", "zoomArea", "clipArea"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5877,18 +6141,34 @@
 	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).call(bubbles);
 	      seriesGroup.exit().remove();
 
-	      // X-Axis
-	      var xAxis = d3__namespace.axisBottom(xScale);
-	      containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+	      // Axis
+	      if (showAxis) {
+	        // X-Axis
+	        var _xAxis = d3__namespace.axisBottom(xScale);
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(_xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-	      // Y-Axis
-	      var yAxis = d3__namespace.axisLeft(yScale);
-	      containerEnter.select(".yAxis").call(yAxis);
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        // Y-Axis
+	        var _yAxis = d3__namespace.axisLeft(yScale);
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(_yAxis);
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 
 	      // Zoom Clip Path
 	      var clipPath = containerEnter.select(".clipArea").selectAll("defs").data([0]);
@@ -5963,6 +6243,42 @@
 	  };
 
 	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {Number} _v - Opacity level.
@@ -5975,7 +6291,7 @@
 	  };
 
 	  /**
-	   * Y Axis Label Getter / Setter
+	   * Y-Axis Label Getter / Setter
 	   *
 	   * @param {string} _v - Label text.
 	   * @returns {*}
@@ -6060,7 +6376,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
 
@@ -6085,10 +6404,11 @@
 	      }
 	    }(selection);
 	    selection.each(function (data) {
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 	      data = data[0]; // FIXME: Convert input data to support multi-series.
 
@@ -6121,7 +6441,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["zoomArea", "xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend", "zoomArea"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -6137,23 +6457,39 @@
 	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(candleSticks);
 	      seriesGroup.exit().remove();
 
-	      // X Axis
-	      var xAxis = d3__namespace.axisBottom(xScale).tickFormat(d3__namespace.timeFormat("%d-%b-%y"));
-	      containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+	      // Axis
+	      if (showAxis) {
+	        // X Axis
+	        var xAxis = d3__namespace.axisBottom(xScale).tickFormat(d3__namespace.timeFormat("%d-%b-%y"));
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
-	      // Y-Axis
-	      var yAxis = d3__namespace.axisLeft(yScale);
-	      containerEnter.select(".yAxis").call(yAxis);
+	        // Y-Axis
+	        var yAxis = d3__namespace.axisLeft(yScale);
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
 
-	      // Y-Axis Label
-	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
-	        return d;
-	      });
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        // Y-Axis Label
+	        containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
+	          return d;
+	        });
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 
 	      // Experimental Brush
 	      var brush = d3__namespace.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
@@ -6216,6 +6552,42 @@
 	  };
 
 	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {Number} _v - Opacity level.
@@ -6240,7 +6612,7 @@
 	  };
 
 	  /**
-	   * Y Axix Label Getter / Setter
+	   * Y-Axis Label Getter / Setter
 	   *
 	   * @param {number} _v - Label text.
 	   * @returns {*}
@@ -6313,7 +6685,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var startAngle = 0;
 	  var endAngle = 360;
 
@@ -6339,10 +6714,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 	      var radius = Math.min(chartW, chartH) / data.length / 2;
 	      var innerRadius = radius / 2;
@@ -6383,7 +6759,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["chart", "legend"];
+	      var layers = ["chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -6399,13 +6775,25 @@
 	        return d;
 	      });
 	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y + titleH, ")");
 	      }).call(donut).call(donutLabels);
 	      seriesGroup.exit().remove();
 
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -6454,6 +6842,42 @@
 	  my.colors = function (_v) {
 	    if (!arguments.length) return colors;
 	    colors = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
 	    return this;
 	  };
 
@@ -6530,7 +6954,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var startAngle = 0;
 	  var endAngle = 270;
 	  var thresholds;
@@ -6557,11 +6984,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var radius = Math.min(chartW, chartH) / 2;
 	      var innerRadius = radius / 4;
 	      var _dataTransform$summar = dataTransform(data).summary(),
@@ -6580,7 +7007,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["axis", "chart", "legend"];
+	      var layers = ["axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -6598,15 +7025,27 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(heatMapRing).call(circularRingLabels);
+	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")")).call(heatMapRing).call(circularRingLabels);
 	      seriesGroup.exit().remove();
 
 	      // Outer Ring Labels
 	      containerEnter.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(circularSectorLabels);
 
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -6655,6 +7094,42 @@
 	  my.colors = function (_v) {
 	    if (!arguments.length) return colors;
 	    colors = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
 	    return this;
 	  };
 
@@ -6744,7 +7219,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var showAxis = true;
 	  var thresholds;
 
@@ -6770,10 +7248,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
@@ -6791,7 +7270,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -6802,22 +7281,38 @@
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
 	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(0,".concat(yScale(d.key), ")");
+	        return "translate(0,".concat(yScale(d.key) + titleH, ")");
 	      }).call(heatMapRow);
 	      seriesGroup.exit().remove();
 
-	      // X-Axis
-	      var xAxis = d3__namespace.axisTop(xScale);
-	      containerEnter.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+	      // Axis
+	      if (showAxis) {
+	        // X-Axis
+	        var xAxis = d3__namespace.axisTop(xScale);
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
-	      // Y-Axis
-	      var yAxis = d3__namespace.axisLeft(yScale);
-	      containerEnter.select(".yAxis").call(yAxis);
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        // Y-Axis
+	        var yAxis = d3__namespace.axisLeft(yScale);
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -6866,6 +7361,42 @@
 	  my.colors = function (_v) {
 	    if (!arguments.length) return colors;
 	    colors = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
 	    return this;
 	  };
 
@@ -6967,7 +7498,10 @@
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
+	  var title = null;
+	  var subTitle = null;
 	  var opacity = 1;
+	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
 
@@ -6993,10 +7527,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
+	      var legendW = showLegend ? 120 : 0;
+	      var legendPad = showLegend ? 15 : 0;
+	      var titleH = title ? 40 : 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
@@ -7029,7 +7564,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend", "zoomArea", "clipArea"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7047,23 +7582,41 @@
 	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).call(lineChart).call(scatterPlot);
 	      seriesGroup.exit().remove();
 
-	      // X-Axis
+	      // Axis
 	      var xAxis = d3__namespace.axisBottom(xScale);
-	      containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
-
-	      // Y-Axis
 	      var yAxis = d3__namespace.axisLeft(yScale);
-	      containerEnter.select(".yAxis").call(yAxis);
+	      if (showAxis) {
+	        // X-Axis
 
-	      // Y-Axis Label
-	      containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").text(function (d) {
-	        return d;
-	      });
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis);
+
+	        // Y-Axis
+
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+
+	        // Y-Axis Label
+	        containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").text(function (d) {
+	          return d;
+	        });
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      if (title) {
+	        var titleComponent = component.title().mainText(title).subText(subTitle);
+	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	      } else {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      if (showLegend) {
+	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
+	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      } else {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 
 	      // Zoom Clip Path
 	      var clipPath = containerEnter.select(".clipArea").selectAll("defs").data([0]);
@@ -7139,6 +7692,42 @@
 	  };
 
 	  /**
+	   * Show Legend Getter / Setter
+	   *
+	   * @param {Boolean} _v - Show legend true / false.
+	   * @returns {*}
+	   */
+	  my.showLegend = function (_v) {
+	    if (!arguments.length) return showLegend;
+	    showLegend = _v;
+	    return this;
+	  };
+
+	  /**
+	   * Title Getter / Setter
+	   *
+	   * @param {string} _v - Title text.
+	   * @returns {*}
+	   */
+	  my.title = function (_v) {
+	    if (!arguments.length) return title;
+	    title = _v;
+	    return this;
+	  };
+
+	  /**
+	   * SubTitle Getter / Setter
+	   *
+	   * @param {string} _v - SubTitle text.
+	   * @returns {*}
+	   */
+	  my.subTitle = function (_v) {
+	    if (!arguments.length) return subTitle;
+	    subTitle = _v;
+	    return this;
+	  };
+
+	  /**
 	   * Opacity Getter / Setter
 	   *
 	   * @param {Number} _v - Opacity level.
@@ -7163,7 +7752,7 @@
 	  };
 
 	  /**
-	   * Y Axix Label Getter / Setter
+	   * Y-Axis Label Getter / Setter
 	   *
 	   * @param {number} _v - Label text.
 	   * @returns {*}
@@ -7233,8 +7822,6 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	  /* Other Customisation Options */
 	  var opacity = 1;
 	  var startAngle = 0;
 	  var endAngle = 360;
@@ -7261,11 +7848,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
+	      var legendW = 0;
+	      var legendPad = 0;
+	      var titleH = 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var radius = Math.min(chartW, chartH) / data.length / 2;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -7305,7 +7892,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["chart", "legend"];
+	      var layers = ["chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7324,13 +7911,19 @@
 	        return d;
 	      });
 	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y + titleH, ")");
 	      }).call(circularAxis).call(circularSectorLabels).call(polarArea);
 	      seriesGroup.exit().remove();
 
+	      // Title
+	      {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -7453,8 +8046,6 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	  /* Other Customisation Options */
 	  var opacity = 1;
 	  var showAxis = true;
 	  var minRadius = 2;
@@ -7483,11 +8074,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
+	      var legendW = 0;
+	      var legendPad = 0;
+	      var titleH = 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -7505,7 +8096,7 @@
 	      var container = svg.selectAll(".container").data([data]);
 	      container.exit().remove();
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
+	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7516,22 +8107,32 @@
 	      // Series Group
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
 	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(0,".concat(yScale(d.key), ")");
+	        return "translate(0,".concat(yScale(d.key) + titleH, ")");
 	      }).call(proportionalAreaCircles);
 	      seriesGroup.exit().remove();
 
-	      // X-Axis
-	      var xAxis = d3__namespace.axisTop(xScale);
-	      containerEnter.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+	      // Axis
+	      if (showAxis) {
+	        // X-Axis
+	        var xAxis = d3__namespace.axisTop(xScale);
+	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
-	      // Y-Axis
-	      var yAxis = d3__namespace.axisLeft(yScale);
-	      containerEnter.select(".yAxis").call(yAxis);
-	      containerEnter.selectAll(".axis").attr("opacity", showAxis ? 1 : 0);
+	        // Y-Axis
+	        var yAxis = d3__namespace.axisLeft(yScale);
+	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(yAxis);
+	      } else {
+	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	      }
+
+	      // Title
+	      {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
 
 	      // Legend
-	      var legend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -7702,8 +8303,6 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	  /* Other Customisation Options */
 	  var opacity = 1;
 	  var startAngle = 0;
 	  var endAngle = 360;
@@ -7730,11 +8329,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
+	      var legendW = 0;
+	      var legendPad = 0;
+	      var titleH = 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var radius = Math.min(chartW, chartH) / 2.5;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
@@ -7752,7 +8351,7 @@
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
 
 	      // Update the chart dimensions and container and layer groups
-	      var layers = ["axis", "chart", "legend"];
+	      var layers = ["axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7774,12 +8373,18 @@
 	        return colorScale(d.key);
 	      }).style("stroke", function (d) {
 	        return colorScale(d.key);
-	      }).merge(seriesGroup).call(radarArea).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")"));
+	      }).merge(seriesGroup).call(radarArea).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")"));
 	      containerEnter.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(circularSectorLabels).call(circularAxis);
 
+	      // Title
+	      {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 
@@ -7902,8 +8507,6 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-
-	  /* Other Customisation Options */
 	  var opacity = 1;
 	  var stacked = true;
 
@@ -7929,11 +8532,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
-	      var legendW = 120;
-	      var legendPad = 15;
-	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
-	      var chartH = Math.max(height - margin.top - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
+	      var legendW = 0;
+	      var legendPad = 0;
+	      var titleH = 0;
+	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
 	      var radius = Math.min(chartW, chartH) / 2;
 	      var innerRadius = 0;
 	      var _dataTransform$summar = dataTransform(data).summary(),
@@ -7956,7 +8559,7 @@
 	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
 
 	      // Update the chart dimensions and container and layer groups
-	      var layers = ["axis", "chart", "legend"];
+	      var layers = ["axis", "chart", "title", "legend"];
 	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7974,7 +8577,7 @@
 	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
 	        return d;
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
+	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")")).each(function () {
 	        d3__namespace.select(this).call(roseChartSector);
 	      });
 	      seriesGroup.exit().remove();
@@ -7982,9 +8585,15 @@
 	      // Outer Ring Labels
 	      containerEnter.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(circularSectorLabels).call(circularAxis);
 
+	      // Title
+	      {
+	        containerEnter.selectAll(".title").selectAll('*').remove();
+	      }
+
 	      // Legend
-	      var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	      containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	      {
+	        containerEnter.select(".legend").selectAll('*').remove();
+	      }
 	    });
 	  }
 

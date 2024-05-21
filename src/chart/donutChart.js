@@ -22,7 +22,11 @@ export default function() {
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
+	let title = null;
+	let subTitle = null;
 	let opacity = 1;
+	let showLegend = false;
+	let showAxis = true;
 	let startAngle = 0;
 	let endAngle = 360;
 
@@ -47,10 +51,11 @@ export default function() {
 
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
-			const legendW = 120;
-			const legendPad = 15;
-			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
-			const chartH = Math.max((height - margin.top - margin.bottom), 100);
+			const legendW = showLegend ? 120 : 0;
+			const legendPad = showLegend ? 15 : 0;
+			const titleH = title ? 40 : 0;
+			const chartW = Math.max((width - margin.left - legendW - margin.right - legendPad), 100);
+			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
 			const legendH = Math.max(chartH / 2, 100);
 			const radius = (Math.min(chartW, chartH) / data.length) / 2;
 			const innerRadius = radius / 2;
@@ -113,7 +118,7 @@ export default function() {
 				.attr("width", chartW)
 				.attr("height", chartH);
 
-			const layers = ["chart", "legend"];
+			const layers = ["chart", "title", "legend"];
 			containerEnter.selectAll("g")
 				.data(layers)
 				.enter()
@@ -144,24 +149,41 @@ export default function() {
 				.append("g")
 				.classed("seriesGroup", true)
 				.merge(seriesGroup)
-				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y + titleH})`)
 				.call(donut)
 				.call(donutLabels);
 
 			seriesGroup.exit()
 				.remove();
 
-			// Legend
-			const legend = component.legend()
-				.colorScale(colorScale)
-				.height(legendH)
-				.width(legendW)
-				.itemType("rect")
-				.opacity(opacity);
+			// Title
+			if (title) {
+				const titleComponent = component.title()
+					.mainText(title)
+					.subText(subTitle);
 
-			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad},0)`)
-				.call(legend);
+				containerEnter.select(".title")
+					.attr("transform", "translate(" + chartW / 2 + "," + 0 + ")")
+					.call(titleComponent);
+			} else {
+				containerEnter.selectAll(".title").selectAll('*').remove();
+			}
+
+			// Legend
+			if (showLegend) {
+				const legend = component.legend()
+					.colorScale(colorScale)
+					.height(legendH)
+					.width(legendW)
+					.itemType("rect")
+					.opacity(opacity);
+
+				containerEnter.select(".legend")
+					.attr("transform", `translate(${chartW + legendPad},0)`)
+					.call(legend);
+			} else {
+				containerEnter.select(".legend").selectAll('*').remove();
+			}
 		});
 	}
 
@@ -212,6 +234,55 @@ export default function() {
 		colors = _v;
 		return this;
 	};
+
+	/**
+	 * Show Legend Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show legend true / false.
+	 * @returns {*}
+	 */
+	my.showLegend = function(_v) {
+		if (!arguments.length) return showLegend;
+		showLegend = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
+		return this;
+	};
+
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _v - Title text.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
+		if (!arguments.length) return title;
+		title = _v;
+		return this;
+	};
+
+	/**
+	 * SubTitle Getter / Setter
+	 *
+	 * @param {string} _v - SubTitle text.
+	 * @returns {*}
+	 */
+	my.subTitle = function(_v) {
+		if (!arguments.length) return subTitle;
+		subTitle = _v;
+		return this;
+	};
+
 
 	/**
 	 * Opacity Getter / Setter

@@ -24,6 +24,9 @@
           .height(600)
           .colors(colors)
           .stacked(false)
+          .title("UK Election Results")
+          .subTitle("Seats 1992 - 2015")
+          .showLegend(true)
           .yAxisLabel("Seats")
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
