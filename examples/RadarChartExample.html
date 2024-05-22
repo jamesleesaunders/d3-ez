@@ -48,6 +48,9 @@
         .width(1000)
         .height(600)
         .colors(colors)
+        .title("Car Comparison")
+        .subTitle("Comparing Car Features")
+        .showLegend(true)
         .on("customValueMouseOver", function(e, d) {
           d3.select("#message").text(d.value);
         })

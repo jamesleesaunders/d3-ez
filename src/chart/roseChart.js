@@ -15,7 +15,7 @@ export default function() {
 	let classed = "roseChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = palette.categorical(3);
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -23,6 +23,7 @@ export default function() {
 	/* Other Customisation Options */
 	let title = null;
 	let subTitle = null;
+	let legendTitle = "Key";
 	let opacity = 1;
 	let showLegend = false;
 	let showAxis = true;
@@ -50,12 +51,12 @@ export default function() {
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = showLegend ? 120 : 0;
+			const legendH = Math.max(height / 2.5, 100);
 			const legendPad = showLegend ? 15 : 0;
 			const titleH = title ? 40 : 0;
-			const chartW = Math.max((width - margin.left - legendW - margin.right - legendPad), 100);
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
-			const legendH = Math.max(chartH / 2, 100);
-			const radius = Math.min(chartW, chartH) / 2;
+			const radius = Math.min(chartW, chartH) / 2.3;
 			const innerRadius = 0;
 
 			let { rowKeys, columnKeys, valueMin, valueMax, valueExtentStacked } = dataTransform(data).summary();
@@ -76,36 +77,35 @@ export default function() {
 				.domain(columnKeys)
 				.range(colors);
 
+			// Add Title, Chart and Legend main layer groups
+			const mainLayers = ["title", "chart", "legend"];
 			svg.classed("d3ez", true)
 				.attr("width", width)
-				.attr("height", height);
-
-			// Update the chart dimensions and container and layer groups
-			const container = svg.selectAll(".container")
-				.data([data]);
-
-			container.exit()
-				.remove();
-
-			const containerEnter = container.enter()
+				.attr("height", height)
+				.selectAll("g")
+				.data(mainLayers)
+				.enter()
 				.append("g")
-				.classed("container", true)
-				.classed(classed, true)
-				.merge(container)
-				.attr("transform", `translate(${margin.left},${margin.top})`)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				.attr("class", (d) => d);
 
-			// Update the chart dimensions and container and layer groups
-			const layers = ["axis", "chart", "title", "legend"];
-			containerEnter.selectAll("g")
-				.data(layers)
+			const titleSelect = svg.select(".title");
+			const chartSelect = svg.select(".chart");
+			const legendSelect = svg.select(".legend");
+
+			// Update the chart dimensions and layer groups
+			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+			chartSelect.classed(classed, true)
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("transform", `translate(${margin.left},${margin.top + titleH})`)
+				.selectAll("g")
+				.data(chartLayers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
 			// Rose Sectors
-			const roseChartSector = component.roseChartSector()
+			const componentRoseChartSector = component.roseChartSector()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
@@ -115,71 +115,69 @@ export default function() {
 				.transition(transition);
 
 			// Circular Axis
-			const circularAxis = component.circularAxis()
+			const componentCircularAxis = component.circularAxis()
 				.radialScale(xScale)
 				.ringScale(yScale);
 
 			// Circular Labels
-			const circularSectorLabels = component.circularSectorLabels()
+			const componentCircularSectorLabels = component.circularSectorLabels()
 				.ringScale(yScale)
 				.radialScale(xScale)
 				.textAnchor("middle")
 				.capitalizeLabels(true);
 
 			// Create Series Group
-			const seriesGroup = containerEnter.select(".chart")
-				.selectAll(".seriesGroup")
-				.data((d) => d);
+			const series = chartSelect.select(".seriesGroup")
+				.selectAll(".series")
+				.data(data);
 
-			seriesGroup.enter()
+			series.enter()
 				.append("g")
-				.classed("seriesGroup", true)
-				.merge(seriesGroup)
-				.attr("transform", `translate(${chartW / 2},${(chartH / 2) + titleH})`)
+				.classed("series", true)
+				.merge(series)
+				.attr("transform", `translate(${chartW / 2},${(chartH / 2)})`)
 				.each(function() {
-					d3.select(this).call(roseChartSector);
+					d3.select(this).call(componentRoseChartSector);
 				});
 
-			seriesGroup.exit()
+			series.exit()
 				.remove();
 
 			// Axis
 			if (showAxis) {
-				containerEnter.select(".axis")
-					.attr("transform", `translate(${chartW / 2},${(chartH / 2) + titleH})`)
-					.call(circularSectorLabels)
-					.call(circularAxis);
+				chartSelect.select(".axis")
+					.attr("transform", `translate(${chartW / 2},${(chartH / 2)})`)
+					.call(componentCircularSectorLabels)
+					.call(componentCircularAxis);
 			} else {
-				containerEnter.selectAll(".axis").selectAll('*').remove();
+				chartSelect.selectAll(".axis").selectAll('*').remove();
 			}
 
 			// Title
 			if (title) {
-				const titleComponent = component.title()
+				const componentTitle = component.title()
 					.mainText(title)
 					.subText(subTitle);
 
-				containerEnter.select(".title")
-					.attr("transform", "translate(" + chartW / 2 + "," + 0 + ")")
-					.call(titleComponent);
+				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
+					.call(componentTitle);
 			} else {
-				containerEnter.selectAll(".title").selectAll('*').remove();
+				titleSelect.remove();
 			}
 
 			// Legend
 			if (showLegend) {
-				const legend = component.legend()
+				const componentLegend = component.legend()
 					.colorScale(colorScale)
 					.height(legendH)
 					.width(legendW)
 					.itemType("rect")
 					.opacity(opacity);
 
-				containerEnter.select(".legend")
-					.attr("transform", `translate(${chartW + legendPad},0)`)
-					.call(legend);
+				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
+					.call(componentLegend);
 			} else {
-				containerEnter.select(".legend").selectAll('*').remove();
+				legendSelect.remove();
 			}
 		});
 	}

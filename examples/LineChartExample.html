@@ -22,9 +22,9 @@
         var chart = d3.ez.chart.lineChart()
           .width(1000)
           .height(600)
+          .colors(colors)
           .title("Historical Exchange Rates")
           .subTitle("Comparison against GBP")
-          .colors(colors)
           .showLegend(true)
           .yAxisLabel("Rate")
           .on("customValueMouseOver", function(e, d) {

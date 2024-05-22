@@ -24,6 +24,7 @@ export default function() {
 	/* Other Customisation Options */
 	let title = null;
 	let subTitle = null;
+	let legendTitle = "Key";
 	let opacity = 1;
 	let showLegend = false;
 	let showAxis = true;
@@ -51,11 +52,11 @@ export default function() {
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
 			const legendW = showLegend ? 120 : 0;
+			const legendH = Math.max(height / 2.5, 100);
 			const legendPad = showLegend ? 15 : 0;
 			const titleH = title ? 40 : 0;
-			const chartW = Math.max((width - margin.left - legendW - margin.right - legendPad), 100);
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
-			const legendH = Math.max(chartH / 2, 100);
 
 			const { rowKeys, columnKeys, thresholds: tmpThresholds } = dataTransform(data).summary();
 
@@ -77,35 +78,35 @@ export default function() {
 				.domain(thresholds)
 				.range(colors);
 
+			// Add Title, Chart and Legend main layer groups
+			const mainLayers = ["title", "chart", "legend"];
 			svg.classed("d3ez", true)
 				.attr("width", width)
-				.attr("height", height);
-
-			// Update the chart dimensions and container and layer groups
-			const container = svg.selectAll(".container")
-				.data([data]);
-
-			container.exit()
-				.remove();
-
-			const containerEnter = container.enter()
+				.attr("height", height)
+				.selectAll("g")
+				.data(mainLayers)
+				.enter()
 				.append("g")
-				.classed("container", true)
-				.classed(classed, true)
-				.merge(container)
-				.attr("transform", `translate(${margin.left},${margin.top})`)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				.attr("class", (d) => d);
 
-			const layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
-			containerEnter.selectAll("g")
-				.data(layers)
+			const titleSelect = svg.select(".title");
+			const chartSelect = svg.select(".chart");
+			const legendSelect = svg.select(".legend");
+
+			// Update the chart dimensions and layer groups
+			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+			chartSelect.classed(classed, true)
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("transform", `translate(${margin.left},${margin.top + titleH})`)
+				.selectAll("g")
+				.data(chartLayers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
 			// Heat Map Row Component
-			const heatMapRow = component.heatMapRow()
+			const componentHeatMapRow = component.heatMapRow()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
@@ -114,26 +115,25 @@ export default function() {
 				.transition(transition);
 
 			// Series Group
-			const seriesGroup = containerEnter.select(".chart")
-				.selectAll(".seriesGroup")
+			const series = chartSelect.select(".seriesGroup")
+				.selectAll(".series")
 				.data(data);
 
-			seriesGroup.enter()
+			series.enter()
 				.append("g")
-				.attr("class", "seriesGroup")
-				.merge(seriesGroup)
-				.attr("transform", (d) => `translate(0,${yScale(d.key) + titleH})`)
-				.call(heatMapRow);
+				.attr("class", "series")
+				.merge(series)
+				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
+				.call(componentHeatMapRow);
 
-			seriesGroup.exit()
+			series.exit()
 				.remove();
 
 			// Axis
 			if (showAxis) {
 				// X-Axis
 				const xAxis = d3.axisTop(xScale);
-				containerEnter.select(".xAxis")
-					.attr("transform", `translate(0,${titleH})`)
+				chartSelect.select(".xAxis")
 					.call(xAxis)
 					.selectAll("text")
 					.attr("y", 0)
@@ -143,39 +143,36 @@ export default function() {
 
 				// Y-Axis
 				const yAxis = d3.axisLeft(yScale);
-				containerEnter.select(".yAxis")
-					.attr("transform", `translate(0,${titleH})`)
+				chartSelect.select(".yAxis")
 					.call(yAxis);
 			} else {
-				containerEnter.selectAll(".axis").selectAll('*').remove();
+				chartSelect.selectAll(".axis").selectAll('*').remove();
 			}
 
 			// Title
 			if (title) {
-				const titleComponent = component.title()
+				const componentTitle = component.title()
 					.mainText(title)
 					.subText(subTitle);
 
-				containerEnter.select(".title")
-					.attr("transform", "translate(" + chartW / 2 + "," + 0 + ")")
-					.call(titleComponent);
+				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
+					.call(componentTitle);
 			} else {
-				containerEnter.selectAll(".title").selectAll('*').remove();
+				titleSelect.remove();
 			}
 
 			// Legend
 			if (showLegend) {
-				const legend = component.legend()
+				const componentLegend = component.legend()
 					.colorScale(colorScale)
 					.height(legendH)
 					.width(legendW)
 					.opacity(opacity);
 
-				containerEnter.select(".legend")
-					.attr("transform", `translate(${chartW + legendPad},0)`)
-					.call(legend);
+				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
+					.call(componentLegend);
 			} else {
-				containerEnter.select(".legend").selectAll('*').remove();
+				legendSelect.remove();
 			}
 		});
 	}

@@ -3205,7 +3205,7 @@
 	      return d.r;
 	    }).attr("cx", function (d) {
 	      return d.x;
-	    }).attr("fill", "#cad4e7").attr("stroke", "#cad4e7").attr("stroke-width", 1).attr("fill-opacity", opacity / 2);
+	    }).attr("fill", "#cad4e7").attr("stroke", "#cad4e7").attr("stroke-width", 1).attr("fill-opacity", opacity);
 	    itemsEnter.append("text").attr("font-size", "0.9em").attr("fill", "currentColor").attr("dominant-baseline", "middle").attr("x", function (d) {
 	      return d.x * 2 + 5;
 	    }).text(function (d) {
@@ -5154,10 +5154,10 @@
 	  var width = 700;
 	  var height = 400;
 	  var margin = {
-	    top: 20,
-	    right: 20,
-	    bottom: 20,
-	    left: 20
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
@@ -5198,12 +5198,12 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2;
+	      var radius = Math.min(chartW, chartH) / 2.3;
 	      var innerRadius = radius / 4;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -5237,52 +5237,55 @@
 	        return layout;
 	      }
 	      var layout = generateLayout(data.length, chartW, chartH);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Radial Bars
-	      var barsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).opacity(opacity).yScale(yScale).dispatch(dispatch).transition(transition);
+	      var componentBarsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).opacity(opacity).yScale(yScale).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
-	      var circularAxis = component.circularAxis().radialScale(yScale).ringScale(xScale);
+	      var componentCircularAxis = component.circularAxis().radialScale(yScale).ringScale(xScale);
 
 	      // Outer Labels
-	      var circularSectorLabels = component.circularSectorLabels().ringScale(xScale).radialScale(yScale).textAnchor("middle");
+	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(xScale).radialScale(yScale).textAnchor("middle");
 
 	      // Ring Labels
-	      var circularRingLabels = component.circularRingLabels().radialScale(xScale).textAnchor("middle");
+	      var componentCircularRingLabels = component.circularRingLabels().radialScale(xScale).textAnchor("middle");
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y + titleH, ")");
-	      }).call(circularAxis).call(barsCircular).call(circularSectorLabels).call(circularRingLabels);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
+	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	      }).call(componentCircularAxis).call(componentBarsCircular).call(componentCircularSectorLabels).call(componentCircularRingLabels);
+	      series.exit().remove();
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -5488,11 +5491,11 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
 	      var _dataTransform$summar = dataTransform(data).summary(),
@@ -5517,70 +5520,65 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([0, xScale2.bandwidth()]).padding(0.05);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([chartH, 0]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Bars Component
-	      var bars = stacked ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
-	      bars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentBars = stacked ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
+	      componentBars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin) + titleH, ")");
-	      }).call(bars);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d) {
+	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin), ")");
+	      }).call(componentBars);
+	      series.exit().remove();
 
 	      // Axis
 	      if (showAxis) {
 	        // X-Axis
 	        var xAxis = d3__namespace.axisBottom(xScale2);
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis);
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
 	        var yAxis = d3__namespace.axisLeft(yScale);
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 
 	        // Y-Axis Label
-	        containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
+	        chartSelect.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
 	          return d;
 	        });
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
-	      }
-
-	      // Title
-	      if (title) {
-	        var _titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(_titleComponent);
-	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -5810,11 +5808,11 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
 
 	      // Create Scales and Axis
 	      var _dataTransform$summar = dataTransform(data).summary(),
@@ -5839,56 +5837,59 @@
 	      var yScale2 = d3__namespace.scaleBand().domain(rowKeys).range([0, chartH]).padding(0.1);
 	      var yScale = d3__namespace.scaleBand().domain(columnKeys).range([0, yScale2.bandwidth()]).padding(0.15);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Bars Component
-	      var bars = component.barsHorizontal().xScale(xScale).colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentBars = component.barsHorizontal().xScale(xScale).colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key) + titleH, ")");
-	      }).call(bars);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d) {
+	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key), ")");
+	      }).call(componentBars);
+	      series.exit().remove();
 
 	      // Axis
 	      if (showAxis) {
 	        // X-Axis
 	        var xAxis = d3__namespace.axisBottom(xScale);
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis);
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
 	        var yAxis = d3__namespace.axisLeft(yScale2);
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -6089,6 +6090,7 @@
 	  /* Other Customisation Options */
 	  var title = null;
 	  var subTitle = null;
+	  var legendTitle = "Key";
 	  var opacity = 1;
 	  var showLegend = false;
 	  var showAxis = true;
@@ -6119,11 +6121,11 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        _dataTransform$summar2 = _dataTransform$summar.coordinatesExtent,
@@ -6134,62 +6136,45 @@
 	      var yScale = d3__namespace.scaleLinear().domain(yExtent).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
 	      var sizeScale = d3__namespace.scaleLinear().domain(valueExtent).range([minRadius, maxRadius]);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend", "zoomArea", "clipArea"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Bubble Component
-	      var bubbles = component.bubbles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentBubbles = component.bubbles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").attr("transform", function (d) {
-	        return "translate(0,".concat(titleH, ")");
-	      }).selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).call(bubbles);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).call(componentBubbles);
+	      series.exit().remove();
 
 	      // Axis
 	      var xAxis = d3__namespace.axisBottom(xScale);
 	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
 	        // Y-Axis
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
-	      }
-
-	      // Title
-	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
-	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
-	      }
-
-	      // Legend
-	      if (showLegend) {
-	        var legend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
-	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Zoom Clip Path
-	      var clipPath = containerEnter.select(".clipArea").attr("transform", function (d) {
-	        return "translate(0,".concat(titleH, ")");
-	      }).selectAll("defs").data([0]);
+	      var clipPath = chartSelect.select(".clipArea").selectAll("defs").data([0]);
 	      clipPath.enter().append("defs").append("clipPath").attr("id", "plotAreaClip").append("rect").attr("width", chartW).attr("height", chartH).merge(clipPath).select("clipPath").select("rect").attr("width", chartW).attr("height", chartH);
 
 	      // Zoom Event Area
@@ -6199,20 +6184,34 @@
 	        var yScaleZoomed = e.transform.rescaleY(yScale);
 	        if (showAxis) {
 	          xAxis.scale(xScaleZoomed);
-	          containerEnter.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+	          chartSelect.select(".xAxis").call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 	          yAxis.scale(yScaleZoomed);
-	          containerEnter.select(".yAxis").call(yAxis);
+	          chartSelect.select(".yAxis").call(yAxis);
 	        }
-	        bubbles.xScale(xScaleZoomed).yScale(yScaleZoomed).transition({
+	        componentBubbles.xScale(xScaleZoomed).yScale(yScaleZoomed).transition({
 	          ease: d3__namespace.easeLinear,
 	          duration: 0
 	        });
-	        containerEnter.select(".chart").selectAll(".seriesGroup").call(bubbles);
+	        chartSelect.select(".seriesGroup").selectAll(".series").call(componentBubbles);
 	      }
-	      var zoomArea = containerEnter.select(".zoomArea").attr("transform", function (d) {
-	        return "translate(0,".concat(titleH, ")");
-	      }).selectAll("rect").data([0]);
+	      var zoomArea = chartSelect.select(".zoomArea").selectAll("rect").data([0]);
 	      zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
+
+	      // Title
+	      if (title) {
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
+	      } else {
+	        titleSelect.remove();
+	      }
+
+	      // Legend
+	      if (showLegend) {
+	        var componentLegend = component.legend().title(legendTitle).sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
+	      } else {
+	        legendSelect.remove();
+	      }
 	    });
 	  }
 
@@ -6427,11 +6426,11 @@
 	    }(selection);
 	    selection.each(function (data) {
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
 	      data = data[0]; // FIXME: Convert input data to support multi-series.
 
 	      // TODO: Use dataTransform() to calculate date domains?
@@ -6457,70 +6456,73 @@
 	      var xScale = d3__namespace.scaleTime().domain(dateDomain).range([0, chartW]);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain([true, false]).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend", "zoomArea"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Candle Stick Component
-	      var candleSticks = component.candleSticks().xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch).opacity(opacity).transition(transition);
+	      var componentCandleSticks = component.candleSticks().xScale(xScale).yScale(yScale).colorScale(colorScale).dispatch(dispatch).opacity(opacity).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return [d];
-	      }); // FIXME: Convert input data to support multi-series.
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data([data]); // FIXME: Convert input data to support multi-series.
 
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).call(candleSticks);
-	      seriesGroup.exit().remove();
+	      series.enter().append("g").attr("class", "series").merge(series).call(componentCandleSticks);
+	      series.exit().remove();
 
 	      // Axis
 	      if (showAxis) {
 	        // X Axis
 	        var xAxis = d3__namespace.axisBottom(xScale).tickFormat(d3__namespace.timeFormat("%d-%b-%y"));
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
 	        // Y-Axis
 	        var yAxis = d3__namespace.axisLeft(yScale);
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 
 	        // Y-Axis Label
-	        containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
+	        chartSelect.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").transition().text(function (d) {
 	          return d;
 	        });
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
-	      }
-
-	      // Title
-	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
-	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
-	      }
-
-	      // Legend
-	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
-	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Experimental Brush
-	      var brush = d3__namespace.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
-	      containerEnter.select(".zoomArea").call(brush);
 	      function brushStart(e) {
 	        console.log(e);
 	      }
 	      function brushEnd(e) {
 	        console.log(e);
+	      }
+	      var brush = d3__namespace.brushX().extent([[0, 0], [chartW, chartH]]).on("brush start", brushStart).on("brush end", brushEnd);
+	      chartSelect.select(".zoomArea").call(brush);
+
+	      // Title
+	      if (title) {
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
+	      } else {
+	        titleSelect.selectAll(".title").selectAll('*').remove();
+	      }
+
+	      // Legend
+	      if (showLegend) {
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
+	      } else {
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -6694,10 +6696,10 @@
 	  var width = 700;
 	  var height = 400;
 	  var margin = {
-	    top: 20,
-	    right: 20,
-	    bottom: 20,
-	    left: 20
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
@@ -6738,12 +6740,12 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2;
+	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
 	      var innerRadius = radius / 2;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -6776,46 +6778,49 @@
 	        return layout;
 	      }
 	      var layout = generateLayout(data.length, chartW, chartH);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Donut Slice Component
-	      var donut = component.donut().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentDonut = component.donut().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Donut Label Component
-	      var donutLabels = component.donutLabels().xScale(xScale).yScale(yScale).transition(transition);
+	      var componentDonutLabels = component.donutLabels().xScale(xScale).yScale(yScale).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y + titleH, ")");
-	      }).call(donut).call(donutLabels);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
+	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	      }).call(componentDonut).call(componentDonutLabels);
+	      series.exit().remove();
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -6976,10 +6981,10 @@
 	  var width = 700;
 	  var height = 400;
 	  var margin = {
-	    top: 20,
-	    right: 20,
-	    bottom: 20,
-	    left: 20
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
 	  };
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
@@ -7021,11 +7026,12 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / 2;
+	      var radius = Math.min(chartW, chartH) / 2.3;
 	      var innerRadius = radius / 4;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
@@ -7037,50 +7043,53 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]).padding(0.1);
 	      var yScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([innerRadius, radius]).padding(0.1);
 	      var colorScale = d3__namespace.scaleThreshold().domain(thresholds).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Heat Map Rings
-	      var heatMapRing = component.heatMapRing().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentHeatMapRing = component.heatMapRing().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Labels
-	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("start");
+	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("start");
 
 	      // Ring Labels
-	      var circularRingLabels = component.circularRingLabels().radialScale(yScale).textAnchor("middle");
+	      var componentCircularRingLabels = component.circularRingLabels().radialScale(yScale).textAnchor("middle");
 
 	      // Create Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")")).call(heatMapRing).call(circularRingLabels);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing).call(componentCircularRingLabels);
+	      series.exit().remove();
 
 	      // Outer Ring Labels
-	      containerEnter.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(circularSectorLabels);
+	      chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels);
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -7297,11 +7306,11 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -7312,54 +7321,59 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([0, chartW]).padding(0.15);
 	      var yScale = d3__namespace.scaleBand().domain(rowKeys).range([0, chartH]).padding(0.15);
 	      var colorScale = d3__namespace.scaleThreshold().domain(thresholds).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Heat Map Row Component
-	      var heatMapRow = component.heatMapRow().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentHeatMapRow = component.heatMapRow().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(0,".concat(yScale(d.key) + titleH, ")");
-	      }).call(heatMapRow);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", function (d) {
+	        return "translate(0,".concat(yScale(d.key), ")");
+	      }).call(componentHeatMapRow);
+	      series.exit().remove();
 
 	      // Axis
 	      if (showAxis) {
 	        // X-Axis
 	        var xAxis = d3__namespace.axisTop(xScale);
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+	        chartSelect.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
 	        // Y-Axis
 	        var yAxis = d3__namespace.axisLeft(yScale);
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -7576,11 +7590,11 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - margin.bottom - titleH, 100);
-	      var legendH = Math.max(height / 2, 100);
 
 	      // Create Scales and Axis
 	      var _dataTransform$summar = dataTransform(data).summary(),
@@ -7606,70 +7620,53 @@
 	      }
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([chartH, 0]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend", "zoomArea", "clipArea"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Line Chart Component
-	      var lineChart = component.lineChart().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentLineChart = component.lineChart().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Line Dots Component
-	      var scatterPlot = component.scatterPlot().colorScale(colorScale).yScale(yScale).xScale(xScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentScatterPlot = component.scatterPlot().colorScale(colorScale).yScale(yScale).xScale(xScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").attr("transform", function (d) {
-	        return "translate(0,".concat(titleH, ")");
-	      }).selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").attr('clip-path', "url(#plotAreaClip)").merge(seriesGroup).call(lineChart).call(scatterPlot);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).call(componentLineChart).call(componentScatterPlot);
+	      series.exit().remove();
 
 	      // Axis
 	      var xAxis = d3__namespace.axisBottom(xScale);
 	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH + titleH, ")")).call(xAxis);
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(titleH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 
 	        // Y-Axis Label
-	        containerEnter.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").text(function (d) {
+	        chartSelect.select(".yAxis").selectAll(".yAxisLabel").data([yAxisLabel]).enter().append("text").classed("yAxisLabel", true).attr("transform", "rotate(-90)").attr("y", -40).attr("dy", ".71em").attr("fill", "currentColor").style("text-anchor", "end").text(function (d) {
 	          return d;
 	        });
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
-	      }
-
-	      // Title
-	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
-	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
-	      }
-
-	      // Legend
-	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
-	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Zoom Clip Path
-	      var clipPath = containerEnter.select(".clipArea").attr("transform", function (d) {
-	        return "translate(0,".concat(titleH, ")");
-	      }).selectAll("defs").data([0]);
+	      var clipPath = chartSelect.select(".clipArea").selectAll("defs").data([0]);
 	      clipPath.enter().append("defs").append("clipPath").attr("id", "plotAreaClip").append("rect").attr("width", chartW).attr("height", chartH).merge(clipPath).select("clipPath").select("rect").attr("width", chartW).attr("height", chartH);
 
 	      // Zoom Event Area
@@ -7678,22 +7675,36 @@
 	        var xScaleZoomed = e.transform.rescaleX(xScale);
 	        if (showAxis) {
 	          xAxis.scale(xScaleZoomed);
-	          containerEnter.select(".xAxis").call(xAxis);
+	          chartSelect.select(".xAxis").call(xAxis);
 	        }
-	        lineChart.xScale(xScaleZoomed).transition({
+	        componentLineChart.xScale(xScaleZoomed).transition({
 	          ease: d3__namespace.easeLinear,
 	          duration: 0
 	        });
-	        scatterPlot.xScale(xScaleZoomed).transition({
+	        componentScatterPlot.xScale(xScaleZoomed).transition({
 	          ease: d3__namespace.easeLinear,
 	          duration: 0
 	        });
-	        containerEnter.select(".chart").selectAll(".seriesGroup").call(lineChart).call(scatterPlot);
+	        chartSelect.select(".seriesGroup").selectAll(".series").call(componentLineChart).call(componentScatterPlot);
 	      }
-	      var zoomArea = containerEnter.select(".zoomArea").attr("transform", function (d) {
-	        return "translate(0,".concat(titleH, ")");
-	      }).selectAll("rect").data([0]);
+	      var zoomArea = chartSelect.select(".zoomArea").selectAll("rect").data([0]);
 	      zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
+
+	      // Title
+	      if (title) {
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
+	      } else {
+	        titleSelect.remove();
+	      }
+
+	      // Legend
+	      if (showLegend) {
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
+	      } else {
+	        legendSelect.remove();
+	      }
 	    });
 	  }
 
@@ -7865,10 +7876,10 @@
 	  var width = 700;
 	  var height = 400;
 	  var margin = {
-	    top: 20,
-	    right: 20,
-	    bottom: 20,
-	    left: 20
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
@@ -7909,12 +7920,12 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2;
+	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
 	        valueMax = _dataTransform$summar.valueMax;
@@ -7947,49 +7958,52 @@
 	        return layout;
 	      }
 	      var layout = generateLayout(data.length, chartW, chartH);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Radial Bar Chart
-	      var polarArea = component.polarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentPolarArea = component.polarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
-	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
+	      var componentCircularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
 
 	      // Circular Labels
-	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle");
+	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle");
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y + titleH, ")");
-	      }).call(circularAxis).call(circularSectorLabels).call(polarArea);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
+	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	      }).call(componentCircularAxis).call(componentCircularSectorLabels).call(componentPolarArea);
+	      series.exit().remove();
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -8195,11 +8209,11 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -8211,54 +8225,59 @@
 	        return d.value;
 	      })];
 	      var sizeScale = d3__namespace.scaleLinear().domain(sizeExtent).range([minRadius, maxRadius]);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
-	      var layers = ["xAxis axis", "yAxis axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
+
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Proportional Area Circles
-	      var proportionalAreaCircles = component.proportionalAreaCircles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentProportionalAreaCircles = component.proportionalAreaCircles().xScale(xScale).yScale(yScale).colorScale(colorScale).sizeScale(sizeScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(data);
-	      seriesGroup.enter().append("g").attr("class", "seriesGroup").merge(seriesGroup).attr("transform", function (d) {
-	        return "translate(0,".concat(yScale(d.key) + titleH, ")");
-	      }).call(proportionalAreaCircles);
-	      seriesGroup.exit().remove();
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", function (d) {
+	        return "translate(0,".concat(yScale(d.key), ")");
+	      }).call(componentProportionalAreaCircles);
+	      series.exit().remove();
 
 	      // Axis
 	      if (showAxis) {
 	        // X-Axis
 	        var xAxis = d3__namespace.axisTop(xScale);
-	        containerEnter.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+	        chartSelect.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
 
 	        // Y-Axis
 	        var yAxis = d3__namespace.axisLeft(yScale);
-	        containerEnter.select(".yAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -8455,10 +8474,10 @@
 	  var width = 700;
 	  var height = 400;
 	  var margin = {
-	    top: 20,
-	    right: 20,
-	    bottom: 20,
-	    left: 20
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
@@ -8499,12 +8518,12 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
-	      var radius = Math.min(chartW, chartH) / 2.5;
+	      var radius = Math.min(chartW, chartH) / 2.3;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -8513,59 +8532,60 @@
 	      var xScale = d3__namespace.scalePoint().domain(columnKeys).range([startAngle, endAngle]);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([0, radius]).nice();
 	      var colorScale = d3__namespace.scaleOrdinal().domain(rowKeys).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
 
-	      // Update the chart dimensions and container and layer groups
-	      var layers = ["axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Radar Component
-	      var radarArea = component.radarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentRadarArea = component.radarArea().xScale(xScale).yScale(yScale).colorScale(colorScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
-	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).showAxis(false);
+	      var componentCircularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale).showAxis(false);
 
 	      // Circular Labels
-	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle");
+	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle");
 
 	      // Create Radars
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
-	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).attr("fill", function (d) {
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).style("stroke", function (d) {
 	        return colorScale(d.key);
-	      }).merge(seriesGroup).call(radarArea).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")"));
+	      }).merge(series).call(componentRadarArea).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")"));
 
 	      // Axis
 	      if (showAxis) {
-	        containerEnter.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")")).call(circularSectorLabels).call(circularAxis);
+	        chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels).call(componentCircularAxis);
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
@@ -8726,10 +8746,10 @@
 	  var width = 700;
 	  var height = 400;
 	  var margin = {
-	    top: 20,
-	    right: 20,
-	    bottom: 20,
-	    left: 20
+	    top: 40,
+	    right: 40,
+	    bottom: 40,
+	    left: 40
 	  };
 	  var colors = palette.categorical(3);
 	  var transition = {
@@ -8769,12 +8789,12 @@
 	    selection.each(function (data) {
 	      // Set up margins and dimensions for the chart
 	      var legendW = showLegend ? 120 : 0;
+	      var legendH = Math.max(height / 2.5, 100);
 	      var legendPad = showLegend ? 15 : 0;
 	      var titleH = title ? 40 : 0;
-	      var chartW = Math.max(width - margin.left - legendW - margin.right - legendPad, 100);
+	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var legendH = Math.max(chartH / 2, 100);
-	      var radius = Math.min(chartW, chartH) / 2;
+	      var radius = Math.min(chartW, chartH) / 2.3;
 	      var innerRadius = 0;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        rowKeys = _dataTransform$summar.rowKeys,
@@ -8788,58 +8808,59 @@
 	      var xScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([0, 360]);
 	      var yScale = d3__namespace.scaleLinear().domain(yDomain).range([innerRadius, radius]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      svg.classed("d3ez", true).attr("width", width).attr("height", height);
 
-	      // Update the chart dimensions and container and layer groups
-	      var container = svg.selectAll(".container").data([data]);
-	      container.exit().remove();
-	      var containerEnter = container.enter().append("g").classed("container", true).classed(classed, true).merge(container).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top, ")")).attr("width", chartW).attr("height", chartH);
+	      // Add Title, Chart and Legend main layer groups
+	      var mainLayers = ["title", "chart", "legend"];
+	      svg.classed("d3ez", true).attr("width", width).attr("height", height).selectAll("g").data(mainLayers).enter().append("g").attr("class", function (d) {
+	        return d;
+	      });
+	      var titleSelect = svg.select(".title");
+	      var chartSelect = svg.select(".chart");
+	      var legendSelect = svg.select(".legend");
 
-	      // Update the chart dimensions and container and layer groups
-	      var layers = ["axis", "chart", "title", "legend"];
-	      containerEnter.selectAll("g").data(layers).enter().append("g").attr("class", function (d) {
+	      // Update the chart dimensions and layer groups
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
 
 	      // Rose Sectors
-	      var roseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentRoseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
-	      var circularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
+	      var componentCircularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
 
 	      // Circular Labels
-	      var circularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle").capitalizeLabels(true);
+	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(yScale).radialScale(xScale).textAnchor("middle").capitalizeLabels(true);
 
 	      // Create Series Group
-	      var seriesGroup = containerEnter.select(".chart").selectAll(".seriesGroup").data(function (d) {
-	        return d;
+	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
+	      series.enter().append("g").classed("series", true).merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
+	        d3__namespace.select(this).call(componentRoseChartSector);
 	      });
-	      seriesGroup.enter().append("g").classed("seriesGroup", true).merge(seriesGroup).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")")).each(function () {
-	        d3__namespace.select(this).call(roseChartSector);
-	      });
-	      seriesGroup.exit().remove();
+	      series.exit().remove();
 
 	      // Axis
 	      if (showAxis) {
-	        containerEnter.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2 + titleH, ")")).call(circularSectorLabels).call(circularAxis);
+	        chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels).call(componentCircularAxis);
 	      } else {
-	        containerEnter.selectAll(".axis").selectAll('*').remove();
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
 
 	      // Title
 	      if (title) {
-	        var titleComponent = component.title().mainText(title).subText(subTitle);
-	        containerEnter.select(".title").attr("transform", "translate(" + chartW / 2 + "," + 0 + ")").call(titleComponent);
+	        var componentTitle = component.title().mainText(title).subText(subTitle);
+	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        containerEnter.selectAll(".title").selectAll('*').remove();
+	        titleSelect.remove();
 	      }
 
 	      // Legend
 	      if (showLegend) {
-	        var legend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
-	        containerEnter.select(".legend").attr("transform", "translate(".concat(chartW + legendPad, ",0)")).call(legend);
+	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        containerEnter.select(".legend").selectAll('*').remove();
+	        legendSelect.remove();
 	      }
 	    });
 	  }
