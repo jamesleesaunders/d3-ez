@@ -118,6 +118,7 @@ export default function() {
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
+				.attr("transform", (d) => `translate(0,${titleH})`)
 				.selectAll(".seriesGroup")
 				.data((d) => d);
 
@@ -132,9 +133,10 @@ export default function() {
 				.remove();
 
 			// Axis
+			const xAxis = d3.axisBottom(xScale);
+			const yAxis = d3.axisLeft(yScale);
 			if (showAxis) {
 				// X-Axis
-				const xAxis = d3.axisBottom(xScale);
 				containerEnter.select(".xAxis")
 					.attr("transform", `translate(0,${chartH + titleH})`)
 					.call(xAxis)
@@ -145,14 +147,12 @@ export default function() {
 					.attr("transform", "rotate(-65)");
 
 				// Y-Axis
-				const yAxis = d3.axisLeft(yScale);
 				containerEnter.select(".yAxis")
 					.attr("transform", `translate(0,${titleH})`)
 					.call(yAxis);
 			} else {
 				containerEnter.selectAll(".axis").selectAll('*').remove();
 			}
-
 
 			// Title
 			if (title) {
@@ -184,6 +184,7 @@ export default function() {
 
 			// Zoom Clip Path
 			const clipPath = containerEnter.select(".clipArea")
+				.attr("transform", (d) => `translate(0,${titleH})`)
 				.selectAll("defs")
 				.data([0]);
 
@@ -211,18 +212,20 @@ export default function() {
 				const xScaleZoomed = e.transform.rescaleX(xScale);
 				const yScaleZoomed = e.transform.rescaleY(yScale);
 
-				xAxis.scale(xScaleZoomed);
-				containerEnter.select(".xAxis")
-					.call(xAxis)
-					.selectAll("text")
-					.style("text-anchor", "end")
-					.attr("dx", "-.8em")
-					.attr("dy", ".15em")
-					.attr("transform", "rotate(-65)");
+				if (showAxis) {
+					xAxis.scale(xScaleZoomed);
+					containerEnter.select(".xAxis")
+						.call(xAxis)
+						.selectAll("text")
+						.style("text-anchor", "end")
+						.attr("dx", "-.8em")
+						.attr("dy", ".15em")
+						.attr("transform", "rotate(-65)");
 
-				yAxis.scale(yScaleZoomed);
-				containerEnter.select(".yAxis")
-					.call(yAxis);
+					yAxis.scale(yScaleZoomed);
+					containerEnter.select(".yAxis")
+						.call(yAxis);
+				}
 
 				bubbles
 					.xScale(xScaleZoomed)
@@ -235,6 +238,7 @@ export default function() {
 			}
 
 			const zoomArea = containerEnter.select(".zoomArea")
+				.attr("transform", (d) => `translate(0,${titleH})`)
 				.selectAll("rect")
 				.data([0]);
 

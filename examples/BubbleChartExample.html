@@ -39,6 +39,9 @@
           .width(1000)
           .height(600)
           .colors(colors)
+          .title("Hans Rosling Bubble Chart")
+          .subTitle("2007")
+          .showLegend(true)
           .yAxisLabel("yScale")
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);

@@ -53,9 +53,9 @@ export default function() {
 			const legendW = showLegend ? 120 : 0;
 			const legendPad = showLegend ? 15 : 0;
 			const titleH = title ? 40 : 0;
-			const chartW = Math.max((width - margin.left - legendW - margin.right - legendPad), 100);
-			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
-			const legendH = Math.max(chartH / 2, 100);
+			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
+			const chartH = Math.max((height - margin.top - margin.bottom - titleH), 100);
+			const legendH = Math.max(height / 2, 100);
 
 			// Create Scales and Axis
 			let { rowKeys, columnKeys, valueMin, valueMax } = dataTransform(data).summary();
@@ -140,6 +140,7 @@ export default function() {
 
 			// Series Group
 			const seriesGroup = containerEnter.select(".chart")
+				.attr("transform", (d) => `translate(0,${titleH})`)
 				.selectAll(".seriesGroup")
 				.data((d) => d);
 
@@ -216,6 +217,7 @@ export default function() {
 
 			// Zoom Clip Path
 			const clipPath = containerEnter.select(".clipArea")
+				.attr("transform", (d) => `translate(0,${titleH})`)
 				.selectAll("defs")
 				.data([0]);
 
@@ -242,9 +244,11 @@ export default function() {
 			function zoomed(e) {
 				const xScaleZoomed = e.transform.rescaleX(xScale);
 
-				xAxis.scale(xScaleZoomed);
-				containerEnter.select(".xAxis")
-					.call(xAxis);
+				if (showAxis) {
+					xAxis.scale(xScaleZoomed);
+					containerEnter.select(".xAxis")
+						.call(xAxis);
+				}
 
 				lineChart
 					.xScale(xScaleZoomed)
@@ -261,12 +265,12 @@ export default function() {
 			}
 
 			const zoomArea = containerEnter.select(".zoomArea")
-				.selectAll(".rect")
+				.attr("transform", (d) => `translate(0,${titleH})`)
+				.selectAll("rect")
 				.data([0]);
 
 			zoomArea.enter()
 				.append("rect")
-				.classed("zoomArea", true)
 				.attr("fill", "none")
 				.attr("pointer-events", "all")
 				.merge(zoomArea)
@@ -383,7 +387,6 @@ export default function() {
 		showAxis = _v;
 		return this;
 	};
-
 
 	/**
 	 * Y-Axis Label Getter / Setter
