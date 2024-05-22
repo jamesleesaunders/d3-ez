@@ -5,6 +5,7 @@ import d3Ez from "../src/index.js";
 test("setup", function(t) {
 	let JSDOM = jsdom.JSDOM;
 	global.document = new JSDOM().window.document;
+
 	t.end();
 });
 

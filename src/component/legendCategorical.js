@@ -21,7 +21,7 @@ export default function() {
 	 * Constructor
 	 *
 	 * @constructor
-	 * @alias legendColor
+	 * @alias legendCategorical
 	 * @param {d3.selection} selection - The chart holder D3 selection.
 	 */
 	function my(selection) {
