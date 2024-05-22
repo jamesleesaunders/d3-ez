@@ -23,6 +23,9 @@
           .width(1000)
           .height(600)
           .colors(colors)
+          .title("Historical Exchange Rates")
+          .subTitle("Comparison against GBP")
+          .showLegend(true)
           .yAxisLabel("Rate")
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);

@@ -24,6 +24,9 @@
         var myChart =  d3.ez.chart.candlestickChart()
           .width(1000)
           .height(600)
+          .title("Bitcoin Price")
+          .subTitle("February - March 2018")
+          .showLegend(true)
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.open);
           })

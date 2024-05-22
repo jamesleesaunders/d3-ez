@@ -15,13 +15,18 @@ export default function() {
 	let classed = "polarAreaChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 20, right: 20, bottom: 20, left: 20 };
+	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = palette.categorical(3);
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
+	let title = null;
+	let subTitle = null;
+	let legendTitle = "Key";
 	let opacity = 1;
+	let showLegend = false;
+	let showAxis = true;
 	let startAngle = 0;
 	let endAngle = 360;
 
@@ -46,12 +51,13 @@ export default function() {
 
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
-			const legendW = 120;
-			const legendPad = 15;
+			const legendW = showLegend ? 120 : 0;
+			const legendH = Math.max(height / 2.5, 100);
+			const legendPad = showLegend ? 15 : 0;
+			const titleH = title ? 40 : 0;
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
-			const chartH = Math.max((height - margin.top - margin.bottom), 100);
-			const legendH = Math.max(chartH / 2, 100);
-			const radius = (Math.min(chartW, chartH) / data.length) / 2;
+			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
+			const radius = (Math.min(chartW, chartH) / data.length) / 2.3;
 
 			const { columnKeys, valueMax } = dataTransform(data).summary();
 			const valueExtent = [0, valueMax];
@@ -92,35 +98,35 @@ export default function() {
 
 			const layout = generateLayout(data.length, chartW, chartH);
 
+			// Add Title, Chart and Legend main layer groups
+			const mainLayers = ["title", "chart", "legend"];
 			svg.classed("d3ez", true)
 				.attr("width", width)
-				.attr("height", height);
-
-			// Update the chart dimensions and container and layer groups
-			const container = svg.selectAll(".container")
-				.data([data]);
-
-			container.exit()
-				.remove();
-
-			const containerEnter = container.enter()
+				.attr("height", height)
+				.selectAll("g")
+				.data(mainLayers)
+				.enter()
 				.append("g")
-				.classed("container", true)
-				.classed(classed, true)
-				.merge(container)
-				.attr("transform", `translate(${margin.left},${margin.top})`)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				.attr("class", (d) => d);
 
-			const layers = ["chart", "legend"];
-			containerEnter.selectAll("g")
-				.data(layers)
+			const titleSelect = svg.select(".title");
+			const chartSelect = svg.select(".chart");
+			const legendSelect = svg.select(".legend");
+
+			// Update the chart dimensions and layer groups
+			const chartLayers = ["axis", "seriesGroup"];
+			chartSelect.classed(classed, true)
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("transform", `translate(${margin.left},${margin.top + titleH})`)
+				.selectAll("g")
+				.data(chartLayers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
 			// Radial Bar Chart
-			const polarArea = component.polarArea()
+			const componentPolarArea = component.polarArea()
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
@@ -129,44 +135,77 @@ export default function() {
 				.transition(transition);
 
 			// Circular Axis
-			const circularAxis = component.circularAxis()
+			const componentCircularAxis = component.circularAxis()
 				.radialScale(xScale)
 				.ringScale(yScale);
 
 			// Circular Labels
-			const circularSectorLabels = component.circularSectorLabels()
+			const componentCircularSectorLabels = component.circularSectorLabels()
 				.ringScale(yScale)
 				.radialScale(xScale)
 				.textAnchor("middle");
 
 			// Series Group
-			const seriesGroup = containerEnter.select(".chart")
-				.selectAll(".seriesGroup")
-				.data((d) => d);
+			const series = chartSelect.select(".seriesGroup")
+				.selectAll(".series")
+				.data(data);
 
-			seriesGroup.enter()
+			series.enter()
 				.append("g")
-				.classed("seriesGroup", true)
-				.merge(seriesGroup)
+				.classed("series", true)
+				.merge(series)
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
-				.call(circularAxis)
-				.call(circularSectorLabels)
-				.call(polarArea);
+				.call(componentPolarArea);
 
-			seriesGroup.exit()
+			series.exit()
 				.remove();
 
-			// Legend
-			const legend = component.legend()
-				.colorScale(colorScale)
-				.height(legendH)
-				.width(legendW)
-				.itemType("rect")
-				.opacity(opacity);
+			// Axis Labels
+			if (showAxis) {
+				const seriesAxis = chartSelect.select(".axis")
+					.selectAll(".seriesAxis")
+					.data(data);
 
-			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad},0)`)
-				.call(legend);
+				seriesAxis.enter()
+					.append("g")
+					.classed("seriesAxis", true)
+					.merge(seriesAxis)
+					.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+					.call(componentCircularAxis)
+					.call(componentCircularSectorLabels);
+
+				seriesAxis.exit()
+					.remove();
+			} else {
+				chartSelect.selectAll(".axis").selectAll('*').remove();
+			}
+
+			// Title
+			if (title) {
+				const componentTitle = component.title()
+					.mainText(title)
+					.subText(subTitle);
+
+				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
+					.call(componentTitle);
+			} else {
+				titleSelect.selectAll("*").remove();
+			}
+
+			// Legend
+			if (showLegend) {
+				const componentLegend = component.legend()
+					.colorScale(colorScale)
+					.height(legendH)
+					.width(legendW)
+					.itemType("rect")
+					.opacity(opacity);
+
+				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
+					.call(componentLegend);
+			} else {
+				legendSelect.selectAll("*").remove();
+			}
 		});
 	}
 
@@ -215,6 +254,54 @@ export default function() {
 	my.colors = function(_v) {
 		if (!arguments.length) return colors;
 		colors = _v;
+		return this;
+	};
+
+	/**
+	 * Show Axis Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show axis true / false.
+	 * @returns {*}
+	 */
+	my.showAxis = function(_v) {
+		if (!arguments.length) return showAxis;
+		showAxis = _v;
+		return this;
+	};
+
+	/**
+	 * Show Legend Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show legend true / false.
+	 * @returns {*}
+	 */
+	my.showLegend = function(_v) {
+		if (!arguments.length) return showLegend;
+		showLegend = _v;
+		return this;
+	};
+
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _v - Title text.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
+		if (!arguments.length) return title;
+		title = _v;
+		return this;
+	};
+
+	/**
+	 * SubTitle Getter / Setter
+	 *
+	 * @param {string} _v - SubTitle text.
+	 * @returns {*}
+	 */
+	my.subTitle = function(_v) {
+		if (!arguments.length) return subTitle;
+		subTitle = _v;
 		return this;
 	};
 

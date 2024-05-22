@@ -83,7 +83,7 @@ export default function() {
 			.attr("fill", "#cad4e7")
 			.attr("stroke", "#cad4e7")
 			.attr("stroke-width", 1)
-			.attr("fill-opacity", opacity / 2);
+			.attr("fill-opacity", opacity);
 
 		itemsEnter.append("text")
 			.attr("font-size", "0.9em")

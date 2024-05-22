@@ -22,6 +22,9 @@
         .width(1000)
         .height(600)
         .colors(colors)
+        .title("Random Fruit Data")
+        .subTitle("Fruit Consumption by Country")
+        .showLegend(true)
         .on("customValueMouseOver", function(e, d) {
           d3.select("#message").text(d.value);
         })

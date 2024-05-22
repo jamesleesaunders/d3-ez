@@ -25,6 +25,7 @@ import componentProportionalAreaCircles from "./component/proportionalAreaCircle
 import componentRadarArea from "./component/radarArea.js";
 import componentRoseChartSector from "./component/roseChartSector.js";
 import componentScatterPlot from "./component/scatterPlot.js";
+import componentTitle from "./component/title.js";
 
 export default {
 	barsCircular: componentBarsCircular,
@@ -53,5 +54,6 @@ export default {
 	proportionalAreaCircles: componentProportionalAreaCircles,
 	radarArea: componentRadarArea,
 	roseChartSector: componentRoseChartSector,
-	scatterPlot: componentScatterPlot
+	scatterPlot: componentScatterPlot,
+	title: componentTitle
 };

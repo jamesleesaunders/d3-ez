@@ -16,13 +16,17 @@ export default function() {
 	let classed = "barChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.categorical(1);
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
+	let title = null;
+	let subTitle = null;
+	let legendTitle = "Key";
 	let opacity = 1;
+	let showLegend = false;
 	let showAxis = true;
 	let yAxisLabel = null;
 	let stacked = false;
@@ -48,11 +52,12 @@ export default function() {
 
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
-			const legendW = 120;
-			const legendPad = 15;
+			const legendW = showLegend ? 120 : 0;
+			const legendH = Math.max(height / 2.5, 100);
+			const legendPad = showLegend ? 15 : 0;
+			const titleH = title ? 40 : 0;
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
-			const chartH = Math.max((height - margin.top - margin.bottom), 100);
-			const legendH = Math.max(chartH / 2, 100);
+			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
 
 			// Create Scales and Axis
 			let { rowKeys, columnKeys, valueExtent, valueExtentStacked } = dataTransform(data).summary();
@@ -84,35 +89,35 @@ export default function() {
 				.domain(columnKeys)
 				.range(colors);
 
+			// Add Title, Chart and Legend main layer groups
+			const mainLayers = ["title", "chart", "legend"];
 			svg.classed("d3ez", true)
 				.attr("width", width)
-				.attr("height", height);
-
-			// Update the chart dimensions and container and layer groups
-			const container = svg.selectAll(".container")
-				.data([data]);
-
-			container.exit()
-				.remove();
-
-			const containerEnter = container.enter()
+				.attr("height", height)
+				.selectAll("g")
+				.data(mainLayers)
+				.enter()
 				.append("g")
-				.classed("container", true)
-				.classed(classed, true)
-				.merge(container)
-				.attr("transform", `translate(${margin.left},${margin.top})`)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				.attr("class", (d) => d);
 
-			const layers = ["xAxis axis", "yAxis axis", "chart", "legend"];
-			containerEnter.selectAll("g")
-				.data(layers)
+			const titleSelect = svg.select(".title");
+			const chartSelect = svg.select(".chart");
+			const legendSelect = svg.select(".legend");
+
+			// Update the chart dimensions and layer groups
+			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup"];
+			chartSelect.classed(classed, true)
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("transform", `translate(${margin.left},${margin.top + titleH})`)
+				.selectAll("g")
+				.data(chartLayers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
 			// Bars Component
-			const bars = component.barsHorizontal()
+			const componentBars = component.barsHorizontal()
 				.xScale(xScale)
 				.colorScale(colorScale)
 				.yScale(yScale)
@@ -121,47 +126,62 @@ export default function() {
 				.transition(transition);
 
 			// Series Group
-			const seriesGroup = containerEnter.select(".chart")
-				.selectAll(".seriesGroup")
-				.data((d) => d);
+			const series = chartSelect.select(".seriesGroup")
+				.selectAll(".series")
+				.data(data);
 
-			seriesGroup.enter()
+			series.enter()
 				.append("g")
-				.classed("seriesGroup", true)
-				.merge(seriesGroup)
+				.classed("series", true)
+				.merge(series)
 				.attr("transform", (d) => `translate(${xScale(valueMin)},${yScale2(d.key)})`)
-				.call(bars);
+				.call(componentBars);
 
-			seriesGroup.exit()
+			series.exit()
 				.remove();
 
-			// X-Axis
+			// Axis
 			const xAxis = d3.axisBottom(xScale);
-
-			containerEnter.select(".xAxis")
-				.attr("transform", `translate(0,${chartH})`)
-				.call(xAxis);
-
-			// Y-Axis
 			const yAxis = d3.axisLeft(yScale2);
+			if (showAxis) {
+				// X-Axis
+				chartSelect.select(".xAxis")
+					.attr("transform", `translate(0,${chartH})`)
+					.call(xAxis);
 
-			containerEnter.select(".yAxis")
-				.call(yAxis);
+				// Y-Axis
+				chartSelect.select(".yAxis")
+					.call(yAxis);
+			} else {
+				chartSelect.selectAll(".axis").selectAll('*').remove();
+			}
 
-			containerEnter.selectAll(".axis")
-				.attr("opacity", showAxis ? 1 : 0);
+			// Title
+			if (title) {
+				const componentTitle = component.title()
+					.mainText(title)
+					.subText(subTitle);
+
+				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
+					.call(componentTitle);
+			} else {
+				titleSelect.selectAll("*").remove();
+			}
 
 			// Legend
-			const legend = component.legend()
-				.colorScale(colorScale)
-				.height(legendH)
-				.width(legendW)
-				.itemType("rect")
-				.opacity(opacity);
+			if (showLegend) {
+				const componentLegend = component.legend()
+					.colorScale(colorScale)
+					.height(legendH)
+					.width(legendW)
+					.itemType("rect")
+					.opacity(opacity);
 
-			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad},0)`)
-				.call(legend);
+				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
+					.call(componentLegend);
+			} else {
+				legendSelect.selectAll("*").remove();
+			}
 		});
 	}
 
@@ -214,6 +234,43 @@ export default function() {
 	};
 
 	/**
+	 * Show Legend Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show legend true / false.
+	 * @returns {*}
+	 */
+	my.showLegend = function(_v) {
+		if (!arguments.length) return showLegend;
+		showLegend = _v;
+		return this;
+	};
+
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _v - Title text.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
+		if (!arguments.length) return title;
+		title = _v;
+		return this;
+	};
+
+	/**
+	 * SubTitle Getter / Setter
+	 *
+	 * @param {string} _v - SubTitle text.
+	 * @returns {*}
+	 */
+	my.subTitle = function(_v) {
+		if (!arguments.length) return subTitle;
+		subTitle = _v;
+		return this;
+	};
+
+
+	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {Number} _v - Opacity level.
@@ -250,7 +307,7 @@ export default function() {
 	};
 
 	/**
-	 * Y Axix Label Getter / Setter
+	 * Y-Axis Label Getter / Setter
 	 *
 	 * @param {number} _v - Label text.
 	 * @returns {*}

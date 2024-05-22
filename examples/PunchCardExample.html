@@ -27,6 +27,9 @@
         var myChart = d3.ez.chart.punchCard()
           .width(1000)
           .height(600)
+          .title(json.Metadata.Title)
+          .subTitle(json.Metadata.Detail)
+          .showLegend(true)
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           })

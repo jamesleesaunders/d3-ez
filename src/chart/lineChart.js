@@ -16,13 +16,17 @@ export default function() {
 	let classed = "lineChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.categorical(1);
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
+	let title = null;
+	let subTitle = null;
+	let legendTitle = "Key";
 	let opacity = 1;
+	let showLegend = false;
 	let showAxis = true;
 	let yAxisLabel = null;
 
@@ -47,11 +51,12 @@ export default function() {
 
 		selection.each(function(data) {
 			// Set up margins and dimensions for the chart
-			const legendW = 120;
-			const legendPad = 15;
+			const legendW = showLegend ? 120 : 0;
+			const legendH = Math.max(height / 2.5, 100);
+			const legendPad = showLegend ? 15 : 0;
+			const titleH = title ? 40 : 0;
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
-			const chartH = Math.max((height - margin.top - margin.bottom), 100);
-			const legendH = Math.max(chartH / 2, 100);
+			const chartH = Math.max((height - margin.top - margin.bottom - titleH), 100);
 
 			// Create Scales and Axis
 			let { rowKeys, columnKeys, valueMin, valueMax } = dataTransform(data).summary();
@@ -89,35 +94,35 @@ export default function() {
 				.domain(rowKeys)
 				.range(colors);
 
+			// Add Title, Chart and Legend main layer groups
+			const mainLayers = ["title", "chart", "legend"];
 			svg.classed("d3ez", true)
 				.attr("width", width)
-				.attr("height", height);
-
-			// Update the chart dimensions and container and layer groups
-			const container = svg.selectAll(".container")
-				.data([data]);
-
-			container.exit()
-				.remove();
-
-			const containerEnter = container.enter()
+				.attr("height", height)
+				.selectAll("g")
+				.data(mainLayers)
+				.enter()
 				.append("g")
-				.classed("container", true)
-				.classed(classed, true)
-				.merge(container)
-				.attr("transform", `translate(${margin.left},${margin.top})`)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				.attr("class", (d) => d);
 
-			const layers = ["xAxis axis", "yAxis axis", "chart", "legend", "zoomArea", "clipArea"];
-			containerEnter.selectAll("g")
-				.data(layers)
+			const titleSelect = svg.select(".title");
+			const chartSelect = svg.select(".chart");
+			const legendSelect = svg.select(".legend");
+
+			// Update the chart dimensions and layer groups
+			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+			chartSelect.classed(classed, true)
+				.attr("width", chartW)
+				.attr("height", chartH)
+				.attr("transform", `translate(${margin.left},${margin.top + titleH})`)
+				.selectAll("g")
+				.data(chartLayers)
 				.enter()
 				.append("g")
 				.attr("class", (d) => d);
 
 			// Line Chart Component
-			const lineChart = component.lineChart()
+			const componentLineChart = component.lineChart()
 				.colorScale(colorScale)
 				.xScale(xScale)
 				.yScale(yScale)
@@ -126,7 +131,7 @@ export default function() {
 				.transition(transition);
 
 			// Line Dots Component
-			const scatterPlot = component.scatterPlot()
+			const componentScatterPlot = component.scatterPlot()
 				.colorScale(colorScale)
 				.yScale(yScale)
 				.xScale(xScale)
@@ -135,65 +140,53 @@ export default function() {
 				.transition(transition);
 
 			// Series Group
-			const seriesGroup = containerEnter.select(".chart")
-				.selectAll(".seriesGroup")
-				.data((d) => d);
+			const series = chartSelect.select(".seriesGroup")
+				.selectAll(".series")
+				.data(data);
 
-			seriesGroup.enter()
+			series.enter()
 				.append("g")
-				.attr("class", "seriesGroup")
+				.attr("class", "series")
 				.attr('clip-path', "url(#plotAreaClip)")
-				.merge(seriesGroup)
-				.call(lineChart)
-				.call(scatterPlot);
+				.merge(series)
+				.call(componentLineChart)
+				.call(componentScatterPlot);
 
-			seriesGroup.exit()
+			series.exit()
 				.remove();
 
-			// X-Axis
+			// Axis
 			const xAxis = d3.axisBottom(xScale);
-
-			containerEnter.select(".xAxis")
-				.attr("transform", `translate(0,${chartH})`)
-				.call(xAxis);
-
-			// Y-Axis
 			const yAxis = d3.axisLeft(yScale);
+			if (showAxis) {
+				// X-Axis
+				chartSelect.select(".xAxis")
+					.attr("transform", `translate(0,${chartH})`)
+					.call(xAxis);
 
-			containerEnter.select(".yAxis")
-				.call(yAxis);
+				// Y-Axis
+				chartSelect.select(".yAxis")
+					.call(yAxis);
 
-			// Y-Axis Label
-			containerEnter.select(".yAxis")
-				.selectAll(".yAxisLabel")
-				.data([yAxisLabel])
-				.enter()
-				.append("text")
-				.classed("yAxisLabel", true)
-				.attr("transform", "rotate(-90)")
-				.attr("y", -40)
-				.attr("dy", ".71em")
-				.attr("fill", "currentColor")
-				.style("text-anchor", "end")
-				.text((d) => d);
-
-			containerEnter.selectAll(".axis")
-				.attr("opacity", showAxis ? 1 : 0);
-
-			// Legend
-			const legend = component.legend()
-				.colorScale(colorScale)
-				.height(legendH)
-				.width(legendW)
-				.itemType("line")
-				.opacity(opacity);
-
-			containerEnter.select(".legend")
-				.attr("transform", `translate(${chartW + legendPad},0)`)
-				.call(legend);
+				// Y-Axis Label
+				chartSelect.select(".yAxis")
+					.selectAll(".yAxisLabel")
+					.data([yAxisLabel])
+					.enter()
+					.append("text")
+					.classed("yAxisLabel", true)
+					.attr("transform", "rotate(-90)")
+					.attr("y", -40)
+					.attr("dy", ".71em")
+					.attr("fill", "currentColor")
+					.style("text-anchor", "end")
+					.text((d) => d);
+			} else {
+				chartSelect.selectAll(".axis").selectAll('*').remove();
+			}
 
 			// Zoom Clip Path
-			const clipPath = containerEnter.select(".clipArea")
+			const clipPath = chartSelect.select(".clipArea")
 				.selectAll("defs")
 				.data([0]);
 
@@ -220,37 +213,65 @@ export default function() {
 			function zoomed(e) {
 				const xScaleZoomed = e.transform.rescaleX(xScale);
 
-				xAxis.scale(xScaleZoomed);
-				containerEnter.select(".xAxis")
-					.call(xAxis);
+				if (showAxis) {
+					xAxis.scale(xScaleZoomed);
+					chartSelect.select(".xAxis")
+						.call(xAxis);
+				}
 
-				lineChart
+				componentLineChart
 					.xScale(xScaleZoomed)
 					.transition({ ease: d3.easeLinear, duration: 0 });
 
-				scatterPlot
+				componentScatterPlot
 					.xScale(xScaleZoomed)
 					.transition({ ease: d3.easeLinear, duration: 0 });
 
-				containerEnter.select(".chart")
-					.selectAll(".seriesGroup")
-					.call(lineChart)
-					.call(scatterPlot);
+				chartSelect.select(".seriesGroup")
+					.selectAll(".series")
+					.call(componentLineChart)
+					.call(componentScatterPlot);
 			}
 
-			const zoomArea = containerEnter.select(".zoomArea")
-				.selectAll(".rect")
+			const zoomArea = chartSelect.select(".zoomArea")
+				.selectAll("rect")
 				.data([0]);
 
 			zoomArea.enter()
 				.append("rect")
-				.classed("zoomArea", true)
 				.attr("fill", "none")
 				.attr("pointer-events", "all")
 				.merge(zoomArea)
 				.call(zoom)
 				.attr("width", chartW)
 				.attr("height", chartH);
+
+			// Title
+			if (title) {
+				const componentTitle = component.title()
+					.mainText(title)
+					.subText(subTitle);
+
+				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
+					.call(componentTitle);
+			} else {
+				titleSelect.selectAll("*").remove();
+			}
+
+			// Legend
+			if (showLegend) {
+				const componentLegend = component.legend()
+					.colorScale(colorScale)
+					.height(legendH)
+					.width(legendW)
+					.itemType("line")
+					.opacity(opacity);
+
+				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
+					.call(componentLegend);
+			} else {
+				legendSelect.selectAll("*").remove();
+			}
 		});
 	}
 
@@ -303,6 +324,42 @@ export default function() {
 	};
 
 	/**
+	 * Show Legend Getter / Setter
+	 *
+	 * @param {Boolean} _v - Show legend true / false.
+	 * @returns {*}
+	 */
+	my.showLegend = function(_v) {
+		if (!arguments.length) return showLegend;
+		showLegend = _v;
+		return this;
+	};
+
+	/**
+	 * Title Getter / Setter
+	 *
+	 * @param {string} _v - Title text.
+	 * @returns {*}
+	 */
+	my.title = function(_v) {
+		if (!arguments.length) return title;
+		title = _v;
+		return this;
+	};
+
+	/**
+	 * SubTitle Getter / Setter
+	 *
+	 * @param {string} _v - SubTitle text.
+	 * @returns {*}
+	 */
+	my.subTitle = function(_v) {
+		if (!arguments.length) return subTitle;
+		subTitle = _v;
+		return this;
+	};
+
+	/**
 	 * Opacity Getter / Setter
 	 *
 	 * @param {Number} _v - Opacity level.
@@ -327,7 +384,7 @@ export default function() {
 	};
 
 	/**
-	 * Y Axix Label Getter / Setter
+	 * Y-Axis Label Getter / Setter
 	 *
 	 * @param {number} _v - Label text.
 	 * @returns {*}
