@@ -57,7 +57,7 @@ export default function() {
 			const titleH = title ? 40 : 0;
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
-			const radius = Math.min(chartW, chartH) / 2.3;
+			const radius = (Math.min(chartW, chartH) / data.length) / 2.3;
 			const innerRadius = radius / 4;
 
 			const { columnKeys, valueMax } = dataTransform(data).summary();
@@ -116,7 +116,7 @@ export default function() {
 			const legendSelect = svg.select(".legend");
 
 			// Update the chart dimensions and layer groups
-			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+			const chartLayers = ["axis", "seriesGroup"];
 			chartSelect.classed(classed, true)
 				.attr("width", chartW)
 				.attr("height", chartH)
@@ -162,13 +162,32 @@ export default function() {
 				.classed("series", true)
 				.merge(series)
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
-				.call(componentCircularAxis)
 				.call(componentBarsCircular)
-				.call(componentCircularSectorLabels)
 				.call(componentCircularRingLabels);
 
 			series.exit()
 				.remove();
+
+			// Axis Labels
+			if (showAxis) {
+				const seriesAxis = chartSelect.select(".axis")
+					.selectAll(".seriesAxis")
+					.data(data);
+
+				seriesAxis.enter()
+					.append("g")
+					.classed("seriesAxis", true)
+					.merge(seriesAxis)
+					.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+					.call(componentCircularAxis)
+					.call(componentCircularSectorLabels);
+
+				seriesAxis.exit()
+					.remove();
+			} else {
+				chartSelect.selectAll(".axis").selectAll('*').remove();
+			}
+
 
 			// Title
 			if (title) {
@@ -179,7 +198,7 @@ export default function() {
 				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
 					.call(componentTitle);
 			} else {
-				titleSelect.remove();
+				titleSelect.selectAll("*").remove();
 			}
 
 			// Legend
@@ -194,7 +213,7 @@ export default function() {
 				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
 					.call(componentLegend);
 			} else {
-				legendSelect.remove();
+				legendSelect.selectAll("*").remove();
 			}
 		});
 	}

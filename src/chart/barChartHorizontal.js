@@ -16,7 +16,7 @@ export default function() {
 	let classed = "barChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.categorical(1);
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -105,7 +105,7 @@ export default function() {
 			const legendSelect = svg.select(".legend");
 
 			// Update the chart dimensions and layer groups
-			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup"];
 			chartSelect.classed(classed, true)
 				.attr("width", chartW)
 				.attr("height", chartH)
@@ -141,15 +141,15 @@ export default function() {
 				.remove();
 
 			// Axis
+			const xAxis = d3.axisBottom(xScale);
+			const yAxis = d3.axisLeft(yScale2);
 			if (showAxis) {
 				// X-Axis
-				const xAxis = d3.axisBottom(xScale);
 				chartSelect.select(".xAxis")
 					.attr("transform", `translate(0,${chartH})`)
 					.call(xAxis);
 
 				// Y-Axis
-				const yAxis = d3.axisLeft(yScale2);
 				chartSelect.select(".yAxis")
 					.call(yAxis);
 			} else {
@@ -165,7 +165,7 @@ export default function() {
 				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
 					.call(componentTitle);
 			} else {
-				titleSelect.remove();
+				titleSelect.selectAll("*").remove();
 			}
 
 			// Legend
@@ -180,7 +180,7 @@ export default function() {
 				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
 					.call(componentLegend);
 			} else {
-				legendSelect.remove();
+				legendSelect.selectAll("*").remove();
 			}
 		});
 	}

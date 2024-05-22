@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.3";
+	var version$1 = "4.0.4";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -5203,7 +5203,7 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / 2.3;
+	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
 	      var innerRadius = radius / 4;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -5248,7 +5248,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5269,15 +5269,26 @@
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
 	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
-	      }).call(componentCircularAxis).call(componentBarsCircular).call(componentCircularSectorLabels).call(componentCircularRingLabels);
+	      }).call(componentBarsCircular).call(componentCircularRingLabels);
 	      series.exit().remove();
+
+	      // Axis Labels
+	      if (showAxis) {
+	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
+	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
+	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        }).call(componentCircularAxis).call(componentCircularSectorLabels);
+	        seriesAxis.exit().remove();
+	      } else {
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
+	      }
 
 	      // Title
 	      if (title) {
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -5285,7 +5296,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -5449,8 +5460,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = palette.categorical(1);
 	  var transition = {
@@ -5531,7 +5542,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5548,13 +5559,13 @@
 	      series.exit().remove();
 
 	      // Axis
+	      var xAxis = d3__namespace.axisBottom(xScale2);
+	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        var xAxis = d3__namespace.axisBottom(xScale2);
 	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
-	        var yAxis = d3__namespace.axisLeft(yScale);
 	        chartSelect.select(".yAxis").call(yAxis);
 
 	        // Y-Axis Label
@@ -5570,7 +5581,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -5578,7 +5589,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -5766,8 +5777,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = palette.categorical(1);
 	  var transition = {
@@ -5848,7 +5859,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -5864,13 +5875,13 @@
 	      series.exit().remove();
 
 	      // Axis
+	      var xAxis = d3__namespace.axisBottom(xScale);
+	      var yAxis = d3__namespace.axisLeft(yScale2);
 	      if (showAxis) {
 	        // X-Axis
-	        var xAxis = d3__namespace.axisBottom(xScale);
 	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
-	        var yAxis = d3__namespace.axisLeft(yScale2);
 	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
 	        chartSelect.selectAll(".axis").selectAll('*').remove();
@@ -5881,7 +5892,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -5889,7 +5900,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -6077,8 +6088,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = palette.categorical(1);
 	  var transition = {
@@ -6202,7 +6213,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -6210,7 +6221,7 @@
 	        var componentLegend = component.legend().title(legendTitle).sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -6386,8 +6397,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = ["green", "red"];
 	  var transition = {
@@ -6482,13 +6493,13 @@
 	      series.exit().remove();
 
 	      // Axis
+	      var xAxis = d3__namespace.axisBottom(xScale).tickFormat(d3__namespace.timeFormat("%d-%b-%y"));
+	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X Axis
-	        var xAxis = d3__namespace.axisBottom(xScale).tickFormat(d3__namespace.timeFormat("%d-%b-%y"));
 	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").style("text-anchor", "end").attr("dx", "-.8em").attr("dy", ".15em").attr("transform", "rotate(-65)");
 
 	        // Y-Axis
-	        var yAxis = d3__namespace.axisLeft(yScale);
 	        chartSelect.select(".yAxis").call(yAxis);
 
 	        // Y-Axis Label
@@ -6514,7 +6525,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.selectAll(".title").selectAll('*').remove();
+	        titleSelect.selectAll('*').remove();
 	      }
 
 	      // Legend
@@ -6522,7 +6533,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -6789,7 +6800,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["seriesGroup", "axis"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -6804,15 +6815,26 @@
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
 	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
-	      }).call(componentDonut).call(componentDonutLabels);
+	      }).call(componentDonut);
 	      series.exit().remove();
+
+	      // Axis Labels
+	      if (showAxis) {
+	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
+	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
+	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        }).call(componentDonutLabels);
+	        seriesAxis.exit().remove();
+	      } else {
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
+	      }
 
 	      // Title
 	      if (title) {
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -6820,7 +6842,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -7054,7 +7076,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["seriesGroup", "axis"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7070,18 +7092,22 @@
 
 	      // Create Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing).call(componentCircularRingLabels);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing);
 	      series.exit().remove();
 
-	      // Outer Ring Labels
-	      chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels);
+	      // Axis Labels
+	      if (showAxis) {
+	        chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels).call(componentCircularRingLabels);
+	      } else {
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
+	      }
 
 	      // Title
 	      if (title) {
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -7089,7 +7115,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -7265,8 +7291,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
@@ -7332,7 +7358,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7348,13 +7374,13 @@
 	      series.exit().remove();
 
 	      // Axis
+	      var xAxis = d3__namespace.axisBottom(xScale);
+	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        var xAxis = d3__namespace.axisTop(xScale);
-	        chartSelect.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(300)").style("text-anchor", "end");
 
 	        // Y-Axis
-	        var yAxis = d3__namespace.axisLeft(yScale);
 	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
 	        chartSelect.selectAll(".axis").selectAll('*').remove();
@@ -7365,7 +7391,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -7373,7 +7399,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -7549,8 +7575,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = palette.categorical(1);
 	  var transition = {
@@ -7695,7 +7721,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -7703,7 +7729,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("line").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -7969,7 +7995,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -7987,15 +8013,26 @@
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
 	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
-	      }).call(componentCircularAxis).call(componentCircularSectorLabels).call(componentPolarArea);
+	      }).call(componentPolarArea);
 	      series.exit().remove();
+
+	      // Axis Labels
+	      if (showAxis) {
+	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
+	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
+	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        }).call(componentCircularAxis).call(componentCircularSectorLabels);
+	        seriesAxis.exit().remove();
+	      } else {
+	        chartSelect.selectAll(".axis").selectAll('*').remove();
+	      }
 
 	      // Title
 	      if (title) {
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -8003,7 +8040,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -8166,8 +8203,8 @@
 	  var margin = {
 	    top: 40,
 	    right: 40,
-	    bottom: 40,
-	    left: 40
+	    bottom: 70,
+	    left: 70
 	  };
 	  var colors = [d3__namespace.rgb("steelblue").brighter(), d3__namespace.rgb("steelblue").darker()];
 	  var transition = {
@@ -8236,7 +8273,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -8252,13 +8289,13 @@
 	      series.exit().remove();
 
 	      // Axis
+	      var xAxis = d3__namespace.axisBottom(xScale);
+	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        var xAxis = d3__namespace.axisTop(xScale);
-	        chartSelect.select(".xAxis").call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(60)").style("text-anchor", "end");
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(300)").style("text-anchor", "end");
 
 	        // Y-Axis
-	        var yAxis = d3__namespace.axisLeft(yScale);
 	        chartSelect.select(".yAxis").call(yAxis);
 	      } else {
 	        chartSelect.selectAll(".axis").selectAll('*').remove();
@@ -8269,7 +8306,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -8277,7 +8314,7 @@
 	        var componentLegend = component.legend().sizeScale(sizeScale).height(legendH).width(legendW).opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -8543,7 +8580,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -8563,9 +8600,9 @@
 	        return colorScale(d.key);
 	      }).style("stroke", function (d) {
 	        return colorScale(d.key);
-	      }).merge(series).call(componentRadarArea).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")"));
+	      }).merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentRadarArea);
 
-	      // Axis
+	      // Axis Labels
 	      if (showAxis) {
 	        chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels).call(componentCircularAxis);
 	      } else {
@@ -8577,7 +8614,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -8585,7 +8622,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }
@@ -8819,7 +8856,7 @@
 	      var legendSelect = svg.select(".legend");
 
 	      // Update the chart dimensions and layer groups
-	      var chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+	      var chartLayers = ["axis", "seriesGroup"];
 	      chartSelect.classed(classed, true).attr("width", chartW).attr("height", chartH).attr("transform", "translate(".concat(margin.left, ",").concat(margin.top + titleH, ")")).selectAll("g").data(chartLayers).enter().append("g").attr("class", function (d) {
 	        return d;
 	      });
@@ -8840,7 +8877,7 @@
 	      });
 	      series.exit().remove();
 
-	      // Axis
+	      // Axis Labels
 	      if (showAxis) {
 	        chartSelect.select(".axis").attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentCircularSectorLabels).call(componentCircularAxis);
 	      } else {
@@ -8852,7 +8889,7 @@
 	        var componentTitle = component.title().mainText(title).subText(subTitle);
 	        titleSelect.attr("transform", "translate(".concat(width / 2, ",").concat(margin.top, ")")).call(componentTitle);
 	      } else {
-	        titleSelect.remove();
+	        titleSelect.selectAll("*").remove();
 	      }
 
 	      // Legend
@@ -8860,7 +8897,7 @@
 	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
-	        legendSelect.remove();
+	        legendSelect.selectAll("*").remove();
 	      }
 	    });
 	  }

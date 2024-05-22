@@ -93,7 +93,7 @@ export default function() {
 			const legendSelect = svg.select(".legend");
 
 			// Update the chart dimensions and layer groups
-			const chartLayers = ["xAxis axis", "yAxis axis", "seriesGroup", "zoomArea", "clipArea"];
+			const chartLayers = ["axis", "seriesGroup"];
 			chartSelect.classed(classed, true)
 				.attr("width", chartW)
 				.attr("height", chartH)
@@ -143,7 +143,7 @@ export default function() {
 			series.exit()
 				.remove();
 
-			// Axis
+			// Axis Labels
 			if (showAxis) {
 				chartSelect.select(".axis")
 					.attr("transform", `translate(${chartW / 2},${(chartH / 2)})`)
@@ -162,7 +162,7 @@ export default function() {
 				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
 					.call(componentTitle);
 			} else {
-				titleSelect.remove();
+				titleSelect.selectAll("*").remove();
 			}
 
 			// Legend
@@ -177,7 +177,7 @@ export default function() {
 				legendSelect.attr("transform", `translate(${margin.left + chartW + legendPad},${margin.top})`)
 					.call(componentLegend);
 			} else {
-				legendSelect.remove();
+				legendSelect.selectAll("*").remove();
 			}
 		});
 	}

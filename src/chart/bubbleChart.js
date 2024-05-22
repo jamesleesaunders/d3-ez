@@ -16,7 +16,7 @@ export default function() {
 	let classed = "bubbleChart";
 	let width = 700;
 	let height = 400;
-	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
+	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.categorical(1);
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
@@ -230,7 +230,7 @@ export default function() {
 				titleSelect.attr("transform", `translate(${width / 2},${margin.top})`)
 					.call(componentTitle);
 			} else {
-				titleSelect.remove();
+				titleSelect.selectAll("*").remove();
 			}
 
 			// Legend
@@ -246,7 +246,7 @@ export default function() {
 					.call(componentLegend);
 
 			} else {
-				legendSelect.remove();
+				legendSelect.selectAll("*").remove();
 			}
 		});
 	}
