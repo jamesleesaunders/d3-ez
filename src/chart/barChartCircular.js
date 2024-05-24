@@ -161,6 +161,7 @@ export default function() {
 				.append("g")
 				.classed("series", true)
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
 				.call(componentBarsCircular)
 				.call(componentCircularRingLabels);

@@ -127,6 +127,7 @@ export default function() {
 				.append("g")
 				.attr("class", "series")
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
 				.call(componentProportionalAreaCircles);
 

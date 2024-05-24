@@ -127,6 +127,7 @@ export default function() {
 				.attr("class", "series")
 				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.call(componentBubbles);
 
 			series.exit()

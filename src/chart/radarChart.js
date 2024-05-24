@@ -131,9 +131,8 @@ export default function() {
 			series.enter()
 				.append("g")
 				.classed("series", true)
-				.attr("fill", (d) => colorScale(d.key))
-				.style("stroke", (d) => colorScale(d.key))
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", `translate(${chartW / 2},${(chartH / 2)})`)
 				.call(componentRadarArea);
 

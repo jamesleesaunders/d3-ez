@@ -64,12 +64,16 @@ export default function() {
 			valueMin = valueMin > 0 ? 0 : valueMin;
 			const valueExtent = [valueMin, valueMax];
 
-			// Zoom does not work with non-time series (scalePoint)
-			const isTimeSeries = true;
-
 			let xScale = d3.scalePoint()
 				.domain(columnKeys)
 				.range([0, chartW]);
+
+			// Zoom does not work with non-time series (scalePoint)
+			function isValidDate(dateString) {
+				let dateObject = new Date(dateString);
+				return !isNaN(dateObject.getTime());
+			}
+			const isTimeSeries = isValidDate(data[0].values[0].key);
 
 			if (isTimeSeries) {
 				// TODO: Use dataTransform() to calculate date domains?
@@ -149,6 +153,7 @@ export default function() {
 				.attr("class", "series")
 				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.call(componentLineChart)
 				.call(componentScatterPlot);
 
@@ -233,18 +238,20 @@ export default function() {
 					.call(componentScatterPlot);
 			}
 
-			const zoomArea = chartSelect.select(".zoomArea")
-				.selectAll("rect")
-				.data([0]);
+			if (isTimeSeries) {
+				const zoomArea = chartSelect.select(".zoomArea")
+					.selectAll("rect")
+					.data([0]);
 
-			zoomArea.enter()
-				.append("rect")
-				.attr("fill", "none")
-				.attr("pointer-events", "all")
-				.merge(zoomArea)
-				.call(zoom)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				zoomArea.enter()
+					.append("rect")
+					.attr("fill", "none")
+					.attr("pointer-events", "all")
+					.merge(zoomArea)
+					.call(zoom)
+					.attr("width", chartW)
+					.attr("height", chartH);
+			}
 
 			// Title
 			if (title) {

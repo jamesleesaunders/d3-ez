@@ -137,6 +137,7 @@ export default function() {
 				.append("g")
 				.attr("class", "series")
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", `translate(${chartW / 2},${(chartH / 2)})`)
 				.call(componentHeatMapRing);
 

@@ -133,6 +133,7 @@ export default function() {
 				.append("g")
 				.classed("series", true)
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", (d) => `translate(${xScale2(d.key)},${chartH - yScale(valueMin)})`)
 				.call(componentBars);
 

@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.4";
+	var version$1 = "4.0.5";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -45,7 +45,7 @@
 		"svg",
 		"dataviz"
 	];
-	var homepage = "http://d3-ez.net";
+	var homepage = "https://github.com/jamesleesaunders/d3-ez";
 	var author$1 = "James Saunders (james@saunders-family.net)";
 	var repository = {
 		type: "git",
@@ -195,7 +195,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -338,7 +340,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("x", 0).attr("y", function (d) {
 	        return yScale(d.key);
-	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("fill", function (d) {
+	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -587,7 +591,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", function (d) {
 	        return xScale(d.key);
-	      }).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	      }).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("y", function (d) {
 	        return d.value < 0 ? yScale(0) : yScale(d.value);
@@ -774,7 +780,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
+	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("x", 0).attr("y", function (d) {
 	        return yScale(d.y1);
 	      }).attr("width", width).attr("height", function (d) {
 	        var padding = 3;
@@ -1099,7 +1107,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
-	      }).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      }).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
 	      }).call(bubble);
 	      bubbles.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
@@ -1302,7 +1312,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(candles).attr("fill", function (d) {
+	      }).merge(candles).attr("data-name", function (d) {
+	        return d.date;
+	      }).attr("fill", function (d) {
 	        return colorScale(isUpDay(d));
 	      }).attr("stroke", function (d) {
 	        return colorScale(isUpDay(d));
@@ -1950,7 +1962,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("data-name", function (d) {
+	        return d.data.key;
+	      }).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.key);
@@ -2258,7 +2272,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().duration(transition.duration).attr("fill", function (d) {
+	      }).merge(segments).transition().duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("fill", function (d) {
 	        return colorScale(d.data.value);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.value);
@@ -2411,7 +2427,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("x", function (d) {
 	        return xScale(d.key);
-	      }).attr("y", 0).attr("width", cellWidth).attr("height", cellHeight).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	      }).attr("y", 0).attr("width", cellWidth).attr("height", cellHeight).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("width", cellWidth).attr("height", cellHeight).attr("fill", function (d) {
 	        return colorScale(d.value);
@@ -3317,7 +3335,7 @@
 	   * Constructor
 	   *
 	   * @constructor
-	   * @alias legendColor
+	   * @alias legendCategorical
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
@@ -3859,7 +3877,9 @@
 	      });
 	      path.enter().append("path").attr("class", "line").attr("stroke-width", 1.5).attr("fill", "none").attr("d", function (d) {
 	        return line(d.values);
-	      }).merge(path).transition().duration(transition.duration).attrTween("d", function (d) {
+	      }).merge(path).transition().duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attrTween("d", function (d) {
 	        return pathTween(d.values);
 	      }).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -4003,7 +4023,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).text(function (d) {
+	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).text(function (d) {
 	        return d["value"];
 	      }).attr("fill", function (d) {
 	        return colorScale(d.value);
@@ -4168,7 +4190,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
+	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.data.key;
+	      }).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.key);
@@ -4327,7 +4351,9 @@
 	        var x = cellWidth / 2 + xScale(d.key);
 	        var y = cellHeight / 2;
 	        return "translate(".concat(x, ",").concat(y, ")");
-	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        var x = cellWidth / 2 + xScale(d.key);
 	        var y = cellHeight / 2;
 	        return "translate(".concat(x, ",").concat(y, ")");
@@ -4477,7 +4503,11 @@
 	      });
 
 	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	      var componentGroup = seriesGroup.attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).style("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).selectAll("g.".concat(classed)).data(function (d) {
 	        return [d];
 	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
 
@@ -4489,7 +4519,9 @@
 	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity);
 	      }).on("mouseout", function () {
 	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity / 2);
-	      }).merge(path).transition().ease(transition.ease).duration(transition.duration).style("fill-opacity", opacity / 2).attr("d", function (d) {
+	      }).merge(path).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).style("fill-opacity", opacity / 2).attr("d", function (d) {
 	        return radarLine(d.values);
 	      });
 
@@ -4497,11 +4529,9 @@
 	      var dots = componentGroup.selectAll("circle").data(function (d) {
 	        return d.values;
 	      });
-	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots)
-	      //.transition()
-	      //.ease(transition.ease)
-	      //.duration(transition.duration)
-	      .attr("cx", function (d, i) {
+	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("cx", function (d, i) {
 	        return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
 	      }).attr("cy", function (d, i) {
 	        return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
@@ -4679,7 +4709,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -4835,7 +4867,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
+	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("cx", function (d) {
 	        return xScale(d.key);
 	      }).attr("cy", function (d) {
 	        return yScale(d.value);
@@ -5035,7 +5069,7 @@
 	  labeledNode: componentLabeledNode,
 	  legend: componentLegend,
 	  legendSize: componentLegendSize,
-	  legendColor: componentLegendCategorical,
+	  legendCategorical: componentLegendCategorical,
 	  legendThreshold: componentLegendThreshold,
 	  lineChart: componentLineChart,
 	  numberCard: componentNumberCard,
@@ -5267,7 +5301,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
 	      }).call(componentBarsCircular).call(componentCircularRingLabels);
 	      series.exit().remove();
@@ -5553,7 +5589,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin), ")");
 	      }).call(componentBars);
 	      series.exit().remove();
@@ -5869,7 +5907,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key), ")");
 	      }).call(componentBars);
 	      series.exit().remove();
@@ -6168,7 +6208,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).call(componentBubbles);
+	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).call(componentBubbles);
 	      series.exit().remove();
 
 	      // Axis
@@ -6489,7 +6531,9 @@
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data([data]); // FIXME: Convert input data to support multi-series.
 
-	      series.enter().append("g").attr("class", "series").merge(series).call(componentCandleSticks);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).call(componentCandleSticks);
 	      series.exit().remove();
 
 	      // Axis
@@ -6813,7 +6857,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
 	      }).call(componentDonut);
 	      series.exit().remove();
@@ -7092,7 +7138,9 @@
 
 	      // Create Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing);
 	      series.exit().remove();
 
 	      // Axis Labels
@@ -7368,7 +7416,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", function (d) {
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(componentHeatMapRow);
 	      series.exit().remove();
@@ -7632,7 +7682,14 @@
 	      valueMin = valueMin > 0 ? 0 : valueMin;
 	      var valueExtent = [valueMin, valueMax];
 	      var xScale = d3__namespace.scalePoint().domain(columnKeys).range([0, chartW]);
-	      {
+
+	      // Zoom does not work with non-time series (scalePoint)
+	      function isValidDate(dateString) {
+	        var dateObject = new Date(dateString);
+	        return !isNaN(dateObject.getTime());
+	      }
+	      var isTimeSeries = isValidDate(data[0].values[0].key);
+	      if (isTimeSeries) {
 	        // TODO: Use dataTransform() to calculate date domains?
 	        data.forEach(function (d, i) {
 	          d.values.forEach(function (b, j) {
@@ -7670,7 +7727,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).call(componentLineChart).call(componentScatterPlot);
+	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).call(componentLineChart).call(componentScatterPlot);
 	      series.exit().remove();
 
 	      // Axis
@@ -7713,8 +7772,10 @@
 	        });
 	        chartSelect.select(".seriesGroup").selectAll(".series").call(componentLineChart).call(componentScatterPlot);
 	      }
-	      var zoomArea = chartSelect.select(".zoomArea").selectAll("rect").data([0]);
-	      zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
+	      if (isTimeSeries) {
+	        var zoomArea = chartSelect.select(".zoomArea").selectAll("rect").data([0]);
+	        zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
+	      }
 
 	      // Title
 	      if (title) {
@@ -8011,7 +8072,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d, i) {
 	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
 	      }).call(componentPolarArea);
 	      series.exit().remove();
@@ -8283,7 +8346,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", function (d) {
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(componentProportionalAreaCircles);
 	      series.exit().remove();
@@ -8596,11 +8661,9 @@
 
 	      // Create Radars
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).attr("fill", function (d) {
-	        return colorScale(d.key);
-	      }).style("stroke", function (d) {
-	        return colorScale(d.key);
-	      }).merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentRadarArea);
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentRadarArea);
 
 	      // Axis Labels
 	      if (showAxis) {
@@ -8872,7 +8935,9 @@
 
 	      // Create Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
 	        d3__namespace.select(this).call(componentRoseChartSector);
 	      });
 	      series.exit().remove();

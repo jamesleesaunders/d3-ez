@@ -80,6 +80,7 @@ export default function() {
 				.merge(segments)
 				.transition()
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attr("fill", (d) => colorScale(d.data.value))
 				.attr("fill-opacity", opacity)
 				.attr("stroke", (d) => colorScale(d.data.value))

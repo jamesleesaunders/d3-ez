@@ -30,7 +30,7 @@
         .attr("height", 200);
 
       // Configure legend components
-      var legendColor = d3.ez.component.legendColor()
+      var legendColor = d3.ez.component.legendCategorical()
         .colorScale(colorScale)
         .itemType("rect")
         .opacity(0.8);
@@ -51,12 +51,12 @@
 
       svg.append("g")
         .attr("id", "legendSize")
-        .attr("transform", "translate(200,0)")
+        .attr("transform", "translate(150,0)")
         .call(legendSize);
 
       svg.append("g")
         .attr("id", "legendThreshold")
-        .attr("transform", "translate(400,0)")
+        .attr("transform", "translate(300,0)")
         .call(legendThreshold);
 
     </script>
