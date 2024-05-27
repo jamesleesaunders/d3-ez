@@ -69,17 +69,18 @@ export default function() {
 				.range([0, chartW]);
 
 			// Zoom does not work with non-time series (scalePoint)
-			function isValidDate(dateString) {
+			function isTimeSeriesData(data) {
+				let dateString = data[0].values[0].date
 				let dateObject = new Date(dateString);
 				return !isNaN(dateObject.getTime());
 			}
-			const isTimeSeries = isValidDate(data[0].values[0].key);
+			const isTimeSeries = isTimeSeriesData(data);
 
 			if (isTimeSeries) {
 				// TODO: Use dataTransform() to calculate date domains?
 				data.forEach((d, i) => {
 					d.values.forEach((b, j) => {
-						data[i].values[j].key = new Date(b.key);
+						data[i].values[j].key = new Date(b.date);
 					});
 				});
 				const dateExtent = d3.extent(data[0].values, (d) => d.key);

@@ -3203,7 +3203,7 @@
 	        return {
 	          x: sizeScale(domainMax),
 	          y: yScale(i),
-	          r: sizeScale(ranges[i][0]),
+	          r: sizeScale(ranges[i][1]),
 	          text: v[0].toFixed(0) + " \u2014 " + v[1].toFixed(0)
 	        };
 	      });
@@ -3223,7 +3223,7 @@
 	      return d.r;
 	    }).attr("cx", function (d) {
 	      return d.x;
-	    }).attr("fill", "#cad4e7").attr("stroke", "#cad4e7").attr("stroke-width", 1).attr("fill-opacity", opacity);
+	    }).attr("fill", "#cad4e7").attr("stroke", "#cad4e7").attr("stroke-width", 1).attr("fill-opacity", opacity / 2);
 	    itemsEnter.append("text").attr("font-size", "0.9em").attr("fill", "currentColor").attr("dominant-baseline", "middle").attr("x", function (d) {
 	      return d.x * 2 + 5;
 	    }).text(function (d) {
@@ -3235,7 +3235,7 @@
 	    itemsTrans.select("text").text(function (d) {
 	      return d.text;
 	    });
-	    itemsTrans.select("circle").attr("fill-opacity", opacity);
+	    itemsTrans.select("circle").attr("fill-opacity", opacity / 2);
 	  }
 
 	  /**
@@ -7684,16 +7684,17 @@
 	      var xScale = d3__namespace.scalePoint().domain(columnKeys).range([0, chartW]);
 
 	      // Zoom does not work with non-time series (scalePoint)
-	      function isValidDate(dateString) {
+	      function isTimeSeriesData(data) {
+	        var dateString = data[0].values[0].date;
 	        var dateObject = new Date(dateString);
 	        return !isNaN(dateObject.getTime());
 	      }
-	      var isTimeSeries = isValidDate(data[0].values[0].key);
+	      var isTimeSeries = isTimeSeriesData(data);
 	      if (isTimeSeries) {
 	        // TODO: Use dataTransform() to calculate date domains?
 	        data.forEach(function (d, i) {
 	          d.values.forEach(function (b, j) {
-	            data[i].values[j].key = new Date(b.key);
+	            data[i].values[j].key = new Date(b.date);
 	          });
 	        });
 	        var dateExtent = d3__namespace.extent(data[0].values, function (d) {
