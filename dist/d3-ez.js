@@ -5196,7 +5196,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5502,7 +5502,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5821,7 +5821,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6134,7 +6134,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6445,7 +6445,7 @@
 	  var colors = ["green", "red"];
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6759,7 +6759,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7057,7 +7057,7 @@
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7345,7 +7345,7 @@
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7631,7 +7631,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7972,7 +7972,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8273,7 +8273,7 @@
 	  var colors = [d3__namespace.rgb("steelblue").brighter(), d3__namespace.rgb("steelblue").darker()];
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8585,7 +8585,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8855,7 +8855,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
