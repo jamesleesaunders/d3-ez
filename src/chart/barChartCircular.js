@@ -30,6 +30,28 @@ export default function() {
 	let startAngle = 0;
 	let endAngle = 270;
 
+	function generateLayout(cellCount, width, height) {
+		const cols = Math.ceil(Math.sqrt(cellCount));
+		const rows = Math.ceil(cellCount / cols);
+		const cellWidth = width / cols;
+		const cellHeight = height / rows;
+		const cellPadding = 15;
+		const cellRadius = (Math.min(cellWidth, cellHeight) / 2) - cellPadding;
+
+		const coordinates = [];
+		for (let i = 0; i < cellCount; i++) {
+			const row = Math.floor(i / cols);
+			const col = i % cols;
+			const offsetX = (cellWidth / 2) + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+			const offsetY = (cellHeight / 2);
+			const x = (col * cellWidth) + offsetX;
+			const y = (row * cellHeight) + offsetY;
+			coordinates.push({ x: x, y: y });
+		}
+
+		return { cellWidth, cellHeight, cellRadius, coordinates };
+	}
+
 	/**
 	 * Constructor
 	 *
@@ -57,7 +79,7 @@ export default function() {
 			const titleH = title ? 40 : 0;
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
-			const radius = (Math.min(chartW, chartH) / data.length) / 2.3;
+			const { coordinates, cellRadius: radius } = generateLayout(data.length, chartW, chartH);
 			const innerRadius = radius / 4;
 
 			const { columnKeys, valueMax } = dataTransform(data).summary();
@@ -75,30 +97,6 @@ export default function() {
 			const colorScale = d3.scaleOrdinal()
 				.domain(columnKeys)
 				.range(colors);
-
-			function generateLayout(cellCount, width, height) {
-				const layout = [];
-				const cols = Math.ceil(Math.sqrt(cellCount));
-				const rows = Math.ceil(cellCount / cols);
-				const cellWidth = width / cols;
-				const cellHeight = height / rows;
-				let index = 0;
-
-				for (let i = 0; i < rows; i++) {
-					for (let j = 0; j < cols; j++) {
-						if (index < cellCount) {
-							const x = (j * cellWidth) + (cellWidth / 2);
-							const y = (i * cellHeight) + (cellHeight / 2);
-							layout.push({ x: x, y: y, width: cellWidth, height: cellHeight });
-							index++;
-						}
-					}
-				}
-
-				return layout;
-			}
-
-			const layout = generateLayout(data.length, chartW, chartH);
 
 			// Add Title, Chart and Legend main layer groups
 			const mainLayers = ["title", "chart", "legend"];
@@ -131,15 +129,15 @@ export default function() {
 			const componentBarsCircular = component.barsCircular()
 				.colorScale(colorScale)
 				.xScale(xScale)
-				.opacity(opacity)
 				.yScale(yScale)
+				.opacity(opacity)
 				.dispatch(dispatch)
 				.transition(transition);
 
 			// Circular Axis
 			const componentCircularAxis = component.circularAxis()
-				.radialScale(yScale)
-				.ringScale(xScale);
+				.ringScale(xScale)
+				.radialScale(yScale);
 
 			// Outer Labels
 			const componentCircularSectorLabels = component.circularSectorLabels()
@@ -162,7 +160,7 @@ export default function() {
 				.classed("series", true)
 				.merge(series)
 				.attr("data-name", (d) => d.key)
-				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+				.attr("transform", (d, i) => `translate(${coordinates[i].x},${coordinates[i].y})`)
 				.call(componentBarsCircular)
 				.call(componentCircularRingLabels);
 
@@ -179,7 +177,7 @@ export default function() {
 					.append("g")
 					.classed("seriesAxis", true)
 					.merge(seriesAxis)
-					.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+					.attr("transform", (d, i) => `translate(${coordinates[i].x},${coordinates[i].y})`)
 					.call(componentCircularAxis)
 					.call(componentCircularSectorLabels);
 
@@ -206,6 +204,7 @@ export default function() {
 			if (showLegend) {
 				const componentLegend = component.legend()
 					.colorScale(colorScale)
+					.title(legendTitle)
 					.height(legendH)
 					.width(legendW)
 					.itemType("rect")

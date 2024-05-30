@@ -1802,10 +1802,10 @@
 	        return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
 	      });
 	      def.exit().remove();
-	      var text = labelsEnter.selectAll(".label").data(function (d) {
+	      var text = labelsEnter.selectAll(".sectorLabel").data(function (d) {
 	        return d;
 	      });
-	      text.enter().append("text").classed("label", true).attr("font-size", "0.9em").attr("color", "currentColor").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
+	      text.enter().append("text").classed("sectorLabel", true).attr("font-size", "0.71em").attr("color", "currentColor").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
 	        return "#".concat(uId, "-path");
 	      }).text(function (d) {
 	        var text = d.value;
@@ -2119,10 +2119,10 @@
 	        return [d];
 	      });
 	      var labelsGroupEnter = labelsGroup.enter().append("g").attr("class", "labels").merge(labelsGroup);
-	      var labels = labelsGroupEnter.selectAll("text.label").data(function (d) {
+	      var labels = labelsGroupEnter.selectAll("text.donutLabel").data(function (d) {
 	        return pie(d.values);
 	      });
-	      labels.enter().append("text").attr("class", "label").attr("font-size", "0.9em").attr("dy", ".35em").attr("fill", "currentColor").merge(labels).transition().duration(transition.duration).text(function (d) {
+	      labels.enter().append("text").attr("class", "donutLabel").attr("font-size", "0.7em").attr("dy", ".35em").attr("fill", "currentColor").merge(labels).transition().duration(transition.duration).text(function (d) {
 	        return d.data.key;
 	      }).attrTween("transform", function (d) {
 	        this._current = this._current || d;
@@ -2153,7 +2153,7 @@
 	      var connectors = connectorsGroup.selectAll("polyline.connector").data(function (d) {
 	        return pie(d.values);
 	      });
-	      connectors.enter().append("polyline").attr("class", "connector").attr("fill", "none").attr("stroke", "currentColor").attr("stroke-width", "1.5px").merge(connectors).transition().duration(transition.duration).attrTween("points", function (d) {
+	      connectors.enter().append("polyline").attr("class", "connector").attr("fill", "none").attr("stroke", "currentColor").attr("stroke-width", "1px").merge(connectors).transition().duration(transition.duration).attrTween("points", function (d) {
 	        this._current = this._current || d;
 	        var interpolate = d3__namespace.interpolate(this._current, d);
 	        this._current = interpolate(0);
@@ -5203,11 +5203,39 @@
 	  /* Other Customisation Options */
 	  var title = null;
 	  var subTitle = null;
+	  var legendTitle = "Key";
 	  var opacity = 1;
 	  var showLegend = false;
 	  var showAxis = true;
 	  var startAngle = 0;
 	  var endAngle = 270;
+	  function generateLayout(cellCount, width, height) {
+	    var cols = Math.ceil(Math.sqrt(cellCount));
+	    var rows = Math.ceil(cellCount / cols);
+	    var cellWidth = width / cols;
+	    var cellHeight = height / rows;
+	    var cellPadding = 15;
+	    var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	    var coordinates = [];
+	    for (var i = 0; i < cellCount; i++) {
+	      var row = Math.floor(i / cols);
+	      var col = i % cols;
+	      var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	      var offsetY = cellHeight / 2;
+	      var x = col * cellWidth + offsetX;
+	      var y = row * cellHeight + offsetY;
+	      coordinates.push({
+	        x: x,
+	        y: y
+	      });
+	    }
+	    return {
+	      cellWidth: cellWidth,
+	      cellHeight: cellHeight,
+	      cellRadius: cellRadius,
+	      coordinates: coordinates
+	    };
+	  }
 
 	  /**
 	   * Constructor
@@ -5237,7 +5265,9 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
+	      var _generateLayout = generateLayout(data.length, chartW, chartH),
+	        coordinates = _generateLayout.coordinates,
+	        radius = _generateLayout.cellRadius;
 	      var innerRadius = radius / 4;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -5246,31 +5276,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([innerRadius, radius]).padding(0.15);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([startAngle, endAngle]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      function generateLayout(cellCount, width, height) {
-	        var layout = [];
-	        var cols = Math.ceil(Math.sqrt(cellCount));
-	        var rows = Math.ceil(cellCount / cols);
-	        var cellWidth = width / cols;
-	        var cellHeight = height / rows;
-	        var index = 0;
-	        for (var i = 0; i < rows; i++) {
-	          for (var j = 0; j < cols; j++) {
-	            if (index < cellCount) {
-	              var x = j * cellWidth + cellWidth / 2;
-	              var y = i * cellHeight + cellHeight / 2;
-	              layout.push({
-	                x: x,
-	                y: y,
-	                width: cellWidth,
-	                height: cellHeight
-	              });
-	              index++;
-	            }
-	          }
-	        }
-	        return layout;
-	      }
-	      var layout = generateLayout(data.length, chartW, chartH);
 
 	      // Add Title, Chart and Legend main layer groups
 	      var mainLayers = ["title", "chart", "legend"];
@@ -5288,10 +5293,10 @@
 	      });
 
 	      // Radial Bars
-	      var componentBarsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).opacity(opacity).yScale(yScale).dispatch(dispatch).transition(transition);
+	      var componentBarsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
-	      var componentCircularAxis = component.circularAxis().radialScale(yScale).ringScale(xScale);
+	      var componentCircularAxis = component.circularAxis().ringScale(xScale).radialScale(yScale);
 
 	      // Outer Labels
 	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(xScale).radialScale(yScale).textAnchor("middle");
@@ -5304,7 +5309,7 @@
 	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
 	        return d.key;
 	      }).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	      }).call(componentBarsCircular).call(componentCircularRingLabels);
 	      series.exit().remove();
 
@@ -5312,7 +5317,7 @@
 	      if (showAxis) {
 	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
 	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
-	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	          return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	        }).call(componentCircularAxis).call(componentCircularSectorLabels);
 	        seriesAxis.exit().remove();
 	      } else {
@@ -5329,7 +5334,7 @@
 
 	      // Legend
 	      if (showLegend) {
-	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        var componentLegend = component.legend().colorScale(colorScale).title(legendTitle).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
 	        legendSelect.selectAll("*").remove();
@@ -6771,6 +6776,33 @@
 	  var showAxis = true;
 	  var startAngle = 0;
 	  var endAngle = 360;
+	  function generateLayout(cellCount, width, height) {
+	    var cols = Math.ceil(Math.sqrt(cellCount));
+	    var rows = Math.ceil(cellCount / cols);
+	    var cellWidth = width / cols;
+	    var cellHeight = height / rows;
+	    var cellPadding = 15;
+	    var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	    var coordinates = [];
+	    for (var i = 0; i < cellCount; i++) {
+	      var row = Math.floor(i / cols);
+	      var col = i % cols;
+	      var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	      var offsetY = cellHeight / 2;
+	      var x = col * cellWidth + offsetX;
+	      var y = row * cellHeight + offsetY;
+	      coordinates.push({
+	        x: x,
+	        y: y
+	      });
+	    }
+	    return {
+	      cellWidth: cellWidth,
+	      cellHeight: cellHeight,
+	      cellRadius: cellRadius,
+	      coordinates: coordinates
+	    };
+	  }
 
 	  /**
 	   * Constructor
@@ -6800,7 +6832,9 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
+	      var _generateLayout = generateLayout(data.length, chartW, chartH),
+	        coordinates = _generateLayout.coordinates,
+	        radius = _generateLayout.cellRadius;
 	      var innerRadius = radius / 2;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -6808,31 +6842,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([innerRadius, radius]);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([startAngle, endAngle]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      function generateLayout(cellCount, width, height) {
-	        var layout = [];
-	        var cols = Math.ceil(Math.sqrt(cellCount));
-	        var rows = Math.ceil(cellCount / cols);
-	        var cellWidth = width / cols;
-	        var cellHeight = height / rows;
-	        var index = 0;
-	        for (var i = 0; i < rows; i++) {
-	          for (var j = 0; j < cols; j++) {
-	            if (index < cellCount) {
-	              var x = j * cellWidth + cellWidth / 2;
-	              var y = i * cellHeight + cellHeight / 2;
-	              layout.push({
-	                x: x,
-	                y: y,
-	                width: cellWidth,
-	                height: cellHeight
-	              });
-	              index++;
-	            }
-	          }
-	        }
-	        return layout;
-	      }
-	      var layout = generateLayout(data.length, chartW, chartH);
 
 	      // Add Title, Chart and Legend main layer groups
 	      var mainLayers = ["title", "chart", "legend"];
@@ -6860,7 +6869,7 @@
 	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
 	        return d.key;
 	      }).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	      }).call(componentDonut);
 	      series.exit().remove();
 
@@ -6868,7 +6877,7 @@
 	      if (showAxis) {
 	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
 	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
-	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	          return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	        }).call(componentDonutLabels);
 	        seriesAxis.exit().remove();
 	      } else {
@@ -7984,6 +7993,33 @@
 	  var showAxis = true;
 	  var startAngle = 0;
 	  var endAngle = 360;
+	  function generateLayout(cellCount, width, height) {
+	    var cols = Math.ceil(Math.sqrt(cellCount));
+	    var rows = Math.ceil(cellCount / cols);
+	    var cellWidth = width / cols;
+	    var cellHeight = height / rows;
+	    var cellPadding = 15;
+	    var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	    var coordinates = [];
+	    for (var i = 0; i < cellCount; i++) {
+	      var row = Math.floor(i / cols);
+	      var col = i % cols;
+	      var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	      var offsetY = cellHeight / 2;
+	      var x = col * cellWidth + offsetX;
+	      var y = row * cellHeight + offsetY;
+	      coordinates.push({
+	        x: x,
+	        y: y
+	      });
+	    }
+	    return {
+	      cellWidth: cellWidth,
+	      cellHeight: cellHeight,
+	      cellRadius: cellRadius,
+	      coordinates: coordinates
+	    };
+	  }
 
 	  /**
 	   * Constructor
@@ -8013,39 +8049,17 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
+	      var _generateLayout = generateLayout(data.length, chartW, chartH),
+	        coordinates = _generateLayout.coordinates,
+	        radius = _generateLayout.cellRadius;
+	      var innerRadius = 0;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
 	        valueMax = _dataTransform$summar.valueMax;
 	      var valueExtent = [0, valueMax];
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]);
-	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([0, radius]);
+	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([innerRadius, radius]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      function generateLayout(cellCount, width, height) {
-	        var layout = [];
-	        var cols = Math.ceil(Math.sqrt(cellCount));
-	        var rows = Math.ceil(cellCount / cols);
-	        var cellWidth = width / cols;
-	        var cellHeight = height / rows;
-	        var index = 0;
-	        for (var i = 0; i < rows; i++) {
-	          for (var j = 0; j < cols; j++) {
-	            if (index < cellCount) {
-	              var x = j * cellWidth + cellWidth / 2;
-	              var y = i * cellHeight + cellHeight / 2;
-	              layout.push({
-	                x: x,
-	                y: y,
-	                width: cellWidth,
-	                height: cellHeight
-	              });
-	              index++;
-	            }
-	          }
-	        }
-	        return layout;
-	      }
-	      var layout = generateLayout(data.length, chartW, chartH);
 
 	      // Add Title, Chart and Legend main layer groups
 	      var mainLayers = ["title", "chart", "legend"];
@@ -8076,7 +8090,7 @@
 	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
 	        return d.key;
 	      }).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	        return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	      }).call(componentPolarArea);
 	      series.exit().remove();
 
@@ -8084,7 +8098,7 @@
 	      if (showAxis) {
 	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
 	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
-	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	          return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	        }).call(componentCircularAxis).call(componentCircularSectorLabels);
 	        seriesAxis.exit().remove();
 	      } else {

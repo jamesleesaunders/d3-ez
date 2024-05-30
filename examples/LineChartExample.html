@@ -46,7 +46,7 @@
         const data = currencies.map(currency => ({
           key: currency,
           values: csv.map(d => ({
-            key: dateConvert(d.Date),
+            date: dateConvert(d.Date),
             value: d[currency]
           }))
         }));
