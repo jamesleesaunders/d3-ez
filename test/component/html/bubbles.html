@@ -19,7 +19,11 @@
       var maxRadius = 25;
 
       var colors = d3.ez.palette.categorical(1);
-      var { rowKeys, coordinatesExtent: { x: xExtent, y: yExtent }, valueExtent } = d3.ez.dataTransform(myData).summary();
+      var {
+        rowKeys,
+        coordinatesExtent: { x: xExtent, y: yExtent },
+        valueExtent
+      } = d3.ez.dataTransform(myData).summary();
 
       var xScale = d3.scaleLinear()
         .domain(xExtent)

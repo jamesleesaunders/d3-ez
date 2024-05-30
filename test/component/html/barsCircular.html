@@ -21,7 +21,7 @@
       var endAngle = 270;
 
       var colors = d3.ez.palette.categorical(1);
-      var { columnKeys, valueMax} = d3.ez.dataTransform(myData).summary();
+      var { columnKeys, valueMax } = d3.ez.dataTransform(myData).summary();
       var valueExtent = [0, valueMax];
 
       var xScale = d3.scaleBand()

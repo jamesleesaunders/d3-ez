@@ -300,8 +300,6 @@ export default function() {
 		return this;
 	};
 
-
-
 	/**
 	 * Transition Getter / Setter
 	 *

@@ -75,19 +75,19 @@
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	};
 	var devDependencies = {
-		"@babel/core": "^7.24.5",
-		"@babel/plugin-external-helpers": "^7.24.1",
-		"@babel/plugin-transform-object-assign": "^7.24.1",
-		"@babel/plugin-syntax-import-attributes": "^7.24.1",
-		"@babel/preset-env": "^7.24.5",
+		"@babel/core": "^7.24.6",
+		"@babel/plugin-external-helpers": "^7.24.6",
+		"@babel/plugin-syntax-import-attributes": "^7.24.6",
+		"@babel/plugin-transform-object-assign": "^7.24.6",
+		"@babel/preset-env": "^7.24.6",
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		eslint: "^9.3.0",
 		"gh-pages": "^6.1.1",
 		jsdoc: "^4.0.3",
-		jsdom: "^24.0.0",
-		rollup: "^4.17.2",
+		jsdom: "^24.1.0",
+		rollup: "^4.18.0",
 		"tap-arc": "^1.2.2",
 		tape: "^5.7.5",
 		"toast-jsdoc": "^1.0.2",
@@ -475,6 +475,20 @@
 	  return my;
 	}
 
+	function _arrayLikeToArray(r, a) {
+	  (null == a || a > r.length) && (a = r.length);
+	  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+	  return n;
+	}
+	function _arrayWithHoles(r) {
+	  if (Array.isArray(r)) return r;
+	}
+	function _arrayWithoutHoles(r) {
+	  if (Array.isArray(r)) return _arrayLikeToArray(r);
+	}
+	function _iterableToArray(r) {
+	  if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
+	}
 	function _iterableToArrayLimit(r, l) {
 	  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
 	  if (null != t) {
@@ -499,39 +513,24 @@
 	    return a;
 	  }
 	}
-	function _slicedToArray(arr, i) {
-	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-	}
-	function _toConsumableArray(arr) {
-	  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-	}
-	function _arrayWithoutHoles(arr) {
-	  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-	}
-	function _arrayWithHoles(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _iterableToArray(iter) {
-	  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-	}
-	function _unsupportedIterableToArray(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-	}
-	function _arrayLikeToArray(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-	  return arr2;
+	function _nonIterableRest() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 	}
 	function _nonIterableSpread() {
 	  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 	}
-	function _nonIterableRest() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	function _slicedToArray(r, e) {
+	  return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest();
+	}
+	function _toConsumableArray(r) {
+	  return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread();
+	}
+	function _unsupportedIterableToArray(r, a) {
+	  if (r) {
+	    if ("string" == typeof r) return _arrayLikeToArray(r, a);
+	    var t = {}.toString.call(r).slice(8, -1);
+	    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+	  }
 	}
 
 	/**
@@ -5176,6 +5175,34 @@
 	  }
 	};
 
+	function generateLayout(cellCount, width, height) {
+	  var cols = Math.ceil(Math.sqrt(cellCount));
+	  var rows = Math.ceil(cellCount / cols);
+	  var cellWidth = width / cols;
+	  var cellHeight = height / rows;
+	  var cellPadding = 15;
+	  var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	  var coordinates = [];
+	  for (var i = 0; i < cellCount; i++) {
+	    var row = Math.floor(i / cols);
+	    var col = i % cols;
+	    var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	    var offsetY = cellHeight / 2;
+	    var x = col * cellWidth + offsetX;
+	    var y = row * cellHeight + offsetY;
+	    coordinates.push({
+	      x: x,
+	      y: y
+	    });
+	  }
+	  return {
+	    cellWidth: cellWidth,
+	    cellHeight: cellHeight,
+	    cellRadius: cellRadius,
+	    coordinates: coordinates
+	  };
+	}
+
 	/**
 	 * Circular Bar Chart (aka: Progress Chart)
 	 *
@@ -5209,33 +5236,6 @@
 	  var showAxis = true;
 	  var startAngle = 0;
 	  var endAngle = 270;
-	  function generateLayout(cellCount, width, height) {
-	    var cols = Math.ceil(Math.sqrt(cellCount));
-	    var rows = Math.ceil(cellCount / cols);
-	    var cellWidth = width / cols;
-	    var cellHeight = height / rows;
-	    var cellPadding = 15;
-	    var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
-	    var coordinates = [];
-	    for (var i = 0; i < cellCount; i++) {
-	      var row = Math.floor(i / cols);
-	      var col = i % cols;
-	      var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
-	      var offsetY = cellHeight / 2;
-	      var x = col * cellWidth + offsetX;
-	      var y = row * cellHeight + offsetY;
-	      coordinates.push({
-	        x: x,
-	        y: y
-	      });
-	    }
-	    return {
-	      cellWidth: cellWidth,
-	      cellHeight: cellHeight,
-	      cellRadius: cellRadius,
-	      coordinates: coordinates
-	    };
-	  }
 
 	  /**
 	   * Constructor
@@ -6776,33 +6776,6 @@
 	  var showAxis = true;
 	  var startAngle = 0;
 	  var endAngle = 360;
-	  function generateLayout(cellCount, width, height) {
-	    var cols = Math.ceil(Math.sqrt(cellCount));
-	    var rows = Math.ceil(cellCount / cols);
-	    var cellWidth = width / cols;
-	    var cellHeight = height / rows;
-	    var cellPadding = 15;
-	    var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
-	    var coordinates = [];
-	    for (var i = 0; i < cellCount; i++) {
-	      var row = Math.floor(i / cols);
-	      var col = i % cols;
-	      var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
-	      var offsetY = cellHeight / 2;
-	      var x = col * cellWidth + offsetX;
-	      var y = row * cellHeight + offsetY;
-	      coordinates.push({
-	        x: x,
-	        y: y
-	      });
-	    }
-	    return {
-	      cellWidth: cellWidth,
-	      cellHeight: cellHeight,
-	      cellRadius: cellRadius,
-	      coordinates: coordinates
-	    };
-	  }
 
 	  /**
 	   * Constructor
@@ -7993,33 +7966,6 @@
 	  var showAxis = true;
 	  var startAngle = 0;
 	  var endAngle = 360;
-	  function generateLayout(cellCount, width, height) {
-	    var cols = Math.ceil(Math.sqrt(cellCount));
-	    var rows = Math.ceil(cellCount / cols);
-	    var cellWidth = width / cols;
-	    var cellHeight = height / rows;
-	    var cellPadding = 15;
-	    var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
-	    var coordinates = [];
-	    for (var i = 0; i < cellCount; i++) {
-	      var row = Math.floor(i / cols);
-	      var col = i % cols;
-	      var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
-	      var offsetY = cellHeight / 2;
-	      var x = col * cellWidth + offsetX;
-	      var y = row * cellHeight + offsetY;
-	      coordinates.push({
-	        x: x,
-	        y: y
-	      });
-	    }
-	    return {
-	      cellWidth: cellWidth,
-	      cellHeight: cellHeight,
-	      cellRadius: cellRadius,
-	      coordinates: coordinates
-	    };
-	  }
 
 	  /**
 	   * Constructor

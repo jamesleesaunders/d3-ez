@@ -74,6 +74,7 @@ export default function() {
 				let dateObject = new Date(dateString);
 				return !isNaN(dateObject.getTime());
 			}
+
 			const isTimeSeries = isTimeSeriesData(data);
 
 			if (isTimeSeries) {
