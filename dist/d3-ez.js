@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.4";
+	var version$1 = "4.0.5";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -45,7 +45,7 @@
 		"svg",
 		"dataviz"
 	];
-	var homepage = "http://d3-ez.net";
+	var homepage = "https://github.com/jamesleesaunders/d3-ez";
 	var author$1 = "James Saunders (james@saunders-family.net)";
 	var repository = {
 		type: "git",
@@ -75,19 +75,19 @@
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	};
 	var devDependencies = {
-		"@babel/core": "^7.24.5",
-		"@babel/plugin-external-helpers": "^7.24.1",
-		"@babel/plugin-transform-object-assign": "^7.24.1",
-		"@babel/plugin-syntax-import-attributes": "^7.24.1",
-		"@babel/preset-env": "^7.24.5",
+		"@babel/core": "^7.24.6",
+		"@babel/plugin-external-helpers": "^7.24.6",
+		"@babel/plugin-syntax-import-attributes": "^7.24.6",
+		"@babel/plugin-transform-object-assign": "^7.24.6",
+		"@babel/preset-env": "^7.24.6",
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		eslint: "^9.3.0",
 		"gh-pages": "^6.1.1",
 		jsdoc: "^4.0.3",
-		jsdom: "^24.0.0",
-		rollup: "^4.17.2",
+		jsdom: "^24.1.0",
+		rollup: "^4.18.0",
 		"tap-arc": "^1.2.2",
 		tape: "^5.7.5",
 		"toast-jsdoc": "^1.0.2",
@@ -195,7 +195,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	      }).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -338,7 +340,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("x", 0).attr("y", function (d) {
 	        return yScale(d.key);
-	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("fill", function (d) {
+	      }).attr("height", yScale.bandwidth()).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -471,6 +475,20 @@
 	  return my;
 	}
 
+	function _arrayLikeToArray(r, a) {
+	  (null == a || a > r.length) && (a = r.length);
+	  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+	  return n;
+	}
+	function _arrayWithHoles(r) {
+	  if (Array.isArray(r)) return r;
+	}
+	function _arrayWithoutHoles(r) {
+	  if (Array.isArray(r)) return _arrayLikeToArray(r);
+	}
+	function _iterableToArray(r) {
+	  if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
+	}
 	function _iterableToArrayLimit(r, l) {
 	  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
 	  if (null != t) {
@@ -495,39 +513,24 @@
 	    return a;
 	  }
 	}
-	function _slicedToArray(arr, i) {
-	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-	}
-	function _toConsumableArray(arr) {
-	  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
-	}
-	function _arrayWithoutHoles(arr) {
-	  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
-	}
-	function _arrayWithHoles(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _iterableToArray(iter) {
-	  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-	}
-	function _unsupportedIterableToArray(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-	}
-	function _arrayLikeToArray(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
-	  return arr2;
+	function _nonIterableRest() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 	}
 	function _nonIterableSpread() {
 	  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 	}
-	function _nonIterableRest() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	function _slicedToArray(r, e) {
+	  return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest();
+	}
+	function _toConsumableArray(r) {
+	  return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread();
+	}
+	function _unsupportedIterableToArray(r, a) {
+	  if (r) {
+	    if ("string" == typeof r) return _arrayLikeToArray(r, a);
+	    var t = {}.toString.call(r).slice(8, -1);
+	    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+	  }
 	}
 
 	/**
@@ -587,7 +590,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", function (d) {
 	        return xScale(d.key);
-	      }).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	      }).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("y", function (d) {
 	        return d.value < 0 ? yScale(0) : yScale(d.value);
@@ -774,7 +779,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("x", 0).attr("y", function (d) {
+	      }).attr("height", 0).attr("width", xScale.bandwidth()).attr("x", 0).attr("y", height).merge(bars).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("x", 0).attr("y", function (d) {
 	        return yScale(d.y1);
 	      }).attr("width", width).attr("height", function (d) {
 	        var padding = 3;
@@ -1099,7 +1106,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
-	      }).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      }).merge(bubbles).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(d.x), ",").concat(yScale(d.y), ")");
 	      }).call(bubble);
 	      bubbles.exit().transition().ease(transition.ease).duration(transition.duration).style("opacity", 0).remove();
@@ -1302,7 +1311,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(candles).attr("fill", function (d) {
+	      }).merge(candles).attr("data-name", function (d) {
+	        return d.date;
+	      }).attr("fill", function (d) {
 	        return colorScale(isUpDay(d));
 	      }).attr("stroke", function (d) {
 	        return colorScale(isUpDay(d));
@@ -1790,10 +1801,10 @@
 	        return "m0 " + -r + " a" + r + " " + r + " 0 1,1 -0.01 0";
 	      });
 	      def.exit().remove();
-	      var text = labelsEnter.selectAll(".label").data(function (d) {
+	      var text = labelsEnter.selectAll(".sectorLabel").data(function (d) {
 	        return d;
 	      });
-	      text.enter().append("text").classed("label", true).attr("font-size", "0.9em").attr("color", "currentColor").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
+	      text.enter().append("text").classed("sectorLabel", true).attr("font-size", "0.71em").attr("color", "currentColor").style("text-anchor", textAnchor).append("textPath").attr("xlink:href", function () {
 	        return "#".concat(uId, "-path");
 	      }).text(function (d) {
 	        var text = d.value;
@@ -1950,7 +1961,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	      }).merge(slices).transition().duration(transition.duration).ease(transition.ease).attr("data-name", function (d) {
+	        return d.data.key;
+	      }).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.key);
@@ -2105,10 +2118,10 @@
 	        return [d];
 	      });
 	      var labelsGroupEnter = labelsGroup.enter().append("g").attr("class", "labels").merge(labelsGroup);
-	      var labels = labelsGroupEnter.selectAll("text.label").data(function (d) {
+	      var labels = labelsGroupEnter.selectAll("text.donutLabel").data(function (d) {
 	        return pie(d.values);
 	      });
-	      labels.enter().append("text").attr("class", "label").attr("font-size", "0.9em").attr("dy", ".35em").attr("fill", "currentColor").merge(labels).transition().duration(transition.duration).text(function (d) {
+	      labels.enter().append("text").attr("class", "donutLabel").attr("font-size", "0.7em").attr("dy", ".35em").attr("fill", "currentColor").merge(labels).transition().duration(transition.duration).text(function (d) {
 	        return d.data.key;
 	      }).attrTween("transform", function (d) {
 	        this._current = this._current || d;
@@ -2139,7 +2152,7 @@
 	      var connectors = connectorsGroup.selectAll("polyline.connector").data(function (d) {
 	        return pie(d.values);
 	      });
-	      connectors.enter().append("polyline").attr("class", "connector").attr("fill", "none").attr("stroke", "currentColor").attr("stroke-width", "1.5px").merge(connectors).transition().duration(transition.duration).attrTween("points", function (d) {
+	      connectors.enter().append("polyline").attr("class", "connector").attr("fill", "none").attr("stroke", "currentColor").attr("stroke-width", "1px").merge(connectors).transition().duration(transition.duration).attrTween("points", function (d) {
 	        this._current = this._current || d;
 	        var interpolate = d3__namespace.interpolate(this._current, d);
 	        this._current = interpolate(0);
@@ -2258,7 +2271,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().duration(transition.duration).attr("fill", function (d) {
+	      }).merge(segments).transition().duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("fill", function (d) {
 	        return colorScale(d.data.value);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.value);
@@ -2411,7 +2426,9 @@
 	        dispatch.call("customValueClick", this, e, d);
 	      }).attr("x", function (d) {
 	        return xScale(d.key);
-	      }).attr("y", 0).attr("width", cellWidth).attr("height", cellHeight).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("x", function (d) {
+	      }).attr("y", 0).attr("width", cellWidth).attr("height", cellHeight).merge(cells).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("x", function (d) {
 	        return xScale(d.key);
 	      }).attr("width", cellWidth).attr("height", cellHeight).attr("fill", function (d) {
 	        return colorScale(d.value);
@@ -3185,7 +3202,7 @@
 	        return {
 	          x: sizeScale(domainMax),
 	          y: yScale(i),
-	          r: sizeScale(ranges[i][0]),
+	          r: sizeScale(ranges[i][1]),
 	          text: v[0].toFixed(0) + " \u2014 " + v[1].toFixed(0)
 	        };
 	      });
@@ -3205,7 +3222,7 @@
 	      return d.r;
 	    }).attr("cx", function (d) {
 	      return d.x;
-	    }).attr("fill", "#cad4e7").attr("stroke", "#cad4e7").attr("stroke-width", 1).attr("fill-opacity", opacity);
+	    }).attr("fill", "#cad4e7").attr("stroke", "#cad4e7").attr("stroke-width", 1).attr("fill-opacity", opacity / 2);
 	    itemsEnter.append("text").attr("font-size", "0.9em").attr("fill", "currentColor").attr("dominant-baseline", "middle").attr("x", function (d) {
 	      return d.x * 2 + 5;
 	    }).text(function (d) {
@@ -3217,7 +3234,7 @@
 	    itemsTrans.select("text").text(function (d) {
 	      return d.text;
 	    });
-	    itemsTrans.select("circle").attr("fill-opacity", opacity);
+	    itemsTrans.select("circle").attr("fill-opacity", opacity / 2);
 	  }
 
 	  /**
@@ -3317,7 +3334,7 @@
 	   * Constructor
 	   *
 	   * @constructor
-	   * @alias legendColor
+	   * @alias legendCategorical
 	   * @param {d3.selection} selection - The chart holder D3 selection.
 	   */
 	  function my(selection) {
@@ -3859,7 +3876,9 @@
 	      });
 	      path.enter().append("path").attr("class", "line").attr("stroke-width", 1.5).attr("fill", "none").attr("d", function (d) {
 	        return line(d.values);
-	      }).merge(path).transition().duration(transition.duration).attrTween("d", function (d) {
+	      }).merge(path).transition().duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attrTween("d", function (d) {
 	        return pathTween(d.values);
 	      }).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -4003,7 +4022,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).text(function (d) {
+	      }).merge(numbers).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).text(function (d) {
 	        return d["value"];
 	      }).attr("fill", function (d) {
 	        return colorScale(d.value);
@@ -4168,7 +4189,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
+	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.data.key;
+	      }).attr("d", arc).attrTween("d", arcTween).style("fill", function (d) {
 	        return colorScale(d.data.key);
 	      }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	        return colorScale(d.data.key);
@@ -4327,7 +4350,9 @@
 	        var x = cellWidth / 2 + xScale(d.key);
 	        var y = cellHeight / 2;
 	        return "translate(".concat(x, ",").concat(y, ")");
-	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	      }).merge(spots).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        var x = cellWidth / 2 + xScale(d.key);
 	        var y = cellHeight / 2;
 	        return "translate(".concat(x, ",").concat(y, ")");
@@ -4477,7 +4502,11 @@
 	      });
 
 	      // Add Component Level Group
-	      var componentGroup = seriesGroup.selectAll("g.".concat(classed)).data(function (d) {
+	      var componentGroup = seriesGroup.attr("fill", function (d) {
+	        return colorScale(d.key);
+	      }).style("stroke", function (d) {
+	        return colorScale(d.key);
+	      }).selectAll("g.".concat(classed)).data(function (d) {
 	        return [d];
 	      }).enter().append("g").classed(classed, true).merge(seriesGroup);
 
@@ -4489,7 +4518,9 @@
 	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity);
 	      }).on("mouseout", function () {
 	        d3__namespace.select(this).transition().duration(200).style("fill-opacity", opacity / 2);
-	      }).merge(path).transition().ease(transition.ease).duration(transition.duration).style("fill-opacity", opacity / 2).attr("d", function (d) {
+	      }).merge(path).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).style("fill-opacity", opacity / 2).attr("d", function (d) {
 	        return radarLine(d.values);
 	      });
 
@@ -4497,11 +4528,9 @@
 	      var dots = componentGroup.selectAll("circle").data(function (d) {
 	        return d.values;
 	      });
-	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots)
-	      //.transition()
-	      //.ease(transition.ease)
-	      //.duration(transition.duration)
-	      .attr("cx", function (d, i) {
+	      dots.enter().append("circle").attr("class", "radarCircle").attr("r", 4).style("fill-opacity", 0.8).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("cx", function (d, i) {
 	        return yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2);
 	      }).attr("cy", function (d, i) {
 	        return yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2);
@@ -4679,7 +4708,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
+	      }).merge(arcs).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("d", arc).attrTween("d", arcTween).attr("fill", function (d) {
 	        return colorScale(d.key);
 	      }).attr("stroke", function (d) {
 	        return colorScale(d.key);
@@ -4835,7 +4866,9 @@
 	        dispatch.call("customValueMouseOver", this, e, d);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d);
-	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("cx", function (d) {
+	      }).merge(dots).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("cx", function (d) {
 	        return xScale(d.key);
 	      }).attr("cy", function (d) {
 	        return yScale(d.value);
@@ -5035,7 +5068,7 @@
 	  labeledNode: componentLabeledNode,
 	  legend: componentLegend,
 	  legendSize: componentLegendSize,
-	  legendColor: componentLegendCategorical,
+	  legendCategorical: componentLegendCategorical,
 	  legendThreshold: componentLegendThreshold,
 	  lineChart: componentLineChart,
 	  numberCard: componentNumberCard,
@@ -5142,6 +5175,34 @@
 	  }
 	};
 
+	function generateLayout(cellCount, width, height) {
+	  var cols = Math.ceil(Math.sqrt(cellCount));
+	  var rows = Math.ceil(cellCount / cols);
+	  var cellWidth = width / cols;
+	  var cellHeight = height / rows;
+	  var cellPadding = 15;
+	  var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	  var coordinates = [];
+	  for (var i = 0; i < cellCount; i++) {
+	    var row = Math.floor(i / cols);
+	    var col = i % cols;
+	    var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	    var offsetY = cellHeight / 2;
+	    var x = col * cellWidth + offsetX;
+	    var y = row * cellHeight + offsetY;
+	    coordinates.push({
+	      x: x,
+	      y: y
+	    });
+	  }
+	  return {
+	    cellWidth: cellWidth,
+	    cellHeight: cellHeight,
+	    cellRadius: cellRadius,
+	    coordinates: coordinates
+	  };
+	}
+
 	/**
 	 * Circular Bar Chart (aka: Progress Chart)
 	 *
@@ -5162,13 +5223,14 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	  /* Other Customisation Options */
 	  var title = null;
 	  var subTitle = null;
+	  var legendTitle = "Key";
 	  var opacity = 1;
 	  var showLegend = false;
 	  var showAxis = true;
@@ -5203,7 +5265,9 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
+	      var _generateLayout = generateLayout(data.length, chartW, chartH),
+	        coordinates = _generateLayout.coordinates,
+	        radius = _generateLayout.cellRadius;
 	      var innerRadius = radius / 4;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -5212,31 +5276,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([innerRadius, radius]).padding(0.15);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([startAngle, endAngle]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      function generateLayout(cellCount, width, height) {
-	        var layout = [];
-	        var cols = Math.ceil(Math.sqrt(cellCount));
-	        var rows = Math.ceil(cellCount / cols);
-	        var cellWidth = width / cols;
-	        var cellHeight = height / rows;
-	        var index = 0;
-	        for (var i = 0; i < rows; i++) {
-	          for (var j = 0; j < cols; j++) {
-	            if (index < cellCount) {
-	              var x = j * cellWidth + cellWidth / 2;
-	              var y = i * cellHeight + cellHeight / 2;
-	              layout.push({
-	                x: x,
-	                y: y,
-	                width: cellWidth,
-	                height: cellHeight
-	              });
-	              index++;
-	            }
-	          }
-	        }
-	        return layout;
-	      }
-	      var layout = generateLayout(data.length, chartW, chartH);
 
 	      // Add Title, Chart and Legend main layer groups
 	      var mainLayers = ["title", "chart", "legend"];
@@ -5254,10 +5293,10 @@
 	      });
 
 	      // Radial Bars
-	      var componentBarsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).opacity(opacity).yScale(yScale).dispatch(dispatch).transition(transition);
+	      var componentBarsCircular = component.barsCircular().colorScale(colorScale).xScale(xScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
-	      var componentCircularAxis = component.circularAxis().radialScale(yScale).ringScale(xScale);
+	      var componentCircularAxis = component.circularAxis().ringScale(xScale).radialScale(yScale);
 
 	      // Outer Labels
 	      var componentCircularSectorLabels = component.circularSectorLabels().ringScale(xScale).radialScale(yScale).textAnchor("middle");
@@ -5267,8 +5306,10 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d, i) {
+	        return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	      }).call(componentBarsCircular).call(componentCircularRingLabels);
 	      series.exit().remove();
 
@@ -5276,7 +5317,7 @@
 	      if (showAxis) {
 	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
 	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
-	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	          return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	        }).call(componentCircularAxis).call(componentCircularSectorLabels);
 	        seriesAxis.exit().remove();
 	      } else {
@@ -5293,7 +5334,7 @@
 
 	      // Legend
 	      if (showLegend) {
-	        var componentLegend = component.legend().colorScale(colorScale).height(legendH).width(legendW).itemType("rect").opacity(opacity);
+	        var componentLegend = component.legend().colorScale(colorScale).title(legendTitle).height(legendH).width(legendW).itemType("rect").opacity(opacity);
 	        legendSelect.attr("transform", "translate(".concat(margin.left + chartW + legendPad, ",").concat(margin.top, ")")).call(componentLegend);
 	      } else {
 	        legendSelect.selectAll("*").remove();
@@ -5466,7 +5507,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5553,7 +5594,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale2(d.key), ",").concat(chartH - yScale(valueMin), ")");
 	      }).call(componentBars);
 	      series.exit().remove();
@@ -5783,7 +5826,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -5869,7 +5912,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d) {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(".concat(xScale(valueMin), ",").concat(yScale2(d.key), ")");
 	      }).call(componentBars);
 	      series.exit().remove();
@@ -6094,7 +6139,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6168,7 +6213,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).call(componentBubbles);
+	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).call(componentBubbles);
 	      series.exit().remove();
 
 	      // Axis
@@ -6403,7 +6450,7 @@
 	  var colors = ["green", "red"];
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6489,7 +6536,9 @@
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data([data]); // FIXME: Convert input data to support multi-series.
 
-	      series.enter().append("g").attr("class", "series").merge(series).call(componentCandleSticks);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).call(componentCandleSticks);
 	      series.exit().remove();
 
 	      // Axis
@@ -6715,7 +6764,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -6756,7 +6805,9 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
+	      var _generateLayout = generateLayout(data.length, chartW, chartH),
+	        coordinates = _generateLayout.coordinates,
+	        radius = _generateLayout.cellRadius;
 	      var innerRadius = radius / 2;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
@@ -6764,31 +6815,6 @@
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).range([innerRadius, radius]);
 	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([startAngle, endAngle]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      function generateLayout(cellCount, width, height) {
-	        var layout = [];
-	        var cols = Math.ceil(Math.sqrt(cellCount));
-	        var rows = Math.ceil(cellCount / cols);
-	        var cellWidth = width / cols;
-	        var cellHeight = height / rows;
-	        var index = 0;
-	        for (var i = 0; i < rows; i++) {
-	          for (var j = 0; j < cols; j++) {
-	            if (index < cellCount) {
-	              var x = j * cellWidth + cellWidth / 2;
-	              var y = i * cellHeight + cellHeight / 2;
-	              layout.push({
-	                x: x,
-	                y: y,
-	                width: cellWidth,
-	                height: cellHeight
-	              });
-	              index++;
-	            }
-	          }
-	        }
-	        return layout;
-	      }
-	      var layout = generateLayout(data.length, chartW, chartH);
 
 	      // Add Title, Chart and Legend main layer groups
 	      var mainLayers = ["title", "chart", "legend"];
@@ -6813,8 +6839,10 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d, i) {
+	        return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	      }).call(componentDonut);
 	      series.exit().remove();
 
@@ -6822,7 +6850,7 @@
 	      if (showAxis) {
 	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
 	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
-	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	          return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	        }).call(componentDonutLabels);
 	        seriesAxis.exit().remove();
 	      } else {
@@ -7011,7 +7039,7 @@
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7092,7 +7120,9 @@
 
 	      // Create Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing);
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentHeatMapRing);
 	      series.exit().remove();
 
 	      // Axis Labels
@@ -7297,7 +7327,7 @@
 	  var colors = palette.diverging(2).slice(0, 5);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7368,7 +7398,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", function (d) {
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(componentHeatMapRow);
 	      series.exit().remove();
@@ -7581,7 +7613,7 @@
 	  var colors = palette.categorical(1);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7632,11 +7664,19 @@
 	      valueMin = valueMin > 0 ? 0 : valueMin;
 	      var valueExtent = [valueMin, valueMax];
 	      var xScale = d3__namespace.scalePoint().domain(columnKeys).range([0, chartW]);
-	      {
+
+	      // Zoom does not work with non-time series (scalePoint)
+	      function isTimeSeriesData(data) {
+	        var dateString = data[0].values[0].date;
+	        var dateObject = new Date(dateString);
+	        return !isNaN(dateObject.getTime());
+	      }
+	      var isTimeSeries = isTimeSeriesData(data);
+	      if (isTimeSeries) {
 	        // TODO: Use dataTransform() to calculate date domains?
 	        data.forEach(function (d, i) {
 	          d.values.forEach(function (b, j) {
-	            data[i].values[j].key = new Date(b.key);
+	            data[i].values[j].key = new Date(b.date);
 	          });
 	        });
 	        var dateExtent = d3__namespace.extent(data[0].values, function (d) {
@@ -7670,7 +7710,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).call(componentLineChart).call(componentScatterPlot);
+	      series.enter().append("g").attr("class", "series").attr('clip-path', "url(#plotAreaClip)").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).call(componentLineChart).call(componentScatterPlot);
 	      series.exit().remove();
 
 	      // Axis
@@ -7713,8 +7755,10 @@
 	        });
 	        chartSelect.select(".seriesGroup").selectAll(".series").call(componentLineChart).call(componentScatterPlot);
 	      }
-	      var zoomArea = chartSelect.select(".zoomArea").selectAll("rect").data([0]);
-	      zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
+	      if (isTimeSeries) {
+	        var zoomArea = chartSelect.select(".zoomArea").selectAll("rect").data([0]);
+	        zoomArea.enter().append("rect").attr("fill", "none").attr("pointer-events", "all").merge(zoomArea).call(zoom).attr("width", chartW).attr("height", chartH);
+	      }
 
 	      // Title
 	      if (title) {
@@ -7910,7 +7954,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -7951,39 +7995,17 @@
 	      var titleH = title ? 40 : 0;
 	      var chartW = Math.max(width - margin.left - legendPad - legendW - margin.right, 100);
 	      var chartH = Math.max(height - margin.top - titleH - margin.bottom, 100);
-	      var radius = Math.min(chartW, chartH) / data.length / 2.3;
+	      var _generateLayout = generateLayout(data.length, chartW, chartH),
+	        coordinates = _generateLayout.coordinates,
+	        radius = _generateLayout.cellRadius;
+	      var innerRadius = 0;
 	      var _dataTransform$summar = dataTransform(data).summary(),
 	        columnKeys = _dataTransform$summar.columnKeys,
 	        valueMax = _dataTransform$summar.valueMax;
 	      var valueExtent = [0, valueMax];
 	      var xScale = d3__namespace.scaleBand().domain(columnKeys).rangeRound([startAngle, endAngle]);
-	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([0, radius]);
+	      var yScale = d3__namespace.scaleLinear().domain(valueExtent).range([innerRadius, radius]);
 	      var colorScale = d3__namespace.scaleOrdinal().domain(columnKeys).range(colors);
-	      function generateLayout(cellCount, width, height) {
-	        var layout = [];
-	        var cols = Math.ceil(Math.sqrt(cellCount));
-	        var rows = Math.ceil(cellCount / cols);
-	        var cellWidth = width / cols;
-	        var cellHeight = height / rows;
-	        var index = 0;
-	        for (var i = 0; i < rows; i++) {
-	          for (var j = 0; j < cols; j++) {
-	            if (index < cellCount) {
-	              var x = j * cellWidth + cellWidth / 2;
-	              var y = i * cellHeight + cellHeight / 2;
-	              layout.push({
-	                x: x,
-	                y: y,
-	                width: cellWidth,
-	                height: cellHeight
-	              });
-	              index++;
-	            }
-	          }
-	        }
-	        return layout;
-	      }
-	      var layout = generateLayout(data.length, chartW, chartH);
 
 	      // Add Title, Chart and Legend main layer groups
 	      var mainLayers = ["title", "chart", "legend"];
@@ -8011,8 +8033,10 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", function (d, i) {
-	        return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d, i) {
+	        return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	      }).call(componentPolarArea);
 	      series.exit().remove();
 
@@ -8020,7 +8044,7 @@
 	      if (showAxis) {
 	        var seriesAxis = chartSelect.select(".axis").selectAll(".seriesAxis").data(data);
 	        seriesAxis.enter().append("g").classed("seriesAxis", true).merge(seriesAxis).attr("transform", function (d, i) {
-	          return "translate(".concat(layout[i].x, ",").concat(layout[i].y, ")");
+	          return "translate(".concat(coordinates[i].x, ",").concat(coordinates[i].y, ")");
 	        }).call(componentCircularAxis).call(componentCircularSectorLabels);
 	        seriesAxis.exit().remove();
 	      } else {
@@ -8209,7 +8233,7 @@
 	  var colors = [d3__namespace.rgb("steelblue").brighter(), d3__namespace.rgb("steelblue").darker()];
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8283,7 +8307,9 @@
 
 	      // Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").attr("class", "series").merge(series).attr("transform", function (d) {
+	      series.enter().append("g").attr("class", "series").merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", function (d) {
 	        return "translate(0,".concat(yScale(d.key), ")");
 	      }).call(componentProportionalAreaCircles);
 	      series.exit().remove();
@@ -8519,7 +8545,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8596,11 +8622,9 @@
 
 	      // Create Radars
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).attr("fill", function (d) {
-	        return colorScale(d.key);
-	      }).style("stroke", function (d) {
-	        return colorScale(d.key);
-	      }).merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentRadarArea);
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).call(componentRadarArea);
 
 	      // Axis Labels
 	      if (showAxis) {
@@ -8791,7 +8815,7 @@
 	  var colors = palette.categorical(3);
 	  var transition = {
 	    ease: d3__namespace.easeLinear,
-	    duration: 0
+	    duration: 100
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
@@ -8872,7 +8896,9 @@
 
 	      // Create Series Group
 	      var series = chartSelect.select(".seriesGroup").selectAll(".series").data(data);
-	      series.enter().append("g").classed("series", true).merge(series).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
+	      series.enter().append("g").classed("series", true).merge(series).attr("data-name", function (d) {
+	        return d.key;
+	      }).attr("transform", "translate(".concat(chartW / 2, ",").concat(chartH / 2, ")")).each(function () {
 	        d3__namespace.select(this).call(componentRoseChartSector);
 	      });
 	      series.exit().remove();

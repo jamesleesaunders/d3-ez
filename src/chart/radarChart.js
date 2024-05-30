@@ -17,7 +17,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 100 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -131,9 +131,8 @@ export default function() {
 			series.enter()
 				.append("g")
 				.classed("series", true)
-				.attr("fill", (d) => colorScale(d.key))
-				.style("stroke", (d) => colorScale(d.key))
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", `translate(${chartW / 2},${(chartH / 2)})`)
 				.call(componentRadarArea);
 

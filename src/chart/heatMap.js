@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.diverging(2).slice(0, 5);
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 100 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -123,6 +123,7 @@ export default function() {
 				.append("g")
 				.attr("class", "series")
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", (d) => `translate(0,${yScale(d.key)})`)
 				.call(componentHeatMapRow);
 
@@ -298,8 +299,6 @@ export default function() {
 		showAxis = _v;
 		return this;
 	};
-
-
 
 	/**
 	 * Transition Getter / Setter

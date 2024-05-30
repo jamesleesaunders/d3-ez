@@ -58,6 +58,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.text((d) => d["value"])
 				.attr("fill", (d) => colorScale(d.value))
 				.attr("x", (d) => (xScale(d.key) + cellWidth / 2))

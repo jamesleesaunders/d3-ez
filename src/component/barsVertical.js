@@ -64,6 +64,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attr("x", (d) => xScale(d.key))
 				.attr("y", (d) => {
 					return d.value < 0 ? yScale(0) : yScale(d.value);

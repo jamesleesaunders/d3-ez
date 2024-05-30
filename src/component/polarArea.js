@@ -78,6 +78,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.data.key)
 				.attr("d", arc)
 				.attrTween("d", arcTween)
 				.style("fill", (d) => colorScale(d.data.key))

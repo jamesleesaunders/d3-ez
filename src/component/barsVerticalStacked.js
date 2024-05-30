@@ -98,6 +98,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attr("x", 0)
 				.attr("y", (d) => yScale(d.y1))
 				.attr("width", width)

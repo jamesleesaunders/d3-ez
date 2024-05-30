@@ -150,6 +150,7 @@ export default function() {
 				.on("mouseover", function(e, d) { dispatch.call("customValueMouseOver", this, e, d); })
 				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d); })
 				.merge(candles)
+				.attr("data-name", (d) => d.date)
 				.attr("fill", (d) => colorScale(isUpDay(d)))
 				.attr("stroke", (d) => colorScale(isUpDay(d)))
 				.attr("fill-opacity", opacity)

@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import component from "../component.js";
 import palette from "../palette.js";
 import dataTransform from "../dataTransform.js";
+import { generateLayout } from "../utils.js";
 
 /**
  * Circular Bar Chart (aka: Progress Chart)
@@ -17,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 40, left: 40 };
 	let colors = palette.categorical(3);
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 100 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -57,7 +58,7 @@ export default function() {
 			const titleH = title ? 40 : 0;
 			const chartW = Math.max((width - margin.left - legendPad - legendW - margin.right), 100);
 			const chartH = Math.max((height - margin.top - titleH - margin.bottom), 100);
-			const radius = (Math.min(chartW, chartH) / data.length) / 2.3;
+			const { coordinates, cellRadius: radius } = generateLayout(data.length, chartW, chartH);
 			const innerRadius = radius / 4;
 
 			const { columnKeys, valueMax } = dataTransform(data).summary();
@@ -75,30 +76,6 @@ export default function() {
 			const colorScale = d3.scaleOrdinal()
 				.domain(columnKeys)
 				.range(colors);
-
-			function generateLayout(cellCount, width, height) {
-				const layout = [];
-				const cols = Math.ceil(Math.sqrt(cellCount));
-				const rows = Math.ceil(cellCount / cols);
-				const cellWidth = width / cols;
-				const cellHeight = height / rows;
-				let index = 0;
-
-				for (let i = 0; i < rows; i++) {
-					for (let j = 0; j < cols; j++) {
-						if (index < cellCount) {
-							const x = (j * cellWidth) + (cellWidth / 2);
-							const y = (i * cellHeight) + (cellHeight / 2);
-							layout.push({ x: x, y: y, width: cellWidth, height: cellHeight });
-							index++;
-						}
-					}
-				}
-
-				return layout;
-			}
-
-			const layout = generateLayout(data.length, chartW, chartH);
 
 			// Add Title, Chart and Legend main layer groups
 			const mainLayers = ["title", "chart", "legend"];
@@ -131,15 +108,15 @@ export default function() {
 			const componentBarsCircular = component.barsCircular()
 				.colorScale(colorScale)
 				.xScale(xScale)
-				.opacity(opacity)
 				.yScale(yScale)
+				.opacity(opacity)
 				.dispatch(dispatch)
 				.transition(transition);
 
 			// Circular Axis
 			const componentCircularAxis = component.circularAxis()
-				.radialScale(yScale)
-				.ringScale(xScale);
+				.ringScale(xScale)
+				.radialScale(yScale);
 
 			// Outer Labels
 			const componentCircularSectorLabels = component.circularSectorLabels()
@@ -161,7 +138,8 @@ export default function() {
 				.append("g")
 				.classed("series", true)
 				.merge(series)
-				.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+				.attr("data-name", (d) => d.key)
+				.attr("transform", (d, i) => `translate(${coordinates[i].x},${coordinates[i].y})`)
 				.call(componentBarsCircular)
 				.call(componentCircularRingLabels);
 
@@ -178,7 +156,7 @@ export default function() {
 					.append("g")
 					.classed("seriesAxis", true)
 					.merge(seriesAxis)
-					.attr("transform", (d, i) => `translate(${layout[i].x},${layout[i].y})`)
+					.attr("transform", (d, i) => `translate(${coordinates[i].x},${coordinates[i].y})`)
 					.call(componentCircularAxis)
 					.call(componentCircularSectorLabels);
 
@@ -205,6 +183,7 @@ export default function() {
 			if (showLegend) {
 				const componentLegend = component.legend()
 					.colorScale(colorScale)
+					.title(legendTitle)
 					.height(legendH)
 					.width(legendW)
 					.itemType("rect")

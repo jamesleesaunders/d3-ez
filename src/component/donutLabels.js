@@ -70,13 +70,13 @@ export default function() {
 				.attr("class", "labels")
 				.merge(labelsGroup);
 
-			const labels = labelsGroupEnter.selectAll("text.label")
+			const labels = labelsGroupEnter.selectAll("text.donutLabel")
 				.data((d) => pie(d.values));
 
 			labels.enter()
 				.append("text")
-				.attr("class", "label")
-				.attr("font-size", "0.9em")
+				.attr("class", "donutLabel")
+				.attr("font-size", "0.7em")
 				.attr("dy", ".35em")
 				.attr("fill", "currentColor")
 				.merge(labels)
@@ -124,7 +124,7 @@ export default function() {
 				.attr("class", "connector")
 				.attr("fill", "none")
 				.attr("stroke", "currentColor")
-				.attr("stroke-width", "1.5px")
+				.attr("stroke-width", "1px")
 				.merge(connectors)
 				.transition()
 				.duration(transition.duration)

@@ -105,13 +105,13 @@ export default function() {
 			def.exit()
 				.remove();
 
-			const text = labelsEnter.selectAll(".label")
+			const text = labelsEnter.selectAll(".sectorLabel")
 				.data((d) => d);
 
 			text.enter()
 				.append("text")
-				.classed("label", true)
-				.attr("font-size", "0.9em")
+				.classed("sectorLabel", true)
+				.attr("font-size", "0.71em")
 				.attr("color", "currentColor")
 				.style("text-anchor", textAnchor)
 				.append("textPath")

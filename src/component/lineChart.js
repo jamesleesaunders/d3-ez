@@ -63,6 +63,7 @@ export default function() {
 				.merge(path)
 				.transition()
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attrTween("d", (d) => pathTween(d.values))
 				.attr("stroke", (d) => colorScale(d.key))
 				.attr("opacity", opacity);

@@ -59,6 +59,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attr("fill", (d) => colorScale(d.key))
 				.attr("fill-opacity", opacity)
 				.attr("stroke", (d) => colorScale(d.key))

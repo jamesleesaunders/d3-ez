@@ -46,7 +46,7 @@ export default {
 	labeledNode: componentLabeledNode,
 	legend: componentLegend,
 	legendSize: componentLegendSize,
-	legendColor: componentLegendCategorical,
+	legendCategorical: componentLegendCategorical,
 	legendThreshold: componentLegendThreshold,
 	lineChart: componentLineChart,
 	numberCard: componentNumberCard,

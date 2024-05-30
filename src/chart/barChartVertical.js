@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.categorical(1);
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 100 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -133,6 +133,7 @@ export default function() {
 				.append("g")
 				.classed("series", true)
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.attr("transform", (d) => `translate(${xScale2(d.key)},${chartH - yScale(valueMin)})`)
 				.call(componentBars);
 

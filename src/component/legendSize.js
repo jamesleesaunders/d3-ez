@@ -49,7 +49,7 @@ export default function() {
 			return ranges.map((v, i) => ({
 					x: sizeScale(domainMax),
 					y: yScale(i),
-					r: sizeScale(ranges[i][0]),
+					r: sizeScale(ranges[i][1]),
 					text: v[0].toFixed(0) + " \u2014 " + v[1].toFixed(0)
 				}
 			));
@@ -83,7 +83,7 @@ export default function() {
 			.attr("fill", "#cad4e7")
 			.attr("stroke", "#cad4e7")
 			.attr("stroke-width", 1)
-			.attr("fill-opacity", opacity);
+			.attr("fill-opacity", opacity / 2);
 
 		itemsEnter.append("text")
 			.attr("font-size", "0.9em")
@@ -101,7 +101,7 @@ export default function() {
 			.text((d) => d.text);
 
 		itemsTrans.select("circle")
-			.attr("fill-opacity", opacity);
+			.attr("fill-opacity", opacity / 2);
 	}
 
 	/**

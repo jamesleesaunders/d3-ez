@@ -58,6 +58,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attr("cx", (d) => xScale(d.key))
 				.attr("cy", (d) => yScale(d.value))
 				.attr("opacity", opacity);

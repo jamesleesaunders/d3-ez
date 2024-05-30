@@ -18,7 +18,7 @@ export default function() {
 	let height = 400;
 	let margin = { top: 40, right: 40, bottom: 70, left: 70 };
 	let colors = palette.categorical(1);
-	let transition = { ease: d3.easeLinear, duration: 0 };
+	let transition = { ease: d3.easeLinear, duration: 100 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
 
 	/* Other Customisation Options */
@@ -64,18 +64,24 @@ export default function() {
 			valueMin = valueMin > 0 ? 0 : valueMin;
 			const valueExtent = [valueMin, valueMax];
 
-			// Zoom does not work with non-time series (scalePoint)
-			const isTimeSeries = true;
-
 			let xScale = d3.scalePoint()
 				.domain(columnKeys)
 				.range([0, chartW]);
+
+			// Zoom does not work with non-time series (scalePoint)
+			function isTimeSeriesData(data) {
+				let dateString = data[0].values[0].date
+				let dateObject = new Date(dateString);
+				return !isNaN(dateObject.getTime());
+			}
+
+			const isTimeSeries = isTimeSeriesData(data);
 
 			if (isTimeSeries) {
 				// TODO: Use dataTransform() to calculate date domains?
 				data.forEach((d, i) => {
 					d.values.forEach((b, j) => {
-						data[i].values[j].key = new Date(b.key);
+						data[i].values[j].key = new Date(b.date);
 					});
 				});
 				const dateExtent = d3.extent(data[0].values, (d) => d.key);
@@ -149,6 +155,7 @@ export default function() {
 				.attr("class", "series")
 				.attr('clip-path', "url(#plotAreaClip)")
 				.merge(series)
+				.attr("data-name", (d) => d.key)
 				.call(componentLineChart)
 				.call(componentScatterPlot);
 
@@ -233,18 +240,20 @@ export default function() {
 					.call(componentScatterPlot);
 			}
 
-			const zoomArea = chartSelect.select(".zoomArea")
-				.selectAll("rect")
-				.data([0]);
+			if (isTimeSeries) {
+				const zoomArea = chartSelect.select(".zoomArea")
+					.selectAll("rect")
+					.data([0]);
 
-			zoomArea.enter()
-				.append("rect")
-				.attr("fill", "none")
-				.attr("pointer-events", "all")
-				.merge(zoomArea)
-				.call(zoom)
-				.attr("width", chartW)
-				.attr("height", chartH);
+				zoomArea.enter()
+					.append("rect")
+					.attr("fill", "none")
+					.attr("pointer-events", "all")
+					.merge(zoomArea)
+					.call(zoom)
+					.attr("width", chartW)
+					.attr("height", chartH);
+			}
 
 			// Title
 			if (title) {

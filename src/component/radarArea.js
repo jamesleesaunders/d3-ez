@@ -43,6 +43,8 @@ export default function() {
 
 			// Add Component Level Group
 			let componentGroup = seriesGroup
+				.attr("fill", (d) => colorScale(d.key))
+				.style("stroke", (d) => colorScale(d.key))
 				.selectAll(`g.${classed}`)
 				.data((d) => [d])
 				.enter()
@@ -70,6 +72,7 @@ export default function() {
 				.transition()
 				.ease(transition.ease)
 				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.style("fill-opacity", opacity / 2)
 				.attr("d", (d) => radarLine(d.values));
 
@@ -83,9 +86,10 @@ export default function() {
 				.attr("r", 4)
 				.style("fill-opacity", 0.8)
 				.merge(dots)
-				//.transition()
-				//.ease(transition.ease)
-				//.duration(transition.duration)
+				.transition()
+				.ease(transition.ease)
+				.duration(transition.duration)
+				.attr("data-name", (d) => d.key)
 				.attr("cx", (d, i) => yScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2))
 				.attr("cy", (d, i) => yScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2));
 		});
