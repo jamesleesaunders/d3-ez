@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import component from "../component.js";
 import palette from "../palette.js";
 import dataTransform from "../dataTransform.js";
+import { wrap } from "../utils.js";
 
 /**
  * Bar Chart (Vertical) (aka: Bar Chart; Bar Graph)
@@ -152,7 +153,9 @@ export default function() {
 
 				// Y-Axis
 				chartSelect.select(".yAxis")
-					.call(yAxis);
+					.call(yAxis)
+					.selectAll("text")
+					.call(wrap, margin.left);
 			} else {
 				chartSelect.selectAll(".axis").selectAll('*').remove();
 			}

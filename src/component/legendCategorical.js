@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { wrap } from "../utils.js";
 
 /**
  * Reusable Categorical Legend Component
@@ -119,7 +120,9 @@ export default function() {
 			.attr("dominant-baseline", "middle")
 			.attr("x", 40)
 			.attr("y", (d) => d.height / 2)
-			.attr("fill", "currentColor");
+			.attr("fill", "currentColor")
+			.attr("dy", "0")
+			.call(wrap, width - 40);
 
 		items.transition()
 			.ease(transition.ease)

@@ -2,6 +2,7 @@ import * as d3 from "d3";
 import component from "../component.js";
 import palette from "../palette.js";
 import dataTransform from "../dataTransform.js";
+import { wrap } from "../utils.js";
 
 /**
  * Heat Map (aka: Heat Table; Density Table; Heat Map)
@@ -142,7 +143,8 @@ export default function() {
 					.attr("y", 0)
 					.attr("x", -8)
 					.attr("transform", "rotate(300)")
-					.style("text-anchor", "end");
+					.style("text-anchor", "end")
+					.call(wrap, margin.bottom);
 
 				// Y-Axis
 				chartSelect.select(".yAxis")

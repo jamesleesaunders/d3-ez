@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.5";
+	var version$1 = "4.0.6";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -3312,6 +3312,75 @@
 	}
 
 	/**
+	 * Generate Layout for Multiple Series Circular Charts
+	 *
+	 * @param cellCount
+	 * @param width
+	 * @param height
+	 * @returns {{cellWidth: number, cellHeight: number, cellRadius: number, coordinates: Array}}
+	 */
+	function generateLayout(cellCount, width, height) {
+	  var cols = Math.ceil(Math.sqrt(cellCount));
+	  var rows = Math.ceil(cellCount / cols);
+	  var cellWidth = width / cols;
+	  var cellHeight = height / rows;
+	  var cellPadding = 15;
+	  var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	  var coordinates = [];
+	  for (var i = 0; i < cellCount; i++) {
+	    var row = Math.floor(i / cols);
+	    var col = i % cols;
+	    var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	    var offsetY = cellHeight / 2;
+	    var x = col * cellWidth + offsetX;
+	    var y = row * cellHeight + offsetY;
+	    coordinates.push({
+	      x: x,
+	      y: y
+	    });
+	  }
+	  return {
+	    cellWidth: cellWidth,
+	    cellHeight: cellHeight,
+	    cellRadius: cellRadius,
+	    coordinates: coordinates
+	  };
+	}
+
+	/**
+	 * Wrap text into multiple lines if exceeds given width
+	 *
+	 * @param selection
+	 * @param width
+	 */
+	function wrap(selection, width) {
+	  selection.each(function () {
+	    var text = d3__namespace.select(this);
+	    var content = text.text();
+	    var x = text.attr("x");
+	    var y = text.attr("y");
+	    var words = content.split(/\s+/).reverse();
+	    var line = [];
+	    var lineNumber = 1;
+	    var lineHeight = 1.1; // ems
+	    var dy = parseFloat(text.attr("dy")) || 0;
+	    var tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", "".concat(dy, "em"));
+	    var word;
+	    while (word = words.pop()) {
+	      line.push(word);
+	      tspan.text(line.join(" "));
+	      if (tspan.node().getComputedTextLength() > width && line.length > 1) {
+	        line.pop();
+	        tspan.text(line.join(" "));
+	        line = [word];
+	        tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", "".concat(lineNumber * lineHeight + dy, "em")).text(word);
+	        lineNumber++;
+	      }
+	    }
+	  });
+	}
+
+	/**
 	 * Reusable Categorical Legend Component
 	 *
 	 * @module
@@ -3413,7 +3482,7 @@
 	      return d.text;
 	    }).attr("dominant-baseline", "middle").attr("x", 40).attr("y", function (d) {
 	      return d.height / 2;
-	    }).attr("fill", "currentColor");
+	    }).attr("fill", "currentColor").attr("dy", "0").call(wrap, width - 40);
 	    items.transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
 	      return "translate(0,".concat(d.y, ")");
 	    }).select("text").text(function (d) {
@@ -5175,34 +5244,6 @@
 	  }
 	};
 
-	function generateLayout(cellCount, width, height) {
-	  var cols = Math.ceil(Math.sqrt(cellCount));
-	  var rows = Math.ceil(cellCount / cols);
-	  var cellWidth = width / cols;
-	  var cellHeight = height / rows;
-	  var cellPadding = 15;
-	  var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
-	  var coordinates = [];
-	  for (var i = 0; i < cellCount; i++) {
-	    var row = Math.floor(i / cols);
-	    var col = i % cols;
-	    var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
-	    var offsetY = cellHeight / 2;
-	    var x = col * cellWidth + offsetX;
-	    var y = row * cellHeight + offsetY;
-	    coordinates.push({
-	      x: x,
-	      y: y
-	    });
-	  }
-	  return {
-	    cellWidth: cellWidth,
-	    cellHeight: cellHeight,
-	    cellRadius: cellRadius,
-	    coordinates: coordinates
-	  };
-	}
-
 	/**
 	 * Circular Bar Chart (aka: Progress Chart)
 	 *
@@ -5927,7 +5968,7 @@
 	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
-	        chartSelect.select(".yAxis").call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis).selectAll("text").call(wrap, margin.left);
 	      } else {
 	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
@@ -7410,7 +7451,7 @@
 	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(300)").style("text-anchor", "end");
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(300)").style("text-anchor", "end").call(wrap, margin.bottom);
 
 	        // Y-Axis
 	        chartSelect.select(".yAxis").call(yAxis);
