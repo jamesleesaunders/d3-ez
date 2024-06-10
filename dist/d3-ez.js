@@ -3446,7 +3446,7 @@
 	        }).attr("stroke", function (d) {
 	          return d.color;
 	        }).attr("stroke-width", 2);
-	        items.transition().ease(transition.ease).duration(transition.duration).select("line").attr("x1", 0).attr("y1", function (d) {
+	        items.select("line").attr("x1", 0).attr("y1", function (d) {
 	          return d.height / 2;
 	        }).attr("x2", function (d) {
 	          return d.width;
@@ -3467,7 +3467,7 @@
 	        }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	          return d.color;
 	        }).attr("stroke-width", 1);
-	        items.transition().ease(transition.ease).duration(transition.duration).select("rect").attr("width", function (d) {
+	        items.select("rect").attr("width", function (d) {
 	          return d.width;
 	        }).attr("height", function (d) {
 	          return d.height;
@@ -3478,18 +3478,18 @@
 	        }).attr("stroke-width", 1);
 	        break;
 	    }
-	    itemsEnter.append("text").attr("font-size", "0.9em").text(function (d) {
+	    itemsEnter.append("text").text(function (d) {
 	      return d.text;
-	    }).attr("dominant-baseline", "middle").attr("x", 40).attr("y", function (d) {
+	    }).attr("font-size", "0.9em").attr("dominant-baseline", "middle").attr("fill", "currentColor").attr("x", 40).attr("y", function (d) {
 	      return d.height / 2;
-	    }).attr("fill", "currentColor").attr("dy", "0").call(wrap, width - 40);
-	    items.transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	    }).attr("dy", 0).call(wrap, width - 40).merge(items);
+	    items.attr("transform", function (d) {
 	      return "translate(0,".concat(d.y, ")");
 	    }).select("text").text(function (d) {
 	      return d.text;
 	    }).attr("y", function (d) {
 	      return d.height / 2;
-	    });
+	    }).call(wrap, width - 40);
 	  }
 
 	  /**
@@ -3757,7 +3757,7 @@
 	    legendBox.transition().ease(transition.ease).duration(transition.duration).selectAll(".legendBorder").attr("width", width).attr("height", height);
 
 	    // Legend Title
-	    legendBoxEnter.append("g").classed("legendTitle", true).attr("transform", "translate(10,10)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").attr("fill", "currentColor").text(title);
+	    legendBoxEnter.append("g").classed("legendTitle", true).attr("transform", "translate(10,10)").append("text").style("font-weight", "bold").attr("font-size", "0.9em").attr("dominant-baseline", "hanging").attr("fill", "currentColor").text(title);
 
 	    // Legend Component
 	    legend.width(width - (margin.left + margin.right)).height(height - (margin.top + margin.bottom));

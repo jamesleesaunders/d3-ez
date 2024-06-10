@@ -77,10 +77,7 @@ export default function() {
 					.attr("stroke", (d) => d.color)
 					.attr("stroke-width", 2);
 
-				items.transition()
-					.ease(transition.ease)
-					.duration(transition.duration)
-					.select("line")
+				items.select("line")
 					.attr("x1", 0)
 					.attr("y1", (d) => d.height / 2)
 					.attr("x2", (d) => d.width)
@@ -101,10 +98,7 @@ export default function() {
 					.attr("stroke", (d) => d.color)
 					.attr("stroke-width", 1);
 
-				items.transition()
-					.ease(transition.ease)
-					.duration(transition.duration)
-					.select("rect")
+				items.select("rect")
 					.attr("width", (d) => d.width)
 					.attr("height", (d) => d.height)
 					.style("fill", (d) => d.color)
@@ -115,22 +109,22 @@ export default function() {
 		}
 
 		itemsEnter.append("text")
-			.attr("font-size", "0.9em")
 			.text((d) => d.text)
+			.attr("font-size", "0.9em")
 			.attr("dominant-baseline", "middle")
+			.attr("fill", "currentColor")
 			.attr("x", 40)
 			.attr("y", (d) => d.height / 2)
-			.attr("fill", "currentColor")
-			.attr("dy", "0")
-			.call(wrap, width - 40);
+			.attr("dy", 0)
+			.call(wrap, width - 40)
+			.merge(items);
 
-		items.transition()
-			.ease(transition.ease)
-			.duration(transition.duration)
+		items
 			.attr("transform", (d) => `translate(0,${d.y})`)
 			.select("text")
 			.text((d) => d.text)
-			.attr("y", (d) => d.height / 2);
+			.attr("y", (d) => d.height / 2)
+			.call(wrap, width - 40);
 	}
 
 	/**
