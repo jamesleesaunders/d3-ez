@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.5";
+	var version$1 = "4.0.6";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -75,23 +75,23 @@
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	};
 	var devDependencies = {
-		"@babel/core": "^7.24.6",
-		"@babel/plugin-external-helpers": "^7.24.6",
-		"@babel/plugin-syntax-import-attributes": "^7.24.6",
-		"@babel/plugin-transform-object-assign": "^7.24.6",
-		"@babel/preset-env": "^7.24.6",
+		"@babel/core": "^7.24.7",
+		"@babel/plugin-external-helpers": "^7.24.7",
+		"@babel/plugin-syntax-import-attributes": "^7.24.7",
+		"@babel/plugin-transform-object-assign": "^7.24.7",
+		"@babel/preset-env": "^7.24.7",
 		"@rollup/plugin-babel": "^6.0.4",
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
-		eslint: "^9.3.0",
+		eslint: "^9.5.0",
 		"gh-pages": "^6.1.1",
 		jsdoc: "^4.0.3",
 		jsdom: "^24.1.0",
 		rollup: "^4.18.0",
 		"tap-arc": "^1.2.2",
-		tape: "^5.7.5",
+		tape: "^5.8.1",
 		"toast-jsdoc": "^1.0.2",
-		"uglify-js": "^3.17.4",
+		"uglify-js": "^3.18.0",
 		vows: "^0.8.3"
 	};
 	var dependencies = {
@@ -3312,6 +3312,75 @@
 	}
 
 	/**
+	 * Generate Layout for Multiple Series Circular Charts
+	 *
+	 * @param cellCount
+	 * @param width
+	 * @param height
+	 * @returns {{cellWidth: number, cellHeight: number, cellRadius: number, coordinates: Array}}
+	 */
+	function generateLayout(cellCount, width, height) {
+	  var cols = Math.ceil(Math.sqrt(cellCount));
+	  var rows = Math.ceil(cellCount / cols);
+	  var cellWidth = width / cols;
+	  var cellHeight = height / rows;
+	  var cellPadding = 15;
+	  var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
+	  var coordinates = [];
+	  for (var i = 0; i < cellCount; i++) {
+	    var row = Math.floor(i / cols);
+	    var col = i % cols;
+	    var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
+	    var offsetY = cellHeight / 2;
+	    var x = col * cellWidth + offsetX;
+	    var y = row * cellHeight + offsetY;
+	    coordinates.push({
+	      x: x,
+	      y: y
+	    });
+	  }
+	  return {
+	    cellWidth: cellWidth,
+	    cellHeight: cellHeight,
+	    cellRadius: cellRadius,
+	    coordinates: coordinates
+	  };
+	}
+
+	/**
+	 * Wrap text into multiple lines if exceeds given width
+	 *
+	 * @param selection
+	 * @param width
+	 */
+	function wrap(selection, width) {
+	  selection.each(function () {
+	    var text = d3__namespace.select(this);
+	    var content = text.text();
+	    var x = text.attr("x");
+	    var y = text.attr("y");
+	    var words = content.split(/\s+/).reverse();
+	    var line = [];
+	    var lineNumber = 1;
+	    var lineHeight = 1.1; // ems
+	    var dy = parseFloat(text.attr("dy")) || 0;
+	    var tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", "".concat(dy, "em"));
+	    var word;
+	    while (word = words.pop()) {
+	      line.push(word);
+	      tspan.text(line.join(" "));
+	      if (tspan.node().getComputedTextLength() > width && line.length > 1) {
+	        line.pop();
+	        tspan.text(line.join(" "));
+	        line = [word];
+	        tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", "".concat(lineNumber * lineHeight + dy, "em")).text(word);
+	        lineNumber++;
+	      }
+	    }
+	  });
+	}
+
+	/**
 	 * Reusable Categorical Legend Component
 	 *
 	 * @module
@@ -3377,7 +3446,7 @@
 	        }).attr("stroke", function (d) {
 	          return d.color;
 	        }).attr("stroke-width", 2);
-	        items.transition().ease(transition.ease).duration(transition.duration).select("line").attr("x1", 0).attr("y1", function (d) {
+	        items.select("line").attr("x1", 0).attr("y1", function (d) {
 	          return d.height / 2;
 	        }).attr("x2", function (d) {
 	          return d.width;
@@ -3398,7 +3467,7 @@
 	        }).attr("fill-opacity", opacity).attr("stroke", function (d) {
 	          return d.color;
 	        }).attr("stroke-width", 1);
-	        items.transition().ease(transition.ease).duration(transition.duration).select("rect").attr("width", function (d) {
+	        items.select("rect").attr("width", function (d) {
 	          return d.width;
 	        }).attr("height", function (d) {
 	          return d.height;
@@ -3409,18 +3478,18 @@
 	        }).attr("stroke-width", 1);
 	        break;
 	    }
-	    itemsEnter.append("text").attr("font-size", "0.9em").text(function (d) {
+	    itemsEnter.append("text").text(function (d) {
 	      return d.text;
-	    }).attr("dominant-baseline", "middle").attr("x", 40).attr("y", function (d) {
+	    }).attr("font-size", "0.9em").attr("dominant-baseline", "middle").attr("fill", "currentColor").attr("x", 40).attr("y", function (d) {
 	      return d.height / 2;
-	    }).attr("fill", "currentColor");
-	    items.transition().ease(transition.ease).duration(transition.duration).attr("transform", function (d) {
+	    }).attr("dy", 0).call(wrap, width - 40).merge(items);
+	    items.attr("transform", function (d) {
 	      return "translate(0,".concat(d.y, ")");
 	    }).select("text").text(function (d) {
 	      return d.text;
 	    }).attr("y", function (d) {
 	      return d.height / 2;
-	    });
+	    }).call(wrap, width - 40);
 	  }
 
 	  /**
@@ -3688,7 +3757,7 @@
 	    legendBox.transition().ease(transition.ease).duration(transition.duration).selectAll(".legendBorder").attr("width", width).attr("height", height);
 
 	    // Legend Title
-	    legendBoxEnter.append("g").classed("legendTitle", true).attr("transform", "translate(10,10)").append("text").style("font-weight", "bold").attr("dominant-baseline", "hanging").attr("fill", "currentColor").text(title);
+	    legendBoxEnter.append("g").classed("legendTitle", true).attr("transform", "translate(10,10)").append("text").style("font-weight", "bold").attr("font-size", "0.9em").attr("dominant-baseline", "hanging").attr("fill", "currentColor").text(title);
 
 	    // Legend Component
 	    legend.width(width - (margin.left + margin.right)).height(height - (margin.top + margin.bottom));
@@ -4638,7 +4707,7 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var stacked = false;
+	  var stacking = false;
 	  var opacity = 1;
 	  var cornerRadius = 2;
 
@@ -4665,7 +4734,7 @@
 	            innerRadius: yScale(innerRadius),
 	            outerRadius: yScale(outerRadius)
 	          };
-	          innerRadius += stacked ? d.value : 0;
+	          innerRadius += stacking ? d.value : 0;
 	        });
 	        return series;
 	      };
@@ -4761,9 +4830,9 @@
 	   * @param {boolean} _v - Stacked bars or grouped?
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return my;
 	  };
 
@@ -5175,34 +5244,6 @@
 	  }
 	};
 
-	function generateLayout(cellCount, width, height) {
-	  var cols = Math.ceil(Math.sqrt(cellCount));
-	  var rows = Math.ceil(cellCount / cols);
-	  var cellWidth = width / cols;
-	  var cellHeight = height / rows;
-	  var cellPadding = 15;
-	  var cellRadius = Math.min(cellWidth, cellHeight) / 2 - cellPadding;
-	  var coordinates = [];
-	  for (var i = 0; i < cellCount; i++) {
-	    var row = Math.floor(i / cols);
-	    var col = i % cols;
-	    var offsetX = cellWidth / 2 + (width - Math.min(cellCount - row * cols, cols) * cellWidth) / 2;
-	    var offsetY = cellHeight / 2;
-	    var x = col * cellWidth + offsetX;
-	    var y = row * cellHeight + offsetY;
-	    coordinates.push({
-	      x: x,
-	      y: y
-	    });
-	  }
-	  return {
-	    cellWidth: cellWidth,
-	    cellHeight: cellHeight,
-	    cellRadius: cellRadius,
-	    coordinates: coordinates
-	  };
-	}
-
 	/**
 	 * Circular Bar Chart (aka: Progress Chart)
 	 *
@@ -5518,7 +5559,7 @@
 	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
-	  var stacked = false;
+	  var stacking = false;
 
 	  /**
 	   * Constructor
@@ -5558,7 +5599,7 @@
 	      var _valueExtent = _slicedToArray(valueExtent, 2),
 	        valueMin = _valueExtent[0],
 	        valueMax = _valueExtent[1];
-	      if (stacked) {
+	      if (stacking) {
 	        // Sum negative stacked bars
 	        var _valueExtentStacked = _slicedToArray(valueExtentStacked, 2);
 	        valueMin = _valueExtentStacked[0];
@@ -5589,7 +5630,7 @@
 	      });
 
 	      // Bars Component
-	      var componentBars = stacked ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
+	      var componentBars = stacking ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
 	      componentBars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
@@ -5703,9 +5744,9 @@
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return this;
 	  };
 
@@ -5837,7 +5878,7 @@
 	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
-	  var stacked = false;
+	  var stacking = false;
 
 	  /**
 	   * Constructor
@@ -5877,7 +5918,7 @@
 	      var _valueExtent = _slicedToArray(valueExtent, 2),
 	        valueMin = _valueExtent[0],
 	        valueMax = _valueExtent[1];
-	      if (stacked) {
+	      if (stacking) {
 	        // Sum negative stacked bars
 	        var _valueExtentStacked = _slicedToArray(valueExtentStacked, 2);
 	        valueMin = _valueExtentStacked[0];
@@ -5927,7 +5968,7 @@
 	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis);
 
 	        // Y-Axis
-	        chartSelect.select(".yAxis").call(yAxis);
+	        chartSelect.select(".yAxis").call(yAxis).selectAll("text").call(wrap, margin.left);
 	      } else {
 	        chartSelect.selectAll(".axis").selectAll('*').remove();
 	      }
@@ -6052,9 +6093,9 @@
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return this;
 	  };
 
@@ -7410,7 +7451,7 @@
 	      var yAxis = d3__namespace.axisLeft(yScale);
 	      if (showAxis) {
 	        // X-Axis
-	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(300)").style("text-anchor", "end");
+	        chartSelect.select(".xAxis").attr("transform", "translate(0,".concat(chartH, ")")).call(xAxis).selectAll("text").attr("y", 0).attr("x", -8).attr("transform", "rotate(300)").style("text-anchor", "end").call(wrap, margin.bottom);
 
 	        // Y-Axis
 	        chartSelect.select(".yAxis").call(yAxis);
@@ -8825,7 +8866,7 @@
 	  var opacity = 1;
 	  var showLegend = false;
 	  var showAxis = true;
-	  var stacked = true;
+	  var stacking = true;
 
 	  /**
 	   * Constructor
@@ -8863,7 +8904,7 @@
 	        valueMin = _dataTransform$summar.valueMin,
 	        valueMax = _dataTransform$summar.valueMax,
 	        valueExtentStacked = _dataTransform$summar.valueExtentStacked;
-	      valueMax = stacked ? valueExtentStacked[1] : valueMax;
+	      valueMax = stacking ? valueExtentStacked[1] : valueMax;
 	      valueMin = 0;
 	      var yDomain = [valueMin, valueMax];
 	      var xScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([0, 360]);
@@ -8886,7 +8927,7 @@
 	      });
 
 	      // Rose Sectors
-	      var componentRoseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentRoseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacking(stacking).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
 	      var componentCircularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
@@ -9042,9 +9083,9 @@
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return this;
 	  };
 

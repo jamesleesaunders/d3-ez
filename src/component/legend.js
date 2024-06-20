@@ -84,6 +84,7 @@ export default function() {
 			.attr("transform", "translate(10,10)")
 			.append("text")
 			.style("font-weight", "bold")
+			.attr("font-size", "0.9em")
 			.attr("dominant-baseline", "hanging")
 			.attr("fill", "currentColor")
 			.text(title);

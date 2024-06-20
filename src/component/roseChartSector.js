@@ -14,7 +14,7 @@ export default function() {
 	let colorScale;
 	let transition = { ease: d3.easeLinear, duration: 0 };
 	let dispatch = d3.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	let stacked = false;
+	let stacking = false;
 	let opacity = 1;
 	let cornerRadius = 2;
 
@@ -41,7 +41,7 @@ export default function() {
 						innerRadius: yScale(innerRadius),
 						outerRadius: yScale(outerRadius)
 					};
-					innerRadius += (stacked ? d.value : 0);
+					innerRadius += (stacking ? d.value : 0);
 				});
 
 				return series;
@@ -150,9 +150,9 @@ export default function() {
 	 * @param {boolean} _v - Stacked bars or grouped?
 	 * @returns {*}
 	 */
-	my.stacked = function(_v) {
-		if (!arguments.length) return stacked;
-		stacked = _v;
+	my.stacking = function(_v) {
+		if (!arguments.length) return stacking;
+		stacking = _v;
 		return my;
 	};
 

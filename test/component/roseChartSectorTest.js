@@ -47,7 +47,7 @@ test("componentRoseChartSectorTest", function(t) {
 		.xScale(xScale)
 		.yScale(yScale)
 		.colorScale(colorScale)
-		.stacked(true)
+		.stacking(true)
 		.opacity(0.8);
 
 	// Populate 'actual' svg using d3-ez component

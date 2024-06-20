@@ -52,7 +52,7 @@
           .title("Diagram of the Causes of Mortality in the Army in The East")
           .subTitle("April 1854 to March 1855")
           .showLegend(true)
-          .stacked(false)
+          .stacking(false)
           .on("customValueMouseOver", function(e, d) {
             d3.select("#message").text(d.value);
           });
