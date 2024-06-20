@@ -61,26 +61,16 @@ are still learning JavaScript or D3 to quickly produce data visualisations with 
 <li><a href="https://www.npmjs.com/package/d3-ez">Download from NPM</a></li>
 </ul>
 <h3>Examples</h3>
-<p>Here are a few Blocks (Gists) examples demonstrating some of the d3-ez charts. One of the aims of d3-ez to make it
+<p>Here are a few Observable examples demonstrating some of the d3-ez charts. One of the aims of d3-ez to make it
 easier to create visualizations with graphs which are clickable interact with each other, this is done though the use of
 D3's dispatch, please see the 'Showcase' link below for example:</p>
 <ul>
-<li><a href="http://bl.ocks.org/jamesleesaunders/7505129553c74ba04191d40e4fe6e2d7">Bar Chart (Circular)</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/0d4cf768065e8e7e9bfb">Bar Chart (Clustered)</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/ac5b6134ad7144e8327d">Bar Chart (Stacked)</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/8ba1fb5657d6bc7286be">Bar Chart (Vertical)</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/e724157a7a387dcc08dd4ba80e48b72f">Bubble Chart</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/37a5340da620e0f63ea3f2b0da5240a7">Candlestick Chart</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/8a1b06f3a93f748bb902">Donut Chart</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/0cbfa9ab9bdce220113f">Heat Map (Radial)</a></li>
-<li><a href="https://bl.ocks.org/jamesleesaunders/b1c57dc590c78aba5eaae9135e01be0a">Heat Map (Tabular)</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/0f25b04b9b9080b67714">Line Chart</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/36ccc5e130948c098209">Polar Area Chart</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/0215cd9bc81e32fb0c9f">Punch Card</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/00eee0463f5f7edfa0b1006c28421c2d">Rose Chart</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/cc4439445d228fc06358">HTML Table</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/9f73d0878f3ab9d8c958">HTML List</a></li>
-<li><a href="http://bl.ocks.org/jamesleesaunders/1b42123c808ecea748be">Multi Chart Showcase</a></li>
+<li><a href="https://observablehq.com/@jamesleesaunders/d3-ez">Bar Chart (Vertical)</a></li>
+<li><a href="https://observablehq.com/@jamesleesaunders/bishop-currys-royal-wedding-speech-analysis-with-d3-ez">Heat Map (Tabular)</a></li>
+<li><a href="https://observablehq.com/@jamesleesaunders/npm-downloads-counts-with-d3-ez">Line Chart</a></li>
+<li><a href="https://observablehq.com/@jamesleesaunders/nightingales-rose-chart-with-d3-ez">Rose Chart</a></li>
+<li><a href="https://observablehq.com/@jamesleesaunders/what-a-legend-with-d3-ez">Legend Component</a></li>
+<li><a href="https://observablehq.com/@jamesleesaunders/hans-rosling-poverty-bubble-chart-with-d3-ez">Bubble Chart</a></li>
 </ul>
 <h3>Getting Started</h3>
 <p>Include d3.js and d3-ez.js and css files in the <code>&lt;head&gt;</code> section of your page:</p>
@@ -119,7 +109,7 @@ D3's dispatch, please see the 'Showcase' link below for example:</p>
 <pre class="prettyprint source lang-javascript"><code>var myChart = d3.ez.chart.barChartVertical()
 	.width(750)
 	.height(400)
-	.colors(['#00c41d', '#ffa500', '#800080', '#ffe714']);
+	.colors([&quot;#00C41d&quot;, &quot;#FFA500&quot;, &quot;#800080&quot;, &quot;#FFE714&quot;]);
 </code></pre>
 <p>Attach chart and data to the chartholder:</p>
 <pre class="prettyprint source lang-javascript"><code>chartHolder
@@ -138,8 +128,9 @@ example <a href="https://www.npmjs.com/package/d3-ez">from NPM</a>:</p>
 <h4>Chart Types</h4>
 <p>The following charts are currently supported:</p>
 <ul>
-<li>barChart()</li>
 <li>barChartCircular()</li>
+<li>barChartHorizontal()</li>
+<li>barChartVertical()</li>
 <li>bubbleChart()</li>
 <li>candlestickChart()</li>
 <li>donutChart()</li>
@@ -200,13 +191,12 @@ the <a href="http://datavizproject.com/">Data Viz Project</a> or <a href="https:
 <h3>Alternatives</h3>
 <p>For reference, here are a few other alternative D3 chart libraries which also follow the D3 reusable components pattern:</p>
 <ul>
-<li><a href="http://eventbrite.github.io/britecharts/">Britecharts</a></li>
+<li><a href="https://britecharts.github.io/britecharts/">Britecharts</a></li>
 <li><a href="http://nvd3.org">NVD3</a></li>
-<li><a href="http://visible.io/index.html">D4</a></li>
 <li><a href="http://c3js.org">C3</a></li>
 <li><a href="http://d3plus.org">D3 Plus</a></li>
 <li><a href="https://github.com/bugzin/reD3">ReD3</a></li>
-<li><a href="http://misoproject.com/d3-chart/">Miso d3.chart</a></li>
+<li><a href="https://github.com/misoproject/d3.chart">Miso d3.chart</a></li>
 <li><a href="https://d3fc.io">d3fc</a></li>
 </ul>
 <h3>Credits</h3>
@@ -215,7 +205,7 @@ the <a href="http://datavizproject.com/">Data Viz Project</a> or <a href="https:
 <li>Virgin Media <a href="http:%5C/%5C/www.virginmedia.co.uk/">http://www.virginmedia.co.uk/</a> For support in development of the Tabular Heat Map.</li>
 <li>Data Viz Project <a href="http:%5C/%5C/datavizproject.com/">http://datavizproject.com/</a> For helping me while deciding on naming of chart types.</li>
 <li>Dip Parmar <a href="https:%5C/%5C/github.com/DipParmar">https://github.com/DipParmar</a> For contributing to zooming, radar and horizontal bar charts.</li>
-<li>You may also be interested in the sister project <a href="https://github.com/jamesleesaunders/d3-x3dom">d3-x3dom</a> D3 X3DOM
+<li>You may also be interested in the sister project <a href="https://github.com/jamesleesaunders/d3-x3d">d3-x3d</a> D3 X3D
 Data Visualisation Library.</li>
 </ul></article>
     </section>
@@ -228,13 +218,13 @@ Data Visualisation Library.</li>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-chart_barChartCircular.html">chart/barChartCircular</a></li><li><a href="module-chart_barChartHorizontal.html">chart/barChartHorizontal</a></li><li><a href="module-chart_barChartVertical.html">chart/barChartVertical</a></li><li><a href="module-chart_bubbleChart.html">chart/bubbleChart</a></li><li><a href="module-chart_candlestickChart.html">chart/candlestickChart</a></li><li><a href="module-chart_donutChart.html">chart/donutChart</a></li><li><a href="module-chart_heatMap.html">chart/heatMap</a></li><li><a href="module-chart_heatMapRadial.html">chart/heatMapRadial</a></li><li><a href="module-chart_lineChart.html">chart/lineChart</a></li><li><a href="module-chart_polarAreaChart.html">chart/polarAreaChart</a></li><li><a href="module-chart_punchCard.html">chart/punchCard</a></li><li><a href="module-chart_radarChart.html">chart/radarChart</a></li><li><a href="module-chart_roseChart.html">chart/roseChart</a></li><li><a href="module-component_barsCircular.html">component/barsCircular</a></li><li><a href="module-component_barsHorizontal.html">component/barsHorizontal</a></li><li><a href="module-component_barsVertical.html">component/barsVertical</a></li><li><a href="module-component_barsVerticalStacked.html">component/barsVerticalStacked</a></li><li><a href="module-component_bubbles.html">component/bubbles</a></li><li><a href="module-component_candleSticks.html">component/candleSticks</a></li><li><a href="module-component_circularAxis.html">component/circularAxis</a></li><li><a href="module-component_circularRingLabels.html">component/circularRingLabels</a></li><li><a href="module-component_circularSectorLabels.html">component/circularSectorLabels</a></li><li><a href="module-component_donut.html">component/donut</a></li><li><a href="module-component_donutLabels.html">component/donutLabels</a></li><li><a href="module-component_heatMapRing.html">component/heatMapRing</a></li><li><a href="module-component_heatMapRow.html">component/heatMapRow</a></li><li><a href="module-component_htmlList.html">component/htmlList</a></li><li><a href="module-component_htmlTable.html">component/htmlTable</a></li><li><a href="module-component_labeledNode.html">component/labeledNode</a></li><li><a href="module-component_legend.html">component/legend</a></li><li><a href="module-component_legendCategorical.html">component/legendCategorical</a></li><li><a href="module-component_legendSize.html">component/legendSize</a></li><li><a href="module-component_legendThreshold.html">component/legendThreshold</a></li><li><a href="module-component_lineChart.html">component/lineChart</a></li><li><a href="module-component_numberCard.html">component/numberCard</a></li><li><a href="module-component_polarArea.html">component/polarArea</a></li><li><a href="module-component_proportionalAreaCircles.html">component/proportionalAreaCircles</a></li><li><a href="module-component_radarArea.html">component/radarArea</a></li><li><a href="module-component_roseChartSector.html">component/roseChartSector</a></li><li><a href="module-component_scatterPlot.html">component/scatterPlot</a></li><li><a href="module-dataTransform.html">dataTransform</a></li><li><a href="module-palette.html">palette</a></li></ul><h3>Classes</h3><ul><li><a href="barChartCircular.html">barChartCircular</a></li><li><a href="barChartVertical.html">barChartVertical</a></li><li><a href="barsCircular.html">barsCircular</a></li><li><a href="barsHorizontal.html">barsHorizontal</a></li><li><a href="barsVertical.html">barsVertical</a></li><li><a href="barsVerticalStacked.html">barsVerticalStacked</a></li><li><a href="bubbleChart.html">bubbleChart</a></li><li><a href="bubbles.html">bubbles</a></li><li><a href="candleSticks.html">candleSticks</a></li><li><a href="candlestickChart.html">candlestickChart</a></li><li><a href="circularAxis.html">circularAxis</a></li><li><a href="circularRingLabels.html">circularRingLabels</a></li><li><a href="circularSectorLabels.html">circularSectorLabels</a></li><li><a href="donut.html">donut</a></li><li><a href="donutChart.html">donutChart</a></li><li><a href="donutLabels.html">donutLabels</a></li><li><a href="heatMap.html">heatMap</a></li><li><a href="heatMapRadial.html">heatMapRadial</a></li><li><a href="heatMapRing.html">heatMapRing</a></li><li><a href="heatMapRow.html">heatMapRow</a></li><li><a href="htmlList.html">htmlList</a></li><li><a href="htmlTable.html">htmlTable</a></li><li><a href="labeledNode.html">labeledNode</a></li><li><a href="legend.html">legend</a></li><li><a href="legendColor.html">legendColor</a></li><li><a href="legendSize.html">legendSize</a></li><li><a href="legendThreshold.html">legendThreshold</a></li><li><a href="lineChart.html">lineChart</a></li><li><a href="numberCard.html">numberCard</a></li><li><a href="polarArea.html">polarArea</a></li><li><a href="polarAreaChart.html">polarAreaChart</a></li><li><a href="proportionalAreaCircles.html">proportionalAreaCircles</a></li><li><a href="punchCard.html">punchCard</a></li><li><a href="radarArea.html">radarArea</a></li><li><a href="radarChart.html">radarChart</a></li><li><a href="roseChart.html">roseChart</a></li><li><a href="roseChartSector.html">roseChartSector</a></li><li><a href="scatterPlot.html">scatterPlot</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-chart_barChartCircular.html">chart/barChartCircular</a></li><li><a href="module-chart_barChartHorizontal.html">chart/barChartHorizontal</a></li><li><a href="module-chart_barChartVertical.html">chart/barChartVertical</a></li><li><a href="module-chart_bubbleChart.html">chart/bubbleChart</a></li><li><a href="module-chart_candlestickChart.html">chart/candlestickChart</a></li><li><a href="module-chart_donutChart.html">chart/donutChart</a></li><li><a href="module-chart_heatMap.html">chart/heatMap</a></li><li><a href="module-chart_heatMapRadial.html">chart/heatMapRadial</a></li><li><a href="module-chart_lineChart.html">chart/lineChart</a></li><li><a href="module-chart_polarAreaChart.html">chart/polarAreaChart</a></li><li><a href="module-chart_punchCard.html">chart/punchCard</a></li><li><a href="module-chart_radarChart.html">chart/radarChart</a></li><li><a href="module-chart_roseChart.html">chart/roseChart</a></li><li><a href="module-component_barsCircular.html">component/barsCircular</a></li><li><a href="module-component_barsHorizontal.html">component/barsHorizontal</a></li><li><a href="module-component_barsVertical.html">component/barsVertical</a></li><li><a href="module-component_barsVerticalStacked.html">component/barsVerticalStacked</a></li><li><a href="module-component_bubbles.html">component/bubbles</a></li><li><a href="module-component_candleSticks.html">component/candleSticks</a></li><li><a href="module-component_circularAxis.html">component/circularAxis</a></li><li><a href="module-component_circularRingLabels.html">component/circularRingLabels</a></li><li><a href="module-component_circularSectorLabels.html">component/circularSectorLabels</a></li><li><a href="module-component_donut.html">component/donut</a></li><li><a href="module-component_donutLabels.html">component/donutLabels</a></li><li><a href="module-component_heatMapRing.html">component/heatMapRing</a></li><li><a href="module-component_heatMapRow.html">component/heatMapRow</a></li><li><a href="module-component_htmlList.html">component/htmlList</a></li><li><a href="module-component_htmlTable.html">component/htmlTable</a></li><li><a href="module-component_labeledNode.html">component/labeledNode</a></li><li><a href="module-component_legend.html">component/legend</a></li><li><a href="module-component_legendCategorical.html">component/legendCategorical</a></li><li><a href="module-component_legendSize.html">component/legendSize</a></li><li><a href="module-component_legendThreshold.html">component/legendThreshold</a></li><li><a href="module-component_lineChart.html">component/lineChart</a></li><li><a href="module-component_numberCard.html">component/numberCard</a></li><li><a href="module-component_polarArea.html">component/polarArea</a></li><li><a href="module-component_proportionalAreaCircles.html">component/proportionalAreaCircles</a></li><li><a href="module-component_radarArea.html">component/radarArea</a></li><li><a href="module-component_roseChartSector.html">component/roseChartSector</a></li><li><a href="module-component_scatterPlot.html">component/scatterPlot</a></li><li><a href="module-component_title.html">component/title</a></li><li><a href="module-dataTransform.html">dataTransform</a></li><li><a href="module-palette.html">palette</a></li></ul><h3>Classes</h3><ul><li><a href="barChartCircular.html">barChartCircular</a></li><li><a href="barChartVertical.html">barChartVertical</a></li><li><a href="barsCircular.html">barsCircular</a></li><li><a href="barsHorizontal.html">barsHorizontal</a></li><li><a href="barsVertical.html">barsVertical</a></li><li><a href="barsVerticalStacked.html">barsVerticalStacked</a></li><li><a href="bubbleChart.html">bubbleChart</a></li><li><a href="bubbles.html">bubbles</a></li><li><a href="candleSticks.html">candleSticks</a></li><li><a href="candlestickChart.html">candlestickChart</a></li><li><a href="circularAxis.html">circularAxis</a></li><li><a href="circularRingLabels.html">circularRingLabels</a></li><li><a href="circularSectorLabels.html">circularSectorLabels</a></li><li><a href="donut.html">donut</a></li><li><a href="donutChart.html">donutChart</a></li><li><a href="donutLabels.html">donutLabels</a></li><li><a href="heatMap.html">heatMap</a></li><li><a href="heatMapRadial.html">heatMapRadial</a></li><li><a href="heatMapRing.html">heatMapRing</a></li><li><a href="heatMapRow.html">heatMapRow</a></li><li><a href="htmlList.html">htmlList</a></li><li><a href="htmlTable.html">htmlTable</a></li><li><a href="labeledNode.html">labeledNode</a></li><li><a href="legend.html">legend</a></li><li><a href="legendCategorical.html">legendCategorical</a></li><li><a href="legendSize.html">legendSize</a></li><li><a href="legendThreshold.html">legendThreshold</a></li><li><a href="lineChart.html">lineChart</a></li><li><a href="numberCard.html">numberCard</a></li><li><a href="polarArea.html">polarArea</a></li><li><a href="polarAreaChart.html">polarAreaChart</a></li><li><a href="proportionalAreaCircles.html">proportionalAreaCircles</a></li><li><a href="punchCard.html">punchCard</a></li><li><a href="radarArea.html">radarArea</a></li><li><a href="radarChart.html">radarChart</a></li><li><a href="roseChart.html">roseChart</a></li><li><a href="roseChartSector.html">roseChartSector</a></li><li><a href="scatterPlot.html">scatterPlot</a></li><li><a href="title.html">title</a></li></ul><h3>Global</h3><ul><li><a href="global.html#author">author</a></li><li><a href="global.html#generateLayout">generateLayout</a></li><li><a href="global.html#wrap">wrap</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed May 15 2024 21:19:59 GMT+0100 (British Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu Jun 20 2024 21:57:43 GMT+0100 (British Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

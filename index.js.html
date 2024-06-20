@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: component/legend</title>
+    <title>JSDoc: Source: index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,291 +17,50 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: component/legend</h1>
+    <h1 class="page-title">Source: index.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>Reusable Legend Component</p></div>
-        
-
-        
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_legend.js.html">component/legend.js</a>, <a href="component_legend.js.html#line6">line 6</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~scaleType"><span class="type-signature">(inner) </span>scaleType<span class="signature">(scale)</span><span class="type-signature"> &rarr; {string}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    <p>Detect Scale Type</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>scale</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">d3.scale</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Scale type.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="component_legend.js.html">component/legend.js</a>, <a href="component_legend.js.html#line114">line 114</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">string</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * d3-ez
+ *
+ * @author James Saunders [james@saunders-family.net]
+ * @copyright Copyright (C) 2024 James Saunders
+ * @license GPLv2
+ */
+
+const author = "James Saunders";
+const year = new Date().getFullYear();
+const copyright = `Copyright (C) ${year} ${author}`;
+
+import { default as packageJson } from "../package.json" with { type: "json" };
+
+const version = packageJson.version;
+const license = packageJson.license;
+
+import chart from "./chart.js";
+import component from "./component.js";
+import palette from "./palette.js";
+import dataTransform from "./dataTransform.js";
+
+export default {
+	version: version,
+	author: author,
+	copyright: copyright,
+	license: license,
+	chart: chart,
+	component: component,
+	palette: palette,
+	dataTransform: dataTransform
+};
+</code></pre>
+        </article>
+    </section>
 
 
 
