@@ -79,6 +79,7 @@ export default function() {
 				.on("click", function(e, d) { dispatch.call("customValueClick", this, e, d.data); })
 				.merge(segments)
 				.transition()
+				.ease(transition.ease)
 				.duration(transition.duration)
 				.attr("data-name", (d) => d.key)
 				.attr("fill", (d) => colorScale(d.data.value))

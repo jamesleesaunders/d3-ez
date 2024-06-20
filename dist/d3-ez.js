@@ -32,7 +32,7 @@
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 	var name = "d3-ez";
-	var version$1 = "4.0.6";
+	var version$1 = "4.0.7";
 	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
 	var keywords = [
@@ -2271,7 +2271,7 @@
 	        dispatch.call("customValueMouseOver", this, e, d.data);
 	      }).on("click", function (e, d) {
 	        dispatch.call("customValueClick", this, e, d.data);
-	      }).merge(segments).transition().duration(transition.duration).attr("data-name", function (d) {
+	      }).merge(segments).transition().ease(transition.ease).duration(transition.duration).attr("data-name", function (d) {
 	        return d.key;
 	      }).attr("fill", function (d) {
 	        return colorScale(d.data.value);
