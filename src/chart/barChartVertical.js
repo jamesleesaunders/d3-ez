@@ -29,7 +29,7 @@ export default function() {
 	let showLegend = false;
 	let showAxis = true;
 	let yAxisLabel = null;
-	let stacked = false;
+	let stacking = false;
 
 	/**
 	 * Constructor
@@ -62,7 +62,7 @@ export default function() {
 			// Create Scales and Axis
 			let { rowKeys, columnKeys, valueExtent, valueExtentStacked } = dataTransform(data).summary();
 			let [valueMin, valueMax] = valueExtent;
-			if (stacked) {
+			if (stacking) {
 				// Sum negative stacked bars
 				[valueMin, valueMax] = valueExtentStacked;
 			} else {
@@ -117,7 +117,7 @@ export default function() {
 				.attr("class", (d) => d);
 
 			// Bars Component
-			const componentBars = stacked ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale)
+			const componentBars = stacking ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale)
 			componentBars.colorScale(colorScale)
 				.yScale(yScale)
 				.opacity(opacity)
@@ -266,9 +266,9 @@ export default function() {
 	 * @param {Boolean} _v - Stacked or grouped bar chart.
 	 * @returns {*}
 	 */
-	my.stacked = function(_v) {
-		if (!arguments.length) return stacked;
-		stacked = _v;
+	my.stacking = function(_v) {
+		if (!arguments.length) return stacking;
+		stacking = _v;
 		return this;
 	};
 

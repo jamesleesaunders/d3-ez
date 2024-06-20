@@ -4707,7 +4707,7 @@
 	    duration: 0
 	  };
 	  var dispatch = d3__namespace.dispatch("customValueMouseOver", "customValueMouseOut", "customValueClick", "customSeriesMouseOver", "customSeriesMouseOut", "customSeriesClick");
-	  var stacked = false;
+	  var stacking = false;
 	  var opacity = 1;
 	  var cornerRadius = 2;
 
@@ -4734,7 +4734,7 @@
 	            innerRadius: yScale(innerRadius),
 	            outerRadius: yScale(outerRadius)
 	          };
-	          innerRadius += stacked ? d.value : 0;
+	          innerRadius += stacking ? d.value : 0;
 	        });
 	        return series;
 	      };
@@ -4830,9 +4830,9 @@
 	   * @param {boolean} _v - Stacked bars or grouped?
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return my;
 	  };
 
@@ -5559,7 +5559,7 @@
 	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
-	  var stacked = false;
+	  var stacking = false;
 
 	  /**
 	   * Constructor
@@ -5599,7 +5599,7 @@
 	      var _valueExtent = _slicedToArray(valueExtent, 2),
 	        valueMin = _valueExtent[0],
 	        valueMax = _valueExtent[1];
-	      if (stacked) {
+	      if (stacking) {
 	        // Sum negative stacked bars
 	        var _valueExtentStacked = _slicedToArray(valueExtentStacked, 2);
 	        valueMin = _valueExtentStacked[0];
@@ -5630,7 +5630,7 @@
 	      });
 
 	      // Bars Component
-	      var componentBars = stacked ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
+	      var componentBars = stacking ? component.barsVerticalStacked().xScale(xScale2) : component.barsVertical().xScale(xScale);
 	      componentBars.colorScale(colorScale).yScale(yScale).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Series Group
@@ -5744,9 +5744,9 @@
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return this;
 	  };
 
@@ -5878,7 +5878,7 @@
 	  var showLegend = false;
 	  var showAxis = true;
 	  var yAxisLabel = null;
-	  var stacked = false;
+	  var stacking = false;
 
 	  /**
 	   * Constructor
@@ -5918,7 +5918,7 @@
 	      var _valueExtent = _slicedToArray(valueExtent, 2),
 	        valueMin = _valueExtent[0],
 	        valueMax = _valueExtent[1];
-	      if (stacked) {
+	      if (stacking) {
 	        // Sum negative stacked bars
 	        var _valueExtentStacked = _slicedToArray(valueExtentStacked, 2);
 	        valueMin = _valueExtentStacked[0];
@@ -6093,9 +6093,9 @@
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return this;
 	  };
 
@@ -8866,7 +8866,7 @@
 	  var opacity = 1;
 	  var showLegend = false;
 	  var showAxis = true;
-	  var stacked = true;
+	  var stacking = true;
 
 	  /**
 	   * Constructor
@@ -8904,7 +8904,7 @@
 	        valueMin = _dataTransform$summar.valueMin,
 	        valueMax = _dataTransform$summar.valueMax,
 	        valueExtentStacked = _dataTransform$summar.valueExtentStacked;
-	      valueMax = stacked ? valueExtentStacked[1] : valueMax;
+	      valueMax = stacking ? valueExtentStacked[1] : valueMax;
 	      valueMin = 0;
 	      var yDomain = [valueMin, valueMax];
 	      var xScale = d3__namespace.scaleBand().domain(rowKeys).rangeRound([0, 360]);
@@ -8927,7 +8927,7 @@
 	      });
 
 	      // Rose Sectors
-	      var componentRoseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacked(stacked).opacity(opacity).dispatch(dispatch).transition(transition);
+	      var componentRoseChartSector = component.roseChartSector().xScale(xScale).yScale(yScale).colorScale(colorScale).stacking(stacking).opacity(opacity).dispatch(dispatch).transition(transition);
 
 	      // Circular Axis
 	      var componentCircularAxis = component.circularAxis().radialScale(xScale).ringScale(yScale);
@@ -9083,9 +9083,9 @@
 	   * @param {Boolean} _v - Stacked or grouped bar chart.
 	   * @returns {*}
 	   */
-	  my.stacked = function (_v) {
-	    if (!arguments.length) return stacked;
-	    stacked = _v;
+	  my.stacking = function (_v) {
+	    if (!arguments.length) return stacking;
+	    stacking = _v;
 	    return this;
 	  };
 

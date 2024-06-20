@@ -27,7 +27,7 @@ export default function() {
 	let opacity = 1;
 	let showLegend = false;
 	let showAxis = true;
-	let stacked = true;
+	let stacking = true;
 
 	/**
 	 * Constructor
@@ -60,7 +60,7 @@ export default function() {
 			const innerRadius = 0;
 
 			let { rowKeys, columnKeys, valueMin, valueMax, valueExtentStacked } = dataTransform(data).summary();
-			valueMax = stacked ? valueExtentStacked[1] : valueMax;
+			valueMax = stacking ? valueExtentStacked[1] : valueMax;
 			valueMin = 0;
 
 			const yDomain = [valueMin, valueMax];
@@ -109,7 +109,7 @@ export default function() {
 				.xScale(xScale)
 				.yScale(yScale)
 				.colorScale(colorScale)
-				.stacked(stacked)
+				.stacking(stacking)
 				.opacity(opacity)
 				.dispatch(dispatch)
 				.transition(transition);
@@ -297,9 +297,9 @@ export default function() {
 	 * @param {Boolean} _v - Stacked or grouped bar chart.
 	 * @returns {*}
 	 */
-	my.stacked = function(_v) {
-		if (!arguments.length) return stacked;
-		stacked = _v;
+	my.stacking = function(_v) {
+		if (!arguments.length) return stacking;
+		stacking = _v;
 		return this;
 	};
 
