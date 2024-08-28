@@ -59,7 +59,7 @@
 		"tap-arc": "^1.2.2",
 		"tape": "^5.8.1",
 		"toast-jsdoc": "^1.0.2",
-		"uglify-js": "^3.18.0",
+		"uglify-js": "^3.19.1",
 		"vows": "^0.8.3"
 	},
 	"dependencies": {
