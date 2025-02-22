@@ -31,97 +31,11 @@
 
 	var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
-	var name = "d3-ez";
 	var version$1 = "4.0.6";
-	var description = "D3 Easy Reusable Chart Library";
 	var license$1 = "GPL-2.0";
-	var keywords = [
-		"d3",
-		"d3-module",
-		"visualization",
-		"chart",
-		"graph",
-		"data",
-		"svg",
-		"dataviz"
-	];
-	var homepage = "https://github.com/jamesleesaunders/d3-ez";
-	var author$1 = "James Saunders (james@saunders-family.net)";
-	var repository = {
-		type: "git",
-		url: "https://github.com/jamesleesaunders/d3-ez.git"
-	};
-	var bugs = {
-		url: "https://github.com/jamesleesaunders/d3-ez/issues"
-	};
-	var type = "module";
-	var files = [
-		"dist/**/*.js",
-		"src/**/*.js"
-	];
-	var module = "src/index.js";
-	var main = "src/index.js";
-	var jsdelivr = "dist/d3-ez.min.js";
-	var unpkg = "dist/d3-ez.min.js";
-	var exports$1 = {
-		umd: "./dist/d3-ez.min.js",
-		"default": "./src/index.js"
-	};
-	var scripts = {
-		build: "make",
-		pretest: "make",
-		test: "tape 'test/**/*Test.js' | tap-arc",
-		"build:docs": "jsdoc -c config/jsdoc.conf.json",
-		"deploy:docs": "npm run build:docs && gh-pages -d docs"
-	};
-	var devDependencies = {
-		"@babel/core": "^7.24.7",
-		"@babel/plugin-external-helpers": "^7.24.7",
-		"@babel/plugin-syntax-import-attributes": "^7.24.7",
-		"@babel/plugin-transform-object-assign": "^7.24.7",
-		"@babel/preset-env": "^7.24.7",
-		"@rollup/plugin-babel": "^6.0.4",
-		"@rollup/plugin-json": "^6.1.0",
-		"@rollup/plugin-node-resolve": "^15.2.3",
-		eslint: "^9.5.0",
-		"gh-pages": "^6.1.1",
-		jsdoc: "^4.0.3",
-		jsdom: "^24.1.0",
-		rollup: "^4.18.0",
-		"tap-arc": "^1.2.2",
-		tape: "^5.8.1",
-		"toast-jsdoc": "^1.0.2",
-		"uglify-js": "^3.18.0",
-		vows: "^0.8.3"
-	};
-	var dependencies = {
-		d3: "^7.9.0"
-	};
-	var peerDependencies = {
-		d3: "^7.9.0"
-	};
 	var packageJson = {
-		name: name,
 		version: version$1,
-		description: description,
-		license: license$1,
-		keywords: keywords,
-		homepage: homepage,
-		author: author$1,
-		repository: repository,
-		bugs: bugs,
-		type: type,
-		files: files,
-		module: module,
-		main: main,
-		jsdelivr: jsdelivr,
-		unpkg: unpkg,
-		exports: exports$1,
-		scripts: scripts,
-		devDependencies: devDependencies,
-		dependencies: dependencies,
-		peerDependencies: peerDependencies
-	};
+		license: license$1};
 
 	/**
 	 * Reusable Circular Bar Chart Component
@@ -497,12 +411,12 @@
 	      i,
 	      u,
 	      a = [],
-	      f = !0,
-	      o = !1;
+	      f = true,
+	      o = false;
 	    try {
 	      if (i = (t = t.call(r)).next, 0 === l) ; else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
 	    } catch (r) {
-	      o = !0, n = r;
+	      o = true, n = r;
 	    } finally {
 	      try {
 	        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
