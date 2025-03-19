@@ -43,7 +43,7 @@
 		"deploy:docs": "npm run build:docs && gh-pages -d docs"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.26.9",
+		"@babel/core": "^7.26.10",
 		"@babel/plugin-external-helpers": "^7.25.9",
 		"@babel/plugin-syntax-import-attributes": "^7.26.0",
 		"@babel/plugin-transform-object-assign": "^7.25.9",
